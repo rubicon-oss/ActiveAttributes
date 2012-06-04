@@ -4,16 +4,20 @@ namespace ActiveAttributes.Core
 {
   public class Invocation
   {
-    private readonly Delegate _originalBody;
+    private readonly Delegate _delegate;
 
-    internal Invocation (Delegate originalBody)
+    public Invocation (Delegate @delegate, params object[] arguments)
     {
-      _originalBody = originalBody;
+      _delegate = @delegate;
+      Arguments = arguments;
     }
 
-    public void Invoke (params object[] args)
+    public void Proceed ()
     {
-      _originalBody.DynamicInvoke (args);
+      ReturnValue = _delegate.DynamicInvoke (Arguments);
     }
+
+    public object[] Arguments { get; private set; }
+    public object ReturnValue { get; private set; }
   }
 }
