@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using ActiveAttributes.Core;
 using NUnit.Framework;
 using System.Linq;
 using Remotion.TypePipe.MutableReflection;
@@ -62,7 +63,8 @@ namespace ActiveAttributes.UnitTests
       Directory.CreateDirectory (s_generatedFileDirectory);
 
       CopyModuleToOutputDirectory (GetType ().Assembly.ManifestModule);
-      CopyModuleToOutputDirectory (typeof(MutableType).Assembly.ManifestModule);
+      CopyModuleToOutputDirectory (typeof (MutableType).Assembly.ManifestModule);
+      CopyModuleToOutputDirectory (typeof (Aspect).Assembly.ManifestModule);
     }
 
     private void CopyModuleToOutputDirectory (Module copiedModule)
