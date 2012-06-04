@@ -1,85 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Castle.Components.DictionaryAdapter;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.TypePipe.TypeAssembly;
 
 namespace ActiveAttributes.Core
 {
-  public class Assembler : Remotion.TypePipe.TypeAssembly.ITypeAssemblyParticipant
+  public class Assembler : ITypeAssemblyParticipant
   {
-
-    // new Delegate() cannot be used because Delegate is abstract
-
-
-
-
     public void ModifyType (MutableType mutableType)
     {
-      var originalMethod = mutableType.AllMutableMethods.First();
-      var newMethod = mutableType.AddMethod (
-          originalMethod.Name + "_privcop",
-          MethodAttributes.Private,
-          originalMethod.ReturnType,
-          ParameterDeclaration.CreateForEquivalentSignature (originalMethod),
-          ctx => originalMethod.Body);
+      foreach (var originalMethod in mutableType.AllMutableMethods.ToArray())
+      {
+        var method = originalMethod;
+        var customAttributes = method.GetCustomAttributes (typeof (Aspect), true);
 
-      var parameterTypes = new List<Type> ();
+        if (customAttributes.Length == 0)
+          continue;
 
-      var parameterInfos = originalMethod.GetParameters ();
-      if (parameterInfos.Length > 0)
-        parameterTypes.AddRange (parameterInfos.Select (x => x.ParameterType));
+        var newMethod = mutableType.AddMethod (
+            originalMethod.Name + "_privcop",
+            MethodAttributes.Private,
+            originalMethod.ReturnType,
+            ParameterDeclaration.CreateForEquivalentSignature (originalMethod),
+            ctx => method.Body);
 
-      parameterTypes.Add (originalMethod.ReturnType);
+        var parameterTypes = new List<Type>();
+        parameterTypes.AddRange (originalMethod.GetParameters().Select (x => x.ParameterType));
+        parameterTypes.Add (originalMethod.ReturnType);
 
-      var delegateType = Expression.GetDelegateType (parameterTypes.ToArray());
+        var delegateType = Expression.GetDelegateType (parameterTypes.ToArray());
+        var aspectType = customAttributes.Cast<Aspect>().Single().GetType();
+        var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate",
+          new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+        var onInvokeMethodInfo = typeof (Aspect).GetMethod ("OnInvoke");
 
-      var dynamicInvokeMethodInfo = typeof (Delegate).GetMethod ("DynamicInvoke");
-      var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+        var invocation = Expression.Variable (typeof (Invocation));
+        var aspect = Expression.Variable (typeof (Aspect));
 
-      var @delegate = Expression.Variable (typeof (Delegate));
 
-      originalMethod.SetBody (
-          ctx =>
-          Expression.Block (
-              new[] { @delegate },
-              Expression.Assign (
-                  @delegate,
-                  Expression.Call (
-                      null,
-                      createDelegateMethodInfo,
-                      Expression.Constant (delegateType),
-                      ctx.This,
-                      Expression.Constant (newMethod, typeof(MethodInfo)))
-                  ),
-              Expression.Convert (Expression.Call (@delegate, dynamicInvokeMethodInfo, Expression.NewArrayInit (typeof (object))), typeof (int))
-              )
-          );
-    }
-  }
+        originalMethod.SetBody (
+            ctx =>
+            Expression.Block (
+                new[] { invocation, aspect }.Concat (ctx.Parameters),
 
-  public static class BodyContextBaseExtensions
-  {
-    public static MethodCallExpression GetBodyAsDelegate (this MethodBodyModificationContext ctx)
-    {
-      var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+                // Assign invocation object
+                Expression.Assign (
+                    invocation,
+                    Expression.New (
+                        typeof (Invocation).GetConstructors().Single(),
+                        // Create delegate
+                        Expression.Call (
+                            null,
+                            createDelegateMethodInfo,
+                            Expression.Constant (delegateType),
+                            ctx.This,
+                            Expression.Constant (newMethod, typeof (MethodInfo))),
+                        Expression.NewArrayInit (
+                            typeof (object),
+                            ctx.Parameters.Cast<Expression>()))),
 
-      var parameterTypes = ctx.Parameters.Select (x => x.Type);
-      var delegateType = Expression.GetDelegateType (parameterTypes.ToArray ());
+                // Assign aspect object
+                Expression.Assign (
+                    aspect,
+                    Expression.New (aspectType)),
 
-      var methodInfo = (MethodInfo) null;
+                // Call OnInvoke with invocation
+                Expression.Call(
+                    aspect,
+                    onInvokeMethodInfo,
+                    invocation))
 
-      return Expression.Call (
-          null,
-          createDelegateMethodInfo,
-          Expression.Constant (delegateType),
-          ctx.This,
-          Expression.Constant (methodInfo));
+                //// Return
+                //Expression.Convert (
+                //    Expression.Property (invocation, "ReturnValue"),
+                //    method.ReturnType))
+            );
+      }
     }
   }
 }
