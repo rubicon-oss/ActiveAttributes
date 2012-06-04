@@ -4,75 +4,34 @@
         <name>Remotion.Development</name>
     </assembly>
     <members>
-        <member name="T:Remotion.Development.UnitTesting.Sandboxing.PermissionSets">
+        <member name="T:Remotion.Development.UnitTesting.ServiceLocatorScope">
             <summary>
-            <see cref="T:Remotion.Development.UnitTesting.Sandboxing.PermissionSets"/> contains static methods to get the permissions for different security levels.
+            Sets <see cref="P:Microsoft.Practices.ServiceLocation.ServiceLocator.Current"/> to a given <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> temporarily, resetting it, when <see cref="M:Remotion.Development.UnitTesting.ServiceLocatorScope.Dispose"/>
+            is called.
             </summary>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.IO.TempFile">
-            <summary>
-            The <see cref="T:Remotion.Development.UnitTesting.IO.TempFile"/> class represents a disposable temp file created via the <see cref="M:System.IO.Path.GetTempFileName"/> method.
-            </summary>
-        </member>
-        <member name="M:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException"/>  class with a specified error message.
-            </summary>
-            <param name="message">The error message string. </param>
-        </member>
-        <member name="M:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException.#ctor(System.String,System.Exception)">
-            <summary>
-              Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException"/> class with a specified 
-              error message and a reference to the inner exception that is the cause of this exception.
-            </summary>
-            <param name="message">The error message string. </param>
-            <param name="innerException">The inner exception reference. </param>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper">
-            <summary>
-            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> class is intended to inject a fake implementation of the <see cref="T:System.Configuration.Internal.IInternalConfigSystem"/> interface
-            into the <see cref="T:System.Configuration.ConfigurationManager"/> class. The feature can be used to override the config system with custom settings during unit tests.
-            </summary>
-            <remarks>
-            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> should only be used in cases where it is necesarry to inject configuration settings into third party code.
-            The preferred solution is to use the <see cref="T:Remotion.Configuration.ConfigurationWrapper"/>'s well-known instance to access the configuration, thus allowing for 
-            easy faking of the configuration during unit tests through changing the well-known instance to a test specific configuration object.
-            </remarks>
         </member>
         <member name="T:Remotion.Development.UnitTesting.Data.SqlClient.DatabaseAgent">
             <summary>Use the <see cref="T:Remotion.Development.UnitTesting.Data.SqlClient.DatabaseAgent"/> for setting up the database during unit testing.</summary>
         </member>
-        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundMixinTypeGeneratorDecorator">
+        <member name="T:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1">
             <summary>
-            Decorates <see cref="T:Remotion.Mixins.CodeGeneration.IMixinTypeGenerator"/> in order to notify <see cref="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator"/> when the type is actually 
+            A decorator for <see cref="T:System.Collections.Generic.IEnumerable`1"/> instances ensuring that they are iterated only once.
+            </summary>
+            <typeparam name="T">The element type of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</typeparam>
+        </member>
+        <member name="M:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundTypeGeneratorDecorator">
+            <summary>
+            Decorates <see cref="T:Remotion.Mixins.CodeGeneration.ITypeGenerator"/> in order to notify <see cref="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator"/> when the type is actually 
             generated.
             </summary>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.ObjectMother.DictionaryMother">
+        <member name="T:Remotion.Development.UnitTesting.Sandboxing.PermissionSets">
             <summary>
-            Supplies factories to easily create <see cref="T:System.Collections.Generic.Dictionary`2"/> instances initialized with up to 4 key-value-pairs.
+            <see cref="T:Remotion.Development.UnitTesting.Sandboxing.PermissionSets"/> contains static methods to get the permissions for different security levels.
             </summary>
-            <example><code>
-            <![CDATA[  
-            var d = DictionaryMother.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
-            ]]>
-            </code></example>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.Serializer">
-            <summary>
-            Provides quick serialization and deserialization functionality for unit tests.
-            </summary>
-            <remarks>The methods of this class use a <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> for serialization.</remarks>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.ObjectMother.QueueMother">
-            <summary>
-            Supplies factories to easily create <see cref="T:System.Collections.Generic.Queue`1"/> instances.
-            </summary>
-            <example><code>
-            <![CDATA[  
-            var queue = QueueMother.New("process","emit0","wait");
-            ]]>
-            </code></example>
         </member>
         <member name="T:Remotion.Development.UnitTesting.Sandboxing.Sandbox">
             <summary>
@@ -90,29 +49,50 @@
             </para>
             </remarks>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException">
-             <summary>
-            Represents errors that occur during resource searching.
-             </summary>
-        </member>
-        <member name="M:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException.#ctor(System.String)">
+        <member name="T:Remotion.Development.UnitTesting.Configuration.FakeConfigurationWrapper">
             <summary>
-            Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException"/>  class with a specified error message.
+            Concrete implementation of <see cref="T:Remotion.Configuration.ConfigurationWrapper"/> that fakes the access to the configuration system. Use this class for setting up
+            unit tests.
             </summary>
-            <param name="message">The error message string. </param>
         </member>
-        <member name="M:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException.#ctor(System.String,System.Exception)">
+        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator">
             <summary>
-              Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException"/> class with a specified 
-              error message and a reference to the inner exception that is the cause of this exception.
+            Decorates an <see cref="T:Remotion.Mixins.CodeGeneration.IModuleManager"/>, counting the generated types and resetting the inner <see cref="T:Remotion.Mixins.CodeGeneration.IModuleManager"/> when the number 
+            of types exceeds the given threshold. This can be used as a workaround for the Reflection.Emit bug where calls to 
+            <see cref="M:System.Reflection.Emit.TypeBuilder.CreateType"/> take a very long time to complete  when the debugger is attached and a large number of types is generated 
+            into the same AssemblyBuilder.
             </summary>
-            <param name="message">The error message string. </param>
-            <param name="innerException">The inner exception reference. </param>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.PrivateInvoke">
+        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundMixinTypeGeneratorDecorator">
             <summary>
-            Provides utility functions for accessing non-public types and members.
+            Decorates <see cref="T:Remotion.Mixins.CodeGeneration.IMixinTypeGenerator"/> in order to notify <see cref="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator"/> when the type is actually 
+            generated.
             </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.ObjectMother.ListMother">
+            <summary>
+            Supplies factories to easily create <see cref="T:System.Collections.Generic.List`1"/> instances.
+            </summary>
+            <example><code>
+            <![CDATA[  
+            var listList = ListMother.New( List.New(1,2), List.New(3,4) );
+            ]]>
+            </code></example>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.Configuration.ConfigurationHelper">
+            <summary>
+            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigurationHelper"/> is a ulitilty class designed to deserialize xml-fragments into configuration elements.
+            </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.ObjectMother.QueueMother">
+            <summary>
+            Supplies factories to easily create <see cref="T:System.Collections.Generic.Queue`1"/> instances.
+            </summary>
+            <example><code>
+            <![CDATA[  
+            var queue = QueueMother.New("process","emit0","wait");
+            ]]>
+            </code></example>
         </member>
         <member name="T:Remotion.Development.UnitTesting.Dev">
             <summary>
@@ -148,38 +128,6 @@
             something (e.g., for syntactic reasons, or to remove unused variable warnings), but don't care about the result of the assignment.
             </summary>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.Configuration.FakeConfigurationWrapper">
-            <summary>
-            Concrete implementation of <see cref="T:Remotion.Configuration.ConfigurationWrapper"/> that fakes the access to the configuration system. Use this class for setting up
-            unit tests.
-            </summary>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.Configuration.ConfigurationHelper">
-            <summary>
-            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigurationHelper"/> is a ulitilty class designed to deserialize xml-fragments into configuration elements.
-            </summary>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.ServiceLocatorScope">
-            <summary>
-            Sets <see cref="P:Microsoft.Practices.ServiceLocation.ServiceLocator.Current"/> to a given <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> temporarily, resetting it, when <see cref="M:Remotion.Development.UnitTesting.ServiceLocatorScope.Dispose"/>
-            is called.
-            </summary>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.ObjectMother.ListMother">
-            <summary>
-            Supplies factories to easily create <see cref="T:System.Collections.Generic.List`1"/> instances.
-            </summary>
-            <example><code>
-            <![CDATA[  
-            var listList = ListMother.New( List.New(1,2), List.New(3,4) );
-            ]]>
-            </code></example>
-        </member>
-        <member name="T:Remotion.Development.UnitTesting.AssemblyCompilationException">
-            <summary>
-            The <see cref="T:Remotion.Development.UnitTesting.AssemblyCompilationException"/> is thrown by the <see cref="T:Remotion.Development.UnitTesting.AssemblyCompiler"/> type when compilation errors occured.
-            </summary>
-        </member>
         <member name="T:Remotion.Development.UnitTesting.Enumerables.EnumerableExtensions">
             <summary>
             Provides extensions methods for <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
@@ -198,6 +146,62 @@
             <see cref="T:Remotion.Development.UnitTesting.Sandboxing.TestResult"/> represents a single result for a test method.
             </summary>
         </member>
+        <member name="T:Remotion.Development.UnitTesting.PrivateInvoke">
+            <summary>
+            Provides utility functions for accessing non-public types and members.
+            </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.ObjectMother.DictionaryMother">
+            <summary>
+            Supplies factories to easily create <see cref="T:System.Collections.Generic.Dictionary`2"/> instances initialized with up to 4 key-value-pairs.
+            </summary>
+            <example><code>
+            <![CDATA[  
+            var d = DictionaryMother.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
+            ]]>
+            </code></example>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.IO.TempFile">
+            <summary>
+            The <see cref="T:Remotion.Development.UnitTesting.IO.TempFile"/> class represents a disposable temp file created via the <see cref="M:System.IO.Path.GetTempFileName"/> method.
+            </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.GCCounter">
+            <summary>
+            Counts the number of garbage collections that occured between <see cref="M:Remotion.Development.UnitTesting.GCCounter.BeginCount"/> and <see cref="M:Remotion.Development.UnitTesting.GCCounter.EndCount"/> 
+            and prints the result using <see cref="M:Remotion.Development.UnitTesting.GCCounter.PrintCount(System.IO.TextWriter)"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.AssemblyCompilationException">
+            <summary>
+            The <see cref="T:Remotion.Development.UnitTesting.AssemblyCompilationException"/> is thrown by the <see cref="T:Remotion.Development.UnitTesting.AssemblyCompiler"/> type when compilation errors occured.
+            </summary>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.Serializer">
+            <summary>
+            Provides quick serialization and deserialization functionality for unit tests.
+            </summary>
+            <remarks>The methods of this class use a <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/> for serialization.</remarks>
+        </member>
+        <member name="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException">
+             <summary>
+            Represents errors that occur during resource searching.
+             </summary>
+        </member>
+        <member name="M:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException"/>  class with a specified error message.
+            </summary>
+            <param name="message">The error message string. </param>
+        </member>
+        <member name="M:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Resources.ResourceNotFoundException"/> class with a specified 
+              error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message string. </param>
+            <param name="innerException">The inner exception reference. </param>
+        </member>
         <member name="T:Remotion.Development.UnitTesting.Sandboxing.TestFixtureResult">
             <summary>
             <see cref="T:Remotion.Development.UnitTesting.Sandboxing.TestFixtureResult"/> holds the type of the test class and the result of the test methods.
@@ -208,19 +212,10 @@
             <see cref="T:Remotion.Development.UnitTesting.Sandboxing.SandboxTestRunner"/> executes unit tests for the given types.
             </summary>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1">
+        <member name="T:Remotion.Development.UnitTesting.Configuration.FakeInternalConfigSystem">
             <summary>
-            A decorator for <see cref="T:System.Collections.Generic.IEnumerable`1"/> instances ensuring that they are iterated only once.
-            </summary>
-            <typeparam name="T">The element type of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</typeparam>
-        </member>
-        <member name="M:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1.GetEnumerator">
-            <inheritdoc />
-        </member>
-        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundTypeGeneratorDecorator">
-            <summary>
-            Decorates <see cref="T:Remotion.Mixins.CodeGeneration.ITypeGenerator"/> in order to notify <see cref="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator"/> when the type is actually 
-            generated.
+            Fake implementation of the <see cref="T:System.Configuration.Internal.IInternalConfigSystem"/> interface. Used by the <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> to fake the 
+            configuration.
             </summary>
         </member>
         <member name="T:Remotion.Development.UnitTesting.Sandboxing.TestFailedException">
@@ -228,25 +223,30 @@
             <see cref="T:Remotion.Development.UnitTesting.Sandboxing.TestFailedException"/> is thrown when <see cref="M:Remotion.Development.UnitTesting.Sandboxing.TestResult.EnsureNotFailed"/> is called and the specific test has been failed.
             </summary>
         </member>
-        <member name="T:Remotion.Development.Mixins.DebuggerWorkaroundModuleManagerDecorator">
+        <member name="M:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException.#ctor(System.String)">
             <summary>
-            Decorates an <see cref="T:Remotion.Mixins.CodeGeneration.IModuleManager"/>, counting the generated types and resetting the inner <see cref="T:Remotion.Mixins.CodeGeneration.IModuleManager"/> when the number 
-            of types exceeds the given threshold. This can be used as a workaround for the Reflection.Emit bug where calls to 
-            <see cref="M:System.Reflection.Emit.TypeBuilder.CreateType"/> take a very long time to complete  when the debugger is attached and a large number of types is generated 
-            into the same AssemblyBuilder.
+            Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException"/>  class with a specified error message.
             </summary>
+            <param name="message">The error message string. </param>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.Configuration.FakeInternalConfigSystem">
+        <member name="M:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException.#ctor(System.String,System.Exception)">
             <summary>
-            Fake implementation of the <see cref="T:System.Configuration.Internal.IInternalConfigSystem"/> interface. Used by the <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> to fake the 
-            configuration.
+              Initializes a new instance of the <see cref="T:Remotion.Development.UnitTesting.Data.SqlClient.SqlBatchCommandException"/> class with a specified 
+              error message and a reference to the inner exception that is the cause of this exception.
             </summary>
+            <param name="message">The error message string. </param>
+            <param name="innerException">The inner exception reference. </param>
         </member>
-        <member name="T:Remotion.Development.UnitTesting.GCCounter">
+        <member name="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper">
             <summary>
-            Counts the number of garbage collections that occured between <see cref="M:Remotion.Development.UnitTesting.GCCounter.BeginCount"/> and <see cref="M:Remotion.Development.UnitTesting.GCCounter.EndCount"/> 
-            and prints the result using <see cref="M:Remotion.Development.UnitTesting.GCCounter.PrintCount(System.IO.TextWriter)"/>.
+            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> class is intended to inject a fake implementation of the <see cref="T:System.Configuration.Internal.IInternalConfigSystem"/> interface
+            into the <see cref="T:System.Configuration.ConfigurationManager"/> class. The feature can be used to override the config system with custom settings during unit tests.
             </summary>
+            <remarks>
+            The <see cref="T:Remotion.Development.UnitTesting.Configuration.ConfigSystemHelper"/> should only be used in cases where it is necesarry to inject configuration settings into third party code.
+            The preferred solution is to use the <see cref="T:Remotion.Configuration.ConfigurationWrapper"/>'s well-known instance to access the configuration, thus allowing for 
+            easy faking of the configuration during unit tests through changing the well-known instance to a test specific configuration object.
+            </remarks>
         </member>
     </members>
 </doc>
