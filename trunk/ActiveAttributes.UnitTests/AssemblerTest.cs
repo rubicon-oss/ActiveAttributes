@@ -24,19 +24,19 @@ namespace ActiveAttributes.UnitTests
     }
 
     [Test]
-    public void Proceed_ProceedingAspect ()
-    {
-      _instance.Method1 ();
-
-      Assert.That (_instance.Method1Called, Is.True);
-    }
-
-    [Test]
     public void Proceed_NonProceedingAspect ()
     {
       _instance.Method2 ();
 
       Assert.That (_instance.Method2Called, Is.False);
+    }
+
+    [Test]
+    public void Proceed_ProceedingAspect ()
+    {
+      _instance.Method1 ();
+
+      Assert.That (_instance.Method1Called, Is.True);
     }
 
     [Test, Ignore]
@@ -60,7 +60,7 @@ namespace ActiveAttributes.UnitTests
       public virtual void Method2 () { Method2Called = true; }
 
       //[ModifyArgumentAspect]
-      //public virtual void Method3 (string a) { Method3Argument = a; }
+      public virtual void Method3 (string a) { Method3Argument = a; }
     }
 
     public class ProceedingAspect : Aspect
@@ -68,7 +68,7 @@ namespace ActiveAttributes.UnitTests
       public override void OnInvoke (Invocation invocation)
       {
         Assert.That (invocation.Arguments, Is.Empty);
-        invocation.Proceed();
+        invocation.Proceed ();
       }
     }
 

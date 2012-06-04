@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
-                new[] { invocation, aspect }.Concat (ctx.Parameters),
+                new [] { invocation, aspect }.Concat(ctx.Parameters),
 
                 // Assign invocation object
                 Expression.Assign (
@@ -71,8 +71,9 @@ namespace ActiveAttributes.Core
                 Expression.Call(
                     aspect,
                     onInvokeMethodInfo,
-                    invocation))
+                    invocation),
 
+                Expression.Property(invocation, "ReturnValue"))
                 //// Return
                 //Expression.Convert (
                 //    Expression.Property (invocation, "ReturnValue"),
