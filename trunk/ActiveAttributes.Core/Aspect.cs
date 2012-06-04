@@ -7,9 +7,9 @@ namespace ActiveAttributes.Core
   {
     public AspectScope Scope { get; set; }
 
-    public void OnInvoke (Invocation invocation)
+    public virtual void OnInvoke (Invocation invocation)
     {
-
+      invocation.Proceed ();
     }
   }
 }
