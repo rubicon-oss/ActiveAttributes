@@ -40,13 +40,19 @@ namespace ActiveAttributes.UnitTests
     }
 
     [Test]
-    public void Proceed_ModifyArguments ()
+    public void Proceed_ModifyStringArgument ()
     {
-      SkipDeletion();
+      _instance.ModifyStringArgumentMethod ("a");
 
-      _instance.ModifyArgumentsMethod ("a");
+      Assert.That (_instance.ModifyStringArgumentMethodArgs, Is.EqualTo ("a_modified"));
+    }
 
-      Assert.That (_instance.ModifyArgumentMethodArgs, Is.EqualTo ("a_modified"));
+    [Test]
+    public void Proceed_ModifyIntArgument ()
+    {
+      _instance.ModifyIntArgumentMethod (1);
+
+      Assert.That (_instance.ModifyIntArgumentMethodArgs, Is.EqualTo (2));
     }
 
     [Test]
@@ -57,37 +63,24 @@ namespace ActiveAttributes.UnitTests
       Assert.That (result, Is.EqualTo ("aspect"));
     }
 
-    [Test]
-    public void name ()
-    {
-      var type = AssembleType<DomainType> (
-          mt =>
-          {
-            var method = mt.AllMutableMethods.Where (x => x.Name == "ModifyReturnValueMethod").Single();
-            method.SetBody (
-                ctx =>
-                Expression.Constant ("bla", typeof (string)));
-          });
-
-      var obj = (DomainType) Activator.CreateInstance (type);
-      var result = obj.ModifyReturnValueMethod();
-      Assert.That (result, Is.EqualTo ("bla"));
-    }
-
     public class DomainType
     {
-      public bool NonProceedingMethodCalled { get; private set; }
-      public bool ProceedingMethodCalled { get; private set; }
-      public string ModifyArgumentMethodArgs { get; private set; }
 
+      public bool NonProceedingMethodCalled { get; private set; }
       [NonProceedingAspect]
       public virtual void NonProceedingMethod () { NonProceedingMethodCalled = true; }
 
+      public bool ProceedingMethodCalled { get; private set; }
       [ProceedingAspect]
       public virtual void ProceedingMethod () { ProceedingMethodCalled = true; }
 
-      [ModifyArgumentsAspect]
-      public virtual void ModifyArgumentsMethod (string a) { ModifyArgumentMethodArgs = a; }
+      public string ModifyStringArgumentMethodArgs { get; private set; }
+      [ModifyStringArgumentAspect]
+      public virtual void ModifyStringArgumentMethod (string a) { ModifyStringArgumentMethodArgs = a; }
+
+      public int ModifyIntArgumentMethodArgs { get; private set; }
+      [ModifyIntArgumentAspect]
+      public virtual void ModifyIntArgumentMethod (int a) { ModifyIntArgumentMethodArgs = a; }
 
       [ModifyReturnValueAspect]
       public virtual string ModifyReturnValueMethod () { return "method"; }
@@ -109,12 +102,21 @@ namespace ActiveAttributes.UnitTests
       }
     }
 
-    public class ModifyArgumentsAspect : Aspect
+    public class ModifyStringArgumentAspect : Aspect
     {
       public override void OnInvoke (Invocation invocation)
       {
         invocation.Arguments[0] = (string) invocation.Arguments[0] + "_modified";
-        invocation.Proceed();
+        invocation.Proceed ();
+      }
+    }
+
+    public class ModifyIntArgumentAspect : Aspect
+    {
+      public override void OnInvoke (Invocation invocation)
+      {
+        invocation.Arguments[0] = (int) invocation.Arguments[0] + 1;
+        invocation.Proceed ();
       }
     }
 
