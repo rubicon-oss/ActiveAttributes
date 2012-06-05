@@ -4,6 +4,7 @@ namespace ActiveAttributes.Core
 {
   public enum AspectScope
   {
-    Default
+    Default,
+    Instance
   }
 }
