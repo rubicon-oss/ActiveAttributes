@@ -108,6 +108,7 @@ namespace ActiveAttributes.Core
                             Expression.Constant (newMethod, typeof (MethodInfo))),
 
                         methodInfo,
+                        ctx.This,
 
                         Expression.NewArrayInit (
                             typeof (object),

@@ -16,7 +16,7 @@ namespace ActiveAttributes.UnitTests
     {
       var called = false;
       var @delegate = new Action (() => called = true);
-      var invocation = new Invocation (@delegate, null);
+      var invocation = new Invocation (@delegate, null, null);
 
       invocation.Proceed();
 
@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests
       object[] result = null;
       var @delegate = new Action<string, int> ((str, i) => result = new object[] { str, i });
       var arguments = new object[] { "test", 5 };
-      var invocation = new Invocation (@delegate, null, arguments);
+      var invocation = new Invocation (@delegate, null, null, arguments);
 
       invocation.Proceed ();
 
@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests
       object[] result = null;
       var @delegate = new Action<string, int>((str, i) => result = new object[] { str, i });
       var arguments = new object[] { "test", 5 };
-      var invocation = new Invocation (@delegate, null, arguments);
+      var invocation = new Invocation (@delegate, null, null, arguments);
 
       invocation.Arguments[1] = 2;
       invocation.Proceed ();
@@ -54,7 +54,7 @@ namespace ActiveAttributes.UnitTests
     public void Proceed_ReturnValue ()
     {
       var @delegate = new Func<int> (() => 10);
-      var invocation = new Invocation (@delegate, null);
+      var invocation = new Invocation (@delegate, null, null);
 
       invocation.Proceed();
 
@@ -66,7 +66,7 @@ namespace ActiveAttributes.UnitTests
     {
       var counter = 0;
       var @delegate = new Action (() => ++counter);
-      var invocation = new Invocation (@delegate, null);
+      var invocation = new Invocation (@delegate, null, null);
 
       invocation.Proceed();
       invocation.Proceed();

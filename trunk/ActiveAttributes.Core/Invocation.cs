@@ -8,11 +8,12 @@ namespace ActiveAttributes.Core
   {
     private Delegate _delegate;
 
-    public Invocation (Delegate @delegate, MethodInfo method, params object[] arguments)
+    public Invocation (Delegate @delegate, MethodInfo method, object instance, params object[] arguments)
     {
       _delegate = @delegate;
-      Arguments = arguments;
+      Instance = instance;
       Method = method;
+      Arguments = arguments;
     }
 
     public void Proceed ()
@@ -24,9 +25,9 @@ namespace ActiveAttributes.Core
     public object ReturnValue { get; set; }
 
     public MethodInfo Method { get; private set; }
+    public object Instance { get; private set; }
 
     // FROM CASTLE WINDSOR
-    //public object Instance { get; private set; }
     //public Type TargetType { get; private set; }
   }
 }

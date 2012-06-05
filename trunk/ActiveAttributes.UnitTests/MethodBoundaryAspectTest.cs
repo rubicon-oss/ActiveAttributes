@@ -20,14 +20,14 @@ namespace ActiveAttributes.UnitTests
     {
       _obj = new TestableMethodBoundaryAspect();
 
-      _throwingInvocation = new Invocation (new Action (() => { throw new Exception(); }), null);
-      _blankInvocation = new Invocation (new Action (() => { }), null);
+      _throwingInvocation = new Invocation (new Action (() => { throw new Exception(); }), null, null);
+      _blankInvocation = new Invocation (new Action (() => { }), null, null);
     }
 
     [Test]
     public void OnEntry ()
     {
-      var invocation = new Invocation (new Action (() => Assert.That (_obj.OnEntryCalled, Is.True)), null);
+      var invocation = new Invocation (new Action (() => Assert.That (_obj.OnEntryCalled, Is.True)), null, null);
 
       _obj.OnInvoke (invocation);
     }
@@ -35,7 +35,7 @@ namespace ActiveAttributes.UnitTests
     [Test]
     public void OnExit ()
     {
-      var invocation = new Invocation (new Action (() => Assert.That (_obj.OnExitCalled, Is.False)), null);
+      var invocation = new Invocation (new Action (() => Assert.That (_obj.OnExitCalled, Is.False)), null, null);
 
       _obj.OnInvoke (invocation);
 

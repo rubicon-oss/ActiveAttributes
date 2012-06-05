@@ -104,6 +104,14 @@ namespace ActiveAttributes.UnitTests
       Assert.That (result, Is.StringEnding ("AccessMethodInfoMethod"));
     }
 
+    [Test]
+    public void Proceed_AccessInstance ()
+    {
+      var result = _instance.AccessInstanceMethod();
+
+      Assert.That (result, Is.SameAs (_instance));
+    }
+
     public class DomainType
     {
 
@@ -144,6 +152,9 @@ namespace ActiveAttributes.UnitTests
 
       [AccessMethodInfoAspect]
       public virtual string AccessMethodInfoMethod () { return string.Empty; }
+
+      [AccessInstanceAspect]
+      public virtual object AccessInstanceMethod () { return null; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -215,6 +226,14 @@ namespace ActiveAttributes.UnitTests
       public override void OnInvoke (Invocation invocation)
       {
         invocation.ReturnValue = invocation.Method.Name;
+      }
+    }
+
+    public class AccessInstanceAspect : Aspect
+    {
+      public override void OnInvoke (Invocation invocation)
+      {
+        invocation.ReturnValue = invocation.Instance;
       }
     }
   }
