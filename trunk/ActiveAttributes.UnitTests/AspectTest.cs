@@ -14,7 +14,7 @@ namespace ActiveAttributes.UnitTests
     public void OnInvoke ()
     {
       var called = false;
-      var invocation = new Invocation (new Action (() => { called = true; }));
+      var invocation = new Invocation (new Action (() => { called = true; }), null);
       var aspect = new TestableAspect();
 
       aspect.OnInvoke (invocation);
