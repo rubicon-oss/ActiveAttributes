@@ -33,8 +33,9 @@ namespace ActiveAttributes.Core
 
         var delegateType = Expression.GetDelegateType (parameterTypes.ToArray());
         var aspectType = customAttributes.Cast<Aspect>().Single().GetType();
-        var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate",
-          new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+        var createDelegateMethodInfo = typeof (Delegate).GetMethod (
+            "CreateDelegate",
+            new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
         var onInvokeMethodInfo = typeof (Aspect).GetMethod ("OnInvoke");
 
         var invocation = Expression.Variable (typeof (Invocation));
@@ -44,7 +45,8 @@ namespace ActiveAttributes.Core
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
-                new [] { invocation, aspect },
+
+                new[] { invocation, aspect },
 
                 // Assign invocation object
                 Expression.Assign (
@@ -68,13 +70,16 @@ namespace ActiveAttributes.Core
                     Expression.New (aspectType)),
 
                 // Call OnInvoke with invocation
-                Expression.Call(
+                Expression.Call (
                     aspect,
                     onInvokeMethodInfo,
                     invocation),
 
                 // Return
-                Expression.Property(invocation, "ReturnValue"))
+                method.ReturnType == typeof(void)
+                  ? (Expression) Expression.Default(typeof(void))
+                  : (Expression) Expression.Convert(Expression.Property (invocation, "ReturnValue"),
+                    method.ReturnType))
             );
       }
     }
