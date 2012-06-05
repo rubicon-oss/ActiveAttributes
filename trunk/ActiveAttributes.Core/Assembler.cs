@@ -25,7 +25,7 @@ namespace ActiveAttributes.Core
             MethodAttributes.Private,
             originalMethod.ReturnType,
             ParameterDeclaration.CreateForEquivalentSignature (originalMethod),
-            ctx => method.Body);
+            ctx => ctx.GetCopiedMethodBody (method, ctx.Parameters.Cast<Expression>()));
 
         var parameterTypes = new List<Type>();
         parameterTypes.AddRange (originalMethod.GetParameters().Select (x => x.ParameterType));
@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
-                new [] { invocation, aspect }.Concat(ctx.Parameters),
+                new [] { invocation, aspect },
 
                 // Assign invocation object
                 Expression.Assign (
@@ -73,11 +73,8 @@ namespace ActiveAttributes.Core
                     onInvokeMethodInfo,
                     invocation),
 
+                // Return
                 Expression.Property(invocation, "ReturnValue"))
-                //// Return
-                //Expression.Convert (
-                //    Expression.Property (invocation, "ReturnValue"),
-                //    method.ReturnType))
             );
       }
     }

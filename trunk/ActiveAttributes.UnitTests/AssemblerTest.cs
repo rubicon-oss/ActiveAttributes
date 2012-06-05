@@ -39,10 +39,10 @@ namespace ActiveAttributes.UnitTests
       Assert.That (_instance.Method1Called, Is.True);
     }
 
-    [Test, Ignore]
+    [Test]
     public void Proceed_ModifiedArgument ()
     {
-      //_instance.Method3 ("a");
+      _instance.Method3 ("a");
 
       Assert.That (_instance.Method3Argument, Is.EqualTo ("a_modified"));
     }
@@ -59,7 +59,7 @@ namespace ActiveAttributes.UnitTests
       [NonProceedingAspect]
       public virtual void Method2 () { Method2Called = true; }
 
-      //[ModifyArgumentAspect]
+      [ModifyArgumentAspect]
       public virtual void Method3 (string a) { Method3Argument = a; }
     }
 
@@ -84,6 +84,7 @@ namespace ActiveAttributes.UnitTests
       public override void OnInvoke (Invocation invocation)
       {
         invocation.Arguments[0] = (string) invocation.Arguments[0] + "_modified";
+        invocation.Proceed();
       }
     }
   }
