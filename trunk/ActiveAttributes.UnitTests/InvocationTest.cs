@@ -11,54 +11,49 @@ namespace ActiveAttributes.UnitTests
   [TestFixture]
   public class InvocationTest
   {
-    private DomainType _obj;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _obj = new DomainType();
-    }
-
     [Test]
     public void Proceed ()
     {
-      var @delegate = new Action (_obj.Method1);
+      var called = false;
+      var @delegate = new Action (() => called = true);
       var invocation = new Invocation (@delegate);
 
       invocation.Proceed();
 
-      Assert.That (_obj.Method1Called, Is.True);
+      Assert.That (called, Is.True);
     }
 
     [Test]
     public void Proceed_WithArguments ()
     {
-      var @delegate = new Action<string, int> (_obj.Method2);
+      object[] result = null;
+      var @delegate = new Action<string, int> ((str, i) => result = new object[] { str, i });
       var arguments = new object[] { "test", 5 };
       var invocation = new Invocation (@delegate, arguments);
 
       invocation.Proceed ();
 
-      Assert.That (_obj.Method2Arguments, Is.EqualTo (arguments));
+      Assert.That (result, Is.EqualTo (arguments));
     }
 
     [Test]
     public void Proceed_WithModifiedArguments ()
     {
-      var @delegate = new Action<string, int> (_obj.Method2);
+      object[] result = null;
+      var @delegate = new Action<string, int>((str, i) => result = new object[] { str, i });
       var arguments = new object[] { "test", 5 };
       var invocation = new Invocation (@delegate, arguments);
 
       invocation.Arguments[1] = 2;
       invocation.Proceed ();
 
-      Assert.That (_obj.Method2Arguments[1], Is.EqualTo (2));
+      Assert.That (result[1], Is.EqualTo (2));
     }
 
     [Test]
     public void Proceed_ReturnValue ()
     {
-      var @delegate = new Func<int> (_obj.Method3);
+      var @delegate = new Func<int> (() => 10);
       var invocation = new Invocation (@delegate);
 
       invocation.Proceed();
@@ -66,15 +61,17 @@ namespace ActiveAttributes.UnitTests
       Assert.That (invocation.ReturnValue, Is.EqualTo (10));
     }
 
-    class DomainType
+    [Test, Ignore] // TODO
+    public void Proceed_OnlyOnce ()
     {
-      public void Method1 () { Method1Called = true; }
-      public bool Method1Called { get; private set; }
+      var counter = 0;
+      var @delegate = new Action (() => ++counter);
+      var invocation = new Invocation (@delegate);
 
-      public void Method2 (string arg0, int arg1) { Method2Arguments = new object[] { arg0, arg1 }; }
-      public object[] Method2Arguments { get; private set; }
+      invocation.Proceed();
+      invocation.Proceed();
 
-      public int Method3 () { return 10; }
+      Assert.That (counter, Is.EqualTo (1));
     }
   }
 }
