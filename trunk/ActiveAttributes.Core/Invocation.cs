@@ -18,6 +18,6 @@ namespace ActiveAttributes.Core
     }
 
     public object[] Arguments { get; private set; }
-    public object ReturnValue { get; private set; }
+    public object ReturnValue { get; set; }
   }
 }
