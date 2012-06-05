@@ -96,6 +96,14 @@ namespace ActiveAttributes.UnitTests
       Assert.That (_instance.TwiceProceedingMethodCallCount, Is.EqualTo (2));
     }
 
+    [Test]
+    public void Proceed_AccessMethodInfo ()
+    {
+      var result = _instance.AccessMethodInfoMethod();
+
+      Assert.That (result, Is.StringEnding ("AccessMethodInfoMethod"));
+    }
+
     public class DomainType
     {
 
@@ -133,6 +141,9 @@ namespace ActiveAttributes.UnitTests
       [Add10ToArgAspect(Priority = 2)]
       [ProceedingAspect (Priority = 1)]
       public virtual int AddProceedMethod (int i) { return i; }
+
+      [AccessMethodInfoAspect]
+      public virtual string AccessMethodInfoMethod () { return string.Empty; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -196,6 +207,14 @@ namespace ActiveAttributes.UnitTests
       public override void OnInvoke (Invocation invocation)
       {
         invocation.Arguments[0] = (int) invocation.Arguments[0] + 10;
+      }
+    }
+
+    public class AccessMethodInfoAspect : Aspect
+    {
+      public override void OnInvoke (Invocation invocation)
+      {
+        invocation.ReturnValue = invocation.Method.Name;
       }
     }
   }

@@ -74,19 +74,24 @@ namespace ActiveAttributes.Core
         var aspect = Expression.Variable (typeof (Aspect));
         var aspects = Expression.Variable (typeof (Aspect[]));
         var i = Expression.Variable (typeof (int));
+        var methodInfo = Expression.Variable (typeof (MethodInfo));
         var label = Expression.Label();
 
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
 
-                new[] { invocation, aspect, aspects, i },
+                new[] { invocation, aspect, aspects, i, methodInfo },
+
+                Expression.Assign (
+                    methodInfo,
+                    Expression.Constant (method, typeof(MethodInfo))),
 
                 // Aspect[] aspects = _aspects_methodName
-                Expression.Assign(
+                Expression.Assign (
                     aspects,
-                    Expression.Field(ctx.This,aspectsFieldInfo)
-                ),
+                    Expression.Field (ctx.This, aspectsFieldInfo)
+                    ),
 
                 // Invocation invocation = new Invocation(delegate(newMethod), new object[] { arg0, arg1, ... });
                 Expression.Assign (
@@ -101,6 +106,8 @@ namespace ActiveAttributes.Core
                             Expression.Constant (delegateType),
                             ctx.This,
                             Expression.Constant (newMethod, typeof (MethodInfo))),
+
+                        methodInfo,
 
                         Expression.NewArrayInit (
                             typeof (object),
