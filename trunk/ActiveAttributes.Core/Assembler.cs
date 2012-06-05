@@ -20,6 +20,32 @@ namespace ActiveAttributes.Core
         if (customAttributes.Length == 0)
           continue;
 
+
+        // introduce field and init in ctors
+
+        var aspectsFieldInfo = mutableType.AddField (typeof (Aspect[]), "_aspects_" + method.Name);
+        //var aspectType = customAttributes.Cast<Aspect> ().Single ().GetType ();
+
+        foreach (var ctor in mutableType.AllMutableConstructors)
+        {
+          ctor.SetBody (
+              ctx =>
+              Expression.Block (
+                  Expression.Assign (
+                      Expression.Field (ctx.This, aspectsFieldInfo),
+                      Expression.NewArrayInit (
+                          typeof (Aspect),
+                          customAttributes
+                              .Cast<Aspect>()
+                              .OrderByDescending (x => x.Priority)
+                              .Select (x => Expression.New (x.GetType()))
+                              .Cast<Expression>())),
+                  ctx.GetPreviousBodyWithArguments()));
+        }
+
+
+        // copy method body to helper method
+
         var newMethod = mutableType.AddMethod (
             originalMethod.Name + "_privcop",
             MethodAttributes.Private,
@@ -27,12 +53,18 @@ namespace ActiveAttributes.Core
             ParameterDeclaration.CreateForEquivalentSignature (originalMethod),
             ctx => ctx.GetCopiedMethodBody (method, ctx.Parameters.Cast<Expression>()));
 
+
+
+        // adapt method body to
+        // - create invocation object (delegate, arguments)
+        // - invoke aspects with invocation object
+        // - set return type
+
         var parameterTypes = new List<Type>();
         parameterTypes.AddRange (originalMethod.GetParameters().Select (x => x.ParameterType));
         parameterTypes.Add (originalMethod.ReturnType);
 
         var delegateType = Expression.GetDelegateType (parameterTypes.ToArray());
-        var aspectType = customAttributes.Cast<Aspect>().Single().GetType();
         var createDelegateMethodInfo = typeof (Delegate).GetMethod (
             "CreateDelegate",
             new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
@@ -40,44 +72,61 @@ namespace ActiveAttributes.Core
 
         var invocation = Expression.Variable (typeof (Invocation));
         var aspect = Expression.Variable (typeof (Aspect));
-
+        var aspects = Expression.Variable (typeof (Aspect[]));
+        var i = Expression.Variable (typeof (int));
+        var label = Expression.Label();
 
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
 
-                new[] { invocation, aspect },
+                new[] { invocation, aspect, aspects, i },
 
-                // Assign invocation object
+                // Aspect[] aspects = _aspects_methodName
+                Expression.Assign(
+                    aspects,
+                    Expression.Field(ctx.This,aspectsFieldInfo)
+                ),
+
+                // Invocation invocation = new Invocation(delegate(newMethod), new object[] { arg0, arg1, ... });
                 Expression.Assign (
                     invocation,
+
                     Expression.New (
                         typeof (Invocation).GetConstructors().Single(),
-                        // Create delegate
+
                         Expression.Call (
                             null,
                             createDelegateMethodInfo,
                             Expression.Constant (delegateType),
                             ctx.This,
                             Expression.Constant (newMethod, typeof (MethodInfo))),
+
                         Expression.NewArrayInit (
                             typeof (object),
                             ctx.Parameters.Select (
                                 x =>
                                 (Expression) Expression.Convert (x, typeof (object)))))),
 
-                // Assign aspect object
-                Expression.Assign (
-                    aspect,
-                    Expression.New (aspectType)),
+                // while (i < aspects.Length) { aspects[i].OnInvoke(invocation); i++; }
+                Expression.Loop (
+                    Expression.IfThenElse (
+                        Expression.LessThan (i, Expression.ArrayLength (aspects)),
+                        Expression.Block (
+                            Expression.Assign (
+                                aspect,
+                                Expression.ArrayAccess (aspects, i)),
+                            Expression.Call (
+                                aspect,
+                                onInvokeMethodInfo,
+                                invocation
+                                ),
+                            Expression.PostIncrementAssign (i)
+                            ),
+                        Expression.Break (label)),
+                    label),
 
-                // Call OnInvoke with invocation
-                Expression.Call (
-                    aspect,
-                    onInvokeMethodInfo,
-                    invocation),
-
-                // Return
+                // return (ReturnType) invocation.ReturnValue;
                 method.ReturnType == typeof(void)
                   ? (Expression) Expression.Default(typeof(void))
                   : (Expression) Expression.Convert(Expression.Property (invocation, "ReturnValue"),
