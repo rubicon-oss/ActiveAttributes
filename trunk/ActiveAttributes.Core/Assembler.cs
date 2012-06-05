@@ -62,7 +62,9 @@ namespace ActiveAttributes.Core
                             Expression.Constant (newMethod, typeof (MethodInfo))),
                         Expression.NewArrayInit (
                             typeof (object),
-                            ctx.Parameters.Cast<Expression>()))),
+                            ctx.Parameters.Select (
+                                x =>
+                                (Expression) Expression.Convert (x, typeof (object)))))),
 
                 // Assign aspect object
                 Expression.Assign (
