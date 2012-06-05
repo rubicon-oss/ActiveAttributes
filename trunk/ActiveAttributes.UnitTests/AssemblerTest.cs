@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using ActiveAttributes.Core;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
-using TypePipe.IntegrationTests;
 
 namespace ActiveAttributes.UnitTests
 {
@@ -60,7 +54,15 @@ namespace ActiveAttributes.UnitTests
     {
       var result = _instance.ModifyReturnValueMethod();
 
-      Assert.That (result, Is.EqualTo ("aspect"));
+      Assert.That (result, Is.EqualTo ("method_aspect"));
+    }
+
+    [Test]
+    public void Proceed_ModifyMultiple ()
+    {
+      var result = _instance.ModifyMultipleMethod (1, "foo");
+
+      Assert.That (result, Is.EqualTo ("2_foo#"));
     }
 
     public class DomainType
@@ -84,6 +86,9 @@ namespace ActiveAttributes.UnitTests
 
       [ModifyReturnValueAspect]
       public virtual string ModifyReturnValueMethod () { return "method"; }
+
+      [ModifyMultipleAspect]
+      public virtual string ModifyMultipleMethod (int i, string str) { return i + str; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -124,8 +129,22 @@ namespace ActiveAttributes.UnitTests
     {
       public override void OnInvoke (Invocation invocation)
       {
-        invocation.ReturnValue = "aspect";
-      } 
+        invocation.Proceed();
+        invocation.ReturnValue = invocation.ReturnValue + "_aspect";
+      }
+    }
+
+    public class ModifyMultipleAspect : Aspect
+    {
+      public override void OnInvoke (Invocation invocation)
+      {
+        invocation.Arguments[0] = (int) invocation.Arguments[0] + 1;
+        invocation.Arguments[1] = "_" + (string) invocation.Arguments[1];
+
+        invocation.Proceed();
+
+        invocation.ReturnValue = invocation.ReturnValue + "#";
+      }
     }
   }
 }
