@@ -60,6 +60,7 @@
     <Compile Include="Aspect.cs" />
     <Compile Include="AspectScope.cs" />
     <Compile Include="Invocation.cs" />
+    <Compile Include="MethodBoundaryAspect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
