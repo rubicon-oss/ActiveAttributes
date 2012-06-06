@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="AspectTest.cs" />
     <Compile Include="AssemblerTest.cs" />
+    <Compile Include="AssemblerTest.Validation.cs" />
     <Compile Include="InvocationTest.cs" />
     <Compile Include="MethodBoundaryAspectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
