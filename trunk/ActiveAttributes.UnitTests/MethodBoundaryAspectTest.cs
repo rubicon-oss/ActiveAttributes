@@ -97,16 +97,16 @@ namespace ActiveAttributes.UnitTests
     class TestableMethodBoundaryAspect : MethodBoundaryAspect
     {
       public bool OnEntryCalled { get; private set; }
-      public override void OnEntry () { OnEntryCalled = true; }
+      public override void OnEntry (Invocation invocation) { OnEntryCalled = true; }
 
       public bool OnExitCalled { get; private set; }
-      public override void OnExit () { OnExitCalled = true; }
+      public override void OnExit (Invocation invocation) { OnExitCalled = true; }
 
       public bool OnExceptionCalled { get; private set; }
-      public override void OnException () { OnExceptionCalled = true; }
+      public override void OnException (Invocation invocation) { OnExceptionCalled = true; }
 
       public bool OnSuccessCalled { get; private set; }
-      public override void OnSuccess () { OnSuccessCalled = true; }
+      public override void OnSuccess (Invocation invocation) { OnSuccessCalled = true; }
     }
   }
 }
