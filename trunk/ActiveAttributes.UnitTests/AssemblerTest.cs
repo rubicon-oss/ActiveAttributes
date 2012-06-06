@@ -109,7 +109,7 @@ namespace ActiveAttributes.UnitTests
     {
       var result = _instance.AccessMethodInfoMethod();
 
-      Assert.That (result, Is.StringEnding ("AccessMethodInfoMethod"));
+      Assert.That (result, Is.EqualTo ("AccessMethodInfoMethod"));
     }
 
     [Test]

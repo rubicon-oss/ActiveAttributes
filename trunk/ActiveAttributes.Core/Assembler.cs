@@ -81,6 +81,8 @@ namespace ActiveAttributes.Core
         var i = Expression.Variable (typeof (int));
         var label = Expression.Label();
 
+        //mutableType.GetOrAddMutableMethod
+
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
@@ -109,7 +111,7 @@ namespace ActiveAttributes.Core
                             Expression.Constant (newMethod, typeof (MethodInfo))),
 
                         Expression.Constant (
-                            method,
+                            method.UnderlyingSystemMethodInfo,
                             typeof (MethodInfo)),
 
                         ctx.This,
