@@ -120,6 +120,7 @@ namespace ActiveAttributes.Core
                                 x =>
                                 (Expression) Expression.Convert (x, typeof (object)))))),
 
+                // invocation.ReturnValue = default(returnType)
                 method.ReturnType == typeof(void) || !method.ReturnType.IsValueType
                     ? (Expression) Expression.Empty()
                     : (Expression) Expression.Assign (
