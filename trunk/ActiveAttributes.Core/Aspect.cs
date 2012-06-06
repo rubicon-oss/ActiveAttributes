@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
@@ -37,6 +38,11 @@ namespace ActiveAttributes.Core
     public virtual void OnInvoke (Invocation invocation)
     {
       invocation.Proceed();
+    }
+
+    public virtual bool Validate (MethodInfo method)
+    {
+      return true;
     }
   }
 }

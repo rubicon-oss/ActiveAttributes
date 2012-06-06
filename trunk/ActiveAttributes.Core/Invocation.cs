@@ -1,12 +1,11 @@
 using System;
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace ActiveAttributes.Core
 {
   public class Invocation
   {
-    private Delegate _delegate;
+    private readonly Delegate _delegate;
 
     public Invocation (Delegate @delegate, MethodInfo method, object instance, params object[] arguments)
     {
@@ -26,6 +25,8 @@ namespace ActiveAttributes.Core
 
     public MethodInfo Method { get; private set; }
     public object Instance { get; private set; }
+
+    public object Tag { get; set; }
 
     // FROM CASTLE WINDSOR
     //public Type TargetType { get; private set; }

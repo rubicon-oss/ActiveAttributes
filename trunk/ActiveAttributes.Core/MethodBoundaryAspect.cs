@@ -10,26 +10,26 @@ namespace ActiveAttributes.Core
   {
     public override void OnInvoke (Invocation invocation)
     {
-      OnEntry();
+      OnEntry (invocation);
 
       try
       {
         base.OnInvoke (invocation);
-        OnSuccess ();
+        OnSuccess (invocation);
       }
       catch (Exception)
       {
-        OnException ();
+        OnException (invocation);
       }
       finally
       {
-        OnExit();
+        OnExit (invocation);
       }
     }
 
-    public virtual void OnEntry () { }
-    public virtual void OnExit () { }
-    public virtual void OnException () { }
-    public virtual void OnSuccess () { }
+    public virtual void OnEntry (Invocation invocation) { }
+    public virtual void OnExit (Invocation invocation) { }
+    public virtual void OnException (Invocation invocation) { }
+    public virtual void OnSuccess (Invocation invocation) { }
   }
 }

@@ -21,7 +21,7 @@ namespace ActiveAttributes.UnitTests
     }
 
     [Test]
-    public void Proceed_NonProceedingAspect ()
+    public void Proceed_NonProceeding ()
     {
       _instance.NonProceedingMethod ();
 
@@ -29,7 +29,15 @@ namespace ActiveAttributes.UnitTests
     }
 
     [Test]
-    public void Proceed_ProceedingAspect ()
+    public void Proceed_NonProceeding_ValueType ()
+    {
+      var result = _instance.NonProceedingMethodValueType();
+
+      Assert.That (result, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void Proceed_Proceeding ()
     {
       _instance.ProceedingMethod ();
 
@@ -112,12 +120,23 @@ namespace ActiveAttributes.UnitTests
       Assert.That (result, Is.SameAs (_instance));
     }
 
+    [Test]
+    public void Proceed_AccessTag ()
+    {
+      var result = _instance.AccessTagMethod(1);
+
+      Assert.That (result, Is.EqualTo (2));
+    }
+
     public class DomainType
     {
 
       public bool NonProceedingMethodCalled { get; private set; }
       [NonProceedingAspect]
       public virtual void NonProceedingMethod () { NonProceedingMethodCalled = true; }
+
+      [NonProceedingAspect]
+      public virtual int NonProceedingMethodValueType () { return 1; }
 
       public bool ProceedingMethodCalled { get; private set; }
       [ProceedingAspect]
@@ -155,6 +174,9 @@ namespace ActiveAttributes.UnitTests
 
       [AccessInstanceAspect]
       public virtual object AccessInstanceMethod () { return null; }
+
+      [AccessTagAspect]
+      public virtual int AccessTagMethod (int i) { return i; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -234,6 +256,19 @@ namespace ActiveAttributes.UnitTests
       public override void OnInvoke (Invocation invocation)
       {
         invocation.ReturnValue = invocation.Instance;
+      }
+    }
+
+    public class AccessTagAspect : MethodBoundaryAspect
+    {
+      public override void OnEntry (Invocation invocation)
+      {
+        invocation.Tag = (int) invocation.Arguments[0] + 1;
+      }
+
+      public override void OnExit (Invocation invocation)
+      {
+        invocation.ReturnValue = (int) invocation.Tag;
       }
     }
   }

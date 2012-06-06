@@ -22,9 +22,17 @@ namespace ActiveAttributes.Core
 
 
         // introduce field and init in ctors
-
         var aspectsFieldInfo = mutableType.AddField (typeof (Aspect[]), "_aspects_" + method.Name);
-        //var aspectType = customAttributes.Cast<Aspect> ().Single ().GetType ();
+        var aspectAttributes = customAttributes.Cast<Aspect> ();
+
+        foreach (var aspectAttribute in aspectAttributes)
+        {
+          if (!aspectAttribute.Validate(method))
+          {
+            var message = string.Format ("Method '{0}' is not valid for aspect of type '{1}'", method.Name, aspectAttribute.GetType().Name);
+            throw new InvalidOperationException(message);
+          }
+        }
 
         foreach (var ctor in mutableType.AllMutableConstructors)
         {
@@ -35,8 +43,7 @@ namespace ActiveAttributes.Core
                       Expression.Field (ctx.This, aspectsFieldInfo),
                       Expression.NewArrayInit (
                           typeof (Aspect),
-                          customAttributes
-                              .Cast<Aspect>()
+                          aspectAttributes
                               .OrderByDescending (x => x.Priority)
                               .Select (x => Expression.New (x.GetType()))
                               .Cast<Expression>())),
@@ -45,7 +52,6 @@ namespace ActiveAttributes.Core
 
 
         // copy method body to helper method
-
         var newMethod = mutableType.AddMethod (
             originalMethod.Name + "_privcop",
             MethodAttributes.Private,
@@ -55,11 +61,10 @@ namespace ActiveAttributes.Core
 
 
 
-        // adapt method body to
+        // adapt original method body to
         // - create invocation object (delegate, arguments)
         // - invoke aspects with invocation object
         // - set return type
-
         var parameterTypes = new List<Type>();
         parameterTypes.AddRange (originalMethod.GetParameters().Select (x => x.ParameterType));
         parameterTypes.Add (originalMethod.ReturnType);
@@ -74,18 +79,13 @@ namespace ActiveAttributes.Core
         var aspect = Expression.Variable (typeof (Aspect));
         var aspects = Expression.Variable (typeof (Aspect[]));
         var i = Expression.Variable (typeof (int));
-        var methodInfo = Expression.Variable (typeof (MethodInfo));
         var label = Expression.Label();
 
         originalMethod.SetBody (
             ctx =>
             Expression.Block (
 
-                new[] { invocation, aspect, aspects, i, methodInfo },
-
-                Expression.Assign (
-                    methodInfo,
-                    Expression.Constant (method, typeof(MethodInfo))),
+                new[] { invocation, aspect, aspects, i },
 
                 // Aspect[] aspects = _aspects_methodName
                 Expression.Assign (
@@ -93,7 +93,8 @@ namespace ActiveAttributes.Core
                     Expression.Field (ctx.This, aspectsFieldInfo)
                     ),
 
-                // Invocation invocation = new Invocation(delegate(newMethod), new object[] { arg0, arg1, ... });
+                // Invocation invocation
+                //   = new Invocation(delegate(newMethod), this, methodInfo, new object[] { arg0, arg1, ... });
                 Expression.Assign (
                     invocation,
 
@@ -107,7 +108,10 @@ namespace ActiveAttributes.Core
                             ctx.This,
                             Expression.Constant (newMethod, typeof (MethodInfo))),
 
-                        methodInfo,
+                        Expression.Constant (
+                            method,
+                            typeof (MethodInfo)),
+
                         ctx.This,
 
                         Expression.NewArrayInit (
@@ -115,6 +119,12 @@ namespace ActiveAttributes.Core
                             ctx.Parameters.Select (
                                 x =>
                                 (Expression) Expression.Convert (x, typeof (object)))))),
+
+                method.ReturnType == typeof(void) || !method.ReturnType.IsValueType
+                    ? (Expression) Expression.Empty()
+                    : (Expression) Expression.Assign (
+                        Expression.Property (invocation, "ReturnValue"),
+                        Expression.Convert(Expression.Default (method.ReturnType), typeof(object))),
 
                 // while (i < aspects.Length) { aspects[i].OnInvoke(invocation); i++; }
                 Expression.Loop (
