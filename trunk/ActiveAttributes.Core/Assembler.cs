@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
@@ -18,46 +19,30 @@ namespace ActiveAttributes.Core
         var customAttributes = method.GetCustomAttributes (typeof (Aspect), true);
 
         if (customAttributes.Length == 0)
-          continue;
+        {
+          //var attributes = method.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);
+          //if (attributes.Length == 1)
+          //{
+          //  var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (method.Name.Substring (4));
+          //  customAttributes = propertyInfo.GetCustomAttributes (typeof (Aspect), true);
+          //}
 
+          if (customAttributes.Length == 0)
+            continue;
+        }
 
         // introduce field and init in ctors
-        var aspectsFieldInfo = mutableType.AddField (typeof (Aspect[]), "_aspects_" + method.Name);
+        var aspectsFieldInfo = mutableType.AddField (typeof (Aspect[]), "tp<>__aspects_" + method.Name);
         var aspectAttributes = customAttributes.Cast<Aspect> ();
 
-        foreach (var aspectAttribute in aspectAttributes)
-        {
-          if (!aspectAttribute.Validate(method))
-          {
-            var message = string.Format ("Method '{0}' is not valid for aspect of type '{1}'", method.Name, aspectAttribute.GetType().Name);
-            throw new InvalidOperationException(message);
-          }
-        }
 
-        foreach (var ctor in mutableType.AllMutableConstructors)
-        {
-          ctor.SetBody (
-              ctx =>
-              Expression.Block (
-                  Expression.Assign (
-                      Expression.Field (ctx.This, aspectsFieldInfo),
-                      Expression.NewArrayInit (
-                          typeof (Aspect),
-                          aspectAttributes
-                              .OrderByDescending (x => x.Priority)
-                              .Select (x => Expression.New (x.GetType()))
-                              .Cast<Expression>())),
-                  ctx.GetPreviousBodyWithArguments()));
-        }
+        ValidateMethod(method, aspectAttributes);
 
+        AddAspectsConstructorInitialization(mutableType, aspectAttributes, aspectsFieldInfo);
 
         // copy method body to helper method
-        var newMethod = mutableType.AddMethod (
-            originalMethod.Name + "_privcop",
-            MethodAttributes.Private,
-            originalMethod.ReturnType,
-            ParameterDeclaration.CreateForEquivalentSignature (originalMethod),
-            ctx => ctx.GetCopiedMethodBody (method, ctx.Parameters.Cast<Expression>()));
+        var newMethod = CreateHelperMethod(mutableType, method);
+
 
 
 
@@ -101,7 +86,7 @@ namespace ActiveAttributes.Core
                     invocation,
 
                     Expression.New (
-                        typeof (Invocation).GetConstructors().Single(),
+                        typeof (Invocation).GetConstructors().First(),
 
                         Expression.Call (
                             null,
@@ -123,11 +108,7 @@ namespace ActiveAttributes.Core
                                 (Expression) Expression.Convert (x, typeof (object)))))),
 
                 // invocation.ReturnValue = default(returnType)
-                method.ReturnType == typeof(void) || !method.ReturnType.IsValueType
-                    ? (Expression) Expression.Empty()
-                    : (Expression) Expression.Assign (
-                        Expression.Property (invocation, "ReturnValue"),
-                        Expression.Convert(Expression.Default (method.ReturnType), typeof(object))),
+                GetInitReturnValueExpression(invocation, method),
 
                 // while (i < aspects.Length) { aspects[i].OnInvoke(invocation); i++; }
                 Expression.Loop (
@@ -147,12 +128,66 @@ namespace ActiveAttributes.Core
                         Expression.Break (label)),
                     label),
 
-                // return (ReturnType) invocation.ReturnValue;
-                method.ReturnType == typeof(void)
-                  ? (Expression) Expression.Default(typeof(void))
-                  : (Expression) Expression.Convert(Expression.Property (invocation, "ReturnValue"),
-                    method.ReturnType))
-            );
+              // return (ReturnType) invocation.ReturnValue;
+                method.ReturnType == typeof (void)
+                  ? (Expression) Expression.Default (typeof (void))
+                  : (Expression) Expression.Convert (Expression.Property (invocation, "ReturnValue"),
+                    method.ReturnType)));
+
+
+      }
+    }
+
+    private static Expression GetInitReturnValueExpression (ParameterExpression invocation, MutableMethodInfo method)
+    {
+      if (method.ReturnType == typeof (void) || !method.ReturnType.IsValueType)
+        return Expression.Empty();
+      else
+      {
+        return Expression.Assign (
+            Expression.Property (invocation, "ReturnValue"),
+            Expression.Convert (Expression.Default (method.ReturnType), typeof (object)));
+      }
+    }
+
+    private static MutableMethodInfo CreateHelperMethod (MutableType mutableType, MutableMethodInfo method)
+    {
+      return mutableType.AddMethod (
+          method.Name + "_privcop",
+          MethodAttributes.Private,
+          method.ReturnType,
+          ParameterDeclaration.CreateForEquivalentSignature (method),
+          ctx => ctx.GetCopiedMethodBody (method, ctx.Parameters.Cast<Expression>()));
+    }
+
+    private static void ValidateMethod (MutableMethodInfo method, IEnumerable<Aspect> aspectAttributes)
+    {
+      foreach (var aspectAttribute in aspectAttributes)
+      {
+        if (!aspectAttribute.Validate (method))
+        {
+          var message = string.Format ("Method '{0}' is not valid for aspect of type '{1}'", method.Name, aspectAttribute.GetType().Name);
+          throw new InvalidOperationException (message);
+        }
+      }
+    }
+
+    private static void AddAspectsConstructorInitialization (MutableType mutableType, IEnumerable<Aspect> aspectAttributes, MutableFieldInfo aspectsFieldInfo)
+    {
+      foreach (var ctor in mutableType.AllMutableConstructors)
+      {
+        ctor.SetBody (
+            ctx =>
+            Expression.Block (
+                Expression.Assign (
+                    Expression.Field (ctx.This, aspectsFieldInfo),
+                    Expression.NewArrayInit (
+                        typeof (Aspect),
+                        aspectAttributes
+                            .OrderByDescending (x => x.Priority)
+                            .Select (x => Expression.New (x.GetType()))
+                            .Cast<Expression>())),
+                ctx.GetPreviousBodyWithArguments()));
       }
     }
   }

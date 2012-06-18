@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using ActiveAttributes.Core;
 using NUnit.Framework;
@@ -79,12 +78,23 @@ namespace ActiveAttributes.UnitTests
     [Test]
     public void Field_Introduction ()
     {
-      var fieldInfo = _type.GetField ("_aspects_NonProceedingMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-      Debug.Assert (fieldInfo != null, "fieldInfo != null");
+      var fieldInfo = _type.GetField ("tp<>__aspects_NonProceedingMethod", BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (fieldInfo, Is.Not.Null);
       var field = (Aspect[]) fieldInfo.GetValue (_instance);
 
       Assert.That (field[0], Is.TypeOf<NonProceedingAspect>());
     }
+
+    //[Ignore, Test]
+    //public void Field_Introduction_Properties ()
+    //{
+    //  var fieldInfo = _type.GetField ("_aspects_set_SomeProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+    //  Assert.That (fieldInfo, Is.Not.Null);
+    //  var field = (Aspect[]) fieldInfo.GetValue (_instance);
+
+    //  Assert.That (field[0], Is.TypeOf<PropertyAspect> ());
+    //  _instance.SomeProperty = "muh";
+    //}
 
     [Test]
     public void Field_OrderedByPriority ()
@@ -161,11 +171,11 @@ namespace ActiveAttributes.UnitTests
       [ProceedingAspect]
       public virtual void TwiceProceedingMethod () { TwiceProceedingMethodCallCount++; }
 
-      [Add10ToArgAspect(Priority = 1)]
-      [ProceedingAspect(Priority = 2)]
+      [Add10ToArgAspect (Priority = 1)]
+      [ProceedingAspect (Priority = 2)]
       public virtual int ProceedAddMethod (int i) { return i; }
 
-      [Add10ToArgAspect(Priority = 2)]
+      [Add10ToArgAspect (Priority = 2)]
       [ProceedingAspect (Priority = 1)]
       public virtual int AddProceedMethod (int i) { return i; }
 
@@ -177,6 +187,9 @@ namespace ActiveAttributes.UnitTests
 
       [AccessTagAspect]
       public virtual int AccessTagMethod (int i) { return i; }
+
+      //[PropertyAspect]
+      //public virtual string SomeProperty { get; set; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -271,5 +284,13 @@ namespace ActiveAttributes.UnitTests
         invocation.ReturnValue = (int) invocation.Tag;
       }
     }
+
+    //public class PropertyAspect : PropertyInterceptionAspect
+    //{
+    //  public override void OnInvoke (Invocation invocation)
+    //  {
+    //    base.OnInvoke (invocation);
+    //  }
+    //}
   }
 }
