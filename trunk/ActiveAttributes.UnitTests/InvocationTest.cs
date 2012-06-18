@@ -3,6 +3,7 @@
 //
 
 using System;
+using System.Reflection;
 using ActiveAttributes.Core;
 using NUnit.Framework;
 
@@ -61,17 +62,19 @@ namespace ActiveAttributes.UnitTests
       Assert.That (invocation.ReturnValue, Is.EqualTo (10));
     }
 
-    [Test, Ignore] // TODO
-    public void Proceed_OnlyOnce ()
+    [Test]
+    public void Proceed_Nested ()
     {
       var counter = 0;
-      var @delegate = new Action (() => ++counter);
-      var invocation = new Invocation (@delegate, null, null);
+      var @delegate = new Func<int, string, int> ((i, str) => ++counter);
+      var innerInvocation = new Invocation (@delegate, null, null, 1, "test");
+      var outerInvocation = new Invocation (innerInvocation);
 
-      invocation.Proceed();
-      invocation.Proceed();
+      outerInvocation.Proceed();
 
       Assert.That (counter, Is.EqualTo (1));
+      Assert.That (outerInvocation.Arguments, Is.EqualTo (innerInvocation.Arguments));
+      Assert.That (outerInvocation.ReturnValue, Is.EqualTo (1));
     }
   }
 }
