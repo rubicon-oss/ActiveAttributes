@@ -17,9 +17,16 @@ namespace ActiveAttributes.Core
         base.OnInvoke (invocation);
         OnSuccess (invocation);
       }
-      catch (Exception)
+      catch (Exception ex)
       {
+        invocation.Exception = ex.InnerException;
+        invocation.FlowBehavior = FlowBehavior.Rethrow;
+
         OnException (invocation);
+
+        if (invocation.FlowBehavior == FlowBehavior.Rethrow
+            && invocation.Exception != null) // TODO: test this
+          throw invocation.Exception;
       }
       finally
       {

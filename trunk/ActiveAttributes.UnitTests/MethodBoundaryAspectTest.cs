@@ -20,7 +20,7 @@ namespace ActiveAttributes.UnitTests
     {
       _obj = new TestableMethodBoundaryAspect();
 
-      _throwingInvocation = new Invocation (new Action (() => { throw new Exception(); }), null, null);
+      _throwingInvocation = new Invocation (new Action (() => { throw new Exception("Throwing Invocation"); }), null, null);
       _blankInvocation = new Invocation (new Action (() => { }), null, null);
     }
 
@@ -54,6 +54,8 @@ namespace ActiveAttributes.UnitTests
       }
 
       Assert.That (_obj.OnExitCalled, Is.True);
+      Assert.That (_obj.ThrowedException, Is.TypeOf<Exception>());
+      Assert.That (_obj.ThrowedException.Message, Is.EqualTo ("Throwing Invocation"));
     }
 
     [Test]
@@ -81,7 +83,13 @@ namespace ActiveAttributes.UnitTests
     [Test]
     public void OnSuccess_WithException ()
     {
-      _obj.OnInvoke (_throwingInvocation);
+      try
+      {
+        _obj.OnInvoke (_throwingInvocation);
+      }
+      catch (Exception)
+      {
+      }
 
       Assert.That (_obj.OnSuccessCalled, Is.False);
     }
@@ -94,6 +102,28 @@ namespace ActiveAttributes.UnitTests
       Assert.That (_obj.OnSuccessCalled, Is.True);
     }
 
+    [Test]
+    [ExpectedException (typeof (Exception), ExpectedMessage = "Throwing Invocation")]
+    public void FlowBehavior_Rethrow ()
+    {
+      var rethrowingAspect = new RethrowingMethodBoundaryAspect ();
+      rethrowingAspect.OnInvoke (_throwingInvocation);
+    }
+
+    [Test]
+    public void FlowBehavior_Continuing_Explicit ()
+    {
+      var rethrowingAspect = new ExplicitContinuingMethodBoundaryAspect ();
+      rethrowingAspect.OnInvoke (_throwingInvocation);
+    }
+
+    [Test]
+    public void FlowBehavior_Continuing_Implicit ()
+    {
+      var rethrowingAspect = new ImplicitContinuingMethodBoundaryAspect ();
+      rethrowingAspect.OnInvoke (_throwingInvocation);
+    }
+
     class TestableMethodBoundaryAspect : MethodBoundaryAspect
     {
       public bool OnEntryCalled { get; private set; }
@@ -103,10 +133,35 @@ namespace ActiveAttributes.UnitTests
       public override void OnExit (Invocation invocation) { OnExitCalled = true; }
 
       public bool OnExceptionCalled { get; private set; }
-      public override void OnException (Invocation invocation) { OnExceptionCalled = true; }
+      public Exception ThrowedException { get; private set; }
+      public override void OnException (Invocation invocation) { OnExceptionCalled = true; ThrowedException = invocation.Exception; }
 
       public bool OnSuccessCalled { get; private set; }
       public override void OnSuccess (Invocation invocation) { OnSuccessCalled = true; }
+    }
+
+    class RethrowingMethodBoundaryAspect : TestableMethodBoundaryAspect
+    {
+      public override void OnException (Invocation invocation)
+      {
+        invocation.FlowBehavior = FlowBehavior.Rethrow;
+      }
+    }
+
+    class ExplicitContinuingMethodBoundaryAspect : TestableMethodBoundaryAspect
+    {
+      public override void OnException (Invocation invocation)
+      {
+        invocation.FlowBehavior = FlowBehavior.Continue;
+      }
+    }
+
+    class ImplicitContinuingMethodBoundaryAspect : TestableMethodBoundaryAspect
+    {
+      public override void OnException (Invocation invocation)
+      {
+        invocation.Exception = null;
+      }
     }
   }
 }
