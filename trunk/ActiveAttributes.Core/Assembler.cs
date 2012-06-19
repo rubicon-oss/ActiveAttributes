@@ -11,6 +11,9 @@ namespace ActiveAttributes.Core
 {
   public class Assembler : ITypeAssemblyParticipant
   {
+    private Type _aspectInstanceType;
+    private Type _aspectArrayType;
+
     public void ModifyType (MutableType mutableType)
     {
       foreach (var originalMethod in mutableType.AllMutableMethods.ToArray())
@@ -18,27 +21,35 @@ namespace ActiveAttributes.Core
         var method = originalMethod;
         var customAttributes = method.GetCustomAttributes (typeof (Aspect), true);
 
-        if (customAttributes.Length == 0)
+        if (customAttributes.Length > 0)
         {
-          //var attributes = method.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);
-          //if (attributes.Length == 1)
-          //{
-          //  var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (method.Name.Substring (4));
-          //  customAttributes = propertyInfo.GetCustomAttributes (typeof (Aspect), true);
-          //}
+          _aspectInstanceType = typeof (Aspect);
+          _aspectArrayType = typeof (Aspect[]);
+        }
+        else
+        {
+          var attributes = method.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);
+          if (attributes.Length == 1)
+          {
+            var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (method.Name.Substring (4));
+            customAttributes = propertyInfo.GetCustomAttributes (typeof (PropertyInterceptionAspect), true);
+          }
 
           if (customAttributes.Length == 0)
             continue;
+
+          _aspectInstanceType = typeof (PropertyInterceptionAspect);
+          _aspectArrayType = typeof (PropertyInterceptionAspect[]);
         }
 
         // introduce field and init in ctors
-        var aspectsFieldInfo = mutableType.AddField (typeof (Aspect[]), "tp<>__aspects_" + method.Name);
+        var aspectsFieldInfo = mutableType.AddField (_aspectArrayType, "tp<>__aspects_" + method.Name);
         var aspectAttributes = customAttributes.Cast<Aspect> ();
 
 
         ValidateMethod(method, aspectAttributes);
 
-        AddAspectsConstructorInitialization(mutableType, aspectAttributes, aspectsFieldInfo);
+        AddAspectsInitializationToConstructors(mutableType, aspectAttributes, aspectsFieldInfo);
 
         // copy method body to helper method
         var newMethod = CreateHelperMethod(mutableType, method);
@@ -58,15 +69,16 @@ namespace ActiveAttributes.Core
         var createDelegateMethodInfo = typeof (Delegate).GetMethod (
             "CreateDelegate",
             new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-        var onInvokeMethodInfo = typeof (Aspect).GetMethod ("OnInvoke");
 
+        var invokeMethodInfo = GetInvocationMethod (method);
+
+
+        // Expression variables
         var invocation = Expression.Variable (typeof (Invocation));
-        var aspect = Expression.Variable (typeof (Aspect));
-        var aspects = Expression.Variable (typeof (Aspect[]));
+        var aspect = Expression.Variable (_aspectInstanceType);
+        var aspects = Expression.Variable (_aspectArrayType);
         var i = Expression.Variable (typeof (int));
         var label = Expression.Label();
-
-        //mutableType.GetOrAddMutableMethod
 
         originalMethod.SetBody (
             ctx =>
@@ -120,7 +132,7 @@ namespace ActiveAttributes.Core
                                 Expression.ArrayAccess (aspects, i)),
                             Expression.Call (
                                 aspect,
-                                onInvokeMethodInfo,
+                                invokeMethodInfo,
                                 invocation
                                 ),
                             Expression.PostIncrementAssign (i)
@@ -135,6 +147,24 @@ namespace ActiveAttributes.Core
                     method.ReturnType)));
 
 
+      }
+    }
+
+    private MethodInfo GetInvocationMethod (MutableMethodInfo method)
+    {
+      if (_aspectInstanceType == typeof(Aspect))
+        return typeof (Aspect).GetMethod ("OnInvoke");
+      else
+      {
+        switch (method.Name.Substring (0, 3))
+        {
+          case "set":
+            return typeof (PropertyInterceptionAspect).GetMethod ("OnSet");
+          case "get":
+            return typeof (PropertyInterceptionAspect).GetMethod ("OnGet");
+          default:
+            throw new InvalidOperationException(); // TODO
+        }
       }
     }
 
@@ -172,7 +202,7 @@ namespace ActiveAttributes.Core
       }
     }
 
-    private static void AddAspectsConstructorInitialization (MutableType mutableType, IEnumerable<Aspect> aspectAttributes, MutableFieldInfo aspectsFieldInfo)
+    private void AddAspectsInitializationToConstructors (MutableType mutableType, IEnumerable<Aspect> aspectAttributes, MutableFieldInfo aspectsFieldInfo)
     {
       foreach (var ctor in mutableType.AllMutableConstructors)
       {
@@ -182,7 +212,7 @@ namespace ActiveAttributes.Core
                 Expression.Assign (
                     Expression.Field (ctx.This, aspectsFieldInfo),
                     Expression.NewArrayInit (
-                        typeof (Aspect),
+                        _aspectInstanceType,
                         aspectAttributes
                             .OrderByDescending (x => x.Priority)
                             .Select (x => Expression.New (x.GetType()))

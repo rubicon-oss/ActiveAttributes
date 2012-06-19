@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using ActiveAttributes.Core;
 using NUnit.Framework;
@@ -85,16 +86,15 @@ namespace ActiveAttributes.UnitTests
       Assert.That (field[0], Is.TypeOf<NonProceedingAspect>());
     }
 
-    //[Ignore, Test]
-    //public void Field_Introduction_Properties ()
-    //{
-    //  var fieldInfo = _type.GetField ("_aspects_set_SomeProperty", BindingFlags.NonPublic | BindingFlags.Instance);
-    //  Assert.That (fieldInfo, Is.Not.Null);
-    //  var field = (Aspect[]) fieldInfo.GetValue (_instance);
+    [Test]
+    public void Field_Introduction_Properties ()
+    {
+      var fieldInfo = _type.GetField ("tp<>__aspects_set_SetProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (fieldInfo, Is.Not.Null);
+      var field = (Aspect[]) fieldInfo.GetValue (_instance);
 
-    //  Assert.That (field[0], Is.TypeOf<PropertyAspect> ());
-    //  _instance.SomeProperty = "muh";
-    //}
+      Assert.That (field[0], Is.TypeOf<AddOneToValueOnSetPropertyAspect> ());
+    }
 
     [Test]
     public void Field_OrderedByPriority ()
@@ -136,6 +136,22 @@ namespace ActiveAttributes.UnitTests
       var result = _instance.AccessTagMethod(1);
 
       Assert.That (result, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void Intercept_Property_Set ()
+    {
+      _instance.SetProperty = 1;
+
+      Assert.That (_instance.SetProperty, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void Intercept_Property_Get ()
+    {
+      _instance.GetProperty = 1;
+
+      Assert.That (_instance.GetProperty, Is.EqualTo (2));
     }
 
     public class DomainType
@@ -188,8 +204,11 @@ namespace ActiveAttributes.UnitTests
       [AccessTagAspect]
       public virtual int AccessTagMethod (int i) { return i; }
 
-      //[PropertyAspect]
-      //public virtual string SomeProperty { get; set; }
+      [AddOneToValueOnGetPropertyAspect]
+      public virtual int GetProperty { get; set; }
+
+      [AddOneToValueOnSetPropertyAspect]
+      public virtual int SetProperty { get; set; }
     }
 
     public class NonProceedingAspect : Aspect
@@ -285,12 +304,21 @@ namespace ActiveAttributes.UnitTests
       }
     }
 
-    //public class PropertyAspect : PropertyInterceptionAspect
-    //{
-    //  public override void OnInvoke (Invocation invocation)
-    //  {
-    //    base.OnInvoke (invocation);
-    //  }
-    //}
+    public class AddOneToValueOnSetPropertyAspect : PropertyInterceptionAspect
+    {
+      public override void OnSet (Invocation invocation)
+      {
+        invocation.Arguments[0] = (int) invocation.Arguments[0] + 1;
+        invocation.Proceed();
+      }
+    }
+    public class AddOneToValueOnGetPropertyAspect : PropertyInterceptionAspect
+    {
+      public override void OnGet (Invocation invocation)
+      {
+        invocation.Proceed();
+        invocation.ReturnValue = (int) invocation.ReturnValue + 1;
+      }
+    }
   }
 }
