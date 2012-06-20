@@ -1,6 +1,6 @@
 using System;
 
-namespace ActiveAttributes.Core
+namespace ActiveAttributes.Core.Configuration
 {
   public enum AspectScope
   {
