@@ -1,17 +1,17 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
+using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
   public class MethodWithAspectsProviderTest
   {
-    #region Setup/Teardown
+    private MethodWithAspectsProvider _provider;
 
     [SetUp]
     public void SetUp ()
@@ -19,47 +19,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       _provider = new MethodWithAspectsProvider();
     }
 
-    #endregion
-
-    private MethodWithAspectsProvider _provider;
-
-    private class DomainType1
+    [Test]
+    public void GetMethodsWithAspects_NotNull ()
     {
-      [DomainMethodAspect]
-      public void Method () {}
-    }
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
 
-    private class DomainType2
-    {
-      [DomainPropertyAspect]
-      public string Property { get; private set; }
-    }
+      var result = _provider.GetMethodsWithAspects (mutableType);
 
-    private class DomainType3
-    {
-      public string Property { [DomainMethodAspect]
-      get; private set; }
-    }
-
-    private class DomainMethodAspectAttribute : MethodInterceptionAspectAttribute
-    {
-      public override void OnIntercept (Invocation invocation)
-      {
-        throw new NotImplementedException();
-      }
-    }
-
-    private class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
-    {
-      public override void InterceptGet (IInvocation invocation)
-      {
-        throw new NotImplementedException();
-      }
-
-      public override void InterceptSet (IInvocation invocation)
-      {
-        throw new NotImplementedException();
-      }
+      Assert.That (result, Is.Not.Null);
     }
 
     [Test]
@@ -69,25 +36,9 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _provider.GetMethodsWithAspects (mutableType).GetEnumerator();
 
-      //Assert.That (result.MoveNext(), Is.True);
       result.MoveNext();
       Assert.That (result.Current != null);
       Assert.That (result.Current.Item1.Name, Is.EqualTo ("Method"));
-      Assert.That (result.Current.Item2.Count(), Is.EqualTo (1));
-      Assert.That (result.Current.Item2.First(), Is.TypeOf<DomainMethodAspectAttribute>());
-      Assert.That (result.MoveNext(), Is.False);
-    }
-
-    [Test]
-    public void GetMethodsWithAspects_CompilerGenerated_MethodAspect ()
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType3));
-
-      var result = _provider.GetMethodsWithAspects (mutableType).GetEnumerator();
-
-      result.MoveNext();
-      Assert.That (result.Current != null);
-      Assert.That (result.Current.Item1.Name, Is.EqualTo ("get_Property"));
       Assert.That (result.Current.Item2.Count(), Is.EqualTo (1));
       Assert.That (result.Current.Item2.First(), Is.TypeOf<DomainMethodAspectAttribute>());
       Assert.That (result.MoveNext(), Is.False);
@@ -114,13 +65,81 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void GetMethodsWithAspects_NotNull ()
+    public void GetMethodsWithAspects_CompilerGenerated_MethodAspect ()
     {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType3));
 
-      var result = _provider.GetMethodsWithAspects (mutableType);
+      var result = _provider.GetMethodsWithAspects (mutableType).GetEnumerator();
 
-      Assert.That (result, Is.Not.Null);
+      result.MoveNext();
+      Assert.That (result.Current != null);
+      Assert.That (result.Current.Item1.Name, Is.EqualTo ("get_Property"));
+      Assert.That (result.Current.Item2.Count(), Is.EqualTo (1));
+      Assert.That (result.Current.Item2.First(), Is.TypeOf<DomainMethodAspectAttribute>());
+      Assert.That (result.MoveNext(), Is.False);
+    }
+
+    [Test]
+    public void GetMethodsWithAspects_CompilerGenerated_PropertyAndMethodAspect ()
+    {
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType4));
+
+      var result = _provider.GetMethodsWithAspects (mutableType).GetEnumerator();
+
+      result.MoveNext();
+      Assert.That (result.Current != null);
+      Assert.That (result.Current.Item1.Name, Is.EqualTo ("get_Property"));
+      Assert.That (result.Current.Item2.Count(), Is.EqualTo (2));
+      Assert.That (result.Current.Item2.First(), Is.TypeOf<DomainMethodAspectAttribute>());
+      Assert.That (result.Current.Item2.Skip (1).First(), Is.TypeOf<DomainPropertyAspectAttribute>());
+      Assert.That (result.MoveNext(), Is.True);
+      Assert.That (result.MoveNext(), Is.False);
+    }
+
+    private class DomainType1
+    {
+      [DomainMethodAspect]
+      public void Method () {}
+    }
+
+    private class DomainType2
+    {
+      [DomainPropertyAspect]
+      public string Property { get; set; }
+    }
+
+    private class DomainType3
+    {
+      public string Property { [DomainMethodAspect]
+      get; set; }
+    }
+
+    private class DomainType4
+    {
+      [DomainPropertyAspect]
+      public string Property { [DomainMethodAspect]
+      get; set; }
+    }
+
+    private class DomainMethodAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (Invocation invocation)
+      {
+        throw new NotImplementedException();
+      }
+    }
+
+    private class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
+    {
+      public override void InterceptGet (IInvocation invocation)
+      {
+        throw new NotImplementedException();
+      }
+
+      public override void InterceptSet (IInvocation invocation)
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }
