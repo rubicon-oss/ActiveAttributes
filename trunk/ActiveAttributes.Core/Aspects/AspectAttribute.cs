@@ -8,7 +8,10 @@ namespace ActiveAttributes.Core.Aspects
 {
   public abstract class AspectAttribute : Attribute, ISerializable
   {
-    protected AspectAttribute () {}
+    protected AspectAttribute (AspectScope scope = AspectScope.Static)
+    {
+      Scope = scope;
+    }
 
     #region ISerializable members
 

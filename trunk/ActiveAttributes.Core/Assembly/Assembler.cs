@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
@@ -77,7 +78,7 @@ namespace ActiveAttributes.Core.Assembly
 
 
         // Expression variables
-        var invocation = Expression.Variable (typeof (Invocation.Invocation));
+        var invocation = Expression.Variable (typeof (Invocation));
         var aspect = Expression.Variable (_aspectInstanceType);
         var aspects = Expression.Variable (_aspectArrayType);
         var i = Expression.Variable (typeof (int));
@@ -98,7 +99,7 @@ namespace ActiveAttributes.Core.Assembly
                     invocation,
                     Expression.New (
                         // invocationType => FuncInvocation<TArg1, TArg2>
-                        typeof (Invocation.Invocation).GetConstructors().First(),
+                        typeof (Invocation).GetConstructors().First(),
                         //Expression.Convert (delegateType,
                         Expression.Call (
                             null,

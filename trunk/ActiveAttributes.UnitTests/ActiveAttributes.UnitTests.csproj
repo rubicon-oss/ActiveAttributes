@@ -78,7 +78,7 @@
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\MethodWithAspectsProviderTest.cs" />
-    <Compile Include="Invocation\InvocationTest.cs" />
+    <Compile Include="Invocations\InvocationTest.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttributeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />

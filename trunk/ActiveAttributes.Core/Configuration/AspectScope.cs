@@ -4,7 +4,7 @@ namespace ActiveAttributes.Core.Configuration
 {
   public enum AspectScope
   {
-    Default,
+    Static,
     Instance
   }
 }

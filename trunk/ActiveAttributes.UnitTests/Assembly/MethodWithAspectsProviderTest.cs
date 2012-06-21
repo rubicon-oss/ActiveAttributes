@@ -1,10 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
-using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -43,7 +43,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private class DomainMethodAspectAttribute : MethodInterceptionAspectAttribute
     {
-      public override void OnIntercept (IInvocation invocation)
+      public override void OnIntercept (Invocation invocation)
       {
         throw new NotImplementedException();
       }

@@ -59,11 +59,11 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
-    <Compile Include="Invocation\ActionInvocation.cs" />
-    <Compile Include="Invocation\FuncInvocation.cs" />
-    <Compile Include="Invocation\IInvocation.cs" />
-    <Compile Include="Invocation\IInvocationInfo.cs" />
-    <Compile Include="Invocation\Invocation.cs" />
+    <Compile Include="Invocations\ActionInvocation.cs" />
+    <Compile Include="Invocations\FuncInvocation.cs" />
+    <Compile Include="Invocations\IInvocation.cs" />
+    <Compile Include="Invocations\IInvocationInfo.cs" />
+    <Compile Include="Invocations\Invocation.cs" />
     <Compile Include="Aspects\MethodInterceptionAspectAttribute.cs" />
     <Compile Include="Configuration\AspectScope.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
@@ -74,7 +74,8 @@
     <Compile Include="Aspects\PropertyInterceptionAspectAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Invocation\ClassDiagram1.cd" />
+    <None Include="Invocations\Diagrams\Classes.cd" />
+    <None Include="Invocations\Diagrams\Interfaces.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

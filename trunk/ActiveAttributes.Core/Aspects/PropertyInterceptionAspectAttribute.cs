@@ -1,5 +1,5 @@
 ﻿using System;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {

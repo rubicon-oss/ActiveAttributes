@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Invocation;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Aspects
@@ -20,7 +19,7 @@ namespace ActiveAttributes.UnitTests.Aspects
       protected TestableAspectAttribute (SerializationInfo info, StreamingContext context)
           : base (info, context) {}
 
-      public override void OnIntercept (IInvocation invocation)
+      public override void OnIntercept (Core.Invocations.Invocation invocation)
       {
         throw new NotImplementedException();
       }

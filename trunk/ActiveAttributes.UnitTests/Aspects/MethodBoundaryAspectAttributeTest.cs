@@ -1,7 +1,7 @@
 ﻿using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Aspects

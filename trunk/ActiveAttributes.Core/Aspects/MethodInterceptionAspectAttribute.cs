@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {
@@ -13,6 +13,6 @@ namespace ActiveAttributes.Core.Aspects
     protected MethodInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
         : base (info, context) {}
 
-    public abstract void OnIntercept (IInvocation invocation);
+    public abstract void OnIntercept (Invocation invocation);
   }
 }

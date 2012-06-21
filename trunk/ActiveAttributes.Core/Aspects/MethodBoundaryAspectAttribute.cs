@@ -1,5 +1,5 @@
 ﻿using System;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {
@@ -8,7 +8,7 @@ namespace ActiveAttributes.Core.Aspects
   /// </summary>
   public class MethodBoundaryAspectAttribute : MethodInterceptionAspectAttribute
   {
-    public override sealed void OnIntercept (IInvocation invocation)
+    public override sealed void OnIntercept (Invocation invocation)
     {
       WrapIfThrowing (() => OnEntry (invocation));
 
