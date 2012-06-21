@@ -123,7 +123,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private class DomainMethodAspectAttribute : MethodInterceptionAspectAttribute
     {
-      public override void OnIntercept (Invocation invocation)
+      public override void OnIntercept (IInvocation invocation)
       {
         throw new NotImplementedException();
       }

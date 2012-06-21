@@ -1,6 +1,7 @@
 ﻿using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
@@ -9,111 +10,35 @@ namespace ActiveAttributes.UnitTests.Aspects
   [TestFixture]
   public class MethodBoundaryAspectAttributeTest
   {
-    #region Setup/Teardown
+    private TestableMethodBoundaryAspectAttribute _obj;
+    private FuncInvocation<object, int, int> _returningInvocation;
+    private ActionInvocation<object> _throwingInvocation;
+
+    private ActionInvocationContext<object> _actionInvocationContext;
+    private FuncInvocationContext<object, int, int> _funcInvocationContext;
 
     [SetUp]
     public void SetUp ()
     {
       _obj = new TestableMethodBoundaryAspectAttribute();
 
-      _returningInvocation = new FuncInvocation<object, int> (null, null, null, () => 1);
-      _throwingInvocation = new ActionInvocation (null, null, null, () => { throw new Exception ("Throwing Invocation2"); });
+      _actionInvocationContext = new ActionInvocationContext<object> ();
+      _throwingInvocation = new ActionInvocation<object> (_actionInvocationContext, () => { throw new Exception ("Throwing invocation"); });
 
-
-      // TODO use mock
-      //_mockRepository = new MockRepository();
-      //_invocationMock = _mockRepository.StrictMock<IInvocation>();
-      //_throwingInvocationMock = _mockRepository.StrictMock<IInvocation>();
-    }
-
-    #endregion
-
-    private TestableMethodBoundaryAspectAttribute _obj;
-
-    //private MockRepository _mockRepository;
-
-    //private IInvocation _invocationMock;
-    //private IInvocation _throwingInvocationMock;
-
-    private FuncInvocation<object, int> _returningInvocation;
-    private ActionInvocation _throwingInvocation;
-
-    private class TestableMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      public bool OnEntryCalled { get; private set; }
-
-      public bool OnExitCalled { get; private set; }
-
-      public bool OnExceptionCalled { get; private set; }
-      public Exception Exception { get; private set; }
-
-      public bool OnSuccessCalled { get; private set; }
-      public object ReturnValue { get; private set; }
-
-      protected override void OnEntry (IInvocationInfo invocationInfo)
-      {
-        OnEntryCalled = true;
-      }
-
-      protected override void OnExit (IInvocationInfo invocation)
-      {
-        OnExitCalled = true;
-      }
-
-      protected override void OnException (IInvocationInfo invocation, Exception exception)
-      {
-        OnExceptionCalled = true;
-        Exception = exception;
-      }
-
-      protected override void OnSuccess (IInvocationInfo invocation, object returnValue)
-      {
-        OnSuccessCalled = true;
-        ReturnValue = returnValue;
-      }
-    }
-
-    private class OnEntryThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnEntry (IInvocationInfo invocationInfo)
-      {
-        throw new Exception ("OnEntry");
-      }
-    }
-
-    private class OnExitThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnExit (IInvocationInfo invocationInfo)
-      {
-        throw new Exception ("OnExit");
-      }
-    }
-
-    private class OnExceptionThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnExit (IInvocationInfo invocationInfo)
-      {
-        throw new Exception ("OnException");
-      }
-    }
-
-    private class OnSuccessThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnExit (IInvocationInfo invocationInfo)
-      {
-        throw new Exception ("OnSuccess");
-      }
+      _funcInvocationContext = new FuncInvocationContext<object, int, int>();
+      _returningInvocation = new FuncInvocation<object, int, int> (_funcInvocationContext, i => i);
     }
 
     [Test]
     public void OnEntry_BeforeProceed ()
     {
-      var invocation = new ActionInvocation (null, null, null, () => Assert.That (_obj.OnEntryCalled, Is.True));
+      var invocation = new ActionInvocation<object> (_actionInvocationContext, () => Assert.That (_obj.OnEntryCalled, Is.True));
 
       _obj.OnIntercept (invocation);
     }
 
     [Test]
+    [ExpectedException (typeof (AspectInvocationException))]
     public void OnEntry_WrapException ()
     {
       var instance = new OnEntryThrowingMethodBoundaryAspectAttribute();
@@ -124,9 +49,92 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
       catch (Exception ex)
       {
-        Assert.That (ex, Is.TypeOf<AspectInvocationException>());
         Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnEntry"));
+        throw;
+      }
+    }
+
+    [Test]
+    public void OnExit_AfterProceed ()
+    {
+      var invocation = new ActionInvocation<object> (_actionInvocationContext, () => Assert.That (_obj.OnExitCalled, Is.False));
+
+      _obj.OnIntercept (invocation);
+
+      Assert.That (_obj.OnExitCalled, Is.True);
+    }
+
+    [Test]
+    public void OnExit_WhenExceptionOccures ()
+    {
+      try
+      {
+        _obj.OnIntercept (_throwingInvocation);
+      }
+      catch {}
+
+      Assert.That (_obj.OnExitCalled, Is.True);
+      Assert.That (_obj.Exception, Is.TypeOf<Exception>());
+      Assert.That (_obj.Exception.Message, Is.EqualTo ("Throwing invocation"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (AspectInvocationException))]
+    public void OnExit_WrapException ()
+    {
+      var instance = new OnExitThrowingMethodBoundaryAspectAttribute();
+
+      try
+      {
+        instance.OnIntercept (_returningInvocation);
+      }
+      catch (Exception ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo ("TODO"));
+        Assert.That (ex.InnerException.Message, Is.EqualTo ("OnExit"));
+        throw;
+      }
+    }
+
+    [Test]
+    public void OnSuccess_WithException ()
+    {
+      try
+      {
+        _obj.OnIntercept (_throwingInvocation);
+      }
+      catch (Exception) {}
+
+      Assert.That (_obj.OnSuccessCalled, Is.False);
+    }
+
+    [Test]
+    public void OnSuccess_WithoutException ()
+    {
+      _returningInvocation.Context.Arg0 = 1;
+      _obj.OnIntercept (_returningInvocation);
+
+      Assert.That (_obj.OnSuccessCalled, Is.True);
+      Assert.That (_obj.ReturnValue, Is.EqualTo (1));
+    }
+
+
+    [Test]
+    [ExpectedException(typeof(AspectInvocationException))]
+    public void OnSuccess_WrapException ()
+    {
+      var instance = new OnSuccessThrowingMethodBoundaryAspectAttribute();
+
+      try
+      {
+        instance.OnIntercept (_returningInvocation);
+      }
+      catch (Exception ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo ("TODO"));
+        Assert.That (ex.InnerException.Message, Is.EqualTo ("OnSuccess"));
+        throw;
       }
     }
 
@@ -151,99 +159,87 @@ namespace ActiveAttributes.UnitTests.Aspects
     }
 
     [Test]
+    [ExpectedException (typeof (AspectInvocationException))]
     public void OnException_WrapException ()
     {
       var instance = new OnExceptionThrowingMethodBoundaryAspectAttribute();
 
       try
       {
-        instance.OnIntercept (_returningInvocation);
+        instance.OnIntercept (_throwingInvocation);
       }
       catch (Exception ex)
       {
-        Assert.That (ex, Is.TypeOf<AspectInvocationException>());
         Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnException"));
+        throw;
       }
     }
 
-    [Test]
-    public void OnExit_AfterProceed ()
+    private class TestableMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
     {
-      var invocation = new ActionInvocation (null, null, null, () => Assert.That (_obj.OnExitCalled, Is.False));
+      public bool OnEntryCalled { get; private set; }
 
-      _obj.OnIntercept (invocation);
+      public bool OnExitCalled { get; private set; }
 
-      Assert.That (_obj.OnExitCalled, Is.True);
-    }
+      public bool OnExceptionCalled { get; private set; }
+      public Exception Exception { get; private set; }
 
-    [Test]
-    public void OnExit_WhenExceptionOccures ()
-    {
-      try
+      public bool OnSuccessCalled { get; private set; }
+      public object ReturnValue { get; private set; }
+
+      protected override void OnEntry (IReadOnlyInvocation invocationInfo)
       {
-        _obj.OnIntercept (_throwingInvocation);
+        OnEntryCalled = true;
       }
-      catch {}
 
-      Assert.That (_obj.OnExitCalled, Is.True);
-      Assert.That (_obj.Exception, Is.TypeOf<Exception>());
-      Assert.That (_obj.Exception.Message, Is.EqualTo ("Throwing Invocation2"));
-    }
-
-    [Test]
-    public void OnExit_WrapException ()
-    {
-      var instance = new OnExitThrowingMethodBoundaryAspectAttribute();
-
-      try
+      protected override void OnExit (IReadOnlyInvocation invocation)
       {
-        instance.OnIntercept (_returningInvocation);
+        OnExitCalled = true;
       }
-      catch (Exception ex)
+
+      protected override void OnException (IReadOnlyInvocation invocation, Exception exception)
       {
-        Assert.That (ex, Is.TypeOf<AspectInvocationException>());
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
-        Assert.That (ex.InnerException.Message, Is.EqualTo ("OnExit"));
+        OnExceptionCalled = true;
+        Exception = exception;
+      }
+
+      protected override void OnSuccess (IReadOnlyInvocation invocation, object returnValue)
+      {
+        OnSuccessCalled = true;
+        ReturnValue = returnValue;
       }
     }
 
-    [Test]
-    public void OnSuccess_WithException ()
+    private class OnEntryThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
     {
-      try
+      protected override void OnEntry (IReadOnlyInvocation invocationInfo)
       {
-        _obj.OnIntercept (_throwingInvocation);
+        throw new Exception ("OnEntry");
       }
-      catch (Exception) {}
-
-      Assert.That (_obj.OnSuccessCalled, Is.False);
     }
 
-    [Test]
-    public void OnSuccess_WithoutException ()
+    private class OnExitThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
     {
-      _obj.OnIntercept (_returningInvocation);
-
-      Assert.That (_obj.OnSuccessCalled, Is.True);
-      Assert.That (_obj.ReturnValue, Is.EqualTo (1));
+      protected override void OnExit (IReadOnlyInvocation invocationInfo)
+      {
+        throw new Exception ("OnExit");
+      }
     }
 
-
-    [Test]
-    public void OnSuccess_WrapException ()
+    private class OnExceptionThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
     {
-      var instance = new OnSuccessThrowingMethodBoundaryAspectAttribute();
-
-      try
+      protected override void OnException (IReadOnlyInvocation invocationInfo, Exception exception)
       {
-        instance.OnIntercept (_returningInvocation);
+        throw new Exception ("OnException");
       }
-      catch (Exception ex)
+    }
+
+    private class OnSuccessThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
+    {
+      protected override void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue)
       {
-        Assert.That (ex, Is.TypeOf<AspectInvocationException>());
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
-        Assert.That (ex.InnerException.Message, Is.EqualTo ("OnSuccess"));
+        throw new Exception ("OnSuccess");
       }
     }
   }

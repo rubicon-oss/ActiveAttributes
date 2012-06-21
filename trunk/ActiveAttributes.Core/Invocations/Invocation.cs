@@ -1,54 +1,37 @@
 using System;
-using System.Collections.ObjectModel;
-using System.Reflection;
+using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public abstract class Invocation : IInvocation, IInvocationInfo
+  public abstract class Invocation : IInvocation
   {
-    protected readonly IInvocation InnerInvocation;
+    private readonly IInvocationContext _context;
+    private readonly Action _proceed;
 
-    protected Invocation (IInvocation innerInvocation, MethodInfo methodInfo, object instance, params object[] arguments)
+    protected Invocation (IInvocationContext context, Action proceed)
     {
-      MethodInfo = methodInfo;
-      InnerInvocation = innerInvocation;
-      Instance = instance;
-      Arguments = arguments;
+      _context = context;
+      _proceed = proceed;
     }
 
-    public object[] Arguments { get; private set; }
-
-    #region IInvocation Members
-
-    public MethodInfo MethodInfo { get; private set; }
-
-    public object Instance { get; private set; } // virtual ?
-
-    
-    public object ReturnValue { get; set; }
-
-    ReadOnlyCollection<object> IInvocationInfo.Arguments
+    IReadOnlyInvocationContext IReadOnlyInvocation.Context
     {
-      get { return new ReadOnlyCollection<object> (Arguments); }
+      get { return _context; }
     }
 
-    public abstract void Proceed ();
-
-    #endregion
-  }
-
-  public abstract class Invocation<TInstance> : Invocation, IInvocationInfo<TInstance>
-  {
-    protected Invocation (IInvocation innerInvocation, MethodInfo methodInfo, TInstance instance)
-        : base (innerInvocation, methodInfo, instance) {}
-
-    #region IInvocationInfo<TInstance> Members
-
-    public new TInstance Instance
+    public IInvocationContext Context
     {
-      get { return (TInstance) base.Instance; }
+      get { return _context; }
     }
 
-    #endregion
+    public void Proceed ()
+    {
+      _proceed();
+    }
+
+    public override string ToString ()
+    {
+      return string.Format ("Context: {0}, Proceed: {1}", _context, _proceed);
+    }
   }
 }

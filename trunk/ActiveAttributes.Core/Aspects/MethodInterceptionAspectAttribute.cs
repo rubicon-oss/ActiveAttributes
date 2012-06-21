@@ -13,6 +13,6 @@ namespace ActiveAttributes.Core.Aspects
     protected MethodInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
         : base (info, context) {}
 
-    public abstract void OnIntercept (Invocation invocation);
+    public abstract void OnIntercept (IInvocation invocation);
   }
 }

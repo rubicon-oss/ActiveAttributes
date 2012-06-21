@@ -1,4 +1,5 @@
 ﻿using System;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
@@ -8,18 +9,18 @@ namespace ActiveAttributes.Core.Aspects
   /// </summary>
   public class MethodBoundaryAspectAttribute : MethodInterceptionAspectAttribute
   {
-    public override sealed void OnIntercept (Invocation invocation)
+    public override sealed void OnIntercept (IInvocation invocation)
     {
       WrapIfThrowing (() => OnEntry (invocation));
 
       try
       {
         invocation.Proceed();
-        OnSuccess (invocation, invocation.ReturnValue);
+        WrapIfThrowing (() => OnSuccess (invocation, invocation.Context.ReturnValue));
       }
       catch (Exception exception)
       {
-        OnException (invocation, exception);
+        WrapIfThrowing(() => OnException (invocation, exception));
         throw;
       }
       finally
@@ -40,9 +41,9 @@ namespace ActiveAttributes.Core.Aspects
       }
     }
 
-    protected virtual void OnEntry (IInvocationInfo invocationInfo) {}
-    protected virtual void OnSuccess (IInvocationInfo invocationInfo, object returnValue) {}
-    protected virtual void OnException (IInvocationInfo invocationInfo, Exception exception) {}
-    protected virtual void OnExit (IInvocationInfo invocationInfo) {}
+    protected virtual void OnEntry (IReadOnlyInvocation invocationInfo) {}
+    protected virtual void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue) { }
+    protected virtual void OnException (IReadOnlyInvocation invocationInfo, Exception exception) { }
+    protected virtual void OnExit (IReadOnlyInvocation invocationInfo) { }
   }
 }

@@ -1,65 +1,41 @@
 using System;
-using System.Reflection;
+using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public class ActionInvocation : Invocation
+  public class ActionInvocation<TInstance> : TypedInvocation<TInstance>
   {
-    private readonly Action _action;
-
-    public ActionInvocation (IInvocation innerInvocation, MethodInfo methodInfo, object instance, Action action)
-        : base (innerInvocation, methodInfo, instance)
+    public ActionInvocation (IActionInvocationContext<TInstance> context, Action action)
+      : base (context, () => action ())
     {
-      _action = action;
     }
 
-    public override void Proceed ()
+    public ActionInvocation (IActionInvocationContext<TInstance> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
+      : base (context, () => innerProceed (innerInvocation))
     {
-      if (InnerInvocation == null)
-        _action();
-      else
-        InnerInvocation.Proceed();
+    }
+
+    public new IActionInvocationContext<TInstance> Context
+    {
+      get { return (IActionInvocationContext<TInstance>) base.Context; }
     }
   }
 
-  public class ActionInvocation<TInstance> : Invocation<TInstance>
+  public class ActionInvocation<TInstance, TA0> : TypedInvocation<TInstance>
   {
-    private readonly Action _action;
-
-    public ActionInvocation (IInvocation innerInvocation, MethodInfo methodInfo, TInstance instance, Action action)
-        : base (innerInvocation, methodInfo, instance)
+    public ActionInvocation (IActionInvocationContext<TInstance, TA0> context, Action<TA0> action)
+        : base (context, () => action (context.Arg0))
     {
-      _action = action;
     }
 
-    public override void Proceed ()
+    public ActionInvocation (IActionInvocationContext<TInstance, TA0> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
+        : base (context, () => innerProceed (innerInvocation))
     {
-      if (InnerInvocation == null)
-        _action();
-      else
-        InnerInvocation.Proceed();
-    }
-  }
-
-  public class ActionInvocation<TInstance, TA0> : Invocation<TInstance>
-  {
-    private readonly Action<TA0> _action;
-
-    public ActionInvocation (IInvocation innerInvocation, MethodInfo methodInfo, TInstance instance, Action<TA0> action, TA0 arg0)
-        : base (innerInvocation, methodInfo, instance)
-    {
-      _action = action;
-      Arg0 = arg0;
     }
 
-    public TA0 Arg0 { get; set; }
-
-    public override void Proceed ()
+    public new IActionInvocationContext<TInstance, TA0> Context
     {
-      if (InnerInvocation == null)
-        _action (Arg0);
-      else
-        InnerInvocation.Proceed();
+      get { return (IActionInvocationContext<TInstance, TA0>) base.Context; }
     }
   }
 }

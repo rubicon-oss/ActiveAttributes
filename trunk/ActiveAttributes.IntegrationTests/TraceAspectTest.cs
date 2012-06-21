@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Invocations;
@@ -58,14 +58,15 @@ namespace ActiveAttributes.IntegrationTests
     {
       private Logger _logger = LogManager.GetCurrentClassLogger();
 
-      protected override void OnEntry (IInvocationInfo invocation)
+      protected override void OnEntry (IReadOnlyInvocation invocation)
       {
-        var parameterArgumentList = invocation.MethodInfo.GetParameters()
-            .Zip (invocation.Arguments, (pi, arg) => pi.Name + "={{" + arg.ToString() + "}}");
+        var ctx = invocation.Context;
+        var parameterArgumentList = ctx.MethodInfo.GetParameters()
+            .Zip (ctx.Arguments, (pi, arg) => pi.Name + "={{" + arg.ToString() + "}}");
 
         var callInformation = string.Format ("{0}.{1}({2})",
-                                             invocation.MethodInfo.DeclaringType,
-                                             invocation.MethodInfo.Name,
+                                             ctx.MethodInfo.DeclaringType,
+                                             ctx.MethodInfo.Name,
                                              string.Join (", ", parameterArgumentList.ToArray()));
 
         _logger.Debug ("Entry " + callInformation);

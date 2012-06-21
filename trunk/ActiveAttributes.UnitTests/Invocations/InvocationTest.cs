@@ -1,6 +1,6 @@
 ﻿using System;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Invocations
@@ -9,28 +9,35 @@ namespace ActiveAttributes.UnitTests.Invocations
   public class InvocationTest
   {
     [Test]
-    public void Proceed_Nested ()
+    public void NestedInvocation ()
     {
-      var counter = 0;
-      var @delegate = new Action (() => counter++);
-
-      var innerInvocation = new ActionInvocation (null, null, null, @delegate);
-      var outerInvocation = new ActionInvocation (innerInvocation, null, null, null);
+      var obj = new DomainType();
+      var context = new ActionInvocationContext<object>();
+      var outerCalled = false;
+      var innerInvocation = new ActionInvocation<object> (context, obj.Method);
+      var outerInvocation = new ActionInvocation<object> (
+          context,
+          invocation =>
+          {
+            outerCalled = true;
+            invocation.Proceed();
+          },
+          innerInvocation);
 
       outerInvocation.Proceed();
 
-      Assert.That (counter, Is.EqualTo (1));
-      Assert.That (outerInvocation.Arguments, Is.EqualTo (innerInvocation.Arguments));
+      Assert.That (obj.MethodExecutionCounter, Is.EqualTo (1));
+      Assert.That (outerCalled, Is.True);
     }
 
-    [Test]
-    public void name ()
+    public class DomainType
     {
-      var type = Expression.GetDelegateType (new[] { typeof (int), typeof (void) });
-      Assert.That (type, Is.EqualTo (typeof (Action<int>)));
+      public int MethodExecutionCounter { get; private set; }
 
-      type = Expression.GetDelegateType (new[] { typeof (int), typeof (int) });
-      Assert.That (type, Is.EqualTo (typeof (Func<int, int>)));
+      public void Method ()
+      {
+        MethodExecutionCounter++;
+      }
     }
   }
 }

@@ -52,6 +52,7 @@
     <Compile Include="CachingAspectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TraceAspectTest.cs" />
+    <Compile Include="TypedAspectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">

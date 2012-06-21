@@ -11,23 +11,16 @@ namespace ActiveAttributes.IntegrationTests
   [TestFixture]
   public class CachingAspectTest
   {
-    private DomainType _instance;
-
-    [Test]
-    public void SetUp ()
-    {
-      _instance = ObjectFactory.Create<DomainType>();
-    }
-
     [Test]
     public void Cache ()
     {
       var input = "a";
 
-      var result1 = _instance.Method (input);
-      var result2 = _instance.Method (input);
+      var instance = ObjectFactory.Create<DomainType>();
+      var result1 = instance.Method (input);
+      var result2 = instance.Method (input);
 
-      Assert.AreEqual (_instance.MethodExecutionCounter, 1);
+      Assert.AreEqual (instance.MethodExecutionCounter, 1);
       Assert.AreEqual (result1, result2);
     }
 
@@ -45,19 +38,19 @@ namespace ActiveAttributes.IntegrationTests
 
     public class CacheAspectAttribute : MethodInterceptionAspectAttribute
     {
-      private string _key;
-      private string _value;
+      private object _key;
+      private object _value;
 
-      public override void OnIntercept (Invocation invocation)
+      public override void OnIntercept (IInvocation invocation)
       {
-        if (_key != (string) invocation.Arguments[0])
+        if (_key != invocation.Context.Arguments[0])
         {
           invocation.Proceed();
-          _key = (string) invocation.Arguments[0];
-          _value = (string) invocation.ReturnValue;
+          _key = invocation.Context.Arguments[0];
+          _value = invocation.Context.ReturnValue;
         }
         else
-          invocation.ReturnValue = _value;
+          invocation.Context.ReturnValue = _value;
       }
     }
   }
