@@ -1,9 +1,9 @@
 ﻿using System;
-using ActiveAttributes.Core.Invocation;
+using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Invocation
+namespace ActiveAttributes.UnitTests.Invocations
 {
   [TestFixture]
   public class InvocationTest

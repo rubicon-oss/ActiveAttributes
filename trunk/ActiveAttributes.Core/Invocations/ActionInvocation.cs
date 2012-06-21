@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Invocation
+namespace ActiveAttributes.Core.Invocations
 {
   public class ActionInvocation : Invocation
   {

@@ -1,6 +1,6 @@
 using System;
 
-namespace ActiveAttributes.Core.Invocation
+namespace ActiveAttributes.Core.Invocations
 {
   public interface IInvocation : IInvocationInfo
   {

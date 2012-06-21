@@ -2,7 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Invocation
+namespace ActiveAttributes.Core.Invocations
 {
   /// <summary>
   /// Provides basic information for invocations.
@@ -14,8 +14,6 @@ namespace ActiveAttributes.Core.Invocation
     object Instance { get; }
 
     ReadOnlyCollection<object> Arguments { get; }
-
-    object ReturnValue { get; }
   }
 
   public interface IInvocationInfo<out TInstance> : IInvocationInfo

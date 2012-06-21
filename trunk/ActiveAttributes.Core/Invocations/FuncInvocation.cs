@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Invocation
+namespace ActiveAttributes.Core.Invocations
 {
   public abstract class FuncInvocationBase<TInstance, TResult> : Invocation<TInstance>, IInvocationInfo<TInstance, TResult>
   {

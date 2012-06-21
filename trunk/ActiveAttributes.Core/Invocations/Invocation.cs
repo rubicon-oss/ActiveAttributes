@@ -2,7 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Invocation
+namespace ActiveAttributes.Core.Invocations
 {
   public abstract class Invocation : IInvocation, IInvocationInfo
   {
@@ -21,10 +21,11 @@ namespace ActiveAttributes.Core.Invocation
     #region IInvocation Members
 
     public MethodInfo MethodInfo { get; private set; }
-    public object Instance { get; private set; }
 
-    // virtual ?
-    public object ReturnValue { get; protected set; }
+    public object Instance { get; private set; } // virtual ?
+
+    
+    public object ReturnValue { get; set; }
 
     ReadOnlyCollection<object> IInvocationInfo.Arguments
     {

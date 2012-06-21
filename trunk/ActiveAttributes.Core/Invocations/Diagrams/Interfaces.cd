@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Particularly used for MethodBoundaryAspect, which only provides observing functionality.">
+    <Position X="6.969" Y="1.031" Height="0.938" Width="2.315" />
+  </Comment>
+  <Comment CommentText="For actions">
+    <Position X="8.885" Y="3.271" Height="0.385" Width="0.908" />
+  </Comment>
+  <Comment CommentText="For funcs.">
+    <Position X="8.885" Y="5.302" Height="0.385" Width="0.908" />
+  </Comment>
+  <Comment CommentText="Provide argument-typed IInvocationInfo?">
+    <Position X="10.469" Y="4.031" Height="0.75" Width="1.7" />
+  </Comment>
+  <Interface Name="ActiveAttributes.Core.Invocations.IInvocation">
+    <Position X="2.25" Y="3.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Invocations\IInvocation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Core.Invocations.IInvocationInfo">
+    <Position X="4" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAYAAAAAAAAAA=</HashCode>
+      <FileName>Invocations\IInvocationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Core.Invocations.IInvocationInfo&lt;TInstance&gt;">
+    <Position X="5.75" Y="3.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Invocations\IInvocationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Core.Invocations.IInvocationInfo&lt;TInstance, TResult&gt;">
+    <Position X="5.75" Y="5.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Invocations\IInvocationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
