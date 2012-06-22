@@ -57,18 +57,21 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
+    <Compile Include="Aspects\MethodPatcher.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectInitializer.cs" />
     <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
+    <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />
+    <Compile Include="Contexts\ArgumentCollection\FuncArgumentCollection.cs" />
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
-    <Compile Include="Contexts\ITypedInvocationContext.cs" />
+    <Compile Include="Contexts\ArgumentCollection\ActionArgumentCollection.cs" />
+    <Compile Include="Contexts\ArgumentCollection\IArgumentCollection.cs" />
+    <Compile Include="Contexts\ArgumentCollection\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Invocations\ActionInvocation.cs" />
     <Compile Include="Contexts\ActionInvocationContext.cs" />
     <Compile Include="Invocations\FuncInvocation.cs" />
     <Compile Include="Invocations\Old\Class1.cs" />
     <Compile Include="Invocations\Old\FuncInvocation.cs" />
-    <Compile Include="Contexts\IActionInvocationContext.cs" />
-    <Compile Include="Contexts\IFuncInvocationContext.cs" />
     <Compile Include="Contexts\IInvocationContext.cs" />
     <Compile Include="Invocations\IInvocation.cs" />
     <Compile Include="Invocations\Invocation.cs" />
@@ -77,8 +80,6 @@
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Contexts\FuncInvocationContext.cs" />
     <Compile Include="Invocations\IReadOnlyInvocation.cs" />
-    <Compile Include="Invocations\ITypedInvocation.cs" />
-    <Compile Include="Invocations\TypedInvocation.cs" />
     <Compile Include="ObjectFactory.cs">
       <SubType>Code</SubType>
     </Compile>

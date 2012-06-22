@@ -1,20 +1,23 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using ActiveAttributes.Core.Contexts.ArgumentCollection;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  public struct ActionInvocationContext<TInstance> : IActionInvocationContext<TInstance>
+  public class ActionInvocationContext<TInstance> : IInvocationContext, IReadOnlyInvocationContext
   {
+    private EmptyArgumentCollection _argumentCollection;
+
     public ActionInvocationContext (MethodInfo methodInfo, TInstance instance)
-      : this ()
     {
       MethodInfo = methodInfo;
       Instance = instance;
     }
 
     public MethodInfo MethodInfo { get; private set; }
+
     public TInstance Instance { get; private set; }
 
     object IReadOnlyInvocationContext.Instance
@@ -22,32 +25,29 @@ namespace ActiveAttributes.Core.Contexts
       get { return Instance; }
     }
 
-    ReadOnlyCollection<object> IReadOnlyInvocationContext.Arguments
+    object IInvocationContext.Instance
     {
-      get { return new ReadOnlyCollection<object> (((IInvocationContext) this).Arguments); } // ????
+      get { return Instance; }
     }
 
-    object IReadOnlyInvocationContext.ReturnValue
+    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
     {
-      get { return null; }
+      get { return _argumentCollection ?? (_argumentCollection = new EmptyArgumentCollection()); }
     }
 
-    object[] IInvocationContext.Arguments
+    IArgumentCollection IInvocationContext.Arguments
     {
-      get { return new object[0]; }
+      get { return _argumentCollection ?? (_argumentCollection = new EmptyArgumentCollection()); }
     }
 
-    object IInvocationContext.ReturnValue
-    {
-      get { return null; }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
 
-  public struct ActionInvocationContext<TInstance, TA0> : IActionInvocationContext<TInstance, TA0>
+  public class ActionInvocationContext<TInstance, TA0> : IInvocationContext, IReadOnlyInvocationContext
   {
+    private ActionArgumentCollection<TInstance, TA0> _argumentCollection;
+
     public ActionInvocationContext (MethodInfo methodInfo, TInstance instance, TA0 arg0)
-        : this()
     {
       MethodInfo = methodInfo;
       Instance = instance;
@@ -55,33 +55,31 @@ namespace ActiveAttributes.Core.Contexts
     }
 
     public MethodInfo MethodInfo { get; private set; }
+
     public TInstance Instance { get; private set; }
-    public TA0 Arg0 { get; set; }
 
     object IReadOnlyInvocationContext.Instance
     {
       get { return Instance; }
     }
 
-    ReadOnlyCollection<object> IReadOnlyInvocationContext.Arguments
+    object IInvocationContext.Instance
     {
-      get { return new ReadOnlyCollection<object> (((IInvocationContext) this).Arguments); } // ????
+      get { return Instance; }
     }
 
-    object IReadOnlyInvocationContext.ReturnValue
+    public TA0 Arg0 { get; set; }
+
+    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
     {
-      get { return null; }
+      get { return _argumentCollection ?? (_argumentCollection = new ActionArgumentCollection<TInstance, TA0> (this)); }
     }
 
-    object[] IInvocationContext.Arguments
+    IArgumentCollection IInvocationContext.Arguments
     {
-      get { return new object[] { Arg0 }; }
+      get { return _argumentCollection ?? (_argumentCollection = new ActionArgumentCollection<TInstance, TA0> (this)); }
     }
 
-    object IInvocationContext.ReturnValue
-    {
-      get { return null; }
-      set { throw new NotSupportedException(); }
-    }
+    public object ReturnValue { get; set; }
   }
 }

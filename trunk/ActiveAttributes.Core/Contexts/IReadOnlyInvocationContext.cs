@@ -1,6 +1,6 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Reflection;
+using ActiveAttributes.Core.Contexts.ArgumentCollection;
 
 namespace ActiveAttributes.Core.Contexts
 {
@@ -8,7 +8,7 @@ namespace ActiveAttributes.Core.Contexts
   {
     MethodInfo MethodInfo { get; }
     object Instance { get; }
-    ReadOnlyCollection<object> Arguments { get; }
+    IReadOnlyArgumentCollection Arguments { get; }
     object ReturnValue { get; }
   }
 }

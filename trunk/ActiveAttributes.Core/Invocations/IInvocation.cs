@@ -3,9 +3,9 @@ using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public interface IInvocation : IReadOnlyInvocation
+  public interface IInvocation
   {
-    new IInvocationContext Context { get; }
+    IInvocationContext Context { get; }
     void Proceed ();
   }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -49,7 +50,6 @@ namespace ActiveAttributes.Core.Assembly
         // introduce field and init in ctors
         var aspectsFieldInfo = mutableType.AddField (_aspectArrayType, "tp<>__aspects_" + method.Name);
         var aspectAttributes = customAttributes.Cast<MethodInterceptionAspectAttribute>();
-
 
         ValidateMethod (method, aspectAttributes);
 

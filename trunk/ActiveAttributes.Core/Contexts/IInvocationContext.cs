@@ -1,10 +1,14 @@
 using System;
+using System.Reflection;
+using ActiveAttributes.Core.Contexts.ArgumentCollection;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  public interface IInvocationContext : IReadOnlyInvocationContext
+  public interface IInvocationContext
   {
-    new object[] Arguments { get; }
-    new object ReturnValue { get; set; }
+    MethodInfo MethodInfo { get; }
+    object Instance { get; }
+    IArgumentCollection Arguments { get; }
+    object ReturnValue { get; set; }
   }
 }

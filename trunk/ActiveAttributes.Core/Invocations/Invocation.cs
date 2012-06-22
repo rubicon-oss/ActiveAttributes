@@ -3,25 +3,25 @@ using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public abstract class Invocation : IInvocation
+  public abstract class Invocation : IInvocation, IReadOnlyInvocation
   {
-    private readonly IInvocationContext _context;
     private readonly Action _proceed;
 
-    protected Invocation (IInvocationContext context, Action proceed)
+    protected Invocation (Action proceed)
     {
-      _context = context;
       _proceed = proceed;
+    }
+
+    protected abstract IInvocationContext GetInvocationContext ();
+
+    IInvocationContext IInvocation.Context
+    {
+      get { return GetInvocationContext(); }
     }
 
     IReadOnlyInvocationContext IReadOnlyInvocation.Context
     {
-      get { return _context; }
-    }
-
-    public IInvocationContext Context
-    {
-      get { return _context; }
+      get { return (IReadOnlyInvocationContext) GetInvocationContext(); }
     }
 
     public void Proceed ()
@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Invocations
 
     public override string ToString ()
     {
-      return string.Format ("Context: {0}, Proceed: {1}", _context, _proceed);
+      return string.Format ("Context: {0}, Proceed: {1}", this.GetInvocationContext(), _proceed);
     }
   }
 }

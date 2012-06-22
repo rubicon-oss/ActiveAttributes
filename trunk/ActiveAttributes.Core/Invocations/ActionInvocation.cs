@@ -3,39 +3,47 @@ using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public class ActionInvocation<TInstance> : TypedInvocation<TInstance>
+  public class ActionInvocation<TInstance> : Invocation
   {
-    public ActionInvocation (IActionInvocationContext<TInstance> context, Action action)
-      : base (context, () => action ())
+    public ActionInvocation (ActionInvocationContext<TInstance> context, Action action)
+      : base (() => action ())
     {
+      Context = context;
     }
 
-    public ActionInvocation (IActionInvocationContext<TInstance> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
-      : base (context, () => innerProceed (innerInvocation))
+    public ActionInvocation (ActionInvocationContext<TInstance> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
+      : base (() => innerProceed (innerInvocation))
     {
+      Context = context;
     }
 
-    public new IActionInvocationContext<TInstance> Context
+    protected override IInvocationContext GetInvocationContext ()
     {
-      get { return (IActionInvocationContext<TInstance>) base.Context; }
+      return Context;
     }
+
+    public ActionInvocationContext<TInstance> Context { get; private set; }
   }
 
-  public class ActionInvocation<TInstance, TA0> : TypedInvocation<TInstance>
+  public class ActionInvocation<TInstance, TA0> : Invocation
   {
-    public ActionInvocation (IActionInvocationContext<TInstance, TA0> context, Action<TA0> action)
-        : base (context, () => action (context.Arg0))
+    public ActionInvocation (ActionInvocationContext<TInstance, TA0> context, Action action)
+      : base (() => action ())
     {
+      Context = context;
     }
 
-    public ActionInvocation (IActionInvocationContext<TInstance, TA0> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
-        : base (context, () => innerProceed (innerInvocation))
+    public ActionInvocation (ActionInvocationContext<TInstance, TA0> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
+      : base (() => innerProceed (innerInvocation))
     {
+      Context = context;
     }
 
-    public new IActionInvocationContext<TInstance, TA0> Context
+    protected override IInvocationContext GetInvocationContext ()
     {
-      get { return (IActionInvocationContext<TInstance, TA0>) base.Context; }
+      return Context;
     }
+
+    public ActionInvocationContext<TInstance, TA0> Context { get; private set; }
   }
 }

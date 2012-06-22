@@ -22,10 +22,10 @@ namespace ActiveAttributes.UnitTests.Aspects
     {
       _obj = new TestableMethodBoundaryAspectAttribute();
 
-      _actionInvocationContext = new ActionInvocationContext<object> ();
+      _actionInvocationContext = new ActionInvocationContext<object> (null, null);
       _throwingInvocation = new ActionInvocation<object> (_actionInvocationContext, () => { throw new Exception ("Throwing invocation"); });
 
-      _funcInvocationContext = new FuncInvocationContext<object, int, int>();
+      _funcInvocationContext = new FuncInvocationContext<object, int, int> (null, null, 1);
       _returningInvocation = new FuncInvocation<object, int, int> (_funcInvocationContext, i => i);
     }
 

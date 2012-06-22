@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
+    <Compile Include="Aspects\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\AspectInitializerTest.cs" />

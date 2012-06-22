@@ -11,21 +11,22 @@ namespace ActiveAttributes.Core.Aspects
   {
     public override sealed void OnIntercept (IInvocation invocation)
     {
-      WrapIfThrowing (() => OnEntry (invocation));
+      var readOnlyInvocation = (IReadOnlyInvocation) invocation;
+      WrapIfThrowing (() => OnEntry (readOnlyInvocation));
 
       try
       {
         invocation.Proceed();
-        WrapIfThrowing (() => OnSuccess (invocation, invocation.Context.ReturnValue));
+        WrapIfThrowing (() => OnSuccess (readOnlyInvocation, invocation.Context.ReturnValue));
       }
       catch (Exception exception)
       {
-        WrapIfThrowing(() => OnException (invocation, exception));
+        WrapIfThrowing (() => OnException (readOnlyInvocation, exception));
         throw;
       }
       finally
       {
-        WrapIfThrowing (() => OnExit (invocation));
+        WrapIfThrowing (() => OnExit (readOnlyInvocation));
       }
     }
 

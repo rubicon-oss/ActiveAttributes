@@ -3,21 +3,25 @@ using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public class FuncInvocation<TInstance, TA0, TR> : TypedInvocation<TInstance>
+  public class FuncInvocation<TInstance, TA0, TR> : Invocation
   {
-    public FuncInvocation (IFuncInvocationContext<TInstance, TA0, TR> context, Func<TA0, TR> func)
-        : base(context, () => context.ReturnValue = func (context.Arg0))
+    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TR> context, Func<TA0, TR> func)
+        : base(() => context.ReturnValue = func (context.Arg0))
     {
+      Context = context;
     }
 
-    public FuncInvocation (IFuncInvocationContext<TInstance, TA0, TR> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
-        : base (context, () => innerProceed (innerInvocation))
+    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TR> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
+        : base (() => innerProceed (innerInvocation))
     {
+      Context = context;
     }
 
-    public new IFuncInvocationContext<TInstance, TA0, TR> Context
+    protected override IInvocationContext GetInvocationContext ()
     {
-      get { return (IFuncInvocationContext<TInstance, TA0, TR>) base.Context; }
+      return Context;
     }
+
+    public FuncInvocationContext<TInstance, TA0, TR> Context { get; private set; }
   }
 }

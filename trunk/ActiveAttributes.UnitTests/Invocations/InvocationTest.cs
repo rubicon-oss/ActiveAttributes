@@ -12,7 +12,7 @@ namespace ActiveAttributes.UnitTests.Invocations
     public void NestedInvocation ()
     {
       var obj = new DomainType();
-      var context = new ActionInvocationContext<object>();
+      var context = new ActionInvocationContext<object> (null, null);
       var outerCalled = false;
       var innerInvocation = new ActionInvocation<object> (context, obj.Method);
       var outerInvocation = new ActionInvocation<object> (
