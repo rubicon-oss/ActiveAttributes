@@ -131,12 +131,12 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
     {
-      public override void InterceptGet (IInvocation invocation)
+      public override void OnInterceptGet (IInvocation invocation)
       {
         throw new NotImplementedException();
       }
 
-      public override void InterceptSet (IInvocation invocation)
+      public override void OnInterceptSet (IInvocation invocation)
       {
         throw new NotImplementedException();
       }

@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
-    <Compile Include="Aspects\MethodPatcher.cs" />
+    <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectInitializer.cs" />
     <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
