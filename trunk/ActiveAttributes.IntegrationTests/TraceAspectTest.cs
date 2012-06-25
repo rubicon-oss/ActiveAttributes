@@ -62,10 +62,10 @@ namespace ActiveAttributes.IntegrationTests
       {
         var ctx = invocation.Context;
         var parameterArgumentList = ctx.MethodInfo.GetParameters()
-            .Zip (ctx.Arguments, (pi, arg) => pi.Name + "={{" + arg.ToString() + "}}");
+            .Zip (ctx.Arguments, (pi, arg) => pi.Name + "={" + arg.ToString() + "}");
 
         var callInformation = string.Format ("{0}.{1}({2})",
-                                             ctx.MethodInfo.DeclaringType,
+                                             ctx.MethodInfo.DeclaringType.Name,
                                              ctx.MethodInfo.Name,
                                              string.Join (", ", parameterArgumentList.ToArray()));
 

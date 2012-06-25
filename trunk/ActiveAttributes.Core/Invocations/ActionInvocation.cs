@@ -24,7 +24,7 @@ namespace ActiveAttributes.Core.Invocations
     private readonly Action<TA0> _action;
 
     public ActionInvocation (IInvocationContext context, Action<TA0> action)
-        : base(context)
+      : base (context)
     {
       _action = action;
     }
@@ -33,6 +33,23 @@ namespace ActiveAttributes.Core.Invocations
     {
       var context = (ActionInvocationContext<TInstance, TA0>) Context;
       _action (context.Arg0);
+    }
+  }
+
+  public class ActionInvocation<TInstance, TA0, TA1> : Invocation
+  {
+    private readonly Action<TA0, TA1> _action;
+
+    public ActionInvocation (IInvocationContext context, Action<TA0, TA1> action)
+      : base (context)
+    {
+      _action = action;
+    }
+
+    public override void Proceed ()
+    {
+      var context = (ActionInvocationContext<TInstance, TA0, TA1>) Context;
+      _action (context.Arg0, context.Arg1);
     }
   }
 }

@@ -2,6 +2,7 @@
 using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
@@ -29,7 +30,7 @@ namespace ActiveAttributes.IntegrationTests
       }
 
       [DomainAspect]
-      public string Method (NestedDomainType obj)
+      public virtual string Method (NestedDomainType obj)
       {
         return obj.Name;
       }
@@ -55,11 +56,13 @@ namespace ActiveAttributes.IntegrationTests
 
       public override void OnIntercept (IInvocation invocation)
       {
-        var typedInvocation = (FuncInvocation<object, DomainType.NestedDomainType, string>) invocation;
+        var funcInvocationContext = (FuncInvocationContext<DomainType, DomainType.NestedDomainType, string>) invocation.Context;
 
-        DomainType.NestedDomainType arg0 = typedInvocation.Context.Arg0;
+        var arg0 = funcInvocationContext.Arg0;
 
         arg0.Name = "Stefan";
+
+        invocation.Proceed();
       }
     }
   }

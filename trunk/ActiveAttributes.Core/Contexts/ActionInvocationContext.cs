@@ -82,4 +82,46 @@ namespace ActiveAttributes.Core.Contexts
 
     public object ReturnValue { get; set; }
   }
+
+  public class ActionInvocationContext<TInstance, TA0, TA1> : IInvocationContext, IReadOnlyInvocationContext
+  {
+    private ActionArgumentCollection<TInstance, TA0, TA1> _argumentCollection;
+
+    public ActionInvocationContext (MethodInfo methodInfo, TInstance instance, TA0 arg0, TA1 arg1)
+    {
+      MethodInfo = methodInfo;
+      Instance = instance;
+      Arg0 = arg0;
+      Arg1 = arg1;
+    }
+
+    public MethodInfo MethodInfo { get; private set; }
+
+    public TInstance Instance { get; private set; }
+
+    object IReadOnlyInvocationContext.Instance
+    {
+      get { return Instance; }
+    }
+
+    object IInvocationContext.Instance
+    {
+      get { return Instance; }
+    }
+
+    public TA0 Arg0 { get; set; }
+    public TA1 Arg1 { get; set; }
+
+    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
+    {
+      get { return _argumentCollection ?? (_argumentCollection = new ActionArgumentCollection<TInstance, TA0, TA1> (this)); }
+    }
+
+    IArgumentCollection IInvocationContext.Arguments
+    {
+      get { return _argumentCollection ?? (_argumentCollection = new ActionArgumentCollection<TInstance, TA0, TA1> (this)); }
+    }
+
+    public object ReturnValue { get; set; }
+  }
 }

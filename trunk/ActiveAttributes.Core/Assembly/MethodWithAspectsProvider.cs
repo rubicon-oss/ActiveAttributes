@@ -13,7 +13,7 @@ namespace ActiveAttributes.Core.Assembly
   {
     public IEnumerable<Tuple<MutableMethodInfo, IEnumerable<AspectAttribute>>> GetMethodsWithAspects (MutableType mutableType)
     {
-      foreach (var mutableMethod in mutableType.AllMutableMethods)
+      foreach (var mutableMethod in mutableType.AllMutableMethods.ToArray())
       {
         var attributes = mutableMethod.GetCustomAttributes (typeof (MethodInterceptionAspectAttribute), true);
         var aspects = new List<AspectAttribute> (attributes.Cast<AspectAttribute>());

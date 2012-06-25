@@ -54,6 +54,7 @@ namespace ActiveAttributes.Core.Assembly
       switch (_parameterCount)
       {
         case 1: return typeof (ActionInvocation<,>);
+        case 2: return typeof (ActionInvocation<,,>);
         default: throw new NotSupportedException ();
       }
     }
@@ -96,6 +97,7 @@ namespace ActiveAttributes.Core.Assembly
       switch (_parameterCount)
       {
         case 1: return typeof (ActionInvocationContext<,>);
+        case 2: return typeof (ActionInvocationContext<,,>);
         default: throw new NotSupportedException ();
       }
     }
@@ -138,6 +140,7 @@ namespace ActiveAttributes.Core.Assembly
       switch (_parameterCount)
       {
         case 1: return typeof (Action<>);
+        case 2: return typeof (Action<,>);
         default: throw new NotSupportedException ();
       }
     }

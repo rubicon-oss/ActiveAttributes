@@ -16,7 +16,7 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class AspectInitializer
   {
-    public Tuple<MutableMethodInfo, MutableFieldInfo> IntroduceInitialization (
+    public FieldInfo IntroduceInitialization (
         MutableType mutableType, MutableMethodInfo methodInfo, IEnumerable<AspectAttribute> aspectAttributes)
     {
       var staticAspectsAttributes = aspectAttributes.Where (x => x.Scope == AspectScope.Static).ToList();
@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly
             );
       }
 
-      return new Tuple<MutableMethodInfo, MutableFieldInfo> (methodInfo, allMethodAspectsArrayField);
+      return allMethodAspectsArrayField;
     }
 
     private Expression GetInstanceAspectExpression (AspectAttribute aspect, IList<AspectAttribute> staticAspects, FieldInfo staticAspectsArrayField)
