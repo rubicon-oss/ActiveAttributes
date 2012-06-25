@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 using Remotion.Utilities;
@@ -21,7 +22,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _patcher = new MethodPatcher();
     }
 
-    [Test]
+    [Ignore, Test]
     public void GetCopiedMethod ()
     {
       var fieldInfo = typeof (DomainType).GetField ("_m_aspects_for_Method");
@@ -49,6 +50,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var aspectAttribute = (DomainAspectAttribute) aspectsArray[0];
       Assert.That (aspectAttribute.OnInterceptCalled, Is.True);
       Assert.That (aspectAttribute.Invocation, Is.Not.Null);
+      Assert.That (aspectAttribute.Invocation.Context.Arguments[0], Is.EqualTo (1));
     }
 
     private Type CreateTypeWithAspectAttributes (FieldInfo fieldInfo)
@@ -58,12 +60,9 @@ namespace ActiveAttributes.UnitTests.Assembly
           {
             var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method (1));
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-            _patcher.PatchMethod (mutableType, mutableMethod, fieldInfo, new AspectAttribute[0]);
+            _patcher.PatchMethod (mutableType, mutableMethod, fieldInfo, new AspectAttribute[] { new DomainAspectAttribute() });
           });
     }
-
-
-
   }
 
   public class DomainAspectAttribute : MethodInterceptionAspectAttribute
@@ -75,6 +74,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       OnInterceptCalled = true;
       Invocation = invocation;
+      var context = (FuncInvocationContext<DomainType, int, int>) invocation.Context;
     }
   }
 

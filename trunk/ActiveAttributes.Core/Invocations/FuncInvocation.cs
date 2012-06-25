@@ -5,23 +5,18 @@ namespace ActiveAttributes.Core.Invocations
 {
   public class FuncInvocation<TInstance, TA0, TR> : Invocation
   {
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TR> context, Func<TA0, TR> func)
-        : base(() => context.ReturnValue = func (context.Arg0))
+    private readonly Func<TA0, TR> _func;
+
+    public FuncInvocation (IInvocationContext context, Func<TA0, TR> func)
+        : base(context)
     {
-      Context = context;
+      _func = func;
     }
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TR> context, Action<IInvocation> innerProceed, IInvocation innerInvocation)
-        : base (() => innerProceed (innerInvocation))
+    public override void Proceed ()
     {
-      Context = context;
+      var context = (FuncInvocationContext<TInstance, TA0, TR>) Context;
+      context.ReturnValue = _func (context.Arg0);
     }
-
-    protected override IInvocationContext GetInvocationContext ()
-    {
-      return Context;
-    }
-
-    public FuncInvocationContext<TInstance, TA0, TR> Context { get; private set; }
   }
 }

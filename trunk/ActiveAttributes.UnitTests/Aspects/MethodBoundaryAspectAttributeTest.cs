@@ -112,7 +112,8 @@ namespace ActiveAttributes.UnitTests.Aspects
     [Test]
     public void OnSuccess_WithoutException ()
     {
-      _returningInvocation.Context.Arg0 = 1;
+      var invocationContext = (FuncInvocationContext<object, int, int>) _returningInvocation.Context;
+      invocationContext.Arg0 = 1;
       _obj.OnIntercept (_returningInvocation);
 
       Assert.That (_obj.OnSuccessCalled, Is.True);

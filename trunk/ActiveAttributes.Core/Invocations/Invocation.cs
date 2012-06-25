@@ -5,33 +5,23 @@ namespace ActiveAttributes.Core.Invocations
 {
   public abstract class Invocation : IInvocation, IReadOnlyInvocation
   {
-    private readonly Action _proceed;
+    private readonly IInvocationContext _context;
 
-    protected Invocation (Action proceed)
+    protected Invocation (IInvocationContext context)
     {
-      _proceed = proceed;
+      _context = context;
     }
 
-    protected abstract IInvocationContext GetInvocationContext ();
-
-    IInvocationContext IInvocation.Context
+    public IInvocationContext Context
     {
-      get { return GetInvocationContext(); }
+      get { return _context; }
     }
 
     IReadOnlyInvocationContext IReadOnlyInvocation.Context
     {
-      get { return (IReadOnlyInvocationContext) GetInvocationContext(); }
+      get { return (IReadOnlyInvocationContext) _context; }
     }
 
-    public void Proceed ()
-    {
-      _proceed();
-    }
-
-    public override string ToString ()
-    {
-      return string.Format ("Context: {0}, Proceed: {1}", this.GetInvocationContext(), _proceed);
-    }
+    public abstract void Proceed ();
   }
 }

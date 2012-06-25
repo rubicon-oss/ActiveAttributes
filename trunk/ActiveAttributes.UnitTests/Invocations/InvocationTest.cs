@@ -15,7 +15,7 @@ namespace ActiveAttributes.UnitTests.Invocations
       var context = new ActionInvocationContext<object> (null, null);
       var outerCalled = false;
       var innerInvocation = new ActionInvocation<object> (context, obj.Method);
-      var outerInvocation = new ActionInvocation<object> (
+      var outerInvocation = new OuterInvocation (
           context,
           invocation =>
           {

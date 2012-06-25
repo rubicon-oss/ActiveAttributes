@@ -61,6 +61,7 @@
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectInitializer.cs" />
     <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
+    <Compile Include="Assembly\TypeProvider.cs" />
     <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\FuncArgumentCollection.cs" />
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Contexts\FuncInvocationContext.cs" />
     <Compile Include="Invocations\IReadOnlyInvocation.cs" />
+    <Compile Include="Invocations\OuterInvocation.cs" />
     <Compile Include="ObjectFactory.cs">
       <SubType>Code</SubType>
     </Compile>
