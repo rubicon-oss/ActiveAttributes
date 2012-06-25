@@ -38,6 +38,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void InvokesAspects ()
     {
+      SkipDeletion();
       var fieldInfo = typeof(DomainType).GetField ("_m_aspects_for_Method");
       var type = CreateTypeWithAspectAttributes(fieldInfo);
       var instance = (DomainType) Activator.CreateInstance (type);
@@ -50,14 +51,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (aspectAttribute.Invocation, Is.Not.Null);
     }
 
-    [Test]
-    public void name ()
-    {
-      var types = new[] { typeof (void), typeof (int) };
-
-      Activator.
-    }
-
     private Type CreateTypeWithAspectAttributes (FieldInfo fieldInfo)
     {
       return AssembleType<DomainType> (
@@ -65,31 +58,33 @@ namespace ActiveAttributes.UnitTests.Assembly
           {
             var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method (1));
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-            _patcher.PatchMethod (mutableType, mutableMethod, fieldInfo, null);
+            _patcher.PatchMethod (mutableType, mutableMethod, fieldInfo, new AspectAttribute[0]);
           });
     }
 
-    public class DomainAspectAttribute : MethodInterceptionAspectAttribute
+
+
+  }
+
+  public class DomainAspectAttribute : MethodInterceptionAspectAttribute
+  {
+    public bool OnInterceptCalled { get; private set; }
+    public IInvocation Invocation { get; private set; }
+
+    public override void OnIntercept (IInvocation invocation)
     {
-      public bool OnInterceptCalled { get; private set; }
-      public IInvocation Invocation { get; private set; }
-
-      public override void OnIntercept (IInvocation invocation)
-      {
-        OnInterceptCalled = true;
-        Invocation = invocation;
-      }
+      OnInterceptCalled = true;
+      Invocation = invocation;
     }
+  }
 
-    public class DomainType
+  public class DomainType
+  {
+    public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspectAttribute () };
+
+    public virtual int Method (int i)
     {
-      public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspectAttribute() };
-
-      public virtual int Method (int i)
-      {
-        return i + 1;
-      }
+      return i + 1;
     }
-
   }
 }
