@@ -78,7 +78,7 @@
     <Compile Include="Assembly\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
-    <Compile Include="Assembly\AspectInitializerTest.cs" />
+    <Compile Include="Assembly\AspectPreparerTest.cs" />
     <Compile Include="Assembly\MethodWithAspectsProviderTest.cs" />
     <Compile Include="Invocations\InvocationTest.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttributeTest.cs" />

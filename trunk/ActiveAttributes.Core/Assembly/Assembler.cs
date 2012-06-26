@@ -22,13 +22,13 @@ namespace ActiveAttributes.Core.Assembly
     public void ModifyType (MutableType mutableType)
     {
       var methodsWithAspectsProvider = new MethodWithAspectsProvider();
-      var aspectsPreparer = new AspectInitializer();
+      var aspectsPreparer = new AspectPreparer();
       var methodPatcher = new MethodPatcher();
       foreach (var methodAndAspects in methodsWithAspectsProvider.GetMethodsWithAspects (mutableType))
       {
         var methodInfo = methodAndAspects.Item1;
         var aspectAttributes = methodAndAspects.Item2;
-        var aspectsFieldInfo = aspectsPreparer.IntroduceInitialization (mutableType, methodInfo, aspectAttributes);
+        var aspectsFieldInfo = aspectsPreparer.PrepareAspects (mutableType, methodInfo, aspectAttributes);
         methodPatcher.PatchMethod (mutableType, methodInfo, aspectsFieldInfo, aspectAttributes.ToArray());
       }
 

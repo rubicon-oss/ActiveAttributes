@@ -12,6 +12,56 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class TypeProvider
   {
+    private static readonly Type[] _actionInvocationOpenTypes
+        = new[]
+          {
+              typeof (ActionInvocation<>),
+              typeof (ActionInvocation<,>),
+              typeof (ActionInvocation<,,>)
+          };
+
+    private static readonly Type[] _funcInvocationOpenTypes
+        = new[]
+          {
+              null,
+              null,
+              typeof (FuncInvocation<,,>)
+          };
+
+    private static readonly Type[] _actionInvocationContextOpenTypes
+        = new[]
+          {
+              typeof (ActionInvocationContext<>),
+              typeof (ActionInvocationContext<,>),
+              typeof (ActionInvocationContext<,,>)
+          };
+
+    private static readonly Type[] _funcInvocationContextOpenTypes
+        = new[]
+          {
+              null,
+              null,
+              typeof (FuncInvocationContext<,,>)
+          };
+
+
+    private static readonly Type[] _actionOpenTypes
+        = new[]
+          {
+              typeof (Action),
+              typeof (Action<>),
+              typeof (Action<,>)
+          };
+
+    private static readonly Type[] _funcOpenTypes
+        = new[]
+          {
+              null,
+              null,
+              typeof (Func<,>)
+          };
+
+
     private readonly bool _isAction;
     private readonly Type[] _instanceType;
     private readonly Type[] _parameterTypes;
@@ -39,33 +89,16 @@ namespace ActiveAttributes.Core.Assembly
 
     private Type GetActionInvocationType ()
     {
-      var baseType = GetActionInvocationBaseType ();
-      return baseType.MakeGenericType (_instanceType.Concat(_parameterTypes).ToArray());
+      var typeArguments = _instanceType.Concat(_parameterTypes).ToArray();
+      var openType = _actionInvocationOpenTypes[typeArguments.Length - 1];
+      return openType.MakeGenericType (typeArguments);
     }
 
     private Type GetFuncInvocationType ()
     {
-      var baseType = GetFuncInvocationBaseType();
-      return baseType.MakeGenericType (_instanceType.Concat(_parameterTypes).Concat (_returnType).ToArray());
-    }
-
-    private Type GetActionInvocationBaseType ()
-    {
-      switch (_parameterCount)
-      {
-        case 1: return typeof (ActionInvocation<,>);
-        case 2: return typeof (ActionInvocation<,,>);
-        default: throw new NotSupportedException ();
-      }
-    }
-
-    private Type GetFuncInvocationBaseType ()
-    {
-      switch (_parameterCount)
-      {
-        case 1: return typeof (FuncInvocation<,,>);
-        default: throw new NotSupportedException ();
-      }
+      var typeArguments = _instanceType.Concat(_parameterTypes).Concat (_returnType).ToArray();
+      var openType = _funcInvocationOpenTypes[typeArguments.Length - 1];
+      return openType.MakeGenericType (typeArguments);
     }
 
     #endregion
@@ -96,6 +129,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       switch (_parameterCount)
       {
+        case 0: return typeof (ActionInvocationContext<>);
         case 1: return typeof (ActionInvocationContext<,>);
         case 2: return typeof (ActionInvocationContext<,,>);
         default: throw new NotSupportedException ();
@@ -126,7 +160,10 @@ namespace ActiveAttributes.Core.Assembly
     private Type GetActionInvocationActionType ()
     {
       var baseType = GetActionInvocationActionBaseType ();
-      return baseType.MakeGenericType (_parameterTypes);
+      if (baseType.IsGenericTypeDefinition)
+        return baseType.MakeGenericType (_parameterTypes);
+      else
+        return baseType;
     }
 
     private Type GetFuncInvocationActionType ()
@@ -139,6 +176,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       switch (_parameterCount)
       {
+        case 0: return typeof (Action);
         case 1: return typeof (Action<>);
         case 2: return typeof (Action<,>);
         default: throw new NotSupportedException ();

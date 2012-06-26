@@ -11,17 +11,17 @@ using Remotion.Utilities;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class AspectInitializerTest : TestBase
+  public class AspectPreparerTest : TestBase
   {
-    private AspectInitializer _initializer;
-    private DomainType _object;
+    private AspectPreparer _preparer;
+
     private BindingFlags _instanceBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic;
     private BindingFlags _staticBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.NonPublic;
 
     [SetUp]
     public void SetUp ()
     {
-      _initializer = new AspectInitializer();
+      _preparer = new AspectPreparer();
     }
 
     [Test]
@@ -149,7 +149,7 @@ namespace ActiveAttributes.UnitTests.Assembly
             var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method ());
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-            _initializer.IntroduceInitialization (mutableType, mutableMethod, aspectAttributes);
+            _preparer.PrepareAspects (mutableType, mutableMethod, aspectAttributes);
           });
     }
 

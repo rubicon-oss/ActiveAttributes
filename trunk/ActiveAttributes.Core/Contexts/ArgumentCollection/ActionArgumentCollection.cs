@@ -6,7 +6,7 @@ namespace ActiveAttributes.Core.Contexts.ArgumentCollection
 {
   public class ActionArgumentCollection<TInstance, TA0> : IArgumentCollection, IReadOnlyArgumentCollection
   {
-    private ActionInvocationContext<TInstance, TA0> _invocationContext;
+    private readonly ActionInvocationContext<TInstance, TA0> _invocationContext;
 
     public ActionArgumentCollection (ActionInvocationContext<TInstance, TA0> invocationContext)
     {
@@ -42,10 +42,30 @@ namespace ActiveAttributes.Core.Contexts.ArgumentCollection
     {
       return GetEnumerator();
     }
+
+    public void CopyTo (Array array, int index)
+    {
+      throw new NotImplementedException();
+    }
+
+    public int Count
+    {
+      get { return 1; }
+    }
+
+    public object SyncRoot
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
   }
   public class ActionArgumentCollection<TInstance, TA0, TA1> : IArgumentCollection, IReadOnlyArgumentCollection
   {
-    private ActionInvocationContext<TInstance, TA0, TA1> _invocationContext;
+    private readonly ActionInvocationContext<TInstance, TA0, TA1> _invocationContext;
 
     public ActionArgumentCollection (ActionInvocationContext<TInstance, TA0, TA1> invocationContext)
     {
@@ -83,6 +103,26 @@ namespace ActiveAttributes.Core.Contexts.ArgumentCollection
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
+    }
+
+    public void CopyTo (Array array, int index)
+    {
+      throw new NotImplementedException();
+    }
+
+    public int Count
+    {
+      get { return 2; }
+    }
+
+    public object SyncRoot
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
     }
   }
 }

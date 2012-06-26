@@ -21,5 +21,25 @@ namespace ActiveAttributes.Core.Contexts.ArgumentCollection
       get { throw new IndexOutOfRangeException("idx"); }
       set { throw new IndexOutOfRangeException("idx"); }
     }
+
+    public void CopyTo (Array array, int index)
+    {
+      throw new NotImplementedException();
+    }
+
+    public int Count
+    {
+      get { return 0; }
+    }
+
+    public object SyncRoot
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public bool IsSynchronized
+    {
+      get { throw new NotImplementedException(); }
+    }
   }
 }

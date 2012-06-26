@@ -1,25 +1,19 @@
-﻿// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
-using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public class MethodPatcher
   {
-    private readonly MethodInfo _onInterceptMethodInfo;
     private readonly MethodInfo _onInterceptGetMethodInfo;
+    private readonly MethodInfo _onInterceptMethodInfo;
     private readonly MethodInfo _onInterceptSetMethodInfo;
 
     public MethodPatcher ()
@@ -29,8 +23,11 @@ namespace ActiveAttributes.Core.Assembly
       _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
     }
 
-    public void PatchMethod (MutableType mutableType, MutableMethodInfo mutableMethod, FieldInfo allMethodAspectsArrayField,
-      AspectAttribute[] aspectAttributes)
+    public void PatchMethod (
+        MutableType mutableType,
+        MutableMethodInfo mutableMethod,
+        FieldInfo allMethodAspectsArrayField,
+        AspectAttribute[] aspectAttributes)
     {
       var copiedMethod = GetCopiedMethod (mutableType, mutableMethod);
 
@@ -47,12 +44,17 @@ namespace ActiveAttributes.Core.Assembly
           ctx => ctx.GetCopiedMethodBody (mutableMethod, ctx.Parameters.Cast<Expression>()));
     }
 
-    private Expression GetPatchedBody (MutableMethodInfo methodInfo, BodyContextBase bodyContext, MutableMethodInfo copiedMethod, FieldInfo allMethodAspectsArrayField, AspectAttribute[] aspectAttributes)
+    private Expression GetPatchedBody (
+        MutableMethodInfo methodInfo,
+        BodyContextBase bodyContext,
+        MutableMethodInfo copiedMethod,
+        FieldInfo allMethodAspectsArrayField,
+        AspectAttribute[] aspectAttributes)
     {
       var typeProvider = new TypeProvider (methodInfo);
 
       // var context = new InvocationContext(methodInfo, this, args)
-      var invocationContextType = typeProvider.GetInvocationContextType ();
+      var invocationContextType = typeProvider.GetInvocationContextType();
       var invocationContextVariableExpression = Expression.Variable (invocationContextType);
       var invocationContextNewExpression = Expression.New (
           invocationContextType.GetConstructors().Single(),
@@ -68,12 +70,21 @@ namespace ActiveAttributes.Core.Assembly
       var invocationsVariableExpression = Expression.Variable (typeof (IInvocation[]));
       var invocationsAssignExpression = Expression.Assign (
           invocationsVariableExpression, Expression.NewArrayBounds (typeof (IInvocation), Expression.Constant (aspectAttributes.Length)));
-      var invocationsInitExpression = GetInvocationsInitExpressions(methodInfo, copiedMethod, bodyContext, invocationsVariableExpression, aspectAttributes, typeProvider, invocationContextVariableExpression);
+      var invocationsInitExpression = GetInvocationsInitExpressions (
+          methodInfo,
+          copiedMethod,
+          bodyContext,
+          invocationsVariableExpression,
+          aspectAttributes,
+          typeProvider,
+          invocationContextVariableExpression,
+          allMethodAspectsArrayField);
 
-      // aspects[length].OnIntercept(invocations[length])
+      // aspects[length - 1].OnIntercept(invocations[length - 1])
       var aspectsArrayFieldExpression = Expression.Field (bodyContext.This, allMethodAspectsArrayField);
-      var lastIndexExpression = Expression.Constant(aspectAttributes.Length - 1);
-      var lastAspectExpression = Expression.Convert(Expression.ArrayAccess (aspectsArrayFieldExpression, lastIndexExpression), typeof(MethodInterceptionAspectAttribute));
+      var lastIndexExpression = Expression.Constant (aspectAttributes.Length - 1);
+      var lastAspectExpression = Expression.Convert (
+          Expression.ArrayAccess (aspectsArrayFieldExpression, lastIndexExpression), typeof (MethodInterceptionAspectAttribute));
       var lastInvocationExpression = Expression.ArrayAccess (invocationsVariableExpression, lastIndexExpression);
 
       var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[0], methodInfo);
@@ -82,7 +93,7 @@ namespace ActiveAttributes.Core.Assembly
       return Expression.Block (
           new[] { invocationContextVariableExpression, invocationsVariableExpression },
           invocationContextAssignmentExpression,
-          GetReturnValueDefaultOrEmptyExpression(methodInfo, invocationContextVariableExpression),
+          GetReturnValueDefaultOrEmptyExpression (methodInfo, invocationContextVariableExpression),
           invocationsAssignExpression,
           invocationsInitExpression,
           interceptCallExpression,
@@ -90,13 +101,24 @@ namespace ActiveAttributes.Core.Assembly
     }
 
 
-    private Expression GetInvocationsInitExpressions (MutableMethodInfo methodInfo, MutableMethodInfo copiedMethod, BodyContextBase bodyContext, ParameterExpression invocationsVariableExpression, AspectAttribute[] aspectAttributes, TypeProvider typeProvider, ParameterExpression invocationContextVariableExpression)
+    private Expression GetInvocationsInitExpressions (
+        MutableMethodInfo methodInfo,
+        MutableMethodInfo copiedMethod,
+        BodyContextBase bodyContext,
+        ParameterExpression invocationsVariableExpression,
+        AspectAttribute[] aspectAttributes,
+        TypeProvider typeProvider,
+        ParameterExpression invocationContextVariableExpression,
+        FieldInfo allMethodAspectsArrayField)
     {
+      var expressionList = new List<Expression>();
+
       for (var i = 0; i < aspectAttributes.Length; i++)
       {
+        // If this is the first iteration, we need to create a typed invocation (i.e., ActionInvocation<>, FuncInvocation<>)
         if (i == 0)
         {
-          // var action = delegate(copiedMethod)
+          // var delegate = delegate(copiedMethod)
           var methodDelegateType = GetMethodDelegateType (methodInfo);
           var methodDelegateVariableExpression = Expression.Variable (methodDelegateType);
           var createDelegateMethodInfo = typeof (Delegate).GetMethod (
@@ -108,9 +130,11 @@ namespace ActiveAttributes.Core.Assembly
               Expression.Constant (methodDelegateType),
               bodyContext.This,
               Expression.Constant (copiedMethod, typeof (MethodInfo)));
-          var methodDelegateAssignmentExpression = Expression.Assign (methodDelegateVariableExpression,
-            Expression.Convert (methodDelegateCreateExpression, methodDelegateType));
+          var methodDelegateAssignmentExpression = Expression.Assign (
+              methodDelegateVariableExpression,
+              Expression.Convert (methodDelegateCreateExpression, methodDelegateType));
 
+          // invocations[0] = new XInvocation<> (context, delegate)
           var invocationType = typeProvider.GetInvocationType();
           var invocationActionType = typeProvider.GetInvocationActionType();
           var invocationCreateExpression = Expression.New (
@@ -120,37 +144,57 @@ namespace ActiveAttributes.Core.Assembly
           var invocationAssignExpression = Expression.Assign (
               Expression.ArrayAccess (invocationsVariableExpression, Expression.Constant (i)), invocationCreateExpression);
 
-          return Expression.Block (
+          var expression = Expression.Block (
               new[] { methodDelegateVariableExpression },
               methodDelegateAssignmentExpression,
               invocationAssignExpression);
-        }
-      }
-      throw new Exception();
-    }
 
-    private IEnumerable<Expression> GetInvocationsArrayInitExpressions (MutableMethodInfo methodInfo, ParameterExpression invocationContextVariableExpression, FieldInfo allMethodAspectsArrayField, AspectAttribute[] aspectAttributes, MutableMethodInfo copiedMethod)
-    {
-      for (var i = 0; i < aspectAttributes.Length; i++)
-      {
-        if (i == 0)
-        {
-          //var invocationType = GetInvocationType (methodInfo); // Func<,,>
-          //var invocationActionExpression = Expression.Convert(, typeof())
-          //var invocationNewExpression = Expression.New (
-          //    invocationType.GetConstructors().Single(),
-          //    invocationContextVariableExpression,
-              
-          //    );
-
+          expressionList.Add (expression);
         }
+            // Otherwise we create an invocation pointing to the last aspects invocation
         else
         {
-          
+          var lastItem = Expression.Constant (i - 1);
+
+          // get last aspects intercept method (i.e., OnIntercept, OnInterceptSet, ...)
+          // var delegate = delegate(aspects[i - 1])
+          var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[i], methodInfo);
+          var interceptDelegateType = GetMethodDelegateType (interceptMethodInfo); // TODO: change to Action<IInvocation> ?
+          var interceptDelegateVariableExpression = Expression.Variable (interceptDelegateType);
+          var createDelegateMethodInfo = typeof (Delegate).GetMethod (
+              "CreateDelegate",
+              new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+          var interceptDelegateCreateExpression = Expression.Call (
+              null,
+              createDelegateMethodInfo,
+              Expression.Constant (interceptDelegateType),
+              Expression.ArrayAccess (Expression.Field (bodyContext.This, allMethodAspectsArrayField), lastItem),
+              Expression.Constant (interceptMethodInfo, typeof (MethodInfo)));
+          var interceptDelegateAssignmentExpression = Expression.Assign (
+              interceptDelegateVariableExpression,
+              Expression.Convert (interceptDelegateCreateExpression, interceptDelegateType));
+
+          // invocations[i - 1] = new OuterInvocation(context, delegate, aspects[i - 1])
+          var invocationType = typeof (OuterInvocation);
+          var invocationCreateExpression = Expression.New (
+              invocationType.GetConstructors().Single(),
+              invocationContextVariableExpression,
+              Expression.Convert (interceptDelegateVariableExpression, interceptDelegateType),
+              Expression.ArrayAccess (invocationsVariableExpression, lastItem));
+          var invocationAssignExpression = Expression.Assign (
+              Expression.ArrayAccess (invocationsVariableExpression, Expression.Constant (i)), invocationCreateExpression);
+
+          var expression = Expression.Block (
+              new[] { interceptDelegateVariableExpression },
+              interceptDelegateAssignmentExpression,
+              invocationAssignExpression
+              );
+
+          expressionList.Add (expression);
         }
       }
-      yield break;
-      //var expression = Expression.Assign()
+
+      return Expression.Block (expressionList);
     }
 
     private Type GetMethodDelegateType (MethodInfo methodInfo)
@@ -165,18 +209,17 @@ namespace ActiveAttributes.Core.Assembly
       if (methodInfo.ReturnType == typeof (void))
         return Expression.Empty();
       else
+      {
         return Expression.Convert (
             Expression.Property (invocationContext, "ReturnValue"),
             methodInfo.ReturnType);
+      }
     }
-
-
-
 
     private Expression GetReturnValueDefaultOrEmptyExpression (MutableMethodInfo methodInfo, ParameterExpression invocationContextVariableExpression)
     {
       if (methodInfo.ReturnType == typeof (void) || !methodInfo.ReturnType.IsValueType)
-        return Expression.Empty ();
+        return Expression.Empty();
       else
       {
         return Expression.Assign (

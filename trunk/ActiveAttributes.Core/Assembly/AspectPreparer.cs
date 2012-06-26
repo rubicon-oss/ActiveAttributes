@@ -14,9 +14,9 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class AspectInitializer
+  public class AspectPreparer
   {
-    public FieldInfo IntroduceInitialization (
+    public FieldInfo PrepareAspects (
         MutableType mutableType, MutableMethodInfo methodInfo, IEnumerable<AspectAttribute> aspectAttributes)
     {
       var staticAspectsAttributes = aspectAttributes.Where (x => x.Scope == AspectScope.Static).ToList();
