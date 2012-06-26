@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Invocations;
-
 using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
-
 using NUnit.Framework;
-
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.IntegrationTests
@@ -41,7 +37,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void Trace ()
     {
-      _instance.Method("muh", 2);
+      _instance.Method ("muh", 2);
 
       Assert.That (_target.Counter, Is.EqualTo (1));
       Assert.That (_target.LastMessage, Is.EqualTo ("Entry DomainType.Method(str={muh}, i={2})"));
@@ -51,12 +47,14 @@ namespace ActiveAttributes.IntegrationTests
     public class DomainType
     {
       [TraceAspect]
-      public virtual void Method (string str, int i) {}
+      public virtual void Method (string str, int i)
+      {
+      }
     }
 
     public class TraceAspectAttribute : MethodBoundaryAspectAttribute
     {
-      private Logger _logger = LogManager.GetCurrentClassLogger();
+      private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
       protected override void OnEntry (IReadOnlyInvocation invocation)
       {
@@ -64,10 +62,11 @@ namespace ActiveAttributes.IntegrationTests
         var parameterArgumentList = ctx.MethodInfo.GetParameters()
             .Zip (ctx.Arguments, (pi, arg) => pi.Name + "={" + arg.ToString() + "}");
 
-        var callInformation = string.Format ("{0}.{1}({2})",
-                                             ctx.MethodInfo.DeclaringType.Name,
-                                             ctx.MethodInfo.Name,
-                                             string.Join (", ", parameterArgumentList.ToArray()));
+        var callInformation = string.Format (
+            "{0}.{1}({2})",
+            ctx.MethodInfo.DeclaringType.Name,
+            ctx.MethodInfo.Name,
+            string.Join (", ", parameterArgumentList.ToArray()));
 
         _logger.Debug ("Entry " + callInformation);
       }

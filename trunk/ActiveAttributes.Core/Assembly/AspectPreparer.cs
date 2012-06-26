@@ -39,11 +39,14 @@ namespace ActiveAttributes.Core.Assembly
       foreach (var constructor in mutableType.AllMutableConstructors)
       {
         constructor.SetBody (ctx =>
-                             Expression.Block (
-                                 staticAspectsInitExpression,
-                                 allMethodAspectsInitExpression (ctx),
-                                 ctx.GetPreviousBodyWithArguments())
-            );
+        {
+          var previousBodyWithArguments = ctx.PreviousBody;
+
+          return Expression.Block (
+              staticAspectsInitExpression,
+              allMethodAspectsInitExpression (ctx),
+              previousBodyWithArguments);
+        });
       }
 
       return allMethodAspectsArrayField;

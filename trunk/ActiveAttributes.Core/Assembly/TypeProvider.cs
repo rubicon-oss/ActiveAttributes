@@ -24,7 +24,7 @@ namespace ActiveAttributes.Core.Assembly
         = new[]
           {
               null,
-              null,
+              typeof (FuncInvocation<,>),
               typeof (FuncInvocation<,,>)
           };
 
@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
         = new[]
           {
               null,
-              null,
+              typeof (FuncInvocationContext<,>),
               typeof (FuncInvocationContext<,,>)
           };
 
@@ -57,7 +57,7 @@ namespace ActiveAttributes.Core.Assembly
         = new[]
           {
               null,
-              null,
+              typeof (Func<>),
               typeof (Func<,>)
           };
 
@@ -140,6 +140,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       switch (_parameterCount)
       {
+        case 0: return typeof (FuncInvocationContext<,>);
         case 1: return typeof (FuncInvocationContext<,,>);
         default: throw new NotSupportedException ();
       }
@@ -187,6 +188,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       switch (_parameterCount)
       {
+        case 0: return typeof (Func<>);
         case 1: return typeof (Func<,>);
         default: throw new NotSupportedException ();
       }

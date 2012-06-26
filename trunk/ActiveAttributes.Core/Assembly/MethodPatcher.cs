@@ -81,13 +81,17 @@ namespace ActiveAttributes.Core.Assembly
           allMethodAspectsArrayField);
 
       // aspects[length - 1].OnIntercept(invocations[length - 1])
+      var lastIndex = aspectAttributes.Length - 1;
       var aspectsArrayFieldExpression = Expression.Field (bodyContext.This, allMethodAspectsArrayField);
-      var lastIndexExpression = Expression.Constant (aspectAttributes.Length - 1);
+      var lastIndexExpression = Expression.Constant (lastIndex);
+      var lastAspectType = aspectAttributes[lastIndex] is MethodInterceptionAspectAttribute
+                               ? typeof (MethodInterceptionAspectAttribute)
+                               : typeof (PropertyInterceptionAspectAttribute);
       var lastAspectExpression = Expression.Convert (
-          Expression.ArrayAccess (aspectsArrayFieldExpression, lastIndexExpression), typeof (MethodInterceptionAspectAttribute));
+          Expression.ArrayAccess (aspectsArrayFieldExpression, lastIndexExpression), lastAspectType);
       var lastInvocationExpression = Expression.ArrayAccess (invocationsVariableExpression, lastIndexExpression);
 
-      var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[0], methodInfo);
+      var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[lastIndex], methodInfo);
       var interceptCallExpression = Expression.Call (lastAspectExpression, interceptMethodInfo, new[] { lastInvocationExpression });
 
       return Expression.Block (
