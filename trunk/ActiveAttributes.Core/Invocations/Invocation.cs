@@ -12,6 +12,7 @@ namespace ActiveAttributes.Core.Invocations
       _context = context;
     }
 
+    // TODO: Make abstract, store context in derived classes
     public IInvocationContext Context
     {
       get { return _context; }
@@ -19,7 +20,7 @@ namespace ActiveAttributes.Core.Invocations
 
     IReadOnlyInvocationContext IReadOnlyInvocation.Context
     {
-      get { return (IReadOnlyInvocationContext) _context; }
+      get { return (IReadOnlyInvocationContext) Context; }
     }
 
     public abstract void Proceed ();

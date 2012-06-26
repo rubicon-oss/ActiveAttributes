@@ -52,6 +52,7 @@ namespace ActiveAttributes.Core.Contexts
     }
   }
 
+  // TODO: Remove FuncArgumentCollection, implement IArgumentCollection explicitly on FuncInvocationContext, return 
   public class FuncInvocationContext<TInstance, TA0, TR> : IInvocationContext, IReadOnlyInvocationContext
   {
     private FuncArgumentCollection<TInstance, TA0, TR> _argumentCollection;

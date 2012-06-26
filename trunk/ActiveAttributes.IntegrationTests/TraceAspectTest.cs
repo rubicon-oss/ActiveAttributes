@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
@@ -9,6 +10,9 @@ using NLog.Layouts;
 using NLog.Targets;
 using NUnit.Framework;
 using Remotion.FunctionalProgramming;
+using Remotion.Logging;
+using LogLevel = NLog.LogLevel;
+using LogManager = NLog.LogManager;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -51,6 +55,7 @@ namespace ActiveAttributes.IntegrationTests
       {
       }
     }
+
 
     public class TraceAspectAttribute : MethodBoundaryAspectAttribute
     {

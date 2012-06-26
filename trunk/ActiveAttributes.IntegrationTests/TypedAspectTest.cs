@@ -3,8 +3,10 @@ using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Contexts.ArgumentCollection;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
+using Remotion.Collections;
 
 namespace ActiveAttributes.IntegrationTests
 {

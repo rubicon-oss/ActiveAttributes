@@ -20,6 +20,7 @@ namespace ActiveAttributes.IntegrationTests
       var instance = ObjectFactory.Create<DomainType>();
 
       instance.Anything = "muh";
+      instance.AnotherValue = "kuh";
 
       Assert.That (instance.Anything, Is.EqualTo ("muhkuh"));
     }
@@ -28,6 +29,8 @@ namespace ActiveAttributes.IntegrationTests
     {
       [DomainAspect]
       public virtual string Anything { get; set; }
+
+      public string AnotherValue { get; set; }
     }
 
     public class DomainAspectAttribute : PropertyInterceptionAspectAttribute
@@ -36,7 +39,7 @@ namespace ActiveAttributes.IntegrationTests
       {
         var context = (FuncInvocationContext<DomainType, string>) invocation.Context;
         invocation.Proceed();
-        context.ReturnValue += "kuh";
+        context.ReturnValue += context.Instance.AnotherValue;
       }
 
       public override void OnInterceptSet (IInvocation invocation)

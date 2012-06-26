@@ -14,7 +14,7 @@ namespace ActiveAttributes.Core
   {
     public static T Create<T> ()
     {
-      var typeAssembler = new TypeAssembler (new[] { new Assembler() }, CreateReflectionEmitTypeModifier ("AA.generated.dll"));
+      var typeAssembler = new TypeAssembler (new[] { new Assembler() }, CreateReflectionEmitTypeModifier ("AA.generated"));
       var assembledType = typeAssembler.AssembleType (typeof (T));
 
       return (T) Activator.CreateInstance (assembledType);

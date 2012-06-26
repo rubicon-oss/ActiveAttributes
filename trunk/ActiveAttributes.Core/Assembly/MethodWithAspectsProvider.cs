@@ -22,6 +22,9 @@ namespace ActiveAttributes.Core.Assembly
         {
           var propertyName = mutableMethod.Name.Substring (4);
           var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (propertyName);
+          // TODO
+          //var attributes = CustomAttributeData.GetCustomAttributes (propertyInfo)
+          //    .Where (cad => typeof (PropertyInterceptionAspectAttribute).IsAssignableFrom (cad.Constructor.DeclaringType));
           attributes = propertyInfo.GetCustomAttributes (typeof (PropertyInterceptionAspectAttribute), true);
           aspects.AddRange (attributes.Cast<AspectAttribute>());
         }
