@@ -20,56 +20,44 @@ namespace ActiveAttributes.Core.Assembly
     public FieldInfo PrepareAspects (
         MutableType mutableType, MutableMethodInfo methodInfo, IEnumerable<AspectAttribute> aspectAttributes)
     {
-      var aspectAttributesAsCollection = aspectAttributes.ConvertToCollection();
+      var aspects = aspectAttributes.ConvertToCollection();
 
-      var staticAspectsAttributes = aspectAttributesAsCollection.Where (x => x.Scope == AspectScope.Static).ToList ();
-      var staticAspectsArrayField = mutableType.AddField (typeof (AspectAttribute[]), "_s_aspects_for_" + methodInfo.Name, FieldAttributes.Static);
-      var staticAspectsFlagField = mutableType.AddField (typeof (bool), "_s_aspects_for_" + methodInfo.Name + "_init", FieldAttributes.Static);
-      var staticAspectsInitExpression = Expression.Assign (
-          Expression.Field (null, staticAspectsArrayField),
-          Expression.NewArrayInit (
-              typeof (AspectAttribute),
-              staticAspectsAttributes.Select (x => Expression.New (x.GetType())).Cast<Expression>()));
+      var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), "_s_aspects_for_" + methodInfo.Name,
+        FieldAttributes.Static | FieldAttributes.Private);
+      var staticAspects = aspects.Where (x => x.Scope == AspectScope.Static).ToList ();
+      var staticAspectsFieldExpression = Expression.Field (null, staticAspectsField);
+      var staticAspectsElementInitExpressions = staticAspects.Select(x => Expression.New(x.GetType())).Cast<Expression>();
+      var staticAspectsInitExpression = Expression.NewArrayInit (typeof (AspectAttribute), staticAspectsElementInitExpressions);
+      var staticAspectsAssignExpression = Expression.Assign (staticAspectsFieldExpression, staticAspectsInitExpression);
+      var staticAspectsIfNullExpression = Expression.Equal (staticAspectsFieldExpression, Expression.Constant (null, typeof (AspectAttribute[])));
+      var staticAspectsAssignIfNullExpression = Expression.IfThen (staticAspectsIfNullExpression, staticAspectsAssignExpression);
 
-      var allMethodAspectsArrayField = mutableType.AddField (typeof (AspectAttribute[]), "_m_aspects_for_" + methodInfo.Name);
-      
-      // TODO: Bugfix for static aspect indexes when the same aspect is applied multiple times
-      //var currentStaticAspectIndex = 0;
-      //var initializers = aspectAttributes
-      //    .Select (attribute => 
-      //        attribute.Scope == AspectScope.Static
-      //        ? (Expression)Expression.ArrayAccess (Expression.Field (null, staticAspectsArrayField), Expression.Constant (currentStaticAspectIndex++))
-      //        : Expression.New (attribute.GetType())).ToList();
-
-      var allMethodAspectsInitExpression = new Func<BodyContextBase, Expression> (
-          ctx => Expression.Assign (
-              Expression.Field (ctx.This, allMethodAspectsArrayField),
-              Expression.NewArrayInit (
-                  typeof (AspectAttribute),
-                  aspectAttributesAsCollection.Select (x => GetInstanceAspectExpression (x, staticAspectsAttributes, staticAspectsArrayField)))));
+      // NOTE that instanceAspectsField is initialized using the staticAspectsField in order to iterate only the instanceAspectsField and not both
+      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), "_m_aspects_for_" + methodInfo.Name);
+      var instanceAspectsFieldExpression = new Func<BodyContextBase, Expression> (ctx =>
+        Expression.Field (ctx.This, instanceAspectsField));
+      var instanceAspectToStaticAspectsIndex = 0;
+      var instanceAspectsElementInitExpressions = aspects
+          .Select (
+              x =>
+              x.Scope == AspectScope.Static
+                  ? (Expression) Expression.ArrayAccess (staticAspectsFieldExpression, Expression.Constant (instanceAspectToStaticAspectsIndex++))
+                  : Expression.New (x.GetType()));
+      var instanceAspectsInitExpression = Expression.NewArrayInit (typeof (AspectAttribute), instanceAspectsElementInitExpressions);
+      var instanceAspectsAssignExpression = new Func<BodyContextBase, Expression> (ctx =>
+        Expression.Assign (instanceAspectsFieldExpression(ctx), instanceAspectsInitExpression));
 
       foreach (var constructor in mutableType.AllMutableConstructors)
       {
-        constructor.SetBody (ctx =>
-        {
-          var previousBodyWithArguments = ctx.PreviousBody;
-
-          return Expression.Block (
-              staticAspectsInitExpression,
-              allMethodAspectsInitExpression (ctx),
-              previousBodyWithArguments);
-        });
+        constructor.SetBody (
+            ctx =>
+            Expression.Block (
+                staticAspectsAssignIfNullExpression,
+                instanceAspectsAssignExpression (ctx),
+                ctx.PreviousBody));
       }
 
-      return allMethodAspectsArrayField;
-    }
-
-    private Expression GetInstanceAspectExpression (AspectAttribute aspect, IList<AspectAttribute> staticAspects, FieldInfo staticAspectsArrayField)
-    {
-      if (!staticAspects.Contains (aspect))
-        return Expression.New (aspect.GetType());
-      else
-        return Expression.ArrayAccess (Expression.Field (null, staticAspectsArrayField), Expression.Constant (staticAspects.IndexOf (aspect)));
+      return instanceAspectsField;
     }
 
     //TODO: Fix for aspects with ctor args and settable properties/fields

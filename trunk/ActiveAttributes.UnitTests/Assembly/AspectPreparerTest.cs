@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
@@ -6,6 +7,7 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -25,120 +27,140 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void IntroduceField_OneStatic ()
+    public void AddInstanceField ()
     {
-      var aspectsAttributes = new[] { new DomainAspect1Attribute () };
+      var aspectsAttributes = new[] { new DomainAspect1Attribute { Scope = AspectScope.Instance } };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
+
+      var fieldInfo = type.GetField ("_m_aspects_for_Method", _instanceBindingFlags);
+      Assert.That (fieldInfo, Is.Not.Null);
+      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
+    }
+
+
+    [Test]
+    public void AddStaticField ()
+    {
+      var aspectsAttributes = new[] { new DomainAspect1Attribute { Scope = AspectScope.Static } };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
+
+      var fieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      Assert.That (fieldInfo, Is.Not.Null);
+      Assert.That (fieldInfo.Attributes & FieldAttributes.Private, Is.EqualTo (FieldAttributes.Private));
+      Assert.That (fieldInfo.Attributes & FieldAttributes.Static, Is.EqualTo (FieldAttributes.Static));
+    }
+
+    [Test]
+    public void InitStaticField_Empty ()
+    {
+      var aspectsAttributes = new AspectAttribute[0];
       var type = CreateTypeWithAspectAttributes (aspectsAttributes);
       var instance = (DomainType) Activator.CreateInstance (type);
 
-      var fieldInfo = instance.GetType ().GetField ("_s_aspects_for_Method", _staticBindingFlags);
-      Assert.That (fieldInfo != null);
+      var fieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      var field = (AspectAttribute[]) fieldInfo.GetValue (instance);
 
-      var staticAspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
-      Assert.That (staticAspectsArray.Length, Is.EqualTo (1));
-
-      fieldInfo = instance.GetType ().GetField ("_m_aspects_for_Method", _instanceBindingFlags);
-      Assert.That (fieldInfo != null);
-
-      var allMethodAspectsArray = ((AspectAttribute[]) fieldInfo.GetValue (instance));
-      Assert.That (allMethodAspectsArray.Length, Is.EqualTo (1));
+      Assert.That (field, Is.Not.Null);
     }
 
     [Test]
-    public void IntroduceField_MultipleStatic ()
+    public void InitStaticField_WithElements ()
     {
-      var aspectsAttributes = new AspectAttribute[] { new DomainAspect1Attribute (), new DomainAspect2Attribute () };
+      var aspectsAttributes = new AspectAttribute[]
+                              { 
+                                new DomainAspect1Attribute { Scope = AspectScope.Static },
+                                new DomainAspect2Attribute { Scope = AspectScope.Static }
+                              };
       var type = CreateTypeWithAspectAttributes (aspectsAttributes);
       var instance = (DomainType) Activator.CreateInstance (type);
 
-      var fieldInfo = instance.GetType ().GetField ("_s_aspects_for_Method", _staticBindingFlags);
-      Assert.That (fieldInfo != null);
+      var fieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      var field = (AspectAttribute[]) fieldInfo.GetValue (instance);
 
-      var staticAspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
-      Assert.That (staticAspectsArray.Length, Is.EqualTo (2));
-      Assert.That (staticAspectsArray[0], Is.TypeOf<DomainAspect1Attribute> ());
-      Assert.That (staticAspectsArray[1], Is.TypeOf<DomainAspect2Attribute> ());
-
-      fieldInfo = instance.GetType ().GetField ("_m_aspects_for_Method", _instanceBindingFlags);
-      Assert.That (fieldInfo != null);
-
-      var allMethodAspectsArray = ((AspectAttribute[]) fieldInfo.GetValue (instance));
-      Assert.That (allMethodAspectsArray.Length, Is.EqualTo (2));
-      Assert.That (allMethodAspectsArray[0], Is.TypeOf<DomainAspect1Attribute> ());
-      Assert.That (allMethodAspectsArray[1], Is.TypeOf<DomainAspect2Attribute> ());
+      Assert.That (field.Length, Is.EqualTo (2));
+      Assert.That (field, Has.Some.InstanceOf<DomainAspect1Attribute>());
+      Assert.That (field, Has.Some.InstanceOf<DomainAspect2Attribute>());
     }
 
     [Test]
-    public void IntroduceField_OneInstance ()
+    public void InitStaticField_OnlyOnce ()
     {
-      var aspectAttributes = new AspectAttribute[] { new DomainAspect1Attribute { Scope = AspectScope.Instance } };
-      var type = CreateTypeWithAspectAttributes (aspectAttributes);
+      var aspectsAttributes = new[] { new DomainAspect1Attribute { Scope = AspectScope.Static } };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
       var instance = (DomainType) Activator.CreateInstance (type);
 
-      var fieldInfo = instance.GetType ().GetField ("_m_aspects_for_Method", _instanceBindingFlags);
-      Assert.That (fieldInfo != null);
+      var fieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      var fieldBefore = (AspectAttribute[]) fieldInfo.GetValue (instance);
+      instance = (DomainType) Activator.CreateInstance (type);
+      var fieldAfter = (AspectAttribute[]) fieldInfo.GetValue (instance);
 
-      var allMethodAspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
-      Assert.That (allMethodAspectsArray.Length, Is.EqualTo (1));
-
-      fieldInfo = instance.GetType ().GetField ("_s_aspects_for_Method", _staticBindingFlags);
-      Assert.That (fieldInfo != null);
-
-      var staticAspectsArray = ((AspectAttribute[]) fieldInfo.GetValue (instance));
-      Assert.That (staticAspectsArray.Length, Is.EqualTo (0));
+      Assert.That (fieldBefore, Is.SameAs (fieldAfter));
     }
 
     [Test]
-    public void IntroduceField_MultipleInstance ()
+    public void InitStaticField_MultipleConstructors ()
     {
-      var aspectAttributes = new AspectAttribute[]
-                             {
-                                 new DomainAspect1Attribute { Scope = AspectScope.Instance },
-                                 new DomainAspect2Attribute { Scope = AspectScope.Instance }
-                             };
-      var type = CreateTypeWithAspectAttributes (aspectAttributes);
-      var instance = (DomainType) Activator.CreateInstance (type);
+      var aspectsAttributes = new[] { new DomainAspect1Attribute { Scope = AspectScope.Static } };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
+      var instance = (DomainType) Activator.CreateInstance (type, "arg");
 
-      var fieldInfo = instance.GetType().GetField ("_m_aspects_for_Method", _instanceBindingFlags);
-      Assert.That (fieldInfo != null);
+      var fieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      var field = (AspectAttribute[]) fieldInfo.GetValue (instance);
 
-      var allMethodAspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
-      Assert.That (allMethodAspectsArray.Length, Is.EqualTo (2));
-      Assert.That (allMethodAspectsArray[0], Is.TypeOf<DomainAspect1Attribute>());
-      Assert.That (allMethodAspectsArray[1], Is.TypeOf<DomainAspect2Attribute>());
-
-      fieldInfo = instance.GetType ().GetField ("_s_aspects_for_Method", _staticBindingFlags);
-      Assert.That (fieldInfo != null);
-
-      var staticAspectsArray = ((AspectAttribute[]) fieldInfo.GetValue (instance));
-      Assert.That (staticAspectsArray.Length, Is.EqualTo (0));
+      Assert.That (field, Is.Not.Null);
     }
 
     [Test]
-    public void IntroduceField_MultipleMixed ()
+    public void InitInstanceField_Empty ()
     {
-      var aspectAttributes = new AspectAttribute[]
-                             {
-                                 new DomainAspect1Attribute { Scope = AspectScope.Static },
-                                 new DomainAspect2Attribute { Scope = AspectScope.Instance },
-                             };
-      var type = CreateTypeWithAspectAttributes (aspectAttributes);
+      var aspectsAttributes = new AspectAttribute[0];
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
       var instance = (DomainType) Activator.CreateInstance (type);
 
-      var fieldInfo = instance.GetType ().GetField ("_s_aspects_for_Method", _staticBindingFlags);
-      Assert.That (fieldInfo != null);
+      var fieldInfo = type.GetField ("_m_aspects_for_Method", _instanceBindingFlags);
+      var field = (AspectAttribute[]) fieldInfo.GetValue (instance);
 
-      var staticAspectsArray = ((AspectAttribute[]) fieldInfo.GetValue (instance));
-      Assert.That (staticAspectsArray.Length, Is.EqualTo (1));
-      Assert.That (staticAspectsArray[0], Is.TypeOf<DomainAspect1Attribute>());
+      Assert.That (field, Is.Not.Null);
+    }
 
-      fieldInfo = instance.GetType ().GetField ("_m_aspects_for_Method", _instanceBindingFlags);
-      Assert.That (fieldInfo != null);
+    [Test]
+    public void InitInstanceField_WithElements ()
+    {
+      var aspectsAttributes = new AspectAttribute[]
+                              { 
+                                new DomainAspect1Attribute { Scope = AspectScope.Instance },
+                                new DomainAspect2Attribute { Scope = AspectScope.Instance }
+                              };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
+      var instance = (DomainType) Activator.CreateInstance (type);
 
-      var allMethodAspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
-      Assert.That (allMethodAspectsArray.Length, Is.EqualTo (2));
-      Assert.That (allMethodAspectsArray[0], Is.TypeOf<DomainAspect1Attribute> ());
-      Assert.That (allMethodAspectsArray[1], Is.TypeOf<DomainAspect2Attribute> ());
+      var fieldInfo = type.GetField ("_m_aspects_for_Method", _instanceBindingFlags);
+      var field = (AspectAttribute[]) fieldInfo.GetValue (instance);
+
+      Assert.That (field.Length, Is.EqualTo (2));
+      Assert.That (field, Has.Some.InstanceOf<DomainAspect1Attribute> ());
+      Assert.That (field, Has.Some.InstanceOf<DomainAspect2Attribute> ());
+    }
+
+    [Test]
+    public void InitInstanceField_WithElementsFromStatic ()
+    {
+      var aspectsAttributes = new AspectAttribute[]
+                              { 
+                                new DomainAspect1Attribute { Scope = AspectScope.Static },
+                                new DomainAspect1Attribute { Scope = AspectScope.Static }
+                              };
+      var type = CreateTypeWithAspectAttributes (aspectsAttributes);
+      var instance = (DomainType) Activator.CreateInstance (type);
+
+      var instanceFieldInfo = type.GetField ("_m_aspects_for_Method", _instanceBindingFlags);
+      var instanceField = (AspectAttribute[]) instanceFieldInfo.GetValue (instance);
+
+      var staticFieldInfo = type.GetField ("_s_aspects_for_Method", _staticBindingFlags);
+      var staticField = (AspectAttribute[]) staticFieldInfo.GetValue (instance);
+
+      Assert.That (instanceField[0], Is.SameAs (staticField[0]));
+      Assert.That (instanceField[1], Is.SameAs (staticField[1]));
     }
 
     private Type CreateTypeWithAspectAttributes (AspectAttribute[] aspectAttributes)
@@ -155,9 +177,11 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public class DomainType
     {
-      public void Method ()
-      {
-      }
+      public DomainType () { }
+
+      public DomainType (string arg) { }
+
+      public void Method () { }
     }
 
     public class DomainAspect1Attribute : MethodInterceptionAspectAttribute
