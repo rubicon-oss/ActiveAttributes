@@ -4,6 +4,26 @@ using ActiveAttributes.Core.Contexts.ArgumentCollection;
 
 namespace ActiveAttributes.Core.Contexts
 {
+  public abstract class InvocationContext : IInvocationContext, IReadOnlyInvocationContext
+  {
+    protected InvocationContext (MethodInfo methodInfo)
+    {
+      MethodInfo = methodInfo;
+    }
+
+    public MethodInfo MethodInfo { get; private set; }
+
+    public abstract IArgumentCollection Arguments { get; }
+    public abstract object Instance { get; }
+
+    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
+    {
+      get { return (IReadOnlyArgumentCollection) Arguments; }
+    }
+
+    public abstract object ReturnValue { get; set; }
+  }
+
   public class FuncInvocationContext<TInstance, TR> : IInvocationContext, IReadOnlyInvocationContext
   {
     private EmptyArgumentCollection _argumentCollection;

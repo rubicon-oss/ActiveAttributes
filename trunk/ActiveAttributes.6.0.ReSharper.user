@@ -1,134 +1,137 @@
 <Configuration>
   <RecentFiles>
     <RecentFiles>
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/d:ArgumentCollection/f:ActionArgumentCollection.cs" caret="1713" fromTop="40" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/d:ArgumentCollection/f:EmptyArgumentCollection.cs" caret="742" fromTop="31" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:MethodPatcherTest.cs" caret="3308" fromTop="59" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:MethodWithAspectsProviderTest.cs" caret="0" fromTop="0" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:TypeProvider.cs" caret="5547" fromTop="174" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:MethodPatcher.cs" caret="1134" fromTop="19" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:Test1.cs" caret="422" fromTop="18" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/f:SetupFixture.cs" caret="0" fromTop="0" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/f:TestBase.cs" caret="0" fromTop="0" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/d:ArgumentCollection/f:IArgumentCollection.cs" caret="147" fromTop="5" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:IInvocationContext.cs" caret="274" fromTop="10" />
       <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:IInvocation.cs" caret="159" fromTop="7" />
       <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/f:ObjectFactory.cs" caret="1112" fromTop="26" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:Assembler.cs" caret="876" fromTop="26" />
-      <File id="81952B3A-9C4A-49A3-A1E3-6BB2F298586F/f:MutableType.cs" caret="22162" fromTop="23" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:MethodWithAspectsProvider.cs" caret="997" fromTop="24" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:IInvocationContext.cs" caret="274" fromTop="10" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/d:ArgumentCollection/f:IArgumentCollection.cs" caret="147" fromTop="5" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/d:ArgumentCollection/f:FuncArgumentCollection.cs" caret="152" fromTop="6" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="849" fromTop="23" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:FuncInvocationContext.cs" caret="1538" fromTop="31" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TypedAspectTest.cs" caret="911" fromTop="21" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="35" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:FuncInvocation.cs" caret="1035" fromTop="36" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="724" fromTop="28" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:Invocation.cs" caret="338" fromTop="14" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectPreparer.cs" caret="1000" fromTop="22" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="2773" fromTop="32" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/f:SetupFixture.cs" caret="0" fromTop="0" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:TypeProvider.cs" caret="2699" fromTop="35" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="577" fromTop="17" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:ActionInvocation.cs" caret="1038" fromTop="16" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:IReadOnlyInvocationContext.cs" caret="165" fromTop="6" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:ActionInvocationContext.cs" caret="616" fromTop="20" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Extensions/f:MethodInfoExtensions.cs" caret="728" fromTop="22" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Extensions/f:MethodBaseExtensions.cs" caret="273" fromTop="9" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Extensions/f:MethodInfoExtensionsTest.cs" caret="1725" fromTop="47" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:MethodPatcher.cs" caret="10314" fromTop="47" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:Assembler.cs" caret="5275" fromTop="93" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="503" fromTop="19" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:FuncInvocation.cs" caret="485" fromTop="18" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:Invocation.cs" caret="0" fromTop="0" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:FuncInvocationContext.cs" caret="144" fromTop="5" />
+      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="968" fromTop="11" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:FieldIntroducer.cs" caret="684" fromTop="20" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="443" fromTop="22" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectsProvider.cs" caret="435" fromTop="9" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:MethodWithAspectsProviderTest.cs" caret="1542" fromTop="7" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:MethodWithAspectsProvider.cs" caret="968" fromTop="24" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:ConstructorPatcher.cs" caret="209" fromTop="8" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectPreparer.cs" caret="1133" fromTop="12" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/f:TestBase.cs" caret="1398" fromTop="47" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="1257" fromTop="36" />
     </RecentFiles>
     <RecentEdits>
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="849" fromTop="44" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="849" fromTop="60" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="849" fromTop="33" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:OuterInvocation.cs" caret="849" fromTop="23" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2136" fromTop="54" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="1980" fromTop="49" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2136" fromTop="54" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:FuncInvocation.cs" caret="804" fromTop="27" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:Invocation.cs" caret="596" fromTop="21" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Invocations/f:Invocation.cs" caret="391" fromTop="14" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Contexts/f:FuncInvocationContext.cs" caret="1560" fromTop="31" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TypedAspectTest.cs" caret="1585" fromTop="46" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="36" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="25" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="31" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="36" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TypedAspectTest.cs" caret="1104" fromTop="29" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2179" fromTop="35" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2179" fromTop="52" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2179" fromTop="41" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="1881" fromTop="19" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2179" fromTop="46" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:CachingAspectTest.cs" caret="2179" fromTop="22" />
-      <File id="550D08D9-B5F7-4B9A-ADF4-429D54229243/f:TraceAspectTest.cs" caret="2243" fromTop="35" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="727" fromTop="18" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="1034" fromTop="24" />
-      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectPreparer.cs" caret="1000" fromTop="22" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="1204" fromTop="42" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="1034" fromTop="19" />
-      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectPreparerTest.cs" caret="2773" fromTop="32" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:FieldIntroducer.cs" caret="2297" fromTop="22" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="4223" fromTop="26" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="4036" fromTop="39" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="5158" fromTop="38" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="4763" fromTop="38" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="413" fromTop="13" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="5336" fromTop="36" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="225" fromTop="6" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="852" fromTop="23" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="5267" fromTop="31" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:FieldIntroducer.cs" caret="246" fromTop="9" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectPreparer.cs" caret="1174" fromTop="12" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="1609" fromTop="29" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="2703" fromTop="45" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="3254" fromTop="46" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:FieldIntroducer.cs" caret="1384" fromTop="32" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:FieldIntroducer.cs" caret="1639" fromTop="36" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:ConstructorPatcher.cs" caret="217" fromTop="8" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="639" fromTop="22" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="1298" fromTop="40" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="1217" fromTop="39" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="566" fromTop="22" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="918" fromTop="37" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="773" fromTop="32" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="998" fromTop="44" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="1161" fromTop="50" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="305" fromTop="11" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:AspectsProviderTest.cs" caret="436" fromTop="21" />
+      <File id="24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1/d:Assembly/f:AspectsProvider.cs" caret="435" fromTop="9" />
+      <File id="6C3DF317-2340-4945-A870-B9106FD7CDF0/d:Assembly/f:FieldIntroducerTest.cs" caret="1383" fromTop="40" />
     </RecentEdits>
   </RecentFiles>
   <CompletionStatisticsManager>
     <ItemStatistics item="CSharpCodeCompletionContext">
-      <Item value="public" priority="4122" />
-      <Item value="object" priority="1827" />
-      <Item value="class" priority="2076" />
+      <Item value="public" priority="5177" />
+      <Item value="object" priority="1859" />
+      <Item value="class" priority="2491" />
       <Item value="MethodBoundaryAspect`0" priority="127" />
-      <Item value="override" priority="1055" />
+      <Item value="override" priority="1087" />
       <Item value="invocation" priority="2262" />
-      <Item value="int" priority="1406" />
+      <Item value="int" priority="1502" />
       <Item value="virtual" priority="415" />
-      <Item value="return" priority="2719" />
+      <Item value="return" priority="3071" />
       <Item value="TestableMethodBoundaryAspect" priority="31" />
-      <Item value="_test" priority="831" />
-      <Item value="var" priority="5247" />
+      <Item value="_test" priority="1151" />
+      <Item value="var" priority="6783" />
       <Item value="_instance" priority="191" />
-      <Item value="at" priority="1471" />
+      <Item value="at" priority="2015" />
       <Item value="Aspect`0" priority="223" />
-      <Item value="void" priority="1277" />
+      <Item value="void" priority="1629" />
       <Item value="Invocation`0" priority="444" />
-      <Item value="string" priority="1024" />
+      <Item value="string" priority="1408" />
       <Item value="PropertyInterceptionAspect" priority="63" />
       <Item value="AttributeTargets`0" priority="127" />
       <Item value="SkipDeletion`0" priority="191" />
       <Item value="T" priority="128" />
-      <Item value="static" priority="254" />
-      <Item value="new" priority="3970" />
+      <Item value="static" priority="286" />
+      <Item value="new" priority="4578" />
       <Item value="Assembler" priority="28" />
       <Item value="Environment`0" priority="26" />
-      <Item value="typeof" priority="2589" />
+      <Item value="typeof" priority="2909" />
       <Item value="ActivationContext`0" priority="31" />
-      <Item value="Activator`0" priority="122" />
+      <Item value="Activator`0" priority="186" />
       <Item value="assembledType" priority="31" />
-      <Item value="bool" priority="319" />
-      <Item value="true" priority="415" />
-      <Item value="method" priority="669" />
+      <Item value="bool" priority="351" />
+      <Item value="true" priority="543" />
+      <Item value="method" priority="701" />
       <Item value="ValidatingAspect" priority="31" />
       <Item value="ExpectedException" priority="159" />
       <Item value="InvalidOperationException`0" priority="63" />
       <Item value="ExpectedMessage" priority="95" />
-      <Item value="x" priority="447" />
+      <Item value="x" priority="671" />
       <Item value="StringComparison`0" priority="31" />
-      <Item value="foreach" priority="223" />
-      <Item value="in" priority="191" />
-      <Item value="aspectAttributes" priority="634" />
+      <Item value="foreach" priority="319" />
+      <Item value="in" priority="255" />
+      <Item value="aspectAttributes" priority="661" />
       <Item value="if" priority="1215" />
       <Item value="aspectAttribute" priority="123" />
-      <Item value="throw" priority="767" />
+      <Item value="throw" priority="831" />
       <Item value="InvalidOperationException" priority="28" />
       <Item value="Test`0" priority="63" />
       <Item value="NonProceedingAspect" priority="31" />
-      <Item value="Expression`0" priority="2903" />
-      <Item value="Type`0" priority="443" />
-      <Item value="type" priority="411" />
+      <Item value="Expression`0" priority="3561" />
+      <Item value="Type`0" priority="536" />
+      <Item value="type" priority="635" />
       <Item value="AssemblerTest`0" priority="26" />
-      <Item value="i" priority="607" />
-      <Item value="_setup" priority="95" />
-      <Item value="private" priority="2495" />
+      <Item value="i" priority="735" />
+      <Item value="_setup" priority="159" />
+      <Item value="private" priority="2687" />
       <Item value="LogManager`0" priority="223" />
       <Item value="_logger" priority="255" />
       <Item value="LoggingAspect" priority="31" />
-      <Item value="mutableType" priority="731" />
+      <Item value="mutableType" priority="1078" />
       <Item value="m" priority="31" />
       <Item value="Logger`0" priority="31" />
       <Item value="Targets" priority="22" />
       <Item value="DebugTarget" priority="22" />
       <Item value="_target" priority="95" />
       <Item value="rule" priority="31" />
-      <Item value="DomainType`0" priority="409" />
+      <Item value="DomainType`0" priority="604" />
       <Item value="ObjectFactory`0" priority="63" />
       <Item value="LoggingConfiguration" priority="28" />
       <Item value="logger" priority="31" />
@@ -138,7 +141,7 @@
       <Item value="enum" priority="30" />
       <Item value="_obj" priority="127" />
       <Item value="_blankInvocation" priority="63" />
-      <Item value="ctor" priority="735" />
+      <Item value="ctor" priority="927" />
       <Item value="FlowBehavior`0" priority="31" />
       <Item value="TestableMethodBoundaryAspect`0" priority="93" />
       <Item value="Return" priority="16" />
@@ -157,49 +160,49 @@
       <Item value="Default" priority="16" />
       <Item value="break" priority="63" />
       <Item value="ContinuingMethodBoundaryAspect" priority="29" />
-      <Item value="null" priority="1823" />
+      <Item value="null" priority="2015" />
       <Item value="ImplicitContinuingMethodBoundaryAspect" priority="26" />
       <Item value="Invocation" priority="89" />
-      <Item value="delegate" priority="122" />
+      <Item value="delegate" priority="154" />
       <Item value="innerInvocation" priority="576" />
       <Item value="_delegate" priority="63" />
-      <Item value="Instance" priority="319" />
+      <Item value="Instance" priority="343" />
       <Item value="Method" priority="53" />
-      <Item value="Arguments" priority="223" />
+      <Item value="Arguments" priority="255" />
       <Item value="outerInvocation" priority="64" />
-      <Item value="MethodInfo`0" priority="511" />
-      <Item value="Delegate`0" priority="96" />
+      <Item value="MethodInfo`0" priority="639" />
+      <Item value="Delegate`0" priority="192" />
       <Item value="originalMethod" priority="95" />
-      <Item value="ctx" priority="287" />
+      <Item value="ctx" priority="479" />
       <Item value="readonly" priority="287" />
       <Item value="_innerInvocation" priority="255" />
-      <Item value="ReturnValue" priority="400" />
+      <Item value="ReturnValue" priority="432" />
       <Item value="else" priority="575" />
       <Item value="invokeMethodInfo" priority="31" />
       <Item value="aspect" priority="63" />
       <Item value="PropertyInterceptionAspect`0" priority="186" />
-      <Item value="false" priority="159" />
+      <Item value="false" priority="191" />
       <Item value="property" priority="95" />
-      <Item value="FieldInfo`0" priority="63" />
+      <Item value="FieldInfo`0" priority="156" />
       <Item value="isPropertyMethod" priority="31" />
       <Item value="MutableFieldInfo`0" priority="89" />
       <Item value="_aspectArrayType" priority="191" />
       <Item value="customAttributes" priority="317" />
-      <Item value="Length" priority="458" />
+      <Item value="Length" priority="486" />
       <Item value="_aspectInstanceType" priority="191" />
-      <Item value="MutableMethodInfo`0" priority="254" />
-      <Item value="default" priority="223" />
+      <Item value="MutableMethodInfo`0" priority="286" />
+      <Item value="default" priority="319" />
       <Item value="GetInvocationMethod`0" priority="26" />
       <Item value="asrt" priority="31" />
       <Item value="AddOneToValueOnSetPropertyAspect`0" priority="31" />
       <Item value="TResult`0" priority="347" />
-      <Item value="base" priority="607" />
-      <Item value="Func" priority="282" />
+      <Item value="base" priority="703" />
+      <Item value="Func" priority="375" />
       <Item value="InvocationTTest" priority="28" />
       <Item value="NotSupportedException" priority="171" />
-      <Item value="Type" priority="86" />
+      <Item value="Type" priority="173" />
       <Item value="types" priority="31" />
-      <Item value="BindingFlags`0" priority="31" />
+      <Item value="BindingFlags`0" priority="63" />
       <Item value="struct" priority="124" />
       <Item value="interface" priority="497" />
       <Item value="Parameter" priority="32" />
@@ -211,7 +214,7 @@
       <Item value="OnEntry`0" priority="64" />
       <Item value="tryf" priority="31" />
       <Item value="OnExit`0" priority="31" />
-      <Item value="Exception" priority="202" />
+      <Item value="Exception" priority="261" />
       <Item value="OnException`0" priority="26" />
       <Item value="exception" priority="319" />
       <Item value="OnSuccess`0" priority="31" />
@@ -220,41 +223,41 @@
       <Item value="_blankInvocation2" priority="95" />
       <Item value="Invocation2" priority="57" />
       <Item value="ReadOnlyCollection&lt;object&gt;" priority="86" />
-      <Item value="MethodInfo" priority="159" />
+      <Item value="MethodInfo" priority="191" />
       <Item value="OnEntryCalled" priority="31" />
       <Item value="Action`0" priority="63" />
       <Item value="AspectInvocationException" priority="28" />
       <Item value="action" priority="192" />
-      <Item value="Action" priority="973" />
+      <Item value="Action" priority="1037" />
       <Item value="WrapIfThrowing`0" priority="59" />
       <Item value="_action" priority="223" />
       <Item value="ReturnedValue" priority="31" />
       <Item value="returnValue" priority="31" />
       <Item value="TInstance`0" priority="1359" />
-      <Item value="TA0`0" priority="956" />
-      <Item value="methodInfo" priority="1088" />
-      <Item value="instance" priority="415" />
+      <Item value="TA0`0" priority="988" />
+      <Item value="methodInfo" priority="1526" />
+      <Item value="instance" priority="511" />
       <Item value="arguments" priority="63" />
       <Item value="Arg0" priority="191" />
       <Item value="arg0" priority="95" />
       <Item value="MutableType" priority="62" />
       <Item value="PropertyInterceptionAspectAttribute`0" priority="254" />
-      <Item value="MutableType`0" priority="64" />
+      <Item value="MutableType`0" priority="161" />
       <Item value="_mutableType" priority="53" />
       <Item value="_provider" priority="58" />
       <Item value="Dictionary" priority="26" />
       <Item value="IEnumerable" priority="159" />
       <Item value="AspectAccessor`0" priority="31" />
-      <Item value="AspectAttribute`0" priority="601" />
+      <Item value="AspectAttribute`0" priority="853" />
       <Item value="InvalidExpressionException" priority="29" />
       <Item value="InvocationBase`0" priority="95" />
       <Item value="params" priority="95" />
       <Item value="_arguments" priority="31" />
       <Item value="SimpleInvocation" priority="28" />
       <Item value="ActionInvocationT" priority="29" />
-      <Item value="abstract" priority="125" />
+      <Item value="abstract" priority="189" />
       <Item value="IInvocationInfoT" priority="31" />
-      <Item value="ActionInvocation" priority="306" />
+      <Item value="ActionInvocation" priority="338" />
       <Item value="counter" priority="31" />
       <Item value="protected" priority="159" />
       <Item value="InnerInvocation" priority="474" />
@@ -263,13 +266,13 @@
       <Item value="FuncInvocation" priority="157" />
       <Item value="_returnValue" priority="63" />
       <Item value="FuncInvocationBase" priority="31" />
-      <Item value="delegateType" priority="31" />
+      <Item value="delegateType" priority="63" />
       <Item value="Void`0" priority="31" />
       <Item value="IInvocation`0" priority="795" />
       <Item value="value" priority="223" />
-      <Item value="mutableMethod" priority="777" />
-      <Item value="MethodInterceptionAspectAttribute`0" priority="510" />
-      <Item value="DomainAspect" priority="63" />
+      <Item value="mutableMethod" priority="1065" />
+      <Item value="MethodInterceptionAspectAttribute`0" priority="537" />
+      <Item value="DomainAspect" priority="95" />
       <Item value="DomainMethodAspectAttribute`0" priority="116" />
       <Item value="MutableTypeObjectMother`0" priority="63" />
       <Item value="DomainType1`0" priority="62" />
@@ -284,28 +287,28 @@
       <Item value="List" priority="119" />
       <Item value="attributes" priority="127" />
       <Item value="propertyInfo" priority="31" />
-      <Item value="aspects" priority="182" />
+      <Item value="aspects" priority="278" />
       <Item value="Cast`1" priority="26" />
       <Item value="dict" priority="63" />
       <Item value="IList" priority="31" />
       <Item value="Tuple&lt;MutableMethodInfo,IEnumerable&lt;AspectAttribute&gt;&gt;" priority="28" />
       <Item value="result" priority="159" />
-      <Item value="this" priority="223" />
+      <Item value="this" priority="287" />
       <Item value="cw" priority="127" />
       <Item value="list" priority="63" />
       <Item value="Func&lt;int&gt;" priority="28" />
       <Item value="prop" priority="31" />
       <Item value="DomainPropertyAspect" priority="31" />
-      <Item value="Is`0" priority="95" />
+      <Item value="Is`0" priority="255" />
       <Item value="mutable" priority="27" />
-      <Item value="_introducer" priority="63" />
-      <Item value="FieldIntroducer" priority="28" />
+      <Item value="_introducer" priority="191" />
+      <Item value="FieldIntroducer" priority="57" />
       <Item value="_object" priority="31" />
       <Item value="MutableTypeObjectMother" priority="16" />
       <Item value="DomainAspectAttribute`0" priority="97" />
       <Item value="Object`0" priority="95" />
-      <Item value="obj" priority="159" />
-      <Item value="MemberInfoFromExpressionUtility`0" priority="95" />
+      <Item value="obj" priority="223" />
+      <Item value="MemberInfoFromExpressionUtility`0" priority="127" />
       <Item value="_initializer" priority="63" />
       <Item value="DomainAspectAttribute" priority="116" />
       <Item value="invocation1" priority="95" />
@@ -340,19 +343,19 @@
       <Item value="InvocationContext`0" priority="31" />
       <Item value="indexer" priority="31" />
       <Item value="ITypedInvocationContext" priority="192" />
-      <Item value="IInvocationContext`0" priority="223" />
+      <Item value="IInvocationContext`0" priority="255" />
       <Item value="IInvocationContextBase`0" priority="127" />
       <Item value="ITypedInvocationContextBase" priority="31" />
       <Item value="InsufficientMemoryException`0" priority="31" />
       <Item value="IActionInvocationContext" priority="223" />
-      <Item value="IReadOnlyInvocationContext`0" priority="128" />
+      <Item value="IReadOnlyInvocationContext`0" priority="160" />
       <Item value="IReadOnlyInvocation`0" priority="160" />
       <Item value="IFuncInvocationContext" priority="64" />
       <Item value="ITypedInvocation" priority="95" />
       <Item value="invocationContext" priority="32" />
       <Item value="Context" priority="159" />
       <Item value="context" priority="896" />
-      <Item value="_context" priority="351" />
+      <Item value="_context" priority="383" />
       <Item value="TypedInvocation" priority="62" />
       <Item value="_innerAspect" priority="95" />
       <Item value="_proceed" priority="159" />
@@ -376,25 +379,25 @@
       <Item value="ActionInvocationContext" priority="75" />
       <Item value="CreateLambda" priority="22" />
       <Item value="outerCalled" priority="63" />
-      <Item value="TestBase`0" priority="63" />
+      <Item value="TestBase`0" priority="95" />
       <Item value="AssembleType`1" priority="31" />
-      <Item value="Static" priority="113" />
-      <Item value="staticAspectsField" priority="31" />
-      <Item value="FieldAttributes" priority="16" />
+      <Item value="Static" priority="205" />
+      <Item value="staticAspectsField" priority="64" />
+      <Item value="FieldAttributes" priority="33" />
       <Item value="staticAspectsAttributes" priority="63" />
-      <Item value="FieldAttributes`0" priority="122" />
+      <Item value="FieldAttributes`0" priority="218" />
       <Item value="TypeDescriptor" priority="16" />
       <Item value="td" priority="31" />
       <Item value="MethodPatcherTest`0" priority="31" />
       <Item value="_patcher" priority="63" />
       <Item value="MethodPatcher" priority="57" />
-      <Item value="CreateTypeWithAspectAttributes`0" priority="31" />
+      <Item value="CreateTypeWithAspectAttributes`0" priority="95" />
       <Item value="MethodAttributes" priority="16" />
-      <Item value="Private" priority="22" />
-      <Item value="_instanceBindingFlags" priority="63" />
+      <Item value="Private" priority="45" />
+      <Item value="_instanceBindingFlags" priority="223" />
       <Item value="BindingFlags" priority="28" />
       <Item value="IReadOnlyArgumentCollection`0" priority="159" />
-      <Item value="IArgumentCollection`0" priority="159" />
+      <Item value="IArgumentCollection`0" priority="255" />
       <Item value="idx" priority="31" />
       <Item value="IndexOutOfRangeException" priority="87" />
       <Item value="_invocationContext" priority="127" />
@@ -406,13 +409,13 @@
       <Item value="EmptyArgumentCollection" priority="58" />
       <Item value="ActionArgumentCollection" priority="31" />
       <Item value="ActionArgumentCollection&lt;TInstance,TA0&gt;" priority="29" />
-      <Item value="AssemblyTrademarkAttribute`0" priority="65" />
+      <Item value="AssemblyTrademarkAttribute`0" priority="97" />
       <Item value="GetInvocationContext`0" priority="63" />
       <Item value="FuncInvocationContext" priority="191" />
       <Item value="GetArgumentCollection`0" priority="31" />
-      <Item value="AspectAttribute" priority="28" />
+      <Item value="AspectAttribute" priority="86" />
       <Item value="SetCultureAttribute`0" priority="31" />
-      <Item value="fieldInfo" priority="127" />
+      <Item value="fieldInfo" priority="251" />
       <Item value="aspectsArray" priority="31" />
       <Item value="OnIntercept`0" priority="31" />
       <Item value="allMethodAspectsArrayField" priority="383" />
@@ -425,7 +428,7 @@
       <Item value="for" priority="159" />
       <Item value="invocationVariableExpressions" priority="62" />
       <Item value="ParameterExpression" priority="28" />
-      <Item value="Enumerable`0" priority="95" />
+      <Item value="Enumerable`0" priority="127" />
       <Item value="ArgumentItemNullException`0" priority="31" />
       <Item value="PostSharp" priority="31" />
       <Item value="Aspects" priority="26" />
@@ -478,7 +481,7 @@
       <Item value="invocationType" priority="90" />
       <Item value="First`2" priority="26" />
       <Item value="Single`2" priority="81" />
-      <Item value="parameterTypes" priority="63" />
+      <Item value="parameterTypes" priority="95" />
       <Item value="length" priority="31" />
       <Item value="ArgumentException" priority="28" />
       <Item value="TypeProvider`0" priority="31" />
@@ -488,7 +491,7 @@
       <Item value="_returnType" priority="60" />
       <Item value="_parameterCount" priority="31" />
       <Item value="baseType" priority="63" />
-      <Item value="Concat`1" priority="53" />
+      <Item value="Concat`1" priority="80" />
       <Item value="TypeProvider" priority="28" />
       <Item value="lastIndexExpression" priority="63" />
       <Item value="invocationsInitExpression" priority="31" />
@@ -518,9 +521,9 @@
       <Item value="_funcInvocationOpenTypes" priority="31" />
       <Item value="MethodCalled" priority="31" />
       <Item value="copiedMethodInfo" priority="31" />
-      <Item value="Test" priority="31" />
+      <Item value="Test" priority="63" />
       <Item value="DomainType4`0" priority="30" />
-      <Item value="DomainAspect2Attribute" priority="28" />
+      <Item value="DomainAspect2Attribute" priority="57" />
       <Item value="expressionList" priority="63" />
       <Item value="interceptMethodInfo" priority="31" />
       <Item value="interceptDelegateVariableExpression" priority="63" />
@@ -529,14 +532,14 @@
       <Item value="expression" priority="31" />
       <Item value="ObjectFactory" priority="16" />
       <Item value="lastIndex" priority="31" />
-      <Item value="System" priority="63" />
+      <Item value="System" priority="94" />
       <Item value="Diagnostics" priority="26" />
       <Item value="Trace`0" priority="58" />
       <Item value="AssemblyBuilder" priority="17" />
       <Item value="assemblyFileName" priority="31" />
       <Item value="Assert`0" priority="63" />
       <Item value="Priority" priority="31" />
-      <Item value="Scope" priority="31" />
+      <Item value="Scope" priority="63" />
       <Item value="Tuple`0" priority="31" />
       <Item value="ref" priority="31" />
       <Item value="Expression" priority="28" />
@@ -551,7 +554,7 @@
       <Item value="staticAspectIndexes" priority="31" />
       <Item value="NullReferenceException`0" priority="26" />
       <Item value="Reflection" priority="27" />
-      <Item value="CustomAttributeData`0" priority="58" />
+      <Item value="CustomAttributeData`0" priority="120" />
       <Item value="cad" priority="31" />
       <Item value="attributeData" priority="95" />
       <Item value="arg" priority="255" />
@@ -567,9 +570,80 @@
       <Item value="_cache" priority="63" />
       <Item value="key" priority="63" />
       <Item value="CacheAspectAttribute`0" priority="31" />
-      <Item value="out" priority="31" />
+      <Item value="out" priority="63" />
       <Item value="mt" priority="31" />
-      <Item value="Has`0" priority="95" />
+      <Item value="Has`0" priority="127" />
+      <Item value="aspectsAttributes" priority="31" />
+      <Item value="_staticBindingFlags" priority="95" />
+      <Item value="aspectAttributesAsCollection" priority="31" />
+      <Item value="methodAspectsStaticField" priority="31" />
+      <Item value="staticAspectsFieldExpression" priority="63" />
+      <Item value="staticAspectsInitExpression" priority="31" />
+      <Item value="staticAspectsAssignExpression" priority="63" />
+      <Item value="staticAspects" priority="31" />
+      <Item value="DomainAspect1Attribute`0" priority="62" />
+      <Item value="MethodBoundaryAspectAttribute" priority="28" />
+      <Item value="fieldBefore" priority="64" />
+      <Item value="fieldAfter" priority="31" />
+      <Item value="DomainAspect1Attribute" priority="59" />
+      <Item value="const" priority="63" />
+      <Item value="constructor" priority="26" />
+      <Item value="staticAspectsIfNotSetExpression" priority="31" />
+      <Item value="BodyContextBase`0" priority="61" />
+      <Item value="instanceAspectsField" priority="59" />
+      <Item value="instanceAspectsFieldExpression" priority="31" />
+      <Item value="instanceAspectsInitExpression" priority="31" />
+      <Item value="instanceField" priority="32" />
+      <Item value="staticField" priority="31" />
+      <Item value="allMethodAspectsInitExpression" priority="31" />
+      <Item value="&lt;see cref=&quot;&quot;/&gt;" priority="51" />
+      <Item value="AspectPreparer`0" priority="31" />
+      <Item value="_docFalse" priority="30" />
+      <Item value="Attribute`0" priority="31" />
+      <Item value="AttributeUsage" priority="95" />
+      <Item value="All" priority="45" />
+      <Item value="Inherited" priority="63" />
+      <Item value="Attr" priority="31" />
+      <Item value="Derived" priority="58" />
+      <Item value="EnvironmentVariableTarget" priority="28" />
+      <Item value="attr" priority="31" />
+      <Item value="attr1" priority="31" />
+      <Item value="K" priority="31" />
+      <Item value="JetBrains" priority="31" />
+      <Item value="Annotations" priority="26" />
+      <Item value="MeansImplicitUse" priority="26" />
+      <Item value="UsedImplicitly" priority="26" />
+      <Item value="MethodInfoExtensions`0" priority="127" />
+      <Item value="delegateTypes" priority="31" />
+      <Item value="addInstanceType" priority="90" />
+      <Item value="returnType" priority="31" />
+      <Item value="Data`0" priority="63" />
+      <Item value="Data" priority="28" />
+      <Item value="MethodInfoField" priority="31" />
+      <Item value="methodInfoField" priority="32" />
+      <Item value="DelegateField" priority="32" />
+      <Item value="delegateField" priority="65" />
+      <Item value="StaticAspectsField" priority="32" />
+      <Item value="InstanceAspectsField" priority="32" />
+      <Item value="FieldIntroducer`0" priority="63" />
+      <Item value="data" priority="159" />
+      <Item value="tuple" priority="63" />
+      <Item value="methodMethod" priority="31" />
+      <Item value="instanceType" priority="63" />
+      <Item value="do" priority="31" />
+      <Item value="using" priority="30" />
+      <Item value="Linq" priority="26" />
+      <Item value="baseName" priority="95" />
+      <Item value="GetMethodToken`0" priority="31" />
+      <Item value="_checkNotNullOrEmptyForICollection" priority="31" />
+      <Item value="c_instancePrefix" priority="63" />
+      <Item value="methodToken" priority="31" />
+      <Item value="methodInfoFieldName" priority="31" />
+      <Item value="c_staticPrefix" priority="26" />
+      <Item value="Base64FormattingOptions`0" priority="31" />
+      <Item value="BaseType`0" priority="31" />
+      <Item value="InheritingAspect" priority="31" />
+      <Item value="NotInheritingAspect" priority="31" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Invocation">
       <Item value="Tag" priority="53" />
@@ -595,15 +669,15 @@
       <Item value="CurrentDirectory" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Activator">
-      <Item value="CreateInstance`0" priority="80" />
+      <Item value="CreateInstance`0" priority="135" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.MethodInfo">
       <Item value="Name" priority="134" />
       <Item value="GetGenericArguments`0" priority="26" />
       <Item value="GetParameters`0" priority="80" />
-      <Item value="ReturnType" priority="107" />
+      <Item value="ReturnType" priority="134" />
       <Item value="Invoke`0" priority="53" />
-      <Item value="DeclaringType" priority="26" />
+      <Item value="DeclaringType" priority="80" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.String">
       <Item value="Clone`0" priority="26" />
@@ -616,66 +690,68 @@
     <ItemStatistics item="Qualified:System.Collections.Generic.IEnumerable`1">
       <Item value="Where`1" priority="81" />
       <Item value="Single`1" priority="26" />
-      <Item value="First`1" priority="165" />
-      <Item value="ToArray`1" priority="350" />
+      <Item value="First`1" priority="192" />
+      <Item value="ToArray`1" priority="377" />
       <Item value="GetEnumerator`0" priority="80" />
       <Item value="Take`1" priority="28" />
-      <Item value="ToList`1" priority="26" />
-      <Item value="Concat`1" priority="53" />
+      <Item value="ToList`1" priority="80" />
+      <Item value="Concat`1" priority="80" />
       <Item value="Select`2" priority="81" />
       <Item value="Aggregate`3" priority="27" />
       <Item value="Count`1" priority="26" />
       <Item value="ToDictionary`3" priority="26" />
-      <Item value="Cast`1" priority="53" />
+      <Item value="Cast`1" priority="80" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Aspect">
       <Item value="Validate`0" priority="53" />
       <Item value="GetType`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.String">
-      <Item value="Format`0" priority="136" />
+      <Item value="Format`0" priority="163" />
       <Item value="Join`0" priority="80" />
       <Item value="Empty" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.MutableMethodInfo">
-      <Item value="Name" priority="325" />
+      <Item value="Name" priority="352" />
       <Item value="ReturnType" priority="244" />
       <Item value="BaseMethod" priority="26" />
-      <Item value="UnderlyingSystemMethodInfo" priority="107" />
+      <Item value="UnderlyingSystemMethodInfo" priority="134" />
       <Item value="SetBody`0" priority="80" />
       <Item value="Body" priority="26" />
       <Item value="GetCustomAttributes`0" priority="107" />
       <Item value="IsCompilerGenerated`0" priority="26" />
       <Item value="GetParameters`0" priority="26" />
-      <Item value="DeclaringType" priority="26" />
+      <Item value="DeclaringType" priority="107" />
+      <Item value="AddExplicitBaseDefinition`0" priority="26" />
+      <Item value="GetDelegateType`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Type">
       <Item value="Name" priority="80" />
       <Item value="IsValueType" priority="53" />
       <Item value="GetMethod`0" priority="297" />
       <Item value="GetProperties`0" priority="26" />
-      <Item value="GetField`0" priority="53" />
+      <Item value="GetField`0" priority="134" />
       <Item value="GetConstructors`0" priority="107" />
       <Item value="MakeGenericType`0" priority="26" />
-      <Item value="UnderlyingSystemType" priority="26" />
+      <Item value="UnderlyingSystemType" priority="80" />
       <Item value="IsGenericTypeDefinition" priority="26" />
       <Item value="Assembly" priority="26" />
       <Item value="Module" priority="26" />
       <Item value="IsAssignableFrom`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Microsoft.Scripting.Ast.Expression">
-      <Item value="Assign`0" priority="243" />
+      <Item value="Assign`0" priority="324" />
       <Item value="Property`0" priority="53" />
       <Item value="Default`0" priority="54" />
-      <Item value="Block`0" priority="162" />
+      <Item value="Block`0" priority="216" />
       <Item value="Empty`0" priority="53" />
-      <Item value="Constant`0" priority="429" />
+      <Item value="Constant`0" priority="456" />
       <Item value="Convert`0" priority="161" />
       <Item value="Variable`0" priority="188" />
-      <Item value="GetDelegateType`0" priority="53" />
-      <Item value="Field`0" priority="215" />
-      <Item value="NewArrayInit`0" priority="53" />
-      <Item value="New`0" priority="161" />
+      <Item value="GetDelegateType`0" priority="80" />
+      <Item value="Field`0" priority="296" />
+      <Item value="NewArrayInit`0" priority="81" />
+      <Item value="New`0" priority="215" />
       <Item value="Call`0" priority="81" />
       <Item value="ArrayAccess`0" priority="270" />
       <Item value="Lambda`0" priority="53" />
@@ -684,16 +760,18 @@
       <Item value="NewArrayBounds`0" priority="26" />
       <Item value="MemberInit`0" priority="26" />
       <Item value="Bind`0" priority="26" />
+      <Item value="IfThen`0" priority="27" />
+      <Item value="Equal`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@NUnit.Framework.Is">
       <Item value="StringEnding`0" priority="27" />
       <Item value="GreaterThan`0" priority="27" />
       <Item value="TypeOf`0" priority="26" />
-      <Item value="TypeOf`1" priority="81" />
-      <Item value="Not" priority="163" />
+      <Item value="TypeOf`1" priority="136" />
+      <Item value="Not" priority="274" />
       <Item value="True" priority="54" />
       <Item value="False" priority="26" />
-      <Item value="EqualTo`0" priority="76" />
+      <Item value="EqualTo`0" priority="239" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@NLog.LogManager">
       <Item value="GetCurrentClassLogger`0" priority="80" />
@@ -706,20 +784,21 @@
       <Item value="Warn`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.MutableType">
-      <Item value="GetOrAddMutableMethod`0" priority="107" />
-      <Item value="AllMutableMethods" priority="80" />
+      <Item value="GetOrAddMutableMethod`0" priority="188" />
+      <Item value="AllMutableMethods" priority="107" />
       <Item value="AllMutableFields" priority="26" />
       <Item value="UnderlyingSystemType" priority="26" />
       <Item value="GetMethod`0" priority="26" />
-      <Item value="AddField`0" priority="80" />
+      <Item value="AddField`0" priority="107" />
       <Item value="AddMethod`0" priority="26" />
-      <Item value="AddedFields" priority="50" />
-      <Item value="AllMutableConstructors" priority="26" />
+      <Item value="AddedFields" priority="132" />
+      <Item value="AllMutableConstructors" priority="80" />
+      <Item value="GetField`0" priority="107" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.MutableFieldInfo">
       <Item value="AddCustomAttribute`0" priority="53" />
       <Item value="Attributes" priority="53" />
-      <Item value="Name" priority="26" />
+      <Item value="Name" priority="80" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:NLog.Config.LoggingConfiguration">
       <Item value="AddTarget`0" priority="26" />
@@ -732,6 +811,8 @@
       <Item value="Last`1" priority="27" />
       <Item value="Where`1" priority="26" />
       <Item value="Select`2" priority="54" />
+      <Item value="First`1" priority="26" />
+      <Item value="Single`1" priority="27" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@ActiveAttributes.Core.ObjectFactory">
       <Item value="Create`1" priority="134" />
@@ -777,6 +858,8 @@
     <ItemStatistics item="Qualified:System.Collections.ObjectModel.ReadOnlyCollection`1">
       <Item value="Cast`1" priority="26" />
       <Item value="ToArray`1" priority="26" />
+      <Item value="First`1" priority="26" />
+      <Item value="Where`1" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.InvocationT`1">
       <Item value="Proceed`0" priority="26" />
@@ -810,7 +893,7 @@
       <Item value="Key" priority="23" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Remotion.Utilities.MemberInfoFromExpressionUtility">
-      <Item value="GetMethod`0" priority="130" />
+      <Item value="GetMethod`0" priority="184" />
       <Item value="GetProperty`1" priority="27" />
       <Item value="GetField`1" priority="26" />
     </ItemStatistics>
@@ -831,7 +914,7 @@
       <Item value="ReturnValue" priority="80" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Remotion.TypePipe.UnitTests.MutableReflection.MutableTypeObjectMother">
-      <Item value="CreateForExistingType`0" priority="80" />
+      <Item value="CreateForExistingType`0" priority="107" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Assembly.MethodWithAspectsProvider">
       <Item value="GetMethodsWithAspects`0" priority="80" />
@@ -852,15 +935,15 @@
     <ItemStatistics item="Qualified:System.Collections.Generic.List`1">
       <Item value="AddRange`0" priority="80" />
       <Item value="Count" priority="53" />
-      <Item value="Select`2" priority="53" />
+      <Item value="Select`2" priority="80" />
       <Item value="Add`0" priority="81" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.Dictionary`2">
       <Item value="Add`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.Collections.Tuple`2">
-      <Item value="Item1" priority="106" />
-      <Item value="Item2" priority="26" />
+      <Item value="Item1" priority="133" />
+      <Item value="Item2" priority="53" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Collections.Generic.IEnumerator`1">
       <Item value="Current" priority="28" />
@@ -942,17 +1025,19 @@
       <Item value="MethodExecutionCounter" priority="23" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:NUnit.Framework.Constraints.ConstraintExpression">
-      <Item value="Null" priority="107" />
+      <Item value="Null" priority="189" />
       <Item value="Matches`1" priority="27" />
       <Item value="Ordered" priority="26" />
+      <Item value="InstanceOf`1" priority="26" />
+      <Item value="SameAs`0" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Aspects.AspectAttribute">
-      <Item value="Scope" priority="134" />
-      <Item value="GetType`0" priority="53" />
+      <Item value="Scope" priority="215" />
+      <Item value="GetType`0" priority="107" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Reflection.FieldAttributes">
-      <Item value="Static" priority="81" />
-      <Item value="Private" priority="53" />
+      <Item value="Static" priority="135" />
+      <Item value="Private" priority="130" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Aspects.MethodPatcher">
       <Item value="PatchMethod`0" priority="26" />
@@ -972,8 +1057,10 @@
       <Item value="Arg0" priority="161" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.FieldInfo">
-      <Item value="GetValue`0" priority="26" />
-      <Item value="Attributes" priority="26" />
+      <Item value="GetValue`0" priority="80" />
+      <Item value="Attributes" priority="74" />
+      <Item value="Name" priority="26" />
+      <Item value="FieldType" priority="51" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.UnitTests.Assembly.MethodPatcherTest+DomainType">
       <Item value="Method`0" priority="26" />
@@ -984,6 +1071,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Linq.Enumerable">
       <Item value="Repeat`1" priority="26" />
+      <Item value="Concat`1" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:PostSharp.Aspects.MethodInterceptionArgs">
       <Item value="Proceed`0" priority="26" />
@@ -1028,7 +1116,7 @@
       <Item value="MethodInfo" priority="53" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.BodyBuilding.BodyContextBase">
-      <Item value="This" priority="107" />
+      <Item value="This" priority="134" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Assembly.TypeProvider">
       <Item value="GetInvocationType`0" priority="26" />
@@ -1057,7 +1145,7 @@
       <Item value="OnInterceptCounter" priority="27" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.BodyBuilding.ConstructorBodyModificationContext">
-      <Item value="PreviousBody" priority="27" />
+      <Item value="PreviousBody" priority="81" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:ActiveAttributes.Core.Contexts.FuncInvocationContext`2">
       <Item value="ReturnValue" priority="26" />
@@ -1077,18 +1165,18 @@
       <Item value="ScopeName" priority="27" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@Remotion.Collections.Tuple">
-      <Item value="Create`4" priority="54" />
+      <Item value="Create`4" priority="82" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Collections.Generic.Comparer`1">
       <Item value="Default" priority="27" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Reflection.CustomAttributeData">
-      <Item value="GetCustomAttributes`0" priority="26" />
+      <Item value="GetCustomAttributes`0" priority="53" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.CustomAttributeData">
       <Item value="Constructor" priority="53" />
-      <Item value="ConstructorArguments" priority="26" />
-      <Item value="NamedArguments" priority="26" />
+      <Item value="ConstructorArguments" priority="50" />
+      <Item value="NamedArguments" priority="55" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.ConstructorInfo">
       <Item value="DeclaringType" priority="26" />
@@ -1099,7 +1187,7 @@
       <Item value="Value" priority="81" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Reflection.CustomAttributeNamedArgument">
-      <Item value="TypedValue" priority="103" />
+      <Item value="TypedValue" priority="131" />
       <Item value="MemberInfo" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Delegate">
@@ -1122,11 +1210,47 @@
       <Item value="DebugFormat`0" priority="22" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@NUnit.Framework.Has">
-      <Item value="Some" priority="53" />
+      <Item value="Some" priority="80" />
       <Item value="All" priority="53" />
+      <Item value="Length" priority="26" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:Remotion.TypePipe.MutableReflection.MutableConstructorInfo">
       <Item value="Body" priority="26" />
+      <Item value="SetBody`0" priority="54" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Collections.Generic.ICollection`1">
+      <Item value="Where`1" priority="53" />
+      <Item value="Select`2" priority="53" />
+    </ItemStatistics>
+    <ItemStatistics item="Doc Comment tags">
+      <Item value="&lt;see cref=&quot;&quot;/&gt;" priority="24" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.UnitTests.Assembly.AspectPreparerTest+Derived">
+      <Item value="GetType`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.UnitTests.TestBase">
+      <Item value="SetUp`0" priority="76" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.UnitTests.Extensions.MethodInfoExtensionsTest+DomainType">
+      <Item value="SimpleMethod`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.Core.Assembly.FieldIntroducer">
+      <Item value="Introduce`0" priority="80" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.UnitTests.Assembly.FieldIntroducerTest+DomainType">
+      <Item value="Method`0" priority="26" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@ActiveAttributes.Core.Assembly.FieldIntroducer">
+      <Item value="Data`0" priority="53" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:ActiveAttributes.Core.Assembly.FieldIntroducer+Data">
+      <Item value="MethodInfoField" priority="77" />
+      <Item value="DelegateField" priority="27" />
+      <Item value="InstanceAspectsField" priority="78" />
+      <Item value="StaticAspectsField" priority="27" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@ActiveAttributes.Core.Assembly.MethodInfoExtensions">
+      <Item value="IsCompilerGenerated`0" priority="26" />
     </ItemStatistics>
   </CompletionStatisticsManager>
   <NAntValidationSettings>

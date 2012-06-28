@@ -6,6 +6,7 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Aspects
 {
+  [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
   public abstract class AspectAttribute : Attribute, ISerializable
   {
     protected AspectAttribute (AspectScope scope = AspectScope.Static)

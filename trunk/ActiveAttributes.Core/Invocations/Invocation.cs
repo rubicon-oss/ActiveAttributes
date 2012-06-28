@@ -5,18 +5,7 @@ namespace ActiveAttributes.Core.Invocations
 {
   public abstract class Invocation : IInvocation, IReadOnlyInvocation
   {
-    private readonly IInvocationContext _context;
-
-    protected Invocation (IInvocationContext context)
-    {
-      _context = context;
-    }
-
-    // TODO: Make abstract, store context in derived classes
-    public IInvocationContext Context
-    {
-      get { return _context; }
-    }
+    public abstract IInvocationContext Context { get; }
 
     IReadOnlyInvocationContext IReadOnlyInvocation.Context
     {

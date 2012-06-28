@@ -1,18 +1,19 @@
 using System;
-using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Invocations;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
+  // ReSharper disable PossibleNullReferenceException
   public class AspectPreparerTest : TestBase
   {
     private AspectPreparer _preparer;
@@ -21,8 +22,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     private BindingFlags _staticBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.NonPublic;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _preparer = new AspectPreparer();
     }
 
@@ -175,6 +177,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           });
     }
 
+    [UsedImplicitly]
     public class DomainType
     {
       public DomainType () { }
@@ -184,6 +187,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       public void Method () { }
     }
 
+    [UsedImplicitly]
     public class DomainAspect1Attribute : MethodInterceptionAspectAttribute
     {
       public override void OnIntercept (IInvocation invocation)
@@ -192,6 +196,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       }
     }
 
+    [UsedImplicitly]
     public class DomainAspect2Attribute : MethodInterceptionAspectAttribute
     {
       public override void OnIntercept (IInvocation invocation)
@@ -200,4 +205,5 @@ namespace ActiveAttributes.UnitTests.Assembly
       }
     }
   }
+  // ReSharper restore PossibleNullReferenceException
 }

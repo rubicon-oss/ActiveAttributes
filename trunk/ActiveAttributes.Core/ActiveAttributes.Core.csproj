@@ -57,6 +57,10 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
+    <Compile Include="Assembly\AspectsProvider.cs" />
+    <Compile Include="Assembly\CompileTimeAspect.cs" />
+    <Compile Include="Assembly\ConstructorPatcher.cs" />
+    <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectPreparer.cs" />
@@ -68,6 +72,8 @@
     <Compile Include="Contexts\ArgumentCollection\ActionArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\IArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Extensions\MethodBaseExtensions.cs" />
+    <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Invocations\ActionInvocation.cs" />
     <Compile Include="Contexts\ActionInvocationContext.cs" />
     <Compile Include="Invocations\FuncInvocation.cs" />

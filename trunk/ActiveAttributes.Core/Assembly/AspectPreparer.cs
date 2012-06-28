@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
-
 using Microsoft.Scripting.Ast;
-
-using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// The <see cref="AspectPreparer"/>
+  /// </summary>
   public class AspectPreparer
   {
     public FieldInfo PrepareAspects (
@@ -46,6 +45,8 @@ namespace ActiveAttributes.Core.Assembly
       var instanceAspectsInitExpression = Expression.NewArrayInit (typeof (AspectAttribute), instanceAspectsElementInitExpressions);
       var instanceAspectsAssignExpression = new Func<BodyContextBase, Expression> (ctx =>
         Expression.Assign (instanceAspectsFieldExpression(ctx), instanceAspectsInitExpression));
+
+
 
       foreach (var constructor in mutableType.AllMutableConstructors)
       {

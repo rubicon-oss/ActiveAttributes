@@ -5,12 +5,18 @@ namespace ActiveAttributes.Core.Invocations
 {
   public class ActionInvocation<TInstance> : Invocation
   {
+    private readonly ActionInvocationContext<TInstance> _context;
     private readonly Action _action;
 
-    public ActionInvocation (IInvocationContext context, Action action)
-      : base(context)
+    public ActionInvocation (ActionInvocationContext<TInstance> context, Action action)
     {
+      _context = context;
       _action = action;
+    }
+
+    public override IInvocationContext Context
+    {
+      get { return _context; }
     }
 
     public override void Proceed ()
@@ -21,12 +27,18 @@ namespace ActiveAttributes.Core.Invocations
 
   public class ActionInvocation<TInstance, TA0> : Invocation
   {
+    private readonly ActionInvocationContext<TInstance, TA0> _context;
     private readonly Action<TA0> _action;
 
-    public ActionInvocation (IInvocationContext context, Action<TA0> action)
-      : base (context)
+    public ActionInvocation (ActionInvocationContext<TInstance, TA0> context, Action<TA0> action)
     {
+      _context = context;
       _action = action;
+    }
+
+    public override IInvocationContext Context
+    {
+      get { return _context; }
     }
 
     public override void Proceed ()
@@ -38,12 +50,18 @@ namespace ActiveAttributes.Core.Invocations
 
   public class ActionInvocation<TInstance, TA0, TA1> : Invocation
   {
+    private readonly ActionInvocationContext<TInstance, TA0, TA1> _context;
     private readonly Action<TA0, TA1> _action;
 
-    public ActionInvocation (IInvocationContext context, Action<TA0, TA1> action)
-      : base (context)
+    public ActionInvocation (ActionInvocationContext<TInstance, TA0, TA1> context, Action<TA0, TA1> action)
     {
+      _context = context;
       _action = action;
+    }
+
+    public override IInvocationContext Context
+    {
+      get { return _context; }
     }
 
     public override void Proceed ()

@@ -21,6 +21,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyType (MutableType mutableType)
     {
+
+
       var methodsWithAspectsProvider = new MethodWithAspectsProvider();
       var aspectsPreparer = new AspectPreparer();
       var methodPatcher = new MethodPatcher();

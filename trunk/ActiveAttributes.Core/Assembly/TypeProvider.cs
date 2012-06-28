@@ -82,19 +82,19 @@ namespace ActiveAttributes.Core.Assembly
     public Type GetInvocationType ()
     {
       if (_isAction)
-        return GetActionInvocationType ();
+        return GetActionInvocationOpenType ();
       else
-        return GetFuncInvocationType();
+        return GetFuncInvocationOpenType();
     }
 
-    private Type GetActionInvocationType ()
+    private Type GetActionInvocationOpenType ()
     {
       var typeArguments = _instanceType.Concat(_parameterTypes).ToArray();
       var openType = _actionInvocationOpenTypes[typeArguments.Length - 1];
       return openType.MakeGenericType (typeArguments);
     }
 
-    private Type GetFuncInvocationType ()
+    private Type GetFuncInvocationOpenType ()
     {
       var typeArguments = _instanceType.Concat(_parameterTypes).Concat (_returnType).ToArray();
       var openType = _funcInvocationOpenTypes[typeArguments.Length - 1];

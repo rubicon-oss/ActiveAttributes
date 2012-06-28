@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Extensions;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 
@@ -35,12 +36,4 @@ namespace ActiveAttributes.Core.Assembly
     }
   }
 
-  public static class MethodInfoExtensions
-  {
-    public static bool IsCompilerGenerated (this MethodBase methodInfo)
-    {
-      var customAttributes = methodInfo.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);
-      return customAttributes.Length == 1;
-    }
-  }
 }
