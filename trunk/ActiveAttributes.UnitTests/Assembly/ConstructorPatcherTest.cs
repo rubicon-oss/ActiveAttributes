@@ -4,10 +4,9 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-
-using Microsoft.Scripting.Ast;
-
+using ActiveAttributes.Core.Configuration;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -25,6 +24,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _patcher = new ConstructorPatcher();
       _methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       _copiedMethodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method_Copy ()));
+      DomainTypeBase.StaticAspects = null;
     }
 
     [Test]
@@ -32,7 +32,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var instance = CreateInstance<DomainType> (new CompileTimeAspect[0], _methodInfo, _copiedMethodInfo);
 
-      Assert.That (instance._m_Method1_MethodInfo, Is.EqualTo (_methodInfo));
+      Assert.That (instance.MethodInfo, Is.EqualTo (_methodInfo));
     }
 
     [Test]
@@ -40,39 +40,126 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var instance = CreateInstance<DomainType> (new CompileTimeAspect[0], _methodInfo, _copiedMethodInfo);
 
-      Assert.That (instance._m_Method1_Delegate, Is.EqualTo (new Action (instance.Method_Copy)));
+      Assert.That (instance.Delegate, Is.EqualTo (new Action (instance.Method_Copy)));
+    }
+
+    [Test]
+    public void Init_InstanceAspects_Empty ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SingleInstanceAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      Assert.That (instance.InstanceAspects, Is.Not.Null);
     }
 
     [Test]
     public void Init_InstanceAspects_Single ()
     {
-      var compileTimeAspects = GetCompileTimeAspects (_methodInfo);
-      var instance = CreateInstance<DomainType> (compileTimeAspects, _methodInfo, _copiedMethodInfo);
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SingleInstanceAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
 
-      Assert.That (instance._m_Method1_InstanceAspects, Is.Not.Null);
-      Assert.That (instance._m_Method1_InstanceAspects, Has.Length.EqualTo (1));
-      Assert.That (instance._m_Method1_InstanceAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
+      Assert.That (instance.InstanceAspects, Has.Length.EqualTo (1));
+      Assert.That (instance.InstanceAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
     }
 
     [Test]
     public void Init_InstanceAspects_Multiple ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method2 ()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.MultiInstanceAspectsMethod ()));
       var compileTimeAspects = GetCompileTimeAspects (methodInfo);
       var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
 
-      Assert.That (instance._m_Method1_InstanceAspects, Is.Not.Null);
-      Assert.That (instance._m_Method1_InstanceAspects, Has.Length.EqualTo (2));
-      Assert.That (instance._m_Method1_InstanceAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
+      Assert.That (instance.InstanceAspects, Has.Length.EqualTo (2));
+      Assert.That (instance.InstanceAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
+      Assert.That (instance.InstanceAspects[0], Is.Not.SameAs (instance.InstanceAspects[1]));
     }
 
-    private T CreateInstance<T> (IEnumerable<CompileTimeAspect> aspects, MethodInfo methodInfo, MethodInfo copiedMethod)
+    [Test]
+    public void Init_StaticAspects_Empty ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SingleStaticAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      Assert.That (DomainTypeBase.StaticAspects, Is.Not.Null);
+    }
+
+    [Test]
+    public void Init_StaticAspects_Single ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SingleStaticAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      Assert.That (DomainTypeBase.StaticAspects, Has.Length.EqualTo (1));
+      Assert.That (DomainTypeBase.StaticAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
+      Assert.That (DomainTypeBase.StaticAspects[0], Is.SameAs (instance.InstanceAspects[0]));
+    }
+
+    [Test]
+    public void Init_StaticAspects_Multiple ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.MultiStaticAspectsMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      Assert.That (DomainTypeBase.StaticAspects, Has.Length.EqualTo (2));
+      Assert.That (DomainTypeBase.StaticAspects, Has.All.InstanceOf<DomainAspectAttribute> ());
+      Assert.That (DomainTypeBase.StaticAspects[0], Is.SameAs (instance.InstanceAspects[0]));
+      Assert.That (DomainTypeBase.StaticAspects[1], Is.SameAs (instance.InstanceAspects[1]));
+    }
+
+    [Test]
+    public void Init_Aspects_CtorArguments ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CtorArgsAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      var ctorArgAspect = (CtorArgsDomainAspectAttribute) instance.InstanceAspects[0];
+      Assert.That (ctorArgAspect.Arg, Is.EqualTo ("a"));
+    }
+
+    [Test]
+    public void Init_Aspects_NamedArguments ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.NamedArgsAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      var namedArgAspect = (NamedArgsDomainAspectAttribute) instance.InstanceAspects[0];
+      Assert.That (namedArgAspect.Arg, Is.EqualTo ("a"));
+      Assert.That (namedArgAspect.Priority, Is.EqualTo (10));
+    }
+
+    [Test]
+    public void Patch_MultipleConstructors ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method ()));
+      var ctorArgs = new object[] { "a" };
+      var instance = CreateInstance<DomainType2> (new CompileTimeAspect[0], methodInfo, methodInfo, ctorArgs);
+      var instance2 = CreateInstance<DomainType2> (new CompileTimeAspect[0], methodInfo, methodInfo);
+
+      Assert.That (instance.MethodInfo, Is.Not.Null);
+      Assert.That (instance.Delegate, Is.Not.Null);
+      Assert.That (DomainType2.StaticAspects, Is.Not.Null);
+      Assert.That (instance.InstanceAspects, Is.Not.Null);
+
+      Assert.That (instance2.MethodInfo, Is.Not.Null);
+      Assert.That (instance2.Delegate, Is.Not.Null);
+      Assert.That (DomainType2.StaticAspects, Is.Not.Null);
+      Assert.That (instance2.InstanceAspects, Is.Not.Null);
+    }
+
+    private T CreateInstance<T> (IEnumerable<CompileTimeAspect> aspects, MethodInfo methodInfo, MethodInfo copiedMethod, params object[] args)
       where T: DomainTypeBase
     {
-      var methodInfoField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj._m_Method1_MethodInfo));
-      var delegateField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj._m_Method1_Delegate));
-      var staticAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj._s_Method1_StaticAspects));
-      var instanceAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj._m_Method1_InstanceAspects));
+      var methodInfoField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.MethodInfo));
+      var delegateField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.Delegate));
+      var staticAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => DomainTypeBase.StaticAspects));
+      var instanceAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.InstanceAspects));
       var fieldData = new FieldIntroducer.Data
                       {
                           MethodInfoField = methodInfoField,
@@ -90,7 +177,7 @@ namespace ActiveAttributes.UnitTests.Assembly
             _patcher.Patch (fieldData, aspects, mutableMethod, mutableCopy);
           });
 
-      return (T) Activator.CreateInstance (type);
+      return (T) Activator.CreateInstance (type, args);
     }
 
     private CompileTimeAspect[] GetCompileTimeAspects (MethodInfo methodInfo)
@@ -100,28 +187,75 @@ namespace ActiveAttributes.UnitTests.Assembly
       return compileTimeAspects;
     }
 
-    public class DomainTypeBase
+    public abstract class DomainTypeBase
     {
-      public MethodInfo _m_Method1_MethodInfo;
-      public Action _m_Method1_Delegate;
-      public AspectAttribute[] _s_Method1_StaticAspects;
-      public AspectAttribute[] _m_Method1_InstanceAspects;
+      public MethodInfo MethodInfo;
+      public Action Delegate;
+      public static AspectAttribute[] StaticAspects;
+      public AspectAttribute[] InstanceAspects;
     }
 
     public class DomainType : DomainTypeBase
     {
-      [DomainAspect]
       public virtual void Method () { }
 
       public virtual void Method_Copy () { }
 
-      [DomainAspect]
-      [DomainAspect]
-      public virtual void Method2 () { }
+      [DomainAspect (Scope = AspectScope.Instance)]
+      public virtual void SingleInstanceAspectMethod () { }
+
+      [DomainAspect (Scope = AspectScope.Instance)]
+      [DomainAspect (Scope = AspectScope.Instance)]
+      public virtual void MultiInstanceAspectsMethod () { }
+
+      [DomainAspect (Scope = AspectScope.Static)]
+      public virtual void SingleStaticAspectMethod () { }
+
+      [DomainAspect (Scope = AspectScope.Static)]
+      [DomainAspect (Scope = AspectScope.Static)]
+      public virtual void MultiStaticAspectsMethod () { }
+
+      [CtorArgsDomainAspect("a")]
+      public virtual void CtorArgsAspectMethod () { }
+
+
+      [NamedArgsDomainAspect (Arg = "a", Priority = 10)]
+      public virtual void NamedArgsAspectMethod () { }
+    }
+
+    public class DomainType2 : DomainTypeBase
+    {
+      public DomainType2 ()
+      {
+      }
+      public DomainType2 (string arg)
+      {
+      }
+
+      public virtual void Method () { }
     }
 
     public class DomainAspectAttribute : AspectAttribute
     {
+    }
+
+    public class CtorArgsDomainAspectAttribute : AspectAttribute
+    {
+      public string Arg { get; set; }
+
+      public CtorArgsDomainAspectAttribute (string arg)
+      {
+        Arg = arg;
+      }
+    }
+
+    public class NamedArgsDomainAspectAttribute : AspectAttribute
+    {
+      public string Arg { get; set; }
+
+      public NamedArgsDomainAspectAttribute ()
+      {
+      }
     }
   }
 }

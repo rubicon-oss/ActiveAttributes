@@ -8,9 +8,11 @@ using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 
 using Microsoft.Scripting.Ast;
+using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
@@ -22,37 +24,71 @@ namespace ActiveAttributes.Core.Assembly
       MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);
-      var mutableConstructor = mutableType.AllMutableConstructors.Single();
 
+      foreach (var mutableConstructor in mutableType.AllMutableConstructors)
+      {
+        mutableConstructor.SetBody (
+            ctx =>
+            Expression.Block (
+                ctx.PreviousBody,
+                GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
+                GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
+                GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField, compileTimeAspects, ctx)));
 
-
-      mutableConstructor.SetBody (
-          ctx =>
-          Expression.Block (
-              ctx.PreviousBody,
-              GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
-              GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
-              GetInstanceAspectAssignExpression (fieldData.InstanceAspectsField, compileTimeAspects, ctx)));
+      }
     }
 
-    private Expression GetInstanceAspectAssignExpression (FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspect> compileTimeAspects, ConstructorBodyModificationContext ctx)
+    private Expression GetAspectsInitExpression (FieldInfo staticAspectsField,
+        FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspect> compileTimeAspects, ConstructorBodyModificationContext ctx)
     {
+      var compileTimeAspectsAsCollection = compileTimeAspects.ConvertToCollection();
+
+      var staticAspectsFieldExpression = Expression.Field (null, staticAspectsField);
+      var staticAspectsInitExpression = Expression.NewArrayInit (
+          typeof (AspectAttribute),
+          compileTimeAspectsAsCollection.Select (GetAspectInitExpression));
+      var staticAspectsAssignExpression = Expression.Assign (staticAspectsFieldExpression, staticAspectsInitExpression);
+
       var instanceAspectsFieldExpression = Expression.Field (ctx.This, instanceAspectsField);
-      var instanceAspectsInitExpression = Expression.NewArrayInit (typeof (AspectAttribute),
-        GetInstanceAspectsInitExpressions (compileTimeAspects));
+      var instanceAspectToStaticAspectIndex = 0;
+      var instanceAspectsElementInitExpressions = compileTimeAspectsAsCollection
+          .Select (
+              x =>
+              x.Scope == AspectScope.Static
+                  ? GetStaticAspectsArrayAccess(staticAspectsFieldExpression, ref instanceAspectToStaticAspectIndex)
+                  : GetAspectInitExpression (x));
+      var instanceAspectsInitExpression = Expression.NewArrayInit (
+          typeof (AspectAttribute),
+          instanceAspectsElementInitExpressions);
       var instanceAspectsAssignExpression = Expression.Assign (instanceAspectsFieldExpression, instanceAspectsInitExpression);
-      return instanceAspectsAssignExpression;
+
+      return Expression.Block (staticAspectsAssignExpression, instanceAspectsAssignExpression);
     }
 
-    private IEnumerable<Expression> GetInstanceAspectsInitExpressions (IEnumerable<CompileTimeAspect> compileTimeAspects)
+    private Expression GetAspectInitExpression (CompileTimeAspect compileTimeAspect)
     {
-      return compileTimeAspects.Select (x => Expression.New (x.ConstructorInfo)).Cast<Expression>();
+      var ctorArgumentExpressions = compileTimeAspect.ConstructorArguments.Select (x => Expression.Constant (x.Value, x.ArgumentType));
+      var newExpression = Expression.New (compileTimeAspect.ConstructorInfo, ctorArgumentExpressions.Cast<Expression> ());
+      var memberBindingExpressions = compileTimeAspect.NamedArguments.Select (GetMemberBindingExpression);
+      var initExpression = Expression.MemberInit (newExpression, memberBindingExpressions.Cast<MemberBinding>());
+      return initExpression;
     }
 
-    private Expression GetDelegateAssignExpression (FieldInfo delegateField, MutableMethodInfo mutableMethod, ConstructorBodyModificationContext ctx, MutableMethodInfo copiedMethod)
+    private MemberAssignment GetMemberBindingExpression (CustomAttributeNamedArgument x1)
+    {
+      return Expression.Bind (x1.MemberInfo, Expression.Convert (Expression.Constant (x1.TypedValue.Value), x1.TypedValue.ArgumentType));
+    }
+
+    private Expression GetStaticAspectsArrayAccess (MemberExpression staticAspectsFieldExpression, ref int instanceAspectToStaticAspectIndex)
+    {
+      return Expression.ArrayAccess (staticAspectsFieldExpression, Expression.Constant (instanceAspectToStaticAspectIndex++));
+    }
+
+    private Expression GetDelegateAssignExpression (
+        FieldInfo delegateField, MutableMethodInfo mutableMethod, ConstructorBodyModificationContext ctx, MutableMethodInfo copiedMethod)
     {
       var delegateFieldExpression = Expression.Field (ctx.This, delegateField);
-      var delegateType = mutableMethod.GetDelegateType ();
+      var delegateType = mutableMethod.GetDelegateType();
       var createDelegateMethodInfo = typeof (Delegate).GetMethod (
           "CreateDelegate",
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
