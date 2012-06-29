@@ -35,7 +35,6 @@ namespace ActiveAttributes.Core.Assembly
                 GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
                 GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
                 GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField, compileTimeAspects, ctx)));
-
       }
     }
 
@@ -49,6 +48,8 @@ namespace ActiveAttributes.Core.Assembly
           typeof (AspectAttribute),
           compileTimeAspectsAsCollection.Select (GetAspectInitExpression));
       var staticAspectsAssignExpression = Expression.Assign (staticAspectsFieldExpression, staticAspectsInitExpression);
+      var staticAspectsIfNullExpression = Expression.Equal (staticAspectsFieldExpression, Expression.Constant (null));
+      var staticAspectsAssignIfNullExpression = Expression.IfThen (staticAspectsIfNullExpression, staticAspectsAssignExpression);
 
       var instanceAspectsFieldExpression = Expression.Field (ctx.This, instanceAspectsField);
       var instanceAspectToStaticAspectIndex = 0;
@@ -63,7 +64,7 @@ namespace ActiveAttributes.Core.Assembly
           instanceAspectsElementInitExpressions);
       var instanceAspectsAssignExpression = Expression.Assign (instanceAspectsFieldExpression, instanceAspectsInitExpression);
 
-      return Expression.Block (staticAspectsAssignExpression, instanceAspectsAssignExpression);
+      return Expression.Block (staticAspectsAssignIfNullExpression, instanceAspectsAssignExpression);
     }
 
     private Expression GetAspectInitExpression (CompileTimeAspect compileTimeAspect)
@@ -79,19 +80,20 @@ namespace ActiveAttributes.Core.Assembly
     {
       var argumentType = namedArgument.TypedValue.ArgumentType;
       var constantExpression = GetConstantExpressionForTypedArgument (namedArgument.TypedValue);
-      return Expression.Bind (namedArgument.MemberInfo, Expression.Convert (constantExpression, argumentType));
+      var bindingExpression = Expression.Bind (namedArgument.MemberInfo, Expression.Convert (constantExpression, argumentType));
+      return bindingExpression;
     }
 
     private Expression GetConstantExpressionForTypedArgument (CustomAttributeTypedArgument typedArgument)
     {
       if (!typedArgument.ArgumentType.IsArray)
         return Expression.Convert (Expression.Constant (typedArgument.Value), typedArgument.ArgumentType);
-
-      var coll = (ReadOnlyCollection<CustomAttributeTypedArgument>) typedArgument.Value;
-
-      return Expression.NewArrayInit (
-          typedArgument.ArgumentType.GetElementType(),
-          coll.Select (GetConstantExpressionForTypedArgument));
+      else
+      {
+        var elementCollection = (ReadOnlyCollection<CustomAttributeTypedArgument>) typedArgument.Value;
+        var elementInitExpressions = elementCollection.Select (GetConstantExpressionForTypedArgument);
+        return Expression.NewArrayInit (typedArgument.ArgumentType.GetElementType (), elementInitExpressions);
+      }
     }
 
     private Expression GetStaticAspectsArrayAccess (MemberExpression staticAspectsFieldExpression, ref int instanceAspectToStaticAspectIndex)

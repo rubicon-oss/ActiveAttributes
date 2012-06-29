@@ -5,9 +5,8 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
-using Microsoft.Scripting.Ast;
+using JetBrains.Annotations;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -113,6 +112,21 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
+    public void Init_StaticAspects_OnlyOnce ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SingleStaticAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+      var before = DomainTypeBase.StaticAspects;
+      CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+      var after = DomainTypeBase.StaticAspects;
+
+      Assert.That (after, Is.SameAs (before));
+    }
+
+    [Test]
     public void Init_Aspects_CtorElementArguments ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CtorElementArgAspectMethod ()));
@@ -143,7 +157,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
 
       var ctorArgAspect = (CtorArgsDomainAspectAttribute) instance.InstanceAspects[0];
-      Assert.That (ctorArgAspect.ArrayArg, Is.EqualTo (new string[] { "a" }));
+      Assert.That (ctorArgAspect.ArrayArg, Is.EqualTo (new[] { "a" }));
     }
 
     [Test]
@@ -244,13 +258,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       [NamedArgsDomainAspect (ElementArg = "a", Priority = 10)]
       public virtual void NamedElementArgAspectMethod () { }
 
-      [CtorArgsDomainAspect (new string[] { "a" })]
+      [CtorArgsDomainAspect (new[] { "a" })]
       public virtual void CtorArrayArgAspectMethod () { }
 
       [NamedArgsDomainAspect (ArrayArg = new[] { "a" })]
       public virtual void NamedArrayArgAspectMethod () { }
     }
 
+    [UsedImplicitly]
     public class DomainType2 : DomainTypeBase
     {
       public DomainType2 ()
