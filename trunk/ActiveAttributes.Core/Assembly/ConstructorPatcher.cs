@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -67,16 +68,30 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GetAspectInitExpression (CompileTimeAspect compileTimeAspect)
     {
-      var ctorArgumentExpressions = compileTimeAspect.ConstructorArguments.Select (x => Expression.Constant (x.Value, x.ArgumentType));
-      var newExpression = Expression.New (compileTimeAspect.ConstructorInfo, ctorArgumentExpressions.Cast<Expression> ());
+      var ctorArgumentExpressions = compileTimeAspect.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
+      var newExpression = Expression.New (compileTimeAspect.ConstructorInfo, ctorArgumentExpressions);
       var memberBindingExpressions = compileTimeAspect.NamedArguments.Select (GetMemberBindingExpression);
       var initExpression = Expression.MemberInit (newExpression, memberBindingExpressions.Cast<MemberBinding>());
       return initExpression;
     }
 
-    private MemberAssignment GetMemberBindingExpression (CustomAttributeNamedArgument x1)
+    private MemberAssignment GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
     {
-      return Expression.Bind (x1.MemberInfo, Expression.Convert (Expression.Constant (x1.TypedValue.Value), x1.TypedValue.ArgumentType));
+      var argumentType = namedArgument.TypedValue.ArgumentType;
+      var constantExpression = GetConstantExpressionForTypedArgument (namedArgument.TypedValue);
+      return Expression.Bind (namedArgument.MemberInfo, Expression.Convert (constantExpression, argumentType));
+    }
+
+    private Expression GetConstantExpressionForTypedArgument (CustomAttributeTypedArgument typedArgument)
+    {
+      if (!typedArgument.ArgumentType.IsArray)
+        return Expression.Convert (Expression.Constant (typedArgument.Value), typedArgument.ArgumentType);
+
+      var coll = (ReadOnlyCollection<CustomAttributeTypedArgument>) typedArgument.Value;
+
+      return Expression.NewArrayInit (
+          typedArgument.ArgumentType.GetElementType(),
+          coll.Select (GetConstantExpressionForTypedArgument));
     }
 
     private Expression GetStaticAspectsArrayAccess (MemberExpression staticAspectsFieldExpression, ref int instanceAspectToStaticAspectIndex)

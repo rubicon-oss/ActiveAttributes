@@ -5,6 +5,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -112,26 +113,48 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void Init_Aspects_CtorArguments ()
+    public void Init_Aspects_CtorElementArguments ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CtorArgsAspectMethod ()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CtorElementArgAspectMethod ()));
       var compileTimeAspects = GetCompileTimeAspects (methodInfo);
       var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
 
       var ctorArgAspect = (CtorArgsDomainAspectAttribute) instance.InstanceAspects[0];
-      Assert.That (ctorArgAspect.Arg, Is.EqualTo ("a"));
+      Assert.That (ctorArgAspect.ElementArg, Is.EqualTo ("a"));
     }
 
     [Test]
-    public void Init_Aspects_NamedArguments ()
+    public void Init_Aspects_NamedElementArguments ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.NamedArgsAspectMethod ()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.NamedElementArgAspectMethod ()));
       var compileTimeAspects = GetCompileTimeAspects (methodInfo);
       var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
 
       var namedArgAspect = (NamedArgsDomainAspectAttribute) instance.InstanceAspects[0];
-      Assert.That (namedArgAspect.Arg, Is.EqualTo ("a"));
+      Assert.That (namedArgAspect.ElementArg, Is.EqualTo ("a"));
       Assert.That (namedArgAspect.Priority, Is.EqualTo (10));
+    }
+
+    [Test]
+    public void Init_Aspects_CtorArrayArguments ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CtorArrayArgAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      var ctorArgAspect = (CtorArgsDomainAspectAttribute) instance.InstanceAspects[0];
+      Assert.That (ctorArgAspect.ArrayArg, Is.EqualTo (new string[] { "a" }));
+    }
+
+    [Test]
+    public void Init_Aspects_NamedArrayArguments ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.NamedArrayArgAspectMethod ()));
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var instance = CreateInstance<DomainType> (compileTimeAspects, methodInfo, _copiedMethodInfo);
+
+      var namedArgAspect = (NamedArgsDomainAspectAttribute) instance.InstanceAspects[0];
+      Assert.That (namedArgAspect.ArrayArg, Is.EqualTo (new[] { "a" }));
     }
 
     [Test]
@@ -215,12 +238,17 @@ namespace ActiveAttributes.UnitTests.Assembly
       [DomainAspect (Scope = AspectScope.Static)]
       public virtual void MultiStaticAspectsMethod () { }
 
-      [CtorArgsDomainAspect("a")]
-      public virtual void CtorArgsAspectMethod () { }
+      [CtorArgsDomainAspect ("a")]
+      public virtual void CtorElementArgAspectMethod () { }
 
+      [NamedArgsDomainAspect (ElementArg = "a", Priority = 10)]
+      public virtual void NamedElementArgAspectMethod () { }
 
-      [NamedArgsDomainAspect (Arg = "a", Priority = 10)]
-      public virtual void NamedArgsAspectMethod () { }
+      [CtorArgsDomainAspect (new string[] { "a" })]
+      public virtual void CtorArrayArgAspectMethod () { }
+
+      [NamedArgsDomainAspect (ArrayArg = new[] { "a" })]
+      public virtual void NamedArrayArgAspectMethod () { }
     }
 
     public class DomainType2 : DomainTypeBase
@@ -241,17 +269,24 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public class CtorArgsDomainAspectAttribute : AspectAttribute
     {
-      public string Arg { get; set; }
+      public string ElementArg { get; set; }
+      public string[] ArrayArg { get; set; }
 
-      public CtorArgsDomainAspectAttribute (string arg)
+      public CtorArgsDomainAspectAttribute (string elementArg)
       {
-        Arg = arg;
+        ElementArg = elementArg;
+      }
+
+      public CtorArgsDomainAspectAttribute (string[] arrayArg)
+      {
+        ArrayArg = arrayArg;
       }
     }
 
     public class NamedArgsDomainAspectAttribute : AspectAttribute
     {
-      public string Arg { get; set; }
+      public string ElementArg { get; set; }
+      public string[] ArrayArg { get; set; }
 
       public NamedArgsDomainAspectAttribute ()
       {
