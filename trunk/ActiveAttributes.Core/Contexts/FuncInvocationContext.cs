@@ -22,60 +22,6 @@ using ActiveAttributes.Core.Contexts.ArgumentCollection;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  public abstract class InvocationContext : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
-  {
-    protected InvocationContext (MethodInfo methodInfo)
-    {
-      MethodInfo = methodInfo;
-    }
-
-    public MethodInfo MethodInfo { get; private set; }
-
-    public abstract IArgumentCollection Arguments { get; }
-    public abstract object Instance { get; }
-    public abstract object ReturnValue { get; set; }
-    //public abstract IEnumerator<object> GetEnumerator ();
-    public abstract int Count { get; }
-    public abstract object this[int idx] { get; set; }
-
-    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
-    {
-      get { return (IReadOnlyArgumentCollection) Arguments; }
-    }
-
-    public IEnumerator<object> GetEnumerator ()
-    {
-      for (var i = 0; i < Count; i++)
-        yield return this[i];
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
-    }
-
-    public void CopyTo (Array array, int index)
-    {
-      for (var i = 0; i < Count; i++)
-        array.SetValue (this[i], i);
-    }
-
-    public object SyncRoot
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    public bool IsSynchronized
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    object IReadOnlyArgumentCollection.this [int idx]
-    {
-      get { return this[idx]; }
-    }
-  }
-
   public class FuncInvocationContext<TInstance, TR> : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
   {
     public FuncInvocationContext (MethodInfo methodInfo, TInstance instance)

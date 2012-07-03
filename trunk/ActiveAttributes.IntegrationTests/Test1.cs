@@ -19,6 +19,7 @@ using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Contexts.ArgumentCollection;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
@@ -71,6 +72,7 @@ namespace ActiveAttributes.IntegrationTests
       public override void OnInterceptGet (IInvocation invocation)
       {
         var context = (FuncInvocationContext<DomainType, string>) invocation.Context;
+        var argsList = (IArgumentCollection) invocation.Context;
         invocation.Proceed();
         context.ReturnValue += context.Instance.AnotherValue;
       }
