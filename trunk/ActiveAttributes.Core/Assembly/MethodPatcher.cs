@@ -14,11 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
@@ -28,237 +30,180 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class MethodPatcher
   {
-    private readonly MethodInfo _onInterceptGetMethodInfo;
+    private TypeProvider _typeProvider;
+
     private readonly MethodInfo _onInterceptMethodInfo;
+    private readonly MethodInfo _onInterceptGetMethodInfo;
     private readonly MethodInfo _onInterceptSetMethodInfo;
+
+    private readonly MethodInfo _createDelegateMethodInfo;
 
     public MethodPatcher ()
     {
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
       _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
       _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
+
+      _createDelegateMethodInfo = typeof (Delegate).GetMethod (
+          "CreateDelegate",
+          new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public void PatchMethod (
-        MutableType mutableType,
-        MutableMethodInfo mutableMethod,
-        FieldInfo allMethodAspectsArrayField,
-        AspectAttribute[] aspectAttributes)
+    public MutableMethodInfo Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
     {
+      _typeProvider = new TypeProvider (mutableMethod);
+
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
       var copiedMethod = GetCopiedMethod (mutableType, mutableMethod);
 
-      mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, copiedMethod, allMethodAspectsArrayField, aspectAttributes));
+      mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, fieldData, aspects));
+
+      return copiedMethod;
+    }
+
+    private Expression GetPatchedBody (MutableMethodInfo mutableMethod, BodyContextBase ctx, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
+    {
+      var aspectsAsList = aspects.ToList();
+
+      var methodInfoFieldExpression = Expression.Field (ctx.This, fieldData.MethodInfoField);
+      var delegateFieldExpression = Expression.Field (ctx.This, fieldData.DelegateField);
+      var aspectsFieldExpression = Expression.Field (ctx.This, fieldData.InstanceAspectsField);
+
+      // ic = invocationContext
+      var invocationContextType = _typeProvider.GetInvocationContextType();
+      var invocationContextVariableExpression = Expression.Variable (invocationContextType, "ctx");
+      var invocationContextAssignExpression = GetInvocationContextAssignExpression(invocationContextVariableExpression, methodInfoFieldExpression, ctx, invocationContextType);
+
+      var invocationVariableExpressions = GetInvocationParameterExpressions (aspectsAsList.Count);
+      var invocationInitExpressions = GetInvocationInitExpressions (delegateFieldExpression, aspectsFieldExpression, invocationContextVariableExpression, invocationVariableExpressions, aspectsAsList, mutableMethod);
+
+      var aspectCallExpression = GetLastAspectCallExpression(aspectsFieldExpression, aspectsAsList, invocationVariableExpressions, mutableMethod);
+
+      var returnValueExpression = Expression.Property (invocationContextVariableExpression, "ReturnValue");
+
+      return Expression.Block (
+          new[] { invocationContextVariableExpression }.Concat(invocationVariableExpressions),
+          invocationContextAssignExpression,
+          Expression.Block(invocationInitExpressions),
+          aspectCallExpression,
+          returnValueExpression);
+    }
+
+    private Expression GetLastAspectCallExpression (Expression aspectsFieldExpression, IList<CompileTimeAspectBase> aspectsAsList, IList<ParameterExpression> invocationVariableExpressions, MutableMethodInfo mutableMethod)
+    {
+      var last = invocationVariableExpressions.Count - 1;
+
+      var aspectAccessExpression = Expression.ArrayAccess (aspectsFieldExpression, Expression.Constant (last));
+      var aspectType = aspectsAsList[last].AspectType;
+      var aspectExpression = Expression.Convert (aspectAccessExpression, aspectType);
+
+      var aspectInterceptMethodInfo = GetAspectInterceptMethodInfo (aspectType, mutableMethod);
+
+      var lastAspectCallExpression = Expression.Call (aspectExpression, aspectInterceptMethodInfo, new[] { invocationVariableExpressions[last] });
+      return lastAspectCallExpression;
+    }
+
+    private static Expression GetInvocationContextAssignExpression (Expression invocationContextVariableExpression, Expression methodInfoFieldExpression, BodyContextBase ctx, Type invocationContextType)
+    {
+      var invocationContextConstructor = invocationContextType.GetConstructors().Single();
+
+      var invocationContextArgumentExpressions = new[] { methodInfoFieldExpression, ctx.This }.Concat (ctx.Parameters.Cast<Expression>());
+
+      var invocationContextCreateExpression = Expression.New (invocationContextConstructor, invocationContextArgumentExpressions);
+      var invocationContextAssignExpression = Expression.Assign (invocationContextVariableExpression, invocationContextCreateExpression);
+
+      return invocationContextAssignExpression;
+    }
+
+    private IEnumerable<Expression> GetInvocationInitExpressions (Expression delegateFieldExpression, Expression aspectsFieldExpression, ParameterExpression invocationContextVariableExpression, IList<ParameterExpression> invocationParameterExpressions, IList<CompileTimeAspectBase> aspectsAsList, MutableMethodInfo mutableMethod)
+    {
+      for (var i = 0; i < invocationParameterExpressions.Count; i++)
+      {
+        if (i == 0)
+        {
+          var invocationVariableExpression = invocationParameterExpressions[0];
+          var invocationAssignExpression = GetMostInnerInvocationAssignExpression(delegateFieldExpression, invocationContextVariableExpression, invocationVariableExpression);
+          yield return invocationAssignExpression;
+        }
+        else
+        {
+          var last = i - 1;
+          var innerInvocationVariableExpression = invocationParameterExpressions[last];
+          var innerAspectAccessExpression = Expression.ArrayAccess (aspectsFieldExpression, Expression.Constant (last));
+          var innerAspectType = aspectsAsList[last].AspectType;
+          var invocationVariableExpression = invocationParameterExpressions[i];
+
+          var innerInvocationAssignExpression = GetOuterInvocationAssignExpression(invocationVariableExpression, invocationContextVariableExpression, innerAspectAccessExpression, innerInvocationVariableExpression, innerAspectType, mutableMethod);
+          yield return innerInvocationAssignExpression;
+        }
+      }
+    }
+
+    private Expression GetOuterInvocationAssignExpression (Expression invocationVariableExpression, Expression invocationContextVariableExpression, Expression innerAspectAccessExpression, Expression innerInvocationVariableExpression, Type innerAspectType, MutableMethodInfo mutableMethod)
+    {
+      var invocationType = typeof (OuterInvocation);
+      var invocationConstructor = invocationType.GetConstructors().Single();
+
+      var innerAspectInterceptMethodInfo = GetAspectInterceptMethodInfo (innerAspectType, mutableMethod);
+      var innerAspectInterceptMethodInfoExpression = Expression.Constant (innerAspectInterceptMethodInfo);
+
+      var innerInvocationActionTypeExpression = Expression.Constant (typeof (Action<IInvocation>));
+      var innerInvocationUnconvertedDelegateExpression = Expression.Call (
+          null, _createDelegateMethodInfo, innerInvocationActionTypeExpression, innerAspectAccessExpression, innerAspectInterceptMethodInfoExpression);
+      var innerInvocationDelegateExpression = Expression.Convert (innerInvocationUnconvertedDelegateExpression, typeof (Action<IInvocation>));
+
+      var outerInvocationCreateExpression = Expression.New (
+          invocationConstructor, invocationContextVariableExpression, innerInvocationDelegateExpression, innerInvocationVariableExpression);
+      var outerInvocationAssignExpression = Expression.Assign (invocationVariableExpression, outerInvocationCreateExpression);
+
+      return outerInvocationAssignExpression;
+    }
+
+    private Expression GetMostInnerInvocationAssignExpression (Expression delegateFieldExpression, Expression invocationContextVariableExpression, Expression invocationParameterExpression)
+    {
+      var invocationType = _typeProvider.GetInvocationType();
+      var invocationConstructor = invocationType.GetConstructors().Single();
+
+      var invocationCreateExpression = Expression.New (invocationConstructor, invocationContextVariableExpression, delegateFieldExpression);
+      var invocationAssignExpression = Expression.Assign (invocationParameterExpression, invocationCreateExpression);
+
+      return invocationAssignExpression;
+    }
+
+    private ParameterExpression[] GetInvocationParameterExpressions (int count)
+    {
+      var variables = new ParameterExpression[count];
+      for (var i = 0; i < count; i++)
+      {
+        var invocationType = i == 0
+                                 ? _typeProvider.GetInvocationType()
+                                 : typeof (OuterInvocation);
+        variables[i] = Expression.Variable (invocationType, "invocation" + (i + 1));
+      }
+      return variables;
+    }
+
+    private MethodInfo GetAspectInterceptMethodInfo (Type aspectType, MutableMethodInfo mutableMethod)
+    {
+      if (typeof (MethodInterceptionAspectAttribute).IsAssignableFrom (aspectType))
+        return _onInterceptMethodInfo;
+      else
+      {
+        if (mutableMethod.Name.StartsWith ("set"))
+          return _onInterceptSetMethodInfo;
+        else
+          return _onInterceptGetMethodInfo;
+      }
     }
 
     private MutableMethodInfo GetCopiedMethod (MutableType mutableType, MutableMethodInfo mutableMethod)
     {
       return mutableType.AddMethod (
-          "_m_" + mutableMethod.Name,
+          "_m_" + mutableMethod.Name + "_Copy",
           MethodAttributes.Private,
           mutableMethod.ReturnType,
           ParameterDeclaration.CreateForEquivalentSignature (mutableMethod),
           ctx => ctx.GetCopiedMethodBody (mutableMethod, ctx.Parameters.Cast<Expression>()));
-    }
-
-    private Expression GetPatchedBody (
-        MutableMethodInfo methodInfo,
-        BodyContextBase bodyContext,
-        MutableMethodInfo copiedMethod,
-        FieldInfo allMethodAspectsArrayField,
-        AspectAttribute[] aspectAttributes)
-    {
-      var typeProvider = new TypeProvider (methodInfo);
-
-      // var context = new InvocationContext(methodInfo, this, args)
-      var invocationContextType = typeProvider.GetInvocationContextType();
-      var invocationContextVariableExpression = Expression.Variable (invocationContextType);
-      var invocationContextNewExpression = Expression.New (
-          invocationContextType.GetConstructors().Single(),
-          new Expression[]
-          {
-              Expression.Constant (methodInfo.UnderlyingSystemMethodInfo),
-              Expression.Convert (bodyContext.This, methodInfo.DeclaringType.UnderlyingSystemType)
-          }.Concat (bodyContext.Parameters.Cast<Expression>()));
-      var invocationContextAssignmentExpression = Expression.Assign (invocationContextVariableExpression, invocationContextNewExpression);
-
-      // invocations[0] = new FuncInvocation<,,>(context, methodDelegate)
-      // invocations[1] = new OuterInvocation(context, aspects[0], invocation[0])
-      var invocationsVariableExpression = Expression.Variable (typeof (IInvocation[]));
-      var invocationsAssignExpression = Expression.Assign (
-          invocationsVariableExpression, Expression.NewArrayBounds (typeof (IInvocation), Expression.Constant (aspectAttributes.Length)));
-      var invocationsInitExpression = GetInvocationsInitExpressions (
-          methodInfo,
-          copiedMethod,
-          bodyContext,
-          invocationsVariableExpression,
-          aspectAttributes,
-          typeProvider,
-          invocationContextVariableExpression,
-          allMethodAspectsArrayField);
-
-      // aspects[length - 1].OnIntercept(invocations[length - 1])
-      var lastIndex = aspectAttributes.Length - 1;
-      var aspectsArrayFieldExpression = Expression.Field (bodyContext.This, allMethodAspectsArrayField);
-      var lastIndexExpression = Expression.Constant (lastIndex);
-      var lastAspectType = aspectAttributes[lastIndex] is MethodInterceptionAspectAttribute
-                               ? typeof (MethodInterceptionAspectAttribute)
-                               : typeof (PropertyInterceptionAspectAttribute);
-      var lastAspectExpression = Expression.Convert (
-          Expression.ArrayAccess (aspectsArrayFieldExpression, lastIndexExpression), lastAspectType);
-      var lastInvocationExpression = Expression.ArrayAccess (invocationsVariableExpression, lastIndexExpression);
-
-      var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[lastIndex], methodInfo);
-      var interceptCallExpression = Expression.Call (lastAspectExpression, interceptMethodInfo, new[] { lastInvocationExpression });
-
-      return Expression.Block (
-          new[] { invocationContextVariableExpression, invocationsVariableExpression },
-          invocationContextAssignmentExpression,
-          GetReturnValueDefaultOrEmptyExpression (methodInfo, invocationContextVariableExpression),
-          invocationsAssignExpression,
-          invocationsInitExpression,
-          interceptCallExpression,
-          GetReturnOrEmptyExpression (methodInfo, invocationContextVariableExpression));
-    }
-
-
-    private Expression GetInvocationsInitExpressions (
-        MutableMethodInfo methodInfo,
-        MutableMethodInfo copiedMethod,
-        BodyContextBase bodyContext,
-        ParameterExpression invocationsVariableExpression,
-        AspectAttribute[] aspectAttributes,
-        TypeProvider typeProvider,
-        ParameterExpression invocationContextVariableExpression,
-        FieldInfo allMethodAspectsArrayField)
-    {
-      var expressionList = new List<Expression>();
-
-      for (var i = 0; i < aspectAttributes.Length; i++)
-      {
-        // If this is the first iteration, we need to create a typed invocation (i.e., ActionInvocation<>, FuncInvocation<>)
-        if (i == 0)
-        {
-          // var delegate = delegate(copiedMethod)
-          var methodDelegateType = GetMethodDelegateType (methodInfo);
-          var methodDelegateVariableExpression = Expression.Variable (methodDelegateType);
-          var createDelegateMethodInfo = typeof (Delegate).GetMethod (
-              "CreateDelegate",
-              new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-          var methodDelegateCreateExpression = Expression.Call (
-              null,
-              createDelegateMethodInfo,
-              Expression.Constant (methodDelegateType),
-              bodyContext.This,
-              Expression.Constant (copiedMethod, typeof (MethodInfo)));
-          var methodDelegateAssignmentExpression = Expression.Assign (
-              methodDelegateVariableExpression,
-              Expression.Convert (methodDelegateCreateExpression, methodDelegateType));
-
-          // invocations[0] = new XInvocation<> (context, delegate)
-          var invocationType = typeProvider.GetInvocationType();
-          var invocationActionType = typeProvider.GetInvocationActionType();
-          var invocationCreateExpression = Expression.New (
-              invocationType.GetConstructors().Single(),
-              invocationContextVariableExpression,
-              Expression.Convert (methodDelegateVariableExpression, invocationActionType));
-          var invocationAssignExpression = Expression.Assign (
-              Expression.ArrayAccess (invocationsVariableExpression, Expression.Constant (i)), invocationCreateExpression);
-
-          var expression = Expression.Block (
-              new[] { methodDelegateVariableExpression },
-              methodDelegateAssignmentExpression,
-              invocationAssignExpression);
-
-          expressionList.Add (expression);
-        }
-            // Otherwise we create an invocation pointing to the last aspects invocation
-        else
-        {
-          var lastItem = Expression.Constant (i - 1);
-
-          // get last aspects intercept method (i.e., OnIntercept, OnInterceptSet, ...)
-          // var delegate = delegate(aspects[i - 1])
-          var interceptMethodInfo = GetAspectInterceptMethodInfo (aspectAttributes[i], methodInfo);
-          var interceptDelegateType = GetMethodDelegateType (interceptMethodInfo); // TODO: change to Action<IInvocation> ?
-          var interceptDelegateVariableExpression = Expression.Variable (interceptDelegateType);
-          var createDelegateMethodInfo = typeof (Delegate).GetMethod (
-              "CreateDelegate",
-              new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-          var interceptDelegateCreateExpression = Expression.Call (
-              null,
-              createDelegateMethodInfo,
-              Expression.Constant (interceptDelegateType),
-              Expression.ArrayAccess (Expression.Field (bodyContext.This, allMethodAspectsArrayField), lastItem),
-              Expression.Constant (interceptMethodInfo, typeof (MethodInfo)));
-          var interceptDelegateAssignmentExpression = Expression.Assign (
-              interceptDelegateVariableExpression,
-              Expression.Convert (interceptDelegateCreateExpression, interceptDelegateType));
-
-          // invocations[i - 1] = new OuterInvocation(context, delegate, aspects[i - 1])
-          var invocationType = typeof (OuterInvocation);
-          var invocationCreateExpression = Expression.New (
-              invocationType.GetConstructors().Single(),
-              invocationContextVariableExpression,
-              Expression.Convert (interceptDelegateVariableExpression, interceptDelegateType),
-              Expression.ArrayAccess (invocationsVariableExpression, lastItem));
-          var invocationAssignExpression = Expression.Assign (
-              Expression.ArrayAccess (invocationsVariableExpression, Expression.Constant (i)), invocationCreateExpression);
-
-          var expression = Expression.Block (
-              new[] { interceptDelegateVariableExpression },
-              interceptDelegateAssignmentExpression,
-              invocationAssignExpression
-              );
-
-          expressionList.Add (expression);
-        }
-      }
-
-      return Expression.Block (expressionList);
-    }
-
-    private Type GetMethodDelegateType (MethodInfo methodInfo)
-    {
-      var parameters = methodInfo.GetParameters().Select (x => x.ParameterType);
-      var delegateTypes = parameters.Concat (new[] { methodInfo.ReturnType }).ToArray();
-      return Expression.GetDelegateType (delegateTypes);
-    }
-
-    private Expression GetReturnOrEmptyExpression (MutableMethodInfo methodInfo, Expression invocationContext)
-    {
-      if (methodInfo.ReturnType == typeof (void))
-        return Expression.Empty();
-      else
-      {
-        return Expression.Convert (
-            Expression.Property (invocationContext, "ReturnValue"),
-            methodInfo.ReturnType);
-      }
-    }
-
-    private Expression GetReturnValueDefaultOrEmptyExpression (MutableMethodInfo methodInfo, ParameterExpression invocationContextVariableExpression)
-    {
-      if (methodInfo.ReturnType == typeof (void) || !methodInfo.ReturnType.IsValueType)
-        return Expression.Empty();
-      else
-      {
-        return Expression.Assign (
-            Expression.Property (invocationContextVariableExpression, "ReturnValue"),
-            Expression.Default (methodInfo.ReturnType));
-      }
-    }
-
-    private MethodInfo GetAspectInterceptMethodInfo (AspectAttribute aspectAttribute, MutableMethodInfo methodInfo)
-    {
-      if (aspectAttribute is MethodInterceptionAspectAttribute)
-        return _onInterceptMethodInfo;
-      else
-      {
-        if (methodInfo.Name.StartsWith ("set"))
-          return _onInterceptSetMethodInfo;
-        else
-          return _onInterceptGetMethodInfo;
-      }
     }
   }
 }

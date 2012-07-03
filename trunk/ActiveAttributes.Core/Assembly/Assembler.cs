@@ -28,7 +28,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       var fieldIntroducer = new FieldIntroducer();
       var constructorPatcher = new ConstructorPatcher();
-      var methodPatcher2 = new MethodPatcher2();
+      var methodPatcher = new MethodPatcher();
       var aspectsProvider = new AspectsProvider();
 
       foreach (var mutableMethod in mutableType.AllMutableMethods.ToList())
@@ -39,7 +39,7 @@ namespace ActiveAttributes.Core.Assembly
           continue;
 
         var fieldData = fieldIntroducer.Introduce (mutableMethod);
-        var copiedMethod = methodPatcher2.Patch (mutableMethod, fieldData, aspects);
+        var copiedMethod = methodPatcher.Patch (mutableMethod, fieldData, aspects);
         constructorPatcher.Patch (fieldData, aspects, mutableMethod, copiedMethod);
       }
     }

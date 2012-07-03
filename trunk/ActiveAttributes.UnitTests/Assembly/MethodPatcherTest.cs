@@ -1,26 +1,17 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
-//
-// See the NOTICE file distributed with this work for additional information
-// regarding copyright ownership.  rubicon licenses this file to you under 
-// the Apache License, Version 2.0 (the "License"); you may not use this 
-// file except in compliance with the License.  You may obtain a copy of the 
-// License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-// License for the specific language governing permissions and limitations
-// under the License.
-// 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
+
 using NUnit.Framework;
+
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -29,173 +20,363 @@ namespace ActiveAttributes.UnitTests.Assembly
   public class MethodPatcherTest : TestBase
   {
     private MethodPatcher _patcher;
-
-    private BindingFlags _instanceBindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic;
+    private BindingFlags _bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Instance;
+    private FieldIntroducer.Data _fieldData;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _patcher = new MethodPatcher();
+      
+      var methodInfoField = MemberInfoFromExpressionUtility.GetField (((DomainTypeBase obj) => obj.MethodInfo));
+      var delegateField = MemberInfoFromExpressionUtility.GetField (((DomainTypeBase obj) => obj.Delegate));
+      var staticAspectsField = MemberInfoFromExpressionUtility.GetField ((() => DomainTypeBase.StaticAspects));
+      var instanceAspectsField = MemberInfoFromExpressionUtility.GetField (((DomainTypeBase obj) => obj.InstanceAspects));
+      _fieldData = new FieldIntroducer.Data
+                      {
+                          MethodInfoField = methodInfoField,
+                          DelegateField = delegateField,
+                          StaticAspectsField = staticAspectsField,
+                          InstanceAspectsField = instanceAspectsField
+                      };
+    }
+
+    // TODO
+    [Ignore, Test]
+    public void CopyMethod ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+      var instance = CreateInstance<DomainType> (new AspectAttribute[0], methodInfo);
+      var type = instance.GetType();
+      var copyMethodInfo = type.GetMethod ("_m_Method_Copy", _bindingFlags);
+
+      Assert.That (copyMethodInfo, Is.Not.Null);
+      Assert.That (copyMethodInfo.GetParameters(), Is.EqualTo (methodInfo.GetParameters()));
+      Assert.That (copyMethodInfo.ReturnType, Is.EqualTo (methodInfo.ReturnType));
+      Assert.That (copyMethodInfo.Invoke (instance, new object[0]), Is.EqualTo (10));
     }
 
     [Test]
-    public void CopyMethod ()
+    public void CallAspect_MethodInterception ()
     {
-      var fieldInfo = typeof (DomainType1).GetField ("_m_aspects_for_Method");
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType1 obj) => obj.Method ());
-      var aspectAttributes = new AspectAttribute[] { new DomainAspectAttribute () };
-      var type = PatchMethodWithAspects<DomainType1> (methodInfo, fieldInfo, aspectAttributes);
-      var instance = (DomainType1) Activator.CreateInstance (type);
+      var aspects = new[] { new DomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
 
-      var copiedMethodInfo = type.GetMethod ("_m_Method", _instanceBindingFlags);
+      instance.Method ();
 
-      Assert.That (copiedMethodInfo, Is.Not.Null);
-      copiedMethodInfo.Invoke (instance, new object[0]);
+      Assert.That (aspects[0].OnInterceptCalled, Is.True);
+    }
+
+    [Test]
+    public void CallAspect_PropertyInterception_Set ()
+    {
+      var aspects = new[] { new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.set_Property ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.set_Property ();
+
+      Assert.That (aspects[0].OnSetInterceptCalled, Is.True);
+      Assert.That (aspects[0].OnGetInterceptCalled, Is.False);
+    }
+
+    [Test]
+    public void CallAspect_PropertyInterception_Get ()
+    {
+      var aspects = new[] { new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.get_Property ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.get_Property ();
+
+      Assert.That (aspects[0].OnGetInterceptCalled, Is.True);
+      Assert.That (aspects[0].OnSetInterceptCalled, Is.False);
+    }
+
+    [Test]
+    public void CallAspect_WithInvocation ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.Method ();
+
+      Assert.That (aspects[0].Invocation, Is.Not.Null);
+      Assert.That (aspects[0].Invocation, Is.TypeOf<ActionInvocation<DomainType2>> ());
+    }
+
+    [Test]
+    public void CallAspect_WithInvocation_WithContext ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.Method ();
+
+      var ctx = aspects[0].Invocation.Context;
+      Assert.That (ctx, Is.Not.Null);
+      Assert.That (ctx, Is.TypeOf<ActionInvocationContext<DomainType2>>());
+      Assert.That (ctx.MethodInfo, Is.EqualTo (methodInfo));
+      Assert.That (ctx.Instance, Is.EqualTo (instance));
+    }
+
+    [Test]
+    public void CallAspect_Proceeding ()
+    {
+      var aspects = new[] { new ProceedingDomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType3 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType3> (aspects, methodInfo);
+
+      instance.Method ();
 
       Assert.That (instance.MethodCalled, Is.True);
     }
 
     [Test]
-    public void InvokesAspects_SimpleMethod ()
+    public void CallAspect_MethodWithArgs ()
     {
-      var fieldInfo = typeof (DomainType1).GetField ("_m_aspects_for_Method");
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType1 obj) => obj.Method ());
-      var aspectAttributes = new AspectAttribute[] { new DomainAspectAttribute () };
-      var type = PatchMethodWithAspects<DomainType1> (methodInfo, fieldInfo, aspectAttributes);
-      var instance = (DomainType1) Activator.CreateInstance (type);
-      var aspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType4 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType4 obj) => obj.Method (""));
+      var instance = CreateInstance<DomainType4> (aspects, methodInfo);
+
+      var input = "a";
+      instance.Method (input);
+
+      var arguments = aspects[0].Invocation.Context.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (1));
+      Assert.That (arguments[0], Is.EqualTo (input));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithSet_ValueType ()
+    {
+      var aspects = new[] { new ReturnValueTypeDomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
+      var instance = CreateInstance<DomainType5> (aspects, methodInfo);
+
+      var result = instance.Return100Method ();
+
+      Assert.That (result, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithSet_ReferenceType ()
+    {
+      var aspects = new[] { new ReturnReferenceTypeDomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType6> (aspects, methodInfo);
+
+      var result = instance.Method ();
+
+      Assert.That (result, Is.InstanceOf<DomainType5>());
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithoutSet_ValueType ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
+      var instance = CreateInstance<DomainType5> (aspects, methodInfo);
+
+      var result = instance.Return100Method ();
+
+      Assert.That (result, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithoutSet_ReferenceType ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType6> (aspects, methodInfo);
+
+      var result = instance.Method ();
+
+      Assert.That (result, Is.EqualTo (null));
+    }
+
+    [Test]
+    public void CallAspect_Multiple ()
+    {
+      var aspects = new[] { new ProceedingDomainAspectAttribute (), new ProceedingDomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
 
       instance.Method ();
 
-      var aspectAttribute = (DomainAspectAttribute) aspectsArray[0];
-      Assert.That (aspectAttribute.OnInterceptCalled, Is.True);
-      Assert.That (aspectAttribute.Invocation, Is.Not.Null);
-      Assert.That (aspectAttribute.Invocation.Context.Arguments.Count, Is.EqualTo (0));
+      Assert.That (aspects[0].OnInterceptCalled, Is.True);
+      Assert.That (aspects[1].OnInterceptCalled, Is.True);
+      Assert.That (aspects[1].Invocation, Is.InstanceOf<OuterInvocation> ());
     }
+
 
     [Test]
-    public void InvokesAspects_MethodWithArg ()
+    public void CallAspect_Multiple_MixedTypes ()
     {
-      var fieldInfo = typeof (DomainType2).GetField ("_m_aspects_for_Method");
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method (1));
-      var aspectAttributes = new AspectAttribute[] { new DomainAspectAttribute() };
-      var type = PatchMethodWithAspects<DomainType2> (methodInfo, fieldInfo, aspectAttributes);
-      var instance = (DomainType2) Activator.CreateInstance (type);
-      var aspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
+      var aspects = new AspectAttribute[] { new DomainAspectAttribute (), new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
 
-      instance.Method (2);
-
-      var aspectAttribute = (DomainAspectAttribute) aspectsArray[0];
-      Assert.That (aspectAttribute.Invocation.Context, Is.TypeOf<ActionInvocationContext<DomainType2, int>> ());
-      Assert.That (aspectAttribute.Invocation.Context.Arguments[0], Is.EqualTo (2));
+      instance.Method ();
     }
 
-    [Test]
-    public void InvokesAspects_ReturningMethod ()
+    private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo)
+        where T: DomainTypeBase
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType3 obj) => obj.Method (1));
-      var fieldInfo = typeof (DomainType3).GetField ("_m_aspects_for_Method");
-      var aspectAttributes = new AspectAttribute[] { new DomainAspectAttribute() };
-      var type = PatchMethodWithAspects<DomainType3> (methodInfo, fieldInfo, aspectAttributes);
-      var instance = (DomainType3) Activator.CreateInstance (type);
-      var aspectsArray = (AspectAttribute[]) fieldInfo.GetValue (instance);
+      var compileAspects = aspects.Select (x => new TypeArgsCompileTimeAspect (x.GetType(), null)).Cast<CompileTimeAspectBase>();
+      var type = CreateType<T> (compileAspects, methodInfo);
 
-      var result = instance.Method (2);
+      var instance = (T) Activator.CreateInstance (type);
 
-      var aspectAttribute = (DomainAspectAttribute) aspectsArray[0];
-      Assert.That (aspectAttribute.Invocation.Context, Is.TypeOf<FuncInvocationContext<DomainType3, int, int>>());
-      Assert.That (aspectAttribute.Invocation.Context.ReturnValue, Is.EqualTo (result));
+      var aspectsField = _fieldData.InstanceAspectsField;
+      aspectsField.SetValue (instance, aspects.ToArray());
+
+      var methodInfoField = _fieldData.MethodInfoField;
+      methodInfoField.SetValue (instance, methodInfo);
+
+      var delegateField = _fieldData.DelegateField;
+      var copyMethodInfo = instance.GetType().GetMethod ("_m_" + methodInfo.Name + "_Copy", _bindingFlags);
+      var @delegate = Delegate.CreateDelegate (methodInfo.GetDelegateType(), instance, copyMethodInfo);
+      delegateField.SetValue (instance, @delegate);
+
+      return instance;
     }
 
-    [Test]
-    public void InvokeAspects_MultipleAspects ()
+    private Type CreateType<T> (IEnumerable<CompileTimeAspectBase> aspects, MethodInfo methodInfo) where T: DomainTypeBase
     {
-      SkipDeletion();
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType4 obj) => obj.Method (1));
-      var fieldInfo = typeof (DomainType4).GetField ("_m_aspects_for_Method");
-      var aspectAttributes = new AspectAttribute[] { new DomainAspect2Attribute (), new DomainAspect2Attribute() };
-      var type = PatchMethodWithAspects<DomainType4> (methodInfo, fieldInfo, aspectAttributes);
-      var instance = (DomainType4) Activator.CreateInstance (type);
-
-      var result = instance.Method (0);
-
-      Assert.That (result, Is.EqualTo (2));
-    }
-
-    private Type PatchMethodWithAspects<T> (MethodInfo methodInfo, FieldInfo fieldInfo, AspectAttribute[] aspectAttributes)
-    {
-      return AssembleType<T> (
+      var type = AssembleType<T> (
           mutableType =>
           {
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-            _patcher.PatchMethod (mutableType, mutableMethod, fieldInfo, aspectAttributes);
+
+            _patcher.Patch (mutableMethod, _fieldData, aspects);
           });
+      return type;
     }
-  }
 
- 
-
-  public class DomainAspectAttribute : MethodInterceptionAspectAttribute
-  {
-    public bool OnInterceptCalled { get; private set; }
-    public IInvocation Invocation { get; private set; }
-
-    public override void OnIntercept (IInvocation invocation)
+    public abstract class DomainTypeBase
     {
-      OnInterceptCalled = true;
-      Invocation = invocation;
-      invocation.Proceed();
+      public MethodInfo MethodInfo;
+      public Action Delegate;
+      public static AspectAttribute[] StaticAspects;
+      public AspectAttribute[] InstanceAspects;
     }
-  }
 
-  public class DomainType1
-  {
-    public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspectAttribute () };
-
-    public bool MethodCalled { get; private set; }
-
-    public virtual void Method ()
+    public class DomainType : DomainTypeBase
     {
-      MethodCalled = true;
+      public virtual void Method () { }
     }
-  }
 
-  public class DomainType2
-  {
-    public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspectAttribute () };
-
-    public virtual void Method (int i)
+    public class DomainType2 : DomainTypeBase
     {
+      public virtual void Method () { }
+
+      [CompilerGenerated]
+      public virtual void set_Property () { }
+
+      [CompilerGenerated]
+      public virtual void get_Property () { }
+
+      public virtual void MethodWithArgs (string arg) { }
     }
-  }
 
-  public class DomainType3
-  {
-    public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspectAttribute () };
-
-    public virtual int Method (int i)
+    public class DomainType3 : DomainTypeBase
     {
-      return i + 1;
+      public bool MethodCalled { get; private set; }
+      public virtual void Method () { MethodCalled = true; }
     }
-  }
 
-  public class DomainAspect2Attribute : MethodInterceptionAspectAttribute
-  {
-    public override void OnIntercept (IInvocation invocation)
+    public class DomainType4 : DomainTypeBase
     {
-      var context = (FuncInvocationContext<DomainType4, int, int>) invocation.Context;
-      context.Arg0++;
-      invocation.Proceed();
+      public new Action<string> Delegate;
+
+      public virtual void Method (string a) { }
     }
-  }
 
-  public class DomainType4
-  {
-    public AspectAttribute[] _m_aspects_for_Method = new[] { new DomainAspect2Attribute (), new DomainAspect2Attribute () };
-
-    public virtual int Method (int i)
+    public class DomainType5 : DomainTypeBase
     {
-      return i;
+      public new Func<int> Delegate;
+
+      public virtual int Return100Method () { return 100; }
+    }
+
+    public class DomainType6 : DomainTypeBase
+    {
+      public new Func<DomainType5> Delegate;
+
+      public virtual DomainType5 Method () { return new DomainType5(); }
+    }
+
+    public class DomainAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public bool OnInterceptCalled { get; private set; }
+
+      public IInvocation Invocation { get; private set; }
+
+      public override void OnIntercept (IInvocation invocation)
+      {
+        OnInterceptCalled = true;
+
+        Invocation = invocation;
+      }
+    }
+
+    public class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
+    {
+      public bool OnGetInterceptCalled { get; private set; }
+      public bool OnSetInterceptCalled { get; private set; }
+
+      public IInvocation GetInvocation { get; private set; }
+      public IInvocation SetInvocation { get; private set; }
+
+      public override void OnInterceptGet (IInvocation invocation)
+      {
+        OnGetInterceptCalled = true;
+
+        GetInvocation = invocation;
+      }
+
+      public override void OnInterceptSet (IInvocation invocation)
+      {
+        OnSetInterceptCalled = true;
+
+        SetInvocation = invocation;
+      }
+    }
+
+    public class ProceedingDomainAspectAttribute : DomainAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        base.OnIntercept (invocation);
+        invocation.Proceed();
+      }
+    }
+
+    public class ReturnValueTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Context.ReturnValue = 1;
+      }
+    }
+
+    public class ReturnReferenceTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Context.ReturnValue = new DomainType5();
+      }
     }
   }
 }

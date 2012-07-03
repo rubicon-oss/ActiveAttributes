@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 {
   [TestFixture]
-  public class CompileTimeAspectTest
+  public class CustomDataCompileTimeAspectTest
   {
     [Test]
     public void Initialization ()

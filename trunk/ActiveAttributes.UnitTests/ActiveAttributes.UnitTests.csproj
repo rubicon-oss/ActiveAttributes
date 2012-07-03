@@ -76,10 +76,9 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
-    <Compile Include="Assembly\CompileTimeAspects\CompileTimeAspectTest.cs" />
+    <Compile Include="Assembly\CompileTimeAspects\CustomDataCompileTimeAspectTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
-    <Compile Include="Assembly\MethodPatcher2Test.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
