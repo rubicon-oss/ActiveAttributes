@@ -6,13 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using ActiveAttributes.Core.Aspects;
+
+using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public class AspectsProvider
   {
-    private IRelatedMethodFinder _relatedMethodFinder;
+    private readonly IRelatedMethodFinder _relatedMethodFinder;
 
     public AspectsProvider ()
     {
@@ -20,15 +24,34 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     // TODO: support aspects on interfaces?
-    public IEnumerable<CompileTimeAspect> GetAspects (MethodInfo methodInfo)
+    public IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo)
     {
-      do
-      {
-        var customDatas = CustomAttributeData.GetCustomAttributes (methodInfo);
+      // first level method aspects
+      foreach (var compileTimeAspect in GetMethodLevelAspects (methodInfo, isBaseType: false))
+        yield return compileTimeAspect;
 
-        foreach (var customData in customDatas.Where(x => x.IsInheriting()))
-          yield return new CompileTimeAspect (customData);
-      } while ((methodInfo = _relatedMethodFinder.GetBaseMethod (methodInfo)) != null);
+      var declaringType = methodInfo.DeclaringType;
+      var applyAspectsAttributes = declaringType.GetCustomAttributes (typeof (ApplyAspectAttribute), false).Cast<ApplyAspectAttribute>();
+      foreach (var applyAspectsAttribute in applyAspectsAttributes)
+      {
+        yield return new TypeArgsCompileTimeAspect (applyAspectsAttribute.AspectType, applyAspectsAttribute.Arguments);
+      }
+
+      // inherited level method aspects
+      while ((methodInfo = _relatedMethodFinder.GetBaseMethod (methodInfo)) != null)
+      {
+        foreach (var compileTimeAspect in GetMethodLevelAspects (methodInfo, isBaseType: true))
+          yield return compileTimeAspect;
+      }
+    }
+
+    private IEnumerable<CompileTimeAspectBase> GetMethodLevelAspects (MethodInfo methodInfo, bool isBaseType)
+    {
+      var customDatas = CustomAttributeData.GetCustomAttributes (methodInfo);
+      if (isBaseType)
+        customDatas = customDatas.Where (x => x.IsInheriting()).ToArray();
+
+      return customDatas.Select (customData => new CustomDataCompileTimeAspect (customData)).Cast<CompileTimeAspectBase>();
     }
   }
 

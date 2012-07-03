@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using JetBrains.Annotations;
@@ -51,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _provider.GetAspects (methodInfo).ToArray ();
 
-      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (result, Has.Length.EqualTo (1));
     }
 
     [Test]
@@ -61,7 +63,39 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _provider.GetAspects (methodInfo).ToArray ();
 
-      Assert.That (result.Length, Is.EqualTo (0));
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    [Test]
+    public void GetAspects_Base_NonInheriting ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((BaseType obj) => obj.Method2 ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspects_ApplyAspects_ClassLevel ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method1 ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void name ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+      var pattern = "Void .*";
+
+      //var input = methodInfo.ToString();
+      var input = "Void Method()";
+      var regex = Regex.IsMatch (input, pattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+      Assert.That (regex, Is.True);
     }
 
     public class DomainType
@@ -105,6 +139,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
     public class NotInheritingAspectAttribute : AspectAttribute
     {
+    }
+
+    [ApplyAspect(typeof(DomainAspectAttribute))]
+    public class DomainType2
+    {
+      public virtual void Method1 () { }
     }
   }
 }

@@ -55,15 +55,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aspects\ApplyAspectAttribute.cs" />
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
-    <Compile Include="Assembly\CompileTimeAspect.cs" />
+    <Compile Include="Assembly\CustomDataCompileTimeAspect.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectPreparer.cs" />
+    <Compile Include="Assembly\MethodPatcher2.cs" />
     <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
     <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />

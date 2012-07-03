@@ -20,7 +20,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
-      var result = new CompileTimeAspect (customData);
+      var result = new CustomDataCompileTimeAspect (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Instance));
       Assert.That (result.Priority, Is.EqualTo (10));
@@ -37,7 +37,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      var result = new CompileTimeAspect (customData);
+      var result = new CustomDataCompileTimeAspect (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Static));
       Assert.That (result.Priority, Is.EqualTo (0));
@@ -51,7 +51,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      new CompileTimeAspect (customData);
+      new CustomDataCompileTimeAspect (customData);
     }
 
     public class DomainType
