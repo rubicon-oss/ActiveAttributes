@@ -66,7 +66,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       Assert.That (fieldInfo, Is.EqualTo (result.DelegateField));
       Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
-      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (Action<DomainType>)));
+      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (Action)));
     }
 
     [Test]

@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
       var methodInfoFieldName = c_instancePrefix + methodToken + "_MethodInfo";
       var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
 
-      var delegateType = mutableMethod.GetDelegateType (mutableMethod.DeclaringType.UnderlyingSystemType);
+      var delegateType = mutableMethod.GetDelegateType ();
       var delegateFieldName = c_instancePrefix + methodToken + "_Delegate";
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
