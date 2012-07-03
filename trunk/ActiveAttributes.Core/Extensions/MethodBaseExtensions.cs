@@ -16,18 +16,13 @@
 // 
 
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Extensions
 {
   public static class MethodBaseExtensions
   {
-
-    // TODO TEST
     public static bool IsCompilerGenerated (this MethodBase methodInfo)
     {
       var customAttributes = methodInfo.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);
