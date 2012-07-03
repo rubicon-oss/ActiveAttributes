@@ -1,13 +1,26 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// See the NOTICE file distributed with this work for additional information
+// regarding copyright ownership.  rubicon licenses this file to you under 
+// the Apache License, Version 2.0 (the "License"); you may not use this 
+// file except in compliance with the License.  You may obtain a copy of the 
+// License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+// License for the specific language governing permissions and limitations
+// under the License.
+// 
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Invocations;
-
 using Microsoft.Scripting.Ast;
-
-using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
@@ -20,7 +33,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly MethodInfo _onInterceptMethodInfo;
     private readonly MethodInfo _onInterceptGetMethodInfo;
     private readonly MethodInfo _onInterceptSetMethodInfo;
-    
+
     public MethodPatcher2 ()
     {
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
@@ -57,15 +70,15 @@ namespace ActiveAttributes.Core.Assembly
 
       var invocationType = _typeProvider.GetInvocationType();
       var invocationConstructor = invocationType.GetConstructors().Single();
-      var invocationCreateExpression = Expression.New (invocationConstructor,
-                                                       invocationContextVariableExpression,
-                                                       delegateFieldExpression);
+      var invocationCreateExpression = Expression.New (
+          invocationConstructor,
+          invocationContextVariableExpression,
+          delegateFieldExpression);
 
       var aspectAccessExpression = Expression.ArrayAccess (aspectsFieldExpression, Expression.Constant (0));
       var aspectConvertExpression = Expression.Convert (aspectAccessExpression, typeof (MethodInterceptionAspectAttribute));
       var aspectCallMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
-      var aspectCallExpression = Expression.Call (aspectConvertExpression, aspectCallMethodInfo,
-        invocationCreateExpression);
+      var aspectCallExpression = Expression.Call (aspectConvertExpression, aspectCallMethodInfo, invocationCreateExpression);
 
       return Expression.Block (
           new[] { invocationContextVariableExpression },
@@ -81,7 +94,7 @@ namespace ActiveAttributes.Core.Assembly
           MethodAttributes.Private,
           mutableMethod.ReturnType,
           ParameterDeclaration.CreateForEquivalentSignature (mutableMethod),
-          ctx => ctx.GetCopiedMethodBody (mutableMethod, ctx.Parameters.Cast<Expression> ()));
+          ctx => ctx.GetCopiedMethodBody (mutableMethod, ctx.Parameters.Cast<Expression>()));
     }
   }
 }
