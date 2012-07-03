@@ -21,10 +21,17 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class ConstructorPatcher
   {
-    public void Patch (FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspect> compileTimeAspects, MutableMethodInfo mutableMethod,
-      MutableMethodInfo copiedMethod)
+    public void Patch (FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> compileTimeAspects, MutableMethodInfo mutableMethod,
+                       MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);
+
+      var initMethod = mutableType.AddMethod ("_InitializeAspects", MethodAttributes.Private, typeof (void), new ParameterDeclaration[0],
+                                              ctx => Expression.Block (
+                                                  GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
+                                                  GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
+                                                  GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField,
+                                                                            compileTimeAspects, ctx)));
 
       foreach (var mutableConstructor in mutableType.AllMutableConstructors)
       {
@@ -32,14 +39,12 @@ namespace ActiveAttributes.Core.Assembly
             ctx =>
             Expression.Block (
                 ctx.PreviousBody,
-                GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
-                GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
-                GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField, compileTimeAspects, ctx)));
+                Expression.Call (ctx.This, initMethod)));
       }
     }
 
     private Expression GetAspectsInitExpression (FieldInfo staticAspectsField,
-        FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspect> compileTimeAspects, ConstructorBodyModificationContext ctx)
+        FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspectBase> compileTimeAspects, MethodBodyCreationContext ctx)
     {
       var compileTimeAspectsAsCollection = compileTimeAspects.ConvertToCollection();
 
@@ -67,11 +72,11 @@ namespace ActiveAttributes.Core.Assembly
       return Expression.Block (staticAspectsAssignIfNullExpression, instanceAspectsAssignExpression);
     }
 
-    private Expression GetAspectInitExpression (CompileTimeAspect compileTimeAspect)
+    private Expression GetAspectInitExpression (CompileTimeAspectBase customDataCompileTimeAspect)
     {
-      var ctorArgumentExpressions = compileTimeAspect.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
-      var newExpression = Expression.New (compileTimeAspect.ConstructorInfo, ctorArgumentExpressions);
-      var memberBindingExpressions = compileTimeAspect.NamedArguments.Select (GetMemberBindingExpression);
+      var ctorArgumentExpressions = customDataCompileTimeAspect.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
+      var newExpression = Expression.New (customDataCompileTimeAspect.ConstructorInfo, ctorArgumentExpressions);
+      var memberBindingExpressions = customDataCompileTimeAspect.NamedArguments.Select (GetMemberBindingExpression);
       var initExpression = Expression.MemberInit (newExpression, memberBindingExpressions.Cast<MemberBinding>());
       return initExpression;
     }
@@ -102,7 +107,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Expression GetDelegateAssignExpression (
-        FieldInfo delegateField, MutableMethodInfo mutableMethod, ConstructorBodyModificationContext ctx, MutableMethodInfo copiedMethod)
+        FieldInfo delegateField, MutableMethodInfo mutableMethod, MethodBodyCreationContext ctx, MutableMethodInfo copiedMethod)
     {
       var delegateFieldExpression = Expression.Field (ctx.This, delegateField);
       var delegateType = mutableMethod.GetDelegateType();

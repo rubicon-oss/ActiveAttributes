@@ -25,6 +25,8 @@ namespace ActiveAttributes.IntegrationTests
       Assert.That (instance.Anything, Is.EqualTo ("muhkuh"));
     }
 
+    ////[ApplyAspect(typeof(DomainAspectAttribute), If = AttributeTargets.Class)]
+    //[ApplyAspect(typeof(DomainAspectAttribute), If = Is.Not(typeof(void)))]
     public class DomainType
     {
       [DomainAspect]
@@ -32,6 +34,24 @@ namespace ActiveAttributes.IntegrationTests
 
       public string AnotherValue { get; set; }
     }
+
+    //public class ApplyAspectAttribute : Attribute
+    //{
+    //  public ApplyAspect (Type type)
+    //  {
+        
+    //  }
+    //  public object If { get; set; }
+    //}
+
+    //public static class Is
+    //{
+    //  public static 
+    //  public static Type Not(Type t)
+    //  {
+    //    return null;
+    //  }
+    //}
 
     public class DomainAspectAttribute : PropertyInterceptionAspectAttribute
     {
