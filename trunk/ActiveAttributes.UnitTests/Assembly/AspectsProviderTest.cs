@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 using ActiveAttributes.Core.Aspects;
@@ -103,16 +104,38 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void name ()
+    public void GetAspects_OnlyAspectAttributes ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
-      var pattern = "Void .*";
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.AnotherMethod()));
 
-      //var input = methodInfo.ToString();
-      var input = "Void Method()";
-      var regex = Regex.IsMatch (input, pattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-      Assert.That (regex, Is.True);
+      var result = _provider.GetAspects (methodInfo);
+
+      Assert.That (result, Is.Empty);
     }
+
+    [Test]
+    public void GetAspects_FromProperties ()
+    {
+      var methodInfo = typeof (DomainType).GetMethods().Where (x => x.Name == "get_Property").First();
+
+      var result = _provider.GetAspects (methodInfo).ToArray();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+
+    // TODO
+    //[Test]
+    //public void name ()
+    //{
+    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+    //  var pattern = "Void .*";
+
+    //  //var input = methodInfo.ToString();
+    //  var input = "Void Method()";
+    //  var regex = Regex.IsMatch (input, pattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+    //  Assert.That (regex, Is.True);
+    //}
 
     public class DomainType
     {
@@ -122,6 +145,12 @@ namespace ActiveAttributes.UnitTests.Assembly
       [DomainAspect (Priority = 5)]
       [DomainAspect (Priority = 10)]
       public void OtherMethod () { }
+
+      [CompilerGenerated]
+      public void AnotherMethod () { }
+
+      [DomainAspect]
+      public string Property { get; set; }
     }
 
     [UsedImplicitly]

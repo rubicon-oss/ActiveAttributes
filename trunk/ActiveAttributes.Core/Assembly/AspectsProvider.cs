@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
-
+using ActiveAttributes.Core.Extensions;
 using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 
@@ -44,11 +44,9 @@ namespace ActiveAttributes.Core.Assembly
         yield return compileTimeAspect;
 
       var declaringType = methodInfo.DeclaringType;
-      var applyAspectsAttributes = declaringType.GetCustomAttributes (typeof (ApplyAspectAttribute), false).Cast<ApplyAspectAttribute>();
+      var applyAspectsAttributes = declaringType.GetCustomAttributes (typeof (ApplyAspectAttribute), false).Cast<ApplyAspectAttribute> ();
       foreach (var applyAspectsAttribute in applyAspectsAttributes)
-      {
         yield return new TypeArgsCompileTimeAspect (applyAspectsAttribute.AspectType, applyAspectsAttribute.Arguments);
-      }
 
       // inherited level method aspects
       while ((methodInfo = _relatedMethodFinder.GetBaseMethod (methodInfo)) != null)
@@ -61,8 +59,21 @@ namespace ActiveAttributes.Core.Assembly
     private IEnumerable<CompileTimeAspectBase> GetMethodLevelAspects (MethodInfo methodInfo, bool isBaseType)
     {
       var customDatas = CustomAttributeData.GetCustomAttributes (methodInfo);
+      customDatas = customDatas.Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType)).ToArray();
       if (isBaseType)
         customDatas = customDatas.Where (x => x.IsInheriting()).ToArray();
+
+      if (methodInfo.IsCompilerGenerated())
+      {
+        var propertyName = methodInfo.Name.Substring (4);
+        var propertyInfo = methodInfo.DeclaringType.GetProperty (propertyName);
+
+        if (propertyInfo != null)
+        {
+          var customDatasOfProperty = CustomAttributeData.GetCustomAttributes (propertyInfo);
+          customDatas = customDatas.Concat (customDatasOfProperty).ToArray();
+        }
+      }
 
       return customDatas.Select (customData => new CustomDataCompileTimeAspect (customData)).Cast<CompileTimeAspectBase>();
     }
