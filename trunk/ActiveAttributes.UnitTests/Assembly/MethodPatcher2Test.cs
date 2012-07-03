@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Contexts;
@@ -42,6 +42,7 @@ namespace ActiveAttributes.UnitTests.Assembly
                       };
     }
 
+    // TODO
     [Ignore, Test]
     public void CopyMethod ()
     {
@@ -57,7 +58,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void CallAspect ()
+    public void CallAspect_MethodInterception ()
     {
       var aspects = new[] { new DomainAspectAttribute () };
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
@@ -66,6 +67,32 @@ namespace ActiveAttributes.UnitTests.Assembly
       instance.Method ();
 
       Assert.That (aspects[0].OnInterceptCalled, Is.True);
+    }
+
+    [Test]
+    public void CallAspect_PropertyInterception_Set ()
+    {
+      var aspects = new[] { new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.set_Property ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.set_Property ();
+
+      Assert.That (aspects[0].OnSetInterceptCalled, Is.True);
+      Assert.That (aspects[0].OnGetInterceptCalled, Is.False);
+    }
+
+    [Test]
+    public void CallAspect_PropertyInterception_Get ()
+    {
+      var aspects = new[] { new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.get_Property ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.get_Property ();
+
+      Assert.That (aspects[0].OnGetInterceptCalled, Is.True);
+      Assert.That (aspects[0].OnSetInterceptCalled, Is.False);
     }
 
     [Test]
@@ -97,11 +124,9 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (ctx.Instance, Is.EqualTo (instance));
     }
 
-
     [Test]
     public void CallAspect_Proceeding ()
     {
-      SkipDeletion();
       var aspects = new[] { new ProceedingDomainAspectAttribute () };
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType3 obj) => obj.Method ());
       var instance = CreateInstance<DomainType3> (aspects, methodInfo);
@@ -109,6 +134,99 @@ namespace ActiveAttributes.UnitTests.Assembly
       instance.Method ();
 
       Assert.That (instance.MethodCalled, Is.True);
+    }
+
+    [Test]
+    public void CallAspect_MethodWithArgs ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType4 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType4 obj) => obj.Method (""));
+      var instance = CreateInstance<DomainType4> (aspects, methodInfo);
+
+      var input = "a";
+      instance.Method (input);
+
+      var arguments = aspects[0].Invocation.Context.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (1));
+      Assert.That (arguments[0], Is.EqualTo (input));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithSet_ValueType ()
+    {
+      var aspects = new[] { new ReturnValueTypeDomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
+      var instance = CreateInstance<DomainType5> (aspects, methodInfo);
+
+      var result = instance.Return100Method ();
+
+      Assert.That (result, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithSet_ReferenceType ()
+    {
+      var aspects = new[] { new ReturnReferenceTypeDomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType6> (aspects, methodInfo);
+
+      var result = instance.Method ();
+
+      Assert.That (result, Is.InstanceOf<DomainType5>());
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithoutSet_ValueType ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
+      var instance = CreateInstance<DomainType5> (aspects, methodInfo);
+
+      var result = instance.Return100Method ();
+
+      Assert.That (result, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CallAspect_ReturnValue_WithoutSet_ReferenceType ()
+    {
+      var aspects = new[] { new DomainAspectAttribute () };
+      _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType6> (aspects, methodInfo);
+
+      var result = instance.Method ();
+
+      Assert.That (result, Is.EqualTo (null));
+    }
+
+    [Test]
+    public void CallAspect_Multiple ()
+    {
+      var aspects = new[] { new ProceedingDomainAspectAttribute (), new ProceedingDomainAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.Method ();
+
+      Assert.That (aspects[0].OnInterceptCalled, Is.True);
+      Assert.That (aspects[1].OnInterceptCalled, Is.True);
+      Assert.That (aspects[1].Invocation, Is.InstanceOf<OuterInvocation> ());
+    }
+
+
+    [Test]
+    public void CallAspect_Multiple_MixedTypes ()
+    {
+      var aspects = new AspectAttribute[] { new DomainAspectAttribute (), new DomainPropertyAspectAttribute () };
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+
+      instance.Method ();
     }
 
     private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo)
@@ -161,12 +279,41 @@ namespace ActiveAttributes.UnitTests.Assembly
     public class DomainType2 : DomainTypeBase
     {
       public virtual void Method () { }
+
+      [CompilerGenerated]
+      public virtual void set_Property () { }
+
+      [CompilerGenerated]
+      public virtual void get_Property () { }
+
+      public virtual void MethodWithArgs (string arg) { }
     }
 
     public class DomainType3 : DomainTypeBase
     {
       public bool MethodCalled { get; private set; }
       public virtual void Method () { MethodCalled = true; }
+    }
+
+    public class DomainType4 : DomainTypeBase
+    {
+      public new Action<string> Delegate;
+
+      public virtual void Method (string a) { }
+    }
+
+    public class DomainType5 : DomainTypeBase
+    {
+      public new Func<int> Delegate;
+
+      public virtual int Return100Method () { return 100; }
+    }
+
+    public class DomainType6 : DomainTypeBase
+    {
+      public new Func<DomainType5> Delegate;
+
+      public virtual DomainType5 Method () { return new DomainType5(); }
     }
 
     public class DomainAspectAttribute : MethodInterceptionAspectAttribute
@@ -182,11 +329,52 @@ namespace ActiveAttributes.UnitTests.Assembly
         Invocation = invocation;
       }
     }
-    public class ProceedingDomainAspectAttribute : MethodInterceptionAspectAttribute
+
+    public class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
+    {
+      public bool OnGetInterceptCalled { get; private set; }
+      public bool OnSetInterceptCalled { get; private set; }
+
+      public IInvocation GetInvocation { get; private set; }
+      public IInvocation SetInvocation { get; private set; }
+
+      public override void OnInterceptGet (IInvocation invocation)
+      {
+        OnGetInterceptCalled = true;
+
+        GetInvocation = invocation;
+      }
+
+      public override void OnInterceptSet (IInvocation invocation)
+      {
+        OnSetInterceptCalled = true;
+
+        SetInvocation = invocation;
+      }
+    }
+
+    public class ProceedingDomainAspectAttribute : DomainAspectAttribute
     {
       public override void OnIntercept (IInvocation invocation)
       {
+        base.OnIntercept (invocation);
         invocation.Proceed();
+      }
+    }
+
+    public class ReturnValueTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Context.ReturnValue = 1;
+      }
+    }
+
+    public class ReturnReferenceTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Context.ReturnValue = new DomainType5();
       }
     }
   }
