@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;

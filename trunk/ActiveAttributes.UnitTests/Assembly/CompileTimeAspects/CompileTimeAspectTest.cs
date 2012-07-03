@@ -14,17 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Configuration;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 {
   [TestFixture]
   public class CompileTimeAspectTest

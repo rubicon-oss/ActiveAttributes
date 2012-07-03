@@ -31,22 +31,6 @@ namespace ActiveAttributes.IntegrationTests
       //((AssemblyBuilder) instance.GetType().Assembly).Save (assemblyFileName);
     }
 
-    // TODO: Remove
-    //[Test]
-    //public void name ()
-    //{
-    //  var method = GetType().GetMethod ("Foo");
-    //  Func<CachingAspectTest, int, int> action = (Func<CachingAspectTest, int, int>) Delegate.CreateDelegate (typeof (Func<CachingAspectTest, int, int>), method);
-      
-    //  var result = action (this, 13);
-    //  Assert.That (result, Is.EqualTo (30));
-    //}
-
-    //public int Foo (int i)
-    //{
-    //  return 17 + i;
-    //}
-
     public class DomainType
     {
       public int MethodExecutionCounter { get; private set; }

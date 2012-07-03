@@ -76,7 +76,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
-    <Compile Include="Assembly\CompileTimeAspectTest.cs" />
+    <Compile Include="Assembly\CompileTimeAspects\CompileTimeAspectTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
     <Compile Include="Assembly\MethodPatcher2Test.cs" />
@@ -85,6 +85,7 @@
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\AspectPreparerTest.cs" />
     <Compile Include="Assembly\MethodWithAspectsProviderTest.cs" />
+    <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Invocations\InvocationTest.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttributeTest.cs" />
