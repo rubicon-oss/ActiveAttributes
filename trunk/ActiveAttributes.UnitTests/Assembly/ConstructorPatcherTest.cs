@@ -46,7 +46,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Init_MethodInfo ()
     {
-      SkipDeletion();
       var instance = CreateInstance<DomainType> (new CustomDataCompileTimeAspect[0], _methodInfo, _copiedMethodInfo);
 
       Assert.That (instance.MethodInfo, Is.EqualTo (_methodInfo));

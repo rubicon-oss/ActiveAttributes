@@ -34,17 +34,17 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class ConstructorPatcher
   {
-    public void Patch (FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> compileTimeAspects, MutableMethodInfo mutableMethod,
+    public void Patch (FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects, MutableMethodInfo mutableMethod,
                        MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);
 
-      var initMethod = mutableType.AddMethod ("_InitializeAspects", MethodAttributes.Private, typeof (void), new ParameterDeclaration[0],
-                                              ctx => Expression.Block (
-                                                  GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
-                                                  GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
-                                                  GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField,
-                                                                            compileTimeAspects, ctx)));
+      //var initMethod = mutableType.AddMethod ("_InitializeAspects", MethodAttributes.Private, typeof (void), new ParameterDeclaration[0],
+      //                                        ctx => Expression.Block (
+      //                                            GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
+      //                                            GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
+      //                                            GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField,
+      //                                                                      aspects, ctx)));
 
       foreach (var mutableConstructor in mutableType.AllMutableConstructors)
       {
@@ -52,12 +52,18 @@ namespace ActiveAttributes.Core.Assembly
             ctx =>
             Expression.Block (
                 ctx.PreviousBody,
-                Expression.Call (ctx.This, initMethod)));
+                GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
+                GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
+                GetAspectsInitExpression (
+                    fieldData.StaticAspectsField,
+                    fieldData.InstanceAspectsField,
+                    aspects,
+                    ctx)));
       }
     }
 
     private Expression GetAspectsInitExpression (FieldInfo staticAspectsField,
-        FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspectBase> compileTimeAspects, MethodBodyCreationContext ctx)
+        FieldInfo instanceAspectsField, IEnumerable<CompileTimeAspectBase> compileTimeAspects, BodyContextBase ctx)
     {
       var compileTimeAspectsAsCollection = compileTimeAspects.ConvertToCollection();
 
@@ -120,7 +126,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Expression GetDelegateAssignExpression (
-        FieldInfo delegateField, MutableMethodInfo mutableMethod, MethodBodyCreationContext ctx, MutableMethodInfo copiedMethod)
+        FieldInfo delegateField, MutableMethodInfo mutableMethod, BodyContextBase ctx, MutableMethodInfo copiedMethod)
     {
       var delegateFieldExpression = Expression.Field (ctx.This, delegateField);
       var delegateType = mutableMethod.GetDelegateType();
@@ -142,7 +148,7 @@ namespace ActiveAttributes.Core.Assembly
     private Expression GetMethodInfoAssignExpression (FieldInfo methodInfoField, MutableMethodInfo mutableMethod, BodyContextBase ctx)
     {
       var methodInfoFieldExpression = Expression.Field (ctx.This, methodInfoField);
-      var methodInfoConstantExpression = Expression.Constant (mutableMethod, typeof (MethodInfo));
+      var methodInfoConstantExpression = Expression.Constant (mutableMethod.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
       var methodInfoAssignExpression = Expression.Assign (methodInfoFieldExpression, methodInfoConstantExpression);
 
       return methodInfoAssignExpression;
