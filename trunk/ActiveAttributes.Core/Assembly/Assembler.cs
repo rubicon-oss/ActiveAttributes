@@ -22,6 +22,9 @@ using Remotion.TypePipe.TypeAssembly;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Responsible for the assembly of types applied with aspects.
+  /// </summary>
   public class Assembler : ITypeAssemblyParticipant
   {
     public void ModifyType (MutableType mutableType)
@@ -40,7 +43,7 @@ namespace ActiveAttributes.Core.Assembly
 
         var fieldData = fieldIntroducer.Introduce (mutableMethod);
         var copiedMethod = methodPatcher.Patch (mutableMethod, fieldData, aspects);
-        constructorPatcher.Patch (fieldData, aspects, mutableMethod, copiedMethod);
+        constructorPatcher.Patch (mutableMethod, aspects, fieldData, copiedMethod);
       }
     }
   }

@@ -24,14 +24,18 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Introduces fields for <see cref="MethodInfo"/>, <see cref="Delegate"/>, and static/instance <see cref="AspectAttribute"/>
-  /// into a <see cref="MutableType"/>. 
+  /// Introduces fields for storing information regarding aspects.
   /// </summary>
   public class FieldIntroducer
   {
     private const string c_instancePrefix = "_m_";
     private const string c_staticPrefix = "_s_";
 
+    /// <summary>
+    /// Introduces fields for <see cref="MethodInfo"/>, <see cref="Delegate"/>, static/instance <see cref="AspectAttribute"/>'s for a given <see cref="MutableMethodInfo"/>.
+    /// </summary>
+    /// <param name="mutableMethod">The mutable method.</param>
+    /// <returns>Field data for aspect information of the method.</returns>
     public Data Introduce (MutableMethodInfo mutableMethod)
     {
       var mutableType = (MutableType) mutableMethod.DeclaringType;

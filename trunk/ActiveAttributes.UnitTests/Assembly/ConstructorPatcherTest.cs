@@ -228,7 +228,7 @@ namespace ActiveAttributes.UnitTests.Assembly
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
             var mutableCopy = mutableType.GetOrAddMutableMethod (copiedMethod);
 
-            _patcher.Patch (fieldData, aspects, mutableMethod, mutableCopy);
+            _patcher.Patch (mutableMethod, aspects, fieldData, mutableCopy);
           });
 
       return (T) Activator.CreateInstance (type, args);

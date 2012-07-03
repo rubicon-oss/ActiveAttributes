@@ -23,11 +23,14 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Extensions;
-using Remotion.Reflection.MemberSignatures;
+
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Provides methods to retrieve all aspects applied to methods.
+  /// </summary>
   public class AspectsProvider
   {
     private readonly IRelatedMethodFinder _relatedMethodFinder;
@@ -38,6 +41,11 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     // TODO: support aspects on interfaces?
+    /// <summary>
+    /// Gets all aspects applied to a method.
+    /// </summary>
+    /// <param name="methodInfo">The methodInfo.</param>
+    /// <returns>Returns ???</returns> // TODO
     public IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo)
     {
       // first level method aspects

@@ -33,10 +33,19 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Provides methods for injecting aspect initialization code into constructors of mutable types.
+  /// </summary>
   public class ConstructorPatcher
   {
-    public void Patch (FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects, MutableMethodInfo mutableMethod,
-                       MutableMethodInfo copiedMethod)
+    /// <summary>
+    /// Patches all constructors for initialization of all aspects applied to a method.
+    /// </summary>
+    /// <param name="mutableMethod">The method applied with aspects</param>
+    /// <param name="aspects">Aspects provided by <see cref="AspectsProvider"/>.</param>
+    /// <param name="fieldData">Field data provided by <see cref="FieldIntroducer"/>.</param>
+    /// <param name="copiedMethod">Copy of the method provided by <see cref="MethodPatcher"/>.</param>
+    public void Patch (MutableMethodInfo mutableMethod, IEnumerable<CompileTimeAspectBase> aspects, FieldIntroducer.Data fieldData, MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);
 
