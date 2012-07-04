@@ -68,8 +68,10 @@
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\CompileTimeAspects\TypeArgsCompileTimeAspect.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
+    <Compile Include="Contexts\ActionInvocationContextBase.cs" />
     <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\FuncArgumentCollection.cs" />
+    <Compile Include="Contexts\FuncInvocationContextBase.cs" />
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
     <Compile Include="Contexts\ArgumentCollection\ActionArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\IArgumentCollection.cs" />
