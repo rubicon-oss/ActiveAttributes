@@ -25,7 +25,7 @@ using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
-
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 using Remotion.Utilities;
@@ -59,20 +59,6 @@ namespace ActiveAttributes.UnitTests.Assembly
                       };
     }
 
-    // TODO
-    [Ignore, Test]
-    public void CopyMethod ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
-      var instance = CreateInstance<DomainType> (new AspectAttribute[0], methodInfo);
-      var type = instance.GetType();
-      var copyMethodInfo = type.GetMethod ("_m_Method_Copy", _bindingFlags);
-
-      Assert.That (copyMethodInfo, Is.Not.Null);
-      Assert.That (copyMethodInfo.GetParameters(), Is.EqualTo (methodInfo.GetParameters()));
-      Assert.That (copyMethodInfo.ReturnType, Is.EqualTo (methodInfo.ReturnType));
-      Assert.That (copyMethodInfo.Invoke (instance, new object[0]), Is.EqualTo (10));
-    }
 
     [Test]
     public void CallAspect_MethodInterception ()
@@ -146,11 +132,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var aspects = new[] { new ProceedingDomainAspectAttribute () };
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType3 obj) => obj.Method ());
-      var instance = CreateInstance<DomainType3> (aspects, methodInfo);
+      var called = false;
+      var instance = CreateInstance<DomainType3> (aspects, methodInfo, new Action (() => { called = true; }));
 
       instance.Method ();
 
-      Assert.That (instance.MethodCalled, Is.True);
+      Assert.That (called, Is.True);
     }
 
     [Test]
@@ -226,7 +213,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var aspects = new[] { new ProceedingDomainAspectAttribute (), new ProceedingDomainAspectAttribute () };
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-      var instance = CreateInstance<DomainType2> (aspects, methodInfo);
+      var instance = CreateInstance<DomainType2> (aspects, methodInfo, new Action (() => { }));
 
       instance.Method ();
 
@@ -246,7 +233,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       instance.Method ();
     }
 
-    private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo)
+    private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo, Delegate @delegate = null)
         where T: DomainTypeBase
     {
       var compileAspects = aspects.Select (x => new TypeArgsCompileTimeAspect (x.GetType(), null)).Cast<CompileTimeAspectBase>();
@@ -261,8 +248,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       methodInfoField.SetValue (instance, methodInfo);
 
       var delegateField = _fieldData.DelegateField;
-      var copyMethodInfo = instance.GetType().GetMethod ("_m_" + methodInfo.Name + "_Copy", _bindingFlags);
-      var @delegate = Delegate.CreateDelegate (methodInfo.GetDelegateType(), instance, copyMethodInfo);
+      //var copyMethodInfo = instance.GetType().GetMethod ("_m_" + methodInfo.Name + "_Copy", _bindingFlags);
+      //var  = Delegate.CreateDelegate (methodInfo.GetDelegateType(), instance, copyMethodInfo);
       delegateField.SetValue (instance, @delegate);
 
       return instance;
@@ -282,10 +269,12 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public abstract class DomainTypeBase
     {
+      // ReSharper disable UnassignedField.Global
       public MethodInfo MethodInfo;
       public Action Delegate;
       public static AspectAttribute[] StaticAspects;
       public AspectAttribute[] InstanceAspects;
+      // ReSharper restore UnassignedField.Global
     }
 
     public class DomainType : DomainTypeBase

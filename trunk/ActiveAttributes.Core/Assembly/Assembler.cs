@@ -33,6 +33,7 @@ namespace ActiveAttributes.Core.Assembly
       var constructorPatcher = new ConstructorPatcher();
       var methodPatcher = new MethodPatcher();
       var aspectsProvider = new AspectsProvider();
+      var methodCopier = new MethodCopier();
 
       foreach (var mutableMethod in mutableType.AllMutableMethods.ToList())
       {
@@ -42,7 +43,9 @@ namespace ActiveAttributes.Core.Assembly
           continue;
 
         var fieldData = fieldIntroducer.Introduce (mutableMethod);
-        var copiedMethod = methodPatcher.Patch (mutableMethod, fieldData, aspects);
+        var copiedMethod = methodCopier.GetCopy (mutableMethod);
+        
+        methodPatcher.Patch (mutableMethod, fieldData, aspects);
         constructorPatcher.Patch (mutableMethod, aspects, fieldData, copiedMethod);
       }
     }

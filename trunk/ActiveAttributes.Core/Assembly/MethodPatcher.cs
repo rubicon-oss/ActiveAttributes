@@ -59,26 +59,12 @@ namespace ActiveAttributes.Core.Assembly
     /// <param name="fieldData">Field data provided by <see cref="FieldIntroducer"/>.</param>
     /// <param name="aspects">Aspects provided by <see cref="AspectsProvider"/></param>
     /// <returns>A copy of the original method.</returns>
-    public MutableMethodInfo Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
+    public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
     {
       _typeProvider = new TypeProvider (mutableMethod);
-
       var mutableType = (MutableType) mutableMethod.DeclaringType;
-      var copiedMethod = GetCopiedMethod (mutableType, mutableMethod);
 
       mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, fieldData, aspects));
-
-      return copiedMethod;
-    }
-
-    private MutableMethodInfo GetCopiedMethod (MutableType mutableType, MutableMethodInfo mutableMethod)
-    {
-      return mutableType.AddMethod (
-          "_m_" + mutableMethod.Name + "_Copy",
-          MethodAttributes.Private,
-          mutableMethod.ReturnType,
-          ParameterDeclaration.CreateForEquivalentSignature (mutableMethod),
-          ctx => ctx.GetCopiedMethodBody (mutableMethod, ctx.Parameters.Cast<Expression>()));
     }
 
     private Expression GetPatchedBody (MutableMethodInfo mutableMethod, BodyContextBase ctx, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
