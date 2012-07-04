@@ -82,8 +82,10 @@
     <Compile Include="Contexts\ArgumentCollection\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
-    <Compile Include="Invocations\ActionInvocation.cs" />
-    <Compile Include="Invocations\FuncInvocation.cs" />
+    <Compile Include="Invocations\ActionInvocation.generated.cs" />
+    <Compile Include="Invocations\ActionInvocation.template.cs" />
+    <Compile Include="Invocations\FuncInvocation.generated.cs" />
+    <Compile Include="Invocations\FuncInvocation.template.cs" />
     <Compile Include="Contexts\IInvocationContext.cs" />
     <Compile Include="Invocations\IInvocation.cs" />
     <Compile Include="Invocations\Invocation.cs" />

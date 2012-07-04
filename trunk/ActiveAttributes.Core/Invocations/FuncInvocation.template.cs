@@ -16,32 +16,14 @@
 // 
 using System;
 using ActiveAttributes.Core.Contexts;
+using Remotion;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  public class FuncInvocation<TInstance, TR> : Invocation
-  {
-    private readonly FuncInvocationContext<TInstance, TR> _context;
-    private readonly Func<TR> _func;
-
-    public FuncInvocation (FuncInvocationContext<TInstance, TR> context, Func<TR> func)
-    {
-      _context = context;
-      _func = func;
-    }
-
-
-    public override IInvocationContext Context
-    {
-      get { return _context; }
-    }
-
-    public override void Proceed ()
-    {
-      _context.ReturnValue = _func ();
-    }
-  }
-
+  // @begin-template first=0 template=0 generate=0..15 suppressTemplate=true
+  // @replace ", TA<n>"
+  // @replace "TA<n>, "
+  // @replace "_context.Arg<n>" ", "
   public class FuncInvocation<TInstance, TA0, TR> : Invocation
   {
     private readonly FuncInvocationContext<TInstance, TA0, TR> _context;
@@ -63,4 +45,5 @@ namespace ActiveAttributes.Core.Invocations
       _context.ReturnValue = _func (_context.Arg0);
     }
   }
+  // @end-template
 }
