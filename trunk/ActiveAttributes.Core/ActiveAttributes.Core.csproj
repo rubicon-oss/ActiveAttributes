@@ -79,8 +79,6 @@
     <Compile Include="Invocations\ActionInvocation.cs" />
     <Compile Include="Contexts\ActionInvocationContext.cs" />
     <Compile Include="Invocations\FuncInvocation.cs" />
-    <Compile Include="Invocations\Old\Class1.cs" />
-    <Compile Include="Invocations\Old\FuncInvocation.cs" />
     <Compile Include="Contexts\IInvocationContext.cs" />
     <Compile Include="Invocations\IInvocation.cs" />
     <Compile Include="Invocations\Invocation.cs" />
