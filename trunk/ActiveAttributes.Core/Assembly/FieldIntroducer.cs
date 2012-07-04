@@ -65,6 +65,7 @@ namespace ActiveAttributes.Core.Assembly
              };
     }
 
+    // GetUniqueFieldID
     private string GetMethodToken (MutableMethodInfo mutableMethod)
     {
       var mutableType = (MutableType) mutableMethod.DeclaringType;

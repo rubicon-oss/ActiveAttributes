@@ -48,6 +48,10 @@ namespace ActiveAttributes.Core.Assembly
     /// <returns>Returns ???</returns> // TODO
     public IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo)
     {
+      // TODO RM-4942, RM-4943: When custom attribute support is added to the type pipe, omit the "UnderlyingSystemMethodInfo"
+      if (methodInfo is MutableMethodInfo)
+        methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
+
       // first level method aspects
       foreach (var compileTimeAspect in GetMethodLevelAspects (methodInfo, isBaseType: false))
         yield return compileTimeAspect;

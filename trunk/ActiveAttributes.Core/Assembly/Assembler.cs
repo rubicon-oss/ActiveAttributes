@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using System.Net.Sockets;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -35,12 +36,16 @@ namespace ActiveAttributes.Core.Assembly
       var aspectsProvider = new AspectsProvider();
       var methodCopier = new MethodCopier();
 
+      // TODO: Use GetMethods instead of AllMutableMethods. Use the MethodInfo (not MutableMethodInfo) to detect aspects on the methods. If there are aspects,
+      // TODO: use GetMutableMethod to get the mutable method. If this throws an exception, wrap with a sensible ActiveAttributes configuration exception.
+      // TODO: Then check MutableMethodInfo.CanSetBody, also throw a configuration exception if it is false.
       foreach (var mutableMethod in mutableType.AllMutableMethods.ToList())
       {
-        var aspects = aspectsProvider.GetAspects (mutableMethod.UnderlyingSystemMethodInfo).ToList();
+        var aspects = aspectsProvider.GetAspects (mutableMethod).ToList ();
 
         if (aspects.Count == 0)
           continue;
+
 
         var fieldData = fieldIntroducer.Introduce (mutableMethod);
         var copiedMethod = methodCopier.GetCopy (mutableMethod);

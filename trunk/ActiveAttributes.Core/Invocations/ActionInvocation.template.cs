@@ -20,16 +20,16 @@ using Remotion;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  // @begin-template first=0 template=0 generate=0..15 suppressTemplate=true
+  // @begin-template first=1 template=1 generate=0..15 suppressTemplate=true
   // @replace ", TA<n>"
   // @replace "TA<n>" ", " "<" ">"
   // @replace "_context.Arg<n>" ", "
-  public class ActionInvocation<TInstance, TA0> : Invocation
+  public class ActionInvocation<TInstance, TA1> : Invocation
   {
-    private readonly ActionInvocationContext<TInstance, TA0> _context;
-    private readonly Action<TA0> _action;
+    private readonly ActionInvocationContext<TInstance, TA1> _context;
+    private readonly Action<TA1> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA0> context, Action<TA0> action)
+    public ActionInvocation (ActionInvocationContext<TInstance, TA1> context, Action<TA1> action)
     {
       _context = context;
       _action = action;
@@ -42,7 +42,7 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _action (_context.Arg0);
+      _action (_context.Arg1);
     }
   }
   // @end-template
