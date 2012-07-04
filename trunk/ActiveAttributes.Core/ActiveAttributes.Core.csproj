@@ -68,9 +68,13 @@
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\CompileTimeAspects\TypeArgsCompileTimeAspect.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
+    <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
+    <Compile Include="Contexts\ActionInvocationContext.template.cs" />
     <Compile Include="Contexts\ActionInvocationContextBase.cs" />
     <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\FuncArgumentCollection.cs" />
+    <Compile Include="Contexts\FuncInvocationContext.generated.cs" />
+    <Compile Include="Contexts\FuncInvocationContext.template.cs" />
     <Compile Include="Contexts\FuncInvocationContextBase.cs" />
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
     <Compile Include="Contexts\ArgumentCollection\ActionArgumentCollection.cs" />
@@ -79,7 +83,6 @@
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Invocations\ActionInvocation.cs" />
-    <Compile Include="Contexts\ActionInvocationContext.cs" />
     <Compile Include="Invocations\FuncInvocation.cs" />
     <Compile Include="Contexts\IInvocationContext.cs" />
     <Compile Include="Invocations\IInvocation.cs" />
@@ -87,7 +90,6 @@
     <Compile Include="Aspects\MethodInterceptionAspectAttribute.cs" />
     <Compile Include="Configuration\AspectScope.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
-    <Compile Include="Contexts\FuncInvocationContext.cs" />
     <Compile Include="Invocations\IReadOnlyInvocation.cs" />
     <Compile Include="Invocations\OuterInvocation.cs" />
     <Compile Include="ObjectFactory.cs">
@@ -102,6 +104,9 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)\prereq\Tools\FuncGen\FuncGen.exe" "$(ProjectDir)*.template.cs" *.generated.cs /rec</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
