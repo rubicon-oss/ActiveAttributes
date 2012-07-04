@@ -65,9 +65,7 @@
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
-    <Compile Include="Assembly\AspectPreparer.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
-    <Compile Include="Assembly\MethodWithAspectsProvider.cs" />
     <Compile Include="Assembly\CompileTimeAspects\TypeArgsCompileTimeAspect.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
     <Compile Include="Contexts\ArgumentCollection\EmptyArgumentCollection.cs" />
