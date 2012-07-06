@@ -31,8 +31,16 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Patches a method aspect-ready.
+  /// Patches a method so that it can be intercepted by applied aspects.
   /// </summary>
+  /// <remarks>
+  /// <code>
+  /// var ctx = new InvocationContext(methodInfo, this, arg0, arg1, ...);
+  /// var invocation0 = new Invocation(ctx, delegate(originalMethod));
+  /// var invocation1 = new OuterInvocation(ctx, delegate(aspect[0].Intercept), invocation0);
+  /// aspect[1].Intercept(invocation1);
+  /// </code>
+  /// </remarks>
   public class MethodPatcher
   {
     private TypeProvider _typeProvider;
@@ -54,13 +62,6 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    /// <summary>
-    /// Patches a method so that it can be intercepted by applied aspects.
-    /// </summary>
-    /// <param name="mutableMethod">The mutable method.</param>
-    /// <param name="fieldData">Field data provided by <see cref="FieldIntroducer"/>.</param>
-    /// <param name="aspects">Aspects provided by <see cref="AspectsProvider"/></param>
-    /// <returns>A copy of the original method.</returns>
     public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
     {
       _typeProvider = new TypeProvider (mutableMethod);
