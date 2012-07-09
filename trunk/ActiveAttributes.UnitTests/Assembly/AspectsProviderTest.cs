@@ -14,18 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using JetBrains.Annotations;
+using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
-using Remotion.TypePipe.UnitTests.MutableReflection;
 using Remotion.Utilities;
+
+[assembly: AspectsProviderTest.DomainAspectAttribute (If = "Void AssemblyMethod()")]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -84,19 +82,30 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void GetAspects_Base_NonInheriting ()
+    public void GetAspects_Derived_Inheriting_Property ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((BaseType obj) => obj.Method2 ()));
+      var methodInfo = typeof (DerivedType).GetMethods ().Where (x => x.Name == "get_Property1").First ();
 
       var result = _provider.GetAspects (methodInfo).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
 
+
     [Test]
-    public void GetAspects_ApplyAspects_ClassLevel ()
+    public void GetAspects_Derived_NotInheriting_Property ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method1 ()));
+      var methodInfo = typeof (DerivedType).GetMethods ().Where (x => x.Name == "get_Property2").First ();
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    [Test]
+    public void GetAspects_Base_NonInheriting ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((BaseType obj) => obj.Method2 ()));
 
       var result = _provider.GetAspects (methodInfo).ToArray ();
 
@@ -124,6 +133,37 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
 
+    [Test]
+    public void GetAspects_IfSignature_Match ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method1 ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspects_IfSignature_NoMatch ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.SkipMethod ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    [Test]
+    public void GetAspects_AssemblyLevel ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.AssemblyMethod ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+
     // TODO
     //[Test]
     //public void name ()
@@ -146,15 +186,18 @@ namespace ActiveAttributes.UnitTests.Assembly
       [DomainAspect (Priority = 10)]
       public void OtherMethod () { }
 
-      [CompilerGenerated]
+      [Dummy]
       public void AnotherMethod () { }
 
       [DomainAspect]
       public string Property { get; set; }
     }
 
-    [UsedImplicitly]
     public class DomainAspectAttribute : AspectAttribute
+    {
+    }
+
+    public class DummyAttribute : Attribute
     {
     }
 
@@ -165,6 +208,12 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       [NotInheritingAspect]
       public virtual void Method2 () { }
+
+      [InheritingAspect]
+      public virtual string Property1 { get; set; }
+
+      [NotInheritingAspect]
+      public virtual string Property2 { get; set; }
     }
 
     public class DerivedType : BaseType
@@ -172,24 +221,30 @@ namespace ActiveAttributes.UnitTests.Assembly
       public override void Method1 () { }
 
       public override void Method2 () { }
+
+      public override string Property1 { get; set; }
+
+      public override string Property2 { get; set; }
     }
 
-    [UsedImplicitly]
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
     public class InheritingAspectAttribute : AspectAttribute
     {
     }
 
-    [UsedImplicitly]
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
     public class NotInheritingAspectAttribute : AspectAttribute
     {
     }
 
-    [ApplyAspect(typeof(DomainAspectAttribute))]
+    [DomainAspect(If = "* Method*(*)")]
     public class DomainType2
     {
       public virtual void Method1 () { }
+
+      public virtual void SkipMethod () { }
+
+      public virtual void AssemblyMethod () { }
     }
   }
 }

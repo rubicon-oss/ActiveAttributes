@@ -57,9 +57,9 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     {
       get
       {
-        var priorityArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "Scope");
-        return priorityArgument.MemberInfo != null
-                   ? (AspectScope) priorityArgument.TypedValue.Value
+        var scopeArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "Scope");
+        return scopeArgument.MemberInfo != null
+                   ? (AspectScope) scopeArgument.TypedValue.Value
                    : 0;
       }
     }
@@ -85,6 +85,17 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     public override object[] Arguments
     {
       get { throw new NotSupportedException(); }
+    }
+
+    public override object If
+    {
+      get
+      {
+        var ifArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "If");
+        return ifArgument.MemberInfo != null
+                   ? ifArgument.TypedValue.Value
+                   : null;
+      }
     }
   }
 }

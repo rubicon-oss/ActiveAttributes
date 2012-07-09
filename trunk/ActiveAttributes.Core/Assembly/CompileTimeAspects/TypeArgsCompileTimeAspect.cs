@@ -71,5 +71,10 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     {
       get { return _arguments; }
     }
+
+    public override object If
+    {
+      get { throw new NotImplementedException(); }
+    }
   }
 }

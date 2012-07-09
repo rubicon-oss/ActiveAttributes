@@ -31,5 +31,7 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     public abstract IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
     public abstract IList<CustomAttributeNamedArgument> NamedArguments { get; }
     public abstract object[] Arguments { get; }
+
+    public abstract object If { get; }
   }
 }

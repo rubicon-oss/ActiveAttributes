@@ -19,11 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Extensions;
-
+using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -47,43 +47,88 @@ namespace ActiveAttributes.Core.Assembly
       if (methodInfo is MutableMethodInfo)
         methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
 
-      // first level method aspects
-      foreach (var compileTimeAspect in GetMethodLevelAspects (methodInfo, isBaseType: false))
-        yield return compileTimeAspect;
-
-      var declaringType = methodInfo.DeclaringType;
-      var applyAspectsAttributes = declaringType.GetCustomAttributes (typeof (ApplyAspectAttribute), false).Cast<ApplyAspectAttribute> ();
-      foreach (var applyAspectsAttribute in applyAspectsAttributes)
-        yield return new TypeArgsCompileTimeAspect (applyAspectsAttribute.AspectType, applyAspectsAttribute.Arguments);
-
-      // inherited level method aspects
-      while ((methodInfo = _relatedMethodFinder.GetBaseMethod (methodInfo)) != null)
+      var iteratingMethodInfo = methodInfo;
+      do
       {
-        foreach (var compileTimeAspect in GetMethodLevelAspects (methodInfo, isBaseType: true))
+        var isBaseType = !iteratingMethodInfo.Equals(methodInfo);
+
+        foreach (var compileTimeAspect in GetAspects (iteratingMethodInfo, isBaseType))
           yield return compileTimeAspect;
-      }
+
+      } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
     }
 
-    private IEnumerable<CompileTimeAspectBase> GetMethodLevelAspects (MethodInfo methodInfo, bool isBaseType)
+    private IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo, bool isBaseType)
     {
-      var customDatas = CustomAttributeData.GetCustomAttributes (methodInfo);
-      customDatas = customDatas.Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType)).ToArray();
-      if (isBaseType)
-        customDatas = customDatas.Where (x => x.IsInheriting()).ToArray();
+      var customDatas2 = new List<CustomAttributeData>();
 
-      if (methodInfo.IsCompilerGenerated())
+      var methodLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo);
+      customDatas2.AddRange (methodLevelAspects);
+
+      if (methodInfo.IsCompilerGenerated ())
       {
-        var propertyName = methodInfo.Name.Substring (4);
-        var propertyInfo = methodInfo.DeclaringType.GetProperty (propertyName);
-
-        if (propertyInfo != null)
-        {
-          var customDatasOfProperty = CustomAttributeData.GetCustomAttributes (propertyInfo);
-          customDatas = customDatas.Concat (customDatasOfProperty).ToArray();
-        }
+        var propertyLevelAspects = GetPropertyLevelAspects(methodInfo);
+        customDatas2.AddRange (propertyLevelAspects);
       }
 
-      return customDatas.Select (customData => new CustomDataCompileTimeAspect (customData)).Cast<CompileTimeAspectBase>();
+      var typeLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType);
+      customDatas2.AddRange (typeLevelAspects);
+
+      var assemblyLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType.Assembly);
+      customDatas2.AddRange (assemblyLevelAspects);
+
+      var aspects = customDatas2
+          .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
+          .Where (x => !isBaseType || x.IsInheriting())
+          .Select (x => new CustomDataCompileTimeAspect (x))
+          .Cast<CompileTimeAspectBase>()
+          .Where(x => CheckApplying(x, methodInfo))
+          .ToArray();
+
+      return aspects;
+    }
+
+    private bool CheckApplying (CompileTimeAspectBase aspect, MethodInfo methodInfo)
+    {
+      if (aspect.If == null)
+        return true;
+
+      if (aspect.If is Type && aspect.If == methodInfo.DeclaringType)
+        return true;
+
+      if (aspect.If is string && CheckIfSignature ((string) aspect.If, methodInfo))
+        return true;
+
+      return false;
+    }
+
+    private bool CheckIfSignature (string signature, MethodInfo methodInfo)
+    {
+      var input = SignatureDebugStringGenerator.GetMethodSignature (methodInfo);
+      var pattern = "^" +
+                    signature
+                        .Replace ("*", ".*")
+                        .Replace ("(", "\\(")
+                        .Replace (")", "\\)")
+                    + "$";
+      var isMatch = Regex.IsMatch (input, pattern);
+      return isMatch;
+    }
+
+    private IEnumerable<CustomAttributeData> GetPropertyLevelAspects (MethodInfo methodInfo)
+    {
+      var propertyName = methodInfo.Name.Substring (4);
+      var propertyInfo = methodInfo.DeclaringType.GetProperty (propertyName);
+
+      if (propertyInfo != null)
+      {
+        var customDatas = CustomAttributeData.GetCustomAttributes (propertyInfo);
+        return customDatas;
+      }
+      else
+      {
+        return Enumerable.Empty<CustomAttributeData>();
+      }
     }
   }
 

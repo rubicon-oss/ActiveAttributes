@@ -60,6 +60,8 @@ namespace ActiveAttributes.Core.Aspects
 
     public int Priority { get; set; }
 
+    public object If { get; set; }
+
     public virtual bool Validate (MethodInfo method)
     {
       return true;
