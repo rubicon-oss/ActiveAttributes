@@ -47,37 +47,37 @@ namespace ActiveAttributes.Core.Assembly
       if (methodInfo is MutableMethodInfo)
         methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
 
+      var aspects = new List<CompileTimeAspectBase>();
       var iteratingMethodInfo = methodInfo;
       do
       {
         var isBaseType = !iteratingMethodInfo.Equals(methodInfo);
-
-        foreach (var compileTimeAspect in GetAspects (iteratingMethodInfo, isBaseType))
-          yield return compileTimeAspect;
-
+        aspects.AddRange (GetAspects (iteratingMethodInfo, isBaseType));
       } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
+
+      return aspects;
     }
 
     private IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo, bool isBaseType)
     {
-      var customDatas2 = new List<CustomAttributeData>();
+      var customDatas = new List<CustomAttributeData>();
 
       var methodLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo);
-      customDatas2.AddRange (methodLevelAspects);
+      customDatas.AddRange (methodLevelAspects);
 
       if (methodInfo.IsCompilerGenerated ())
       {
         var propertyLevelAspects = GetPropertyLevelAspects(methodInfo);
-        customDatas2.AddRange (propertyLevelAspects);
+        customDatas.AddRange (propertyLevelAspects);
       }
 
       var typeLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType);
-      customDatas2.AddRange (typeLevelAspects);
+      customDatas.AddRange (typeLevelAspects);
 
       var assemblyLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType.Assembly);
-      customDatas2.AddRange (assemblyLevelAspects);
+      customDatas.AddRange (assemblyLevelAspects);
 
-      var aspects = customDatas2
+      var aspects = customDatas
           .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
           .Where (x => !isBaseType || x.IsInheriting())
           .Select (x => new CustomDataCompileTimeAspect (x))
