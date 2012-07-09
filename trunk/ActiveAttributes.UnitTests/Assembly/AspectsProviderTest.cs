@@ -23,7 +23,9 @@ using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*.AspectsProviderTest.DomainType2", IfSignature = "* AssemblyMethod()")]
+[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*AspectsProviderTest+DomainType3")]
+[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = typeof (AspectsProviderTest.DomainType4))]
+[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "ActiveAttributes.UnitTests.Assembly.AspectsProviderTest+NestedClass+*")]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -154,13 +156,43 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void GetAspects_AssemblyLevel ()
+    public void GetAspects_AssemblyLevel_StringType ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.AssemblyMethod ()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType3 obj) => obj.Method ()));
 
       var result = _provider.GetAspects (methodInfo).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspects_AssemblyLevel_StrongType ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType4 obj) => obj.Method ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspects_AssemblyLevel_Namespace ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((NestedClass.DomainType5 obj) => obj.Method ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspects_AssemblyLevel_Namespace_EscapeDot ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((NestedClassX.DomainType5 obj) => obj.Method ()));
+
+      var result = _provider.GetAspects (methodInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
     }
 
 
@@ -243,8 +275,38 @@ namespace ActiveAttributes.UnitTests.Assembly
       public virtual void Method1 () { }
 
       public virtual void SkipMethod () { }
+    }
 
-      public virtual void AssemblyMethod () { }
+    public class DomainType3
+    {
+      public virtual void Method () { }
+    }
+
+    public class DomainType4
+    {
+      public virtual void Method () { }
+    }
+
+    public class NestedClass
+    {
+      public class DomainType5
+      {
+        public virtual object Method ()
+        {
+          return null;
+        }
+      }
+    }
+
+    public class NestedClassX
+    {
+      public class DomainType5
+      {
+        public virtual object Method ()
+        {
+          return null;
+        }
+      }
     }
   }
 }

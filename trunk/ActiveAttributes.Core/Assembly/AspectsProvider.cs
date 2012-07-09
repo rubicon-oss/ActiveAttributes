@@ -47,45 +47,44 @@ namespace ActiveAttributes.Core.Assembly
       if (methodInfo is MutableMethodInfo)
         methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
 
-      var aspects = new List<CompileTimeAspectBase>();
+      var customAttributeDatas = new List<CustomAttributeData> ();
       var iteratingMethodInfo = methodInfo;
       do
       {
         var isBaseType = !iteratingMethodInfo.Equals(methodInfo);
-        aspects.AddRange (GetAspects (iteratingMethodInfo, isBaseType));
+        customAttributeDatas.AddRange (GetAspects (iteratingMethodInfo, isBaseType));
       } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
+
+      var aspects = customAttributeDatas
+          .Select (x => new CustomDataCompileTimeAspect (x))
+          .Cast<CompileTimeAspectBase>()
+          .Where (x => ShouldApply (x, methodInfo));
 
       return aspects;
     }
 
-    private IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo, bool isBaseType)
+    private IEnumerable<CustomAttributeData> GetAspects (MethodInfo methodInfo, bool isBaseType)
     {
-      var customDatas = new List<CustomAttributeData>();
+      var customAttributeDatas = new List<CustomAttributeData> ();
 
       var methodLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo);
-      customDatas.AddRange (methodLevelAspects);
+      customAttributeDatas.AddRange (methodLevelAspects);
 
       if (methodInfo.IsCompilerGenerated ())
       {
         var propertyLevelAspects = GetPropertyLevelAspects(methodInfo);
-        customDatas.AddRange (propertyLevelAspects);
+        customAttributeDatas.AddRange (propertyLevelAspects);
       }
 
       var typeLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType);
-      customDatas.AddRange (typeLevelAspects);
+      customAttributeDatas.AddRange (typeLevelAspects);
 
       var assemblyLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType.Assembly);
-      customDatas.AddRange (assemblyLevelAspects);
+      customAttributeDatas.AddRange (assemblyLevelAspects);
 
-      var aspects = customDatas
+      return customAttributeDatas
           .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
-          .Where (x => !isBaseType || x.IsInheriting())
-          .Select (x => new CustomDataCompileTimeAspect (x))
-          .Cast<CompileTimeAspectBase>()
-          .Where(x => ShouldApply(x, methodInfo))
-          .ToArray();
-
-      return aspects;
+          .Where (x => !isBaseType || x.IsInheriting());
     }
 
     private bool ShouldApply (CompileTimeAspectBase aspect, MethodInfo methodInfo)
@@ -118,8 +117,10 @@ namespace ActiveAttributes.Core.Assembly
     {
       if (type is string)
       {
+        var input = methodInfo.DeclaringType.FullName;
         var pattern = ConvertToPattern ((string) type);
-        return Regex.IsMatch (methodInfo.DeclaringType.FullName, pattern);
+        var isMatch = Regex.IsMatch (input, pattern);
+        return isMatch;
       }
       else
       {
@@ -131,6 +132,8 @@ namespace ActiveAttributes.Core.Assembly
     {
       return "^" +
              input
+                 .Replace (".", "\\.")
+                 .Replace ("+", "\\+")
                  .Replace ("*", ".*")
                  .Replace ("(", "\\(")
                  .Replace (")", "\\)")
