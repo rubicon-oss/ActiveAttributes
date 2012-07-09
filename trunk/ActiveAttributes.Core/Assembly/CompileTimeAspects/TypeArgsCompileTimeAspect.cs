@@ -72,9 +72,15 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
       get { return _arguments; }
     }
 
-    public override object If
+    public override object IfType
     {
       get { throw new NotImplementedException(); }
     }
+
+    public override object IfSignature
+    {
+      get { throw new NotImplementedException(); }
+    }
+
   }
 }

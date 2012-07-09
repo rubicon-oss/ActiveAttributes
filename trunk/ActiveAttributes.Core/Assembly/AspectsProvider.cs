@@ -82,37 +82,60 @@ namespace ActiveAttributes.Core.Assembly
           .Where (x => !isBaseType || x.IsInheriting())
           .Select (x => new CustomDataCompileTimeAspect (x))
           .Cast<CompileTimeAspectBase>()
-          .Where(x => CheckApplying(x, methodInfo))
+          .Where(x => ShouldApply(x, methodInfo))
           .ToArray();
 
       return aspects;
     }
 
-    private bool CheckApplying (CompileTimeAspectBase aspect, MethodInfo methodInfo)
+    private bool ShouldApply (CompileTimeAspectBase aspect, MethodInfo methodInfo)
     {
-      if (aspect.If == null)
-        return true;
+      if (aspect.IfType != null && !ShouldApplyOnType (aspect.IfType, methodInfo))
+        return false;
 
-      if (aspect.If is Type && aspect.If == methodInfo.DeclaringType)
-        return true;
+      if (aspect.IfSignature != null && !ShouldApplyOnSignature (aspect.IfSignature, methodInfo))
+        return false;
 
-      if (aspect.If is string && CheckIfSignature ((string) aspect.If, methodInfo))
-        return true;
-
-      return false;
+      return true;
     }
 
-    private bool CheckIfSignature (string signature, MethodInfo methodInfo)
+    private bool ShouldApplyOnSignature (object signature, MethodInfo methodInfo)
     {
-      var input = SignatureDebugStringGenerator.GetMethodSignature (methodInfo);
-      var pattern = "^" +
-                    signature
-                        .Replace ("*", ".*")
-                        .Replace ("(", "\\(")
-                        .Replace (")", "\\)")
-                    + "$";
-      var isMatch = Regex.IsMatch (input, pattern);
-      return isMatch;
+      if (signature is string)
+      {
+        var input = SignatureDebugStringGenerator.GetMethodSignature (methodInfo);
+        var pattern = ConvertToPattern ((string) signature);
+        var isMatch = Regex.IsMatch (input, pattern);
+        return isMatch;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    private bool ShouldApplyOnType (object type, MethodInfo methodInfo)
+    {
+      if (type is string)
+      {
+        var pattern = ConvertToPattern ((string) type);
+        return Regex.IsMatch (methodInfo.DeclaringType.FullName, pattern);
+      }
+      else
+      {
+        return type == methodInfo.DeclaringType;
+      }
+    }
+
+    private static string ConvertToPattern (string input)
+    {
+      return "^" +
+             input
+                 .Replace ("*", ".*")
+                 .Replace ("(", "\\(")
+                 .Replace (")", "\\)")
+                 .Replace ("void", "Void")
+             + "$";
     }
 
     private IEnumerable<CustomAttributeData> GetPropertyLevelAspects (MethodInfo methodInfo)

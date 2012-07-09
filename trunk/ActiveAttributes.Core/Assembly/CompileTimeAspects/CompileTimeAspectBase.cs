@@ -23,6 +23,9 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
 {
   public abstract class CompileTimeAspectBase
   {
+    public CompileTimeAspectBase ()
+    {
+    }
     public abstract CompileTimeAspectType CompileTimeType { get; }
     public abstract int Priority { get; }
     public abstract AspectScope Scope { get; }
@@ -32,6 +35,7 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     public abstract IList<CustomAttributeNamedArgument> NamedArguments { get; }
     public abstract object[] Arguments { get; }
 
-    public abstract object If { get; }
+    public abstract object IfType { get; }
+    public abstract object IfSignature { get; }
   }
 }

@@ -60,7 +60,8 @@ namespace ActiveAttributes.Core.Aspects
 
     public int Priority { get; set; }
 
-    public object If { get; set; }
+    public object IfType { get; set; }
+    public object IfSignature { get; set; }
 
     public virtual bool Validate (MethodInfo method)
     {

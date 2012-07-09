@@ -87,13 +87,24 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
       get { throw new NotSupportedException(); }
     }
 
-    public override object If
+    public override object IfType
     {
       get
       {
-        var ifArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "If");
-        return ifArgument.MemberInfo != null
-                   ? ifArgument.TypedValue.Value
+        var ifTypeArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "IfType");
+        return ifTypeArgument.MemberInfo != null
+                   ? ifTypeArgument.TypedValue.Value
+                   : null;
+      }
+    }
+
+    public override object IfSignature
+    {
+      get
+      {
+        var ifSignatureArgument = _customData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "IfSignature");
+        return ifSignatureArgument.MemberInfo != null
+                   ? ifSignatureArgument.TypedValue.Value
                    : null;
       }
     }

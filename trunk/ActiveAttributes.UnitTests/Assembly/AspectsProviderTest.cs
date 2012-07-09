@@ -23,7 +23,7 @@ using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-[assembly: AspectsProviderTest.DomainAspectAttribute (If = "Void AssemblyMethod()")]
+[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*.AspectsProviderTest.DomainType2", IfSignature = "* AssemblyMethod()")]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -237,7 +237,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
     }
 
-    [DomainAspect(If = "* Method*(*)")]
+    [DomainAspect (IfSignature = "void Method*(*)")]
     public class DomainType2
     {
       public virtual void Method1 () { }
