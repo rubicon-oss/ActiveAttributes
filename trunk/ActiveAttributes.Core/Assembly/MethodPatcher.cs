@@ -43,6 +43,10 @@ namespace ActiveAttributes.Core.Assembly
   /// </remarks>
   public class MethodPatcher
   {
+    private readonly MutableMethodInfo _mutableMethod;
+    private readonly FieldIntroducer.Data _fieldData;
+    private readonly IEnumerable<CompileTimeAspectBase> _aspects;
+
     private TypeProvider _typeProvider;
 
     private readonly MethodInfo _onInterceptMethodInfo;
@@ -53,6 +57,22 @@ namespace ActiveAttributes.Core.Assembly
 
     public MethodPatcher ()
     {
+      _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
+      _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
+      _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
+
+      _createDelegateMethodInfo = typeof (Delegate).GetMethod (
+          "CreateDelegate",
+          new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+    }
+
+    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects, TypeProvider typeProvider)
+    {
+      _mutableMethod = mutableMethod;
+      _fieldData = fieldData;
+      _aspects = aspects;
+      _typeProvider = typeProvider;
+
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
       _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
       _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");

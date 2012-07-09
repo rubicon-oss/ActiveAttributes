@@ -9,6 +9,9 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Copies a method including signature and body.
+  /// </summary>
   public class MethodCopier
   {
     public MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod)

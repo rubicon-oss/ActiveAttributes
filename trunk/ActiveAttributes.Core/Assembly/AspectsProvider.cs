@@ -29,7 +29,7 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Provides methods to retrieve all aspects applied to methods.
+  /// Provides all aspects (including inherited) applied to a method.
   /// </summary>
   public class AspectsProvider
   {
@@ -41,11 +41,6 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     // TODO: support aspects on interfaces?
-    /// <summary>
-    /// Gets all aspects applied to a method.
-    /// </summary>
-    /// <param name="methodInfo">The methodInfo.</param>
-    /// <returns>Returns ???</returns> // TODO
     public IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo)
     {
       // TODO RM-4942, RM-4943: When custom attribute support is added to the type pipe, omit the "UnderlyingSystemMethodInfo"
