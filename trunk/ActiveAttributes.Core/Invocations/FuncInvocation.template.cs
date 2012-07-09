@@ -20,16 +20,16 @@ using Remotion;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  // @begin-template first=0 template=0 generate=0..15 suppressTemplate=true
+  // @begin-template first=1 template=1 generate=0..15 suppressTemplate=true
   // @replace ", TA<n>"
   // @replace "TA<n>, "
   // @replace "_context.Arg<n>" ", "
-  public class FuncInvocation<TInstance, TA0, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TR> _context;
-    private readonly Func<TA0, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TR> _context;
+    private readonly Func<TA1, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TR> context, Func<TA0, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TR> context, Func<TA1, TR> func)
     {
       _context = context;
       _func = func;
@@ -42,7 +42,7 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0);
+      _context.ReturnValue = _func (_context.Arg1);
     }
   }
   // @end-template

@@ -48,12 +48,12 @@ namespace ActiveAttributes.Core.Invocations
       _context.ReturnValue = _func ();
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TR> _context;
-    private readonly Func<TA0, TA1, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TR> _context;
+    private readonly Func<TA1, TA2, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TR> context, Func<TA0, TA1, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TR> context, Func<TA1, TA2, TR> func)
     {
       _context = context;
       _func = func;
@@ -66,15 +66,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TR> context, Func<TA0, TA1, TA2, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TR> context, Func<TA1, TA2, TA3, TR> func)
     {
       _context = context;
       _func = func;
@@ -87,15 +87,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TR> context, Func<TA0, TA1, TA2, TA3, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TR> context, Func<TA1, TA2, TA3, TA4, TR> func)
     {
       _context = context;
       _func = func;
@@ -108,15 +108,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TR> func)
     {
       _context = context;
       _func = func;
@@ -129,15 +129,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TR> func)
     {
       _context = context;
       _func = func;
@@ -150,15 +150,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> func)
     {
       _context = context;
       _func = func;
@@ -171,15 +171,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> func)
     {
       _context = context;
       _func = func;
@@ -192,15 +192,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> func)
     {
       _context = context;
       _func = func;
@@ -213,15 +213,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> func)
     {
       _context = context;
       _func = func;
@@ -234,15 +234,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> func)
     {
       _context = context;
       _func = func;
@@ -255,15 +255,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> func)
     {
       _context = context;
       _func = func;
@@ -276,15 +276,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> func)
     {
       _context = context;
       _func = func;
@@ -297,15 +297,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12, _context.Arg13);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> func)
     {
       _context = context;
       _func = func;
@@ -318,15 +318,15 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12, _context.Arg13);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12, _context.Arg13, _context.Arg14);
     }
   }
-  public class FuncInvocation<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> : Invocation
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TA15, TR> : Invocation
   {
-    private readonly FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> _context;
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> _func;
+    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TA15, TR> _context;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TA15, TR> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> context, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TR> func)
+    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TA15, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TA9, TA10, TA11, TA12, TA13, TA14, TA15, TR> func)
     {
       _context = context;
       _func = func;
@@ -339,7 +339,7 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg0, _context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12, _context.Arg13, _context.Arg14);
+      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8, _context.Arg9, _context.Arg10, _context.Arg11, _context.Arg12, _context.Arg13, _context.Arg14, _context.Arg15);
     }
   }
 }

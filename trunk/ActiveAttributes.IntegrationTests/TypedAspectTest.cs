@@ -76,7 +76,7 @@ namespace ActiveAttributes.IntegrationTests
       {
         var funcInvocationContext = (FuncInvocationContext<DomainType, DomainType.NestedDomainType, string>) invocation.Context;
 
-        var arg0 = funcInvocationContext.Arg0;
+        var arg0 = funcInvocationContext.Arg1;
 
         arg0.Name = "Stefan";
 
