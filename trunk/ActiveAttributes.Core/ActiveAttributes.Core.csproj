@@ -59,15 +59,13 @@
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
-    <Compile Include="Assembly\CompileTimeAspects\CompileTimeAspectBase.cs" />
-    <Compile Include="Assembly\CompileTimeAspects\CompileTimeAspectType.cs" />
-    <Compile Include="Assembly\CompileTimeAspects\CustomDataCompileTimeAspect.cs" />
+    <Compile Include="Assembly\CompileTimeAspect.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\MethodCopier.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
-    <Compile Include="Assembly\CompileTimeAspects\TypeArgsCompileTimeAspect.cs" />
+    <Compile Include="Assembly\MethodPatcherFactory.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
     <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Contexts\ActionInvocationContext.template.cs" />
@@ -78,6 +76,7 @@
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
     <Compile Include="Contexts\ArgumentCollection\IArgumentCollection.cs" />
     <Compile Include="Contexts\ArgumentCollection\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Extensions\CustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Invocations\ActionInvocation.generated.cs" />
@@ -102,6 +101,9 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assembly\CompileTimeAspects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

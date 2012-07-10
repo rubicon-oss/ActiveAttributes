@@ -16,8 +16,12 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
+using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -28,8 +32,19 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   public class Assembler : ITypeAssemblyParticipant
   {
+    // private Dictionary<Assembly, Aspect[]> _assemblyLevelAspects = ...;
+
     public void ModifyType (MutableType mutableType)
     {
+      // var instanceTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsInstance);
+      // var staticTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsStatic);
+
+      // var typeLevelFieldData = fieldIntroducer.Introduce (mutableType); // typeName_StaticAspects, typeName_InstanceAspects
+      // var instanceTypeLevelAspectsForCodeGen = instanceTypeLevelAspects.Select ((cta, i) => cta.CreateAspectForCodeGeneration (cta, typeLevelFieldData, i));
+      // var staticTypeLevelAspectsForCodeGen = staticTypeLevelAspects.Select ((cta, i) => cta.CreateAspectForCodeGeneration (cta, typeLevelFieldData, i));
+      // var typeLevelAspectsForCodeGen = instanceTypeLevelAspectsForCodeGen.Concat (staticTypeLevelAspectsForCodeGen);
+      // constructorPatcher.AddFieldInitialization (mutableMethod, typeLevelFieldData, typeLevelAspects);
+      
       var fieldIntroducer = new FieldIntroducer();
       var constructorPatcher = new ConstructorPatcher();
       var methodPatcher = new MethodPatcher();
@@ -42,17 +57,63 @@ namespace ActiveAttributes.Core.Assembly
       foreach (var mutableMethod in mutableType.AllMutableMethods.ToList())
       {
         var aspects = aspectsProvider.GetAspects (mutableMethod).ToList ();
-
+        // var methodLevelAspects = aspectsProvider.GetAspects (mutableMethod); // TODO: Also needs to differentiate static/instance aspects and associate indexes with them, see above
         if (aspects.Count == 0)
           continue;
 
-
         var fieldData = fieldIntroducer.Introduce (mutableMethod);
+        // var methodLevelFieldData = fieldIntroducer.Introduce (mutableMethod);
+        // constructorPatcher.AddFieldInitialization (mutableMethod, methodLevelFieldData);
+        // var methodLevelAspectsForCodeGen = methodLevelAspects.Select (cta => cta.CreateAspectForCodeGeneration (cta, methodLevelFieldData));
+
+        // var allAspectsForCodeGen = typeLevelAspectsForCodeGen.Concat (methodLevelAspectsForCodeGen).Where (aspect => aspect.CompileTimeAspect.Matches (mutableMethod).ToList();
+
+
         var copiedMethod = methodCopier.GetCopy (mutableMethod);
-        
+
+        // methodPatcher.Patch (mutableMethod, fieldData, typeLevelFieldData, allAspects);
         methodPatcher.Patch (mutableMethod, fieldData, aspects);
         constructorPatcher.Patch (mutableMethod, aspects, fieldData, copiedMethod);
       }
     }
+
+    // private Aspect[] GetAssemblyLevelAspects (Assembly assembly)
   }
 }
+
+//public interface IAspectForCodeGeneration
+//{
+//  CompileTimeAspectBase CompileTimeAspect { get; }
+//  Expression GetAspectStorageExpression (Expression thisExpression);
+//}
+
+//public class InstanceLevelAspectForCodeGeneration : IAspectForCodeGeneration
+//{
+//  private FieldInfo _aspectsField;
+//  private int _index;
+//  private CompileTimeAspect _compileTimeAspect;
+
+//  public Expression GetAspectStorageExpression (Expression thisExpression)
+//  {
+//    return Expression.ArrayAccess (Expression.Field (thisExpression, _aspectsField), Expression.Constant (_index));
+//  }
+//}
+
+//public class StaticAspectForCodeGeneration : IAspectForCodeGeneration
+//{
+//  private FieldInfo _aspectsField;
+//  private int _index;
+
+//  public Expression GetAspectStorageExpression (Expression thisExpression)
+//  {
+//    return Expression.ArrayAccess (Expression.Field (null, _aspectsField), Expression.Constant (_index));
+//  }
+//}
+
+//public class MethodPatcher
+//{
+//  public void PatchMethod (MutableMethodInfo mutableMethod, IEnumerable<IAspectForCodeGeneration> aspects)
+//  {
+//    mutableMethod.SetBody (ctx =>  );
+//  }
+//}

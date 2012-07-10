@@ -23,6 +23,8 @@ using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Utilities;
 
+//[assembly: AspectsProviderTest.AssemblyAttribute]
+
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*AspectsProviderTest+DomainType3")]
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = typeof (AspectsProviderTest.DomainType4))]
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "ActiveAttributes.UnitTests.Assembly.AspectsProviderTest+NestedClass+*")]
@@ -195,19 +197,9 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Has.Length.EqualTo (0));
     }
 
-
-    // TODO
-    //[Test]
-    //public void name ()
-    //{
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
-    //  var pattern = "Void .*";
-
-    //  //var input = methodInfo.ToString();
-    //  var input = "Void Method()";
-    //  var regex = Regex.IsMatch (input, pattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
-    //  Assert.That (regex, Is.True);
-    //}
+    public class AssemblyAttribute : AspectAttribute
+    {
+    }
 
     public class DomainType
     {

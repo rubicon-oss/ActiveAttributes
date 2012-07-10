@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,13 +14,18 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
 
-namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
+using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly.CompileTimeAspects;
+using Remotion.TypePipe.MutableReflection;
+
+namespace ActiveAttributes.Core.Assembly
 {
-  public enum CompileTimeAspectType
+  public class MethodPatcherFactory
   {
-    CustomDataCompileTimeAspect,
-    TypeArgsCompileTimeAspect
+    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects, TypeProvider typeProvider)
+    {
+      return new MethodPatcher (mutableMethod, fieldData, aspects, typeProvider);
+    }
   }
 }

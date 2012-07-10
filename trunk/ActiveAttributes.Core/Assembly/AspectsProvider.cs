@@ -41,7 +41,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     // TODO: support aspects on interfaces?
-    public IEnumerable<CompileTimeAspectBase> GetAspects (MethodInfo methodInfo)
+    public IEnumerable<ICompileTimeAspect> GetAspects (MethodInfo methodInfo)
     {
       // TODO RM-4942, RM-4943: When custom attribute support is added to the type pipe, omit the "UnderlyingSystemMethodInfo"
       if (methodInfo is MutableMethodInfo)
@@ -56,8 +56,8 @@ namespace ActiveAttributes.Core.Assembly
       } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
 
       var aspects = customAttributeDatas
-          .Select (x => new CustomDataCompileTimeAspect (x))
-          .Cast<CompileTimeAspectBase>()
+          .Select (x => new CompileTimeAspect (x))
+          .Cast<ICompileTimeAspect>()
           .Where (x => ShouldApply (x, methodInfo));
 
       return aspects;
@@ -87,7 +87,7 @@ namespace ActiveAttributes.Core.Assembly
           .Where (x => !isBaseType || x.IsInheriting());
     }
 
-    private bool ShouldApply (CompileTimeAspectBase aspect, MethodInfo methodInfo)
+    private bool ShouldApply (ICompileTimeAspect aspect, MethodInfo methodInfo)
     {
       if (aspect.IfType != null && !ShouldApplyOnType (aspect.IfType, methodInfo))
         return false;

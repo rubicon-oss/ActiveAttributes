@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 {
   [TestFixture]
-  public class CustomDataCompileTimeAspectTest
+  public class CompileTimeAspectTest
   {
     [Test]
     public void Initialization ()
@@ -36,7 +36,7 @@ namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
-      var result = new CustomDataCompileTimeAspect (customData);
+      var result = new CompileTimeAspect (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Instance));
       Assert.That (result.Priority, Is.EqualTo (10));
@@ -53,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      var result = new CustomDataCompileTimeAspect (customData);
+      var result = new CompileTimeAspect (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Static));
       Assert.That (result.Priority, Is.EqualTo (0));
@@ -67,7 +67,7 @@ namespace ActiveAttributes.UnitTests.Assembly.CompileTimeAspects
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      new CustomDataCompileTimeAspect (customData);
+      new CompileTimeAspect (customData);
     }
 
     public class DomainType

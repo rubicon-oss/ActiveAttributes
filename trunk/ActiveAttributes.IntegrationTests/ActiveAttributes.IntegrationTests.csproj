@@ -41,6 +41,15 @@
     <Reference Include="Remotion">
       <HintPath>..\prereq\Remotion.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Development">
+      <HintPath>..\prereq\Remotion.Development.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.TypePipe, Version=1.13.129.2, Culture=neutral, PublicKeyToken=ada35f021b7cc053, processorArchitecture=MSIL">
+      <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\prereq\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,9 +58,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentManipulationTest.cs" />
+    <Compile Include="AspectScopeTest.cs" />
     <Compile Include="CachingAspectTest.cs" />
+    <Compile Include="MethodBoundaryTest.cs" />
+    <Compile Include="InterceptionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReturnValueManipulationTest.cs" />
+    <Compile Include="SetupFixture.cs" />
     <Compile Include="Test1.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="TraceAspectTest.cs" />
     <Compile Include="TypedAspectTest.cs" />
   </ItemGroup>

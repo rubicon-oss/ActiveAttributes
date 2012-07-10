@@ -45,7 +45,7 @@ namespace ActiveAttributes.Core.Assembly
   {
     private readonly MutableMethodInfo _mutableMethod;
     private readonly FieldIntroducer.Data _fieldData;
-    private readonly IEnumerable<CompileTimeAspectBase> _aspects;
+    private readonly IEnumerable<ICompileTimeAspect> _aspects;
 
     private TypeProvider _typeProvider;
 
@@ -66,7 +66,7 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects, TypeProvider typeProvider)
+    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects, TypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
       _fieldData = fieldData;
@@ -82,7 +82,7 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<CompileTimeAspectBase> aspects)
+    public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects)
     {
       _typeProvider = new TypeProvider (mutableMethod);
       mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, fieldData, aspects));
@@ -91,8 +91,8 @@ namespace ActiveAttributes.Core.Assembly
     private Expression GetPatchedBody (
         MutableMethodInfo mutableMethod, 
         BodyContextBase ctx, 
-        FieldIntroducer.Data fieldData, 
-        IEnumerable<CompileTimeAspectBase> aspects)
+        FieldIntroducer.Data fieldData,
+        IEnumerable<ICompileTimeAspect> aspects)
     {
       var aspectsAsList = aspects.ToList();
 
@@ -127,7 +127,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
-        IList<CompileTimeAspectBase> aspects,
+        IList<ICompileTimeAspect> aspects,
         MutableMethodInfo mutableMethod,
         Expression invocationContext,
         Expression originalBodyDelegate,

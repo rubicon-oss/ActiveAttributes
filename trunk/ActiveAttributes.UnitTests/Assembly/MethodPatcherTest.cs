@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.CompileTimeAspects;
+using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
@@ -236,7 +237,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo, Delegate @delegate = null)
         where T: DomainTypeBase
     {
-      var compileAspects = aspects.Select (x => new TypeArgsCompileTimeAspect (x.GetType(), null)).Cast<CompileTimeAspectBase>();
+      var compileAspects = aspects.Select (x => new TypeArgsCompileTimeAspect (x.GetType ())).Cast<ICompileTimeAspect> ();
       var type = CreateType<T> (compileAspects, methodInfo);
 
       var instance = (T) Activator.CreateInstance (type);
@@ -255,7 +256,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       return instance;
     }
 
-    private Type CreateType<T> (IEnumerable<CompileTimeAspectBase> aspects, MethodInfo methodInfo) where T: DomainTypeBase
+    private Type CreateType<T> (IEnumerable<ICompileTimeAspect> aspects, MethodInfo methodInfo) where T: DomainTypeBase
     {
       var type = AssembleType<T> (
           mutableType =>
@@ -265,6 +266,61 @@ namespace ActiveAttributes.UnitTests.Assembly
             _patcher.Patch (mutableMethod, _fieldData, aspects);
           });
       return type;
+    }
+
+    public class TypeArgsCompileTimeAspect : ICompileTimeAspect
+    {
+      private readonly Type _type;
+
+      public TypeArgsCompileTimeAspect (Type type)
+      {
+        _type = type;
+      }
+
+      public int Priority
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public AspectScope Scope
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public Type AspectType
+      {
+        get { return _type; }
+      }
+
+      public ConstructorInfo ConstructorInfo
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public IList<CustomAttributeTypedArgument> ConstructorArguments
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public IList<CustomAttributeNamedArgument> NamedArguments
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public object[] Arguments
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public object IfType
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public object IfSignature
+      {
+        get { throw new NotImplementedException(); }
+      }
     }
 
     public abstract class DomainTypeBase
