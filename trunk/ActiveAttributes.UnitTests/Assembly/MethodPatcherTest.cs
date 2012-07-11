@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
@@ -307,19 +306,9 @@ namespace ActiveAttributes.UnitTests.Assembly
         get { throw new NotImplementedException(); }
       }
 
-      public object[] Arguments
+      public bool Matches (MethodInfo method)
       {
-        get { throw new NotImplementedException(); }
-      }
-
-      public object IfType
-      {
-        get { throw new NotImplementedException(); }
-      }
-
-      public object IfSignature
-      {
-        get { throw new NotImplementedException(); }
+        throw new NotImplementedException();
       }
     }
 

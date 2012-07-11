@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 
 namespace ActiveAttributes.Core.Extensions
 {
@@ -51,6 +52,24 @@ namespace ActiveAttributes.Core.Extensions
       }
 
       return attribute;
+    }
+
+    /// <summary>
+    /// Determines if the <see cref="CustomAttributeData"/> is inheriting.
+    /// </summary>
+    public static bool IsInheriting (this CustomAttributeData customAttributeData)
+    {
+      var attributeType = customAttributeData.Constructor.DeclaringType;
+      var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute> ().Single ();
+      return attributeUsageAttr.Inherited;
+    }
+
+    /// <summary>
+    /// Determines if the <see cref="CustomAttributeData"/> describes an <see cref="AspectAttribute"/>.
+    /// </summary>
+    public static bool IsAspectAttribute (this CustomAttributeData customAttributeData)
+    {
+      return typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
     }
 
     public static T ConvertTo<T> (

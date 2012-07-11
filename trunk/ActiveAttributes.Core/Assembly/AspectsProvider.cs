@@ -21,10 +21,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using ActiveAttributes.Core.Extensions;
 using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -38,6 +38,54 @@ namespace ActiveAttributes.Core.Assembly
     public AspectsProvider ()
     {
       _relatedMethodFinder = new RelatedMethodFinder();
+    }
+
+    public IEnumerable<ICompileTimeAspect> GetAssemblyLevelAspects (System.Reflection.Assembly assembly)
+    {
+      return CustomAttributeData.GetCustomAttributes (assembly)
+          .Where (x => x.IsAspectAttribute())
+          .Select (x => new CompileTimeAspect (x))
+          .Cast<ICompileTimeAspect>();
+    }
+
+    public IEnumerable<ICompileTimeAspect> GetTypeLevelAspects (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      Func<MemberInfo, MemberInfo> getParent = memberInfo => ((Type) memberInfo).BaseType;
+      Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != typeof (object);
+
+      return GetAspects (type, getParent, whileCondition);
+    }
+
+    public IEnumerable<ICompileTimeAspect> GetMethodLevelAspects (MethodInfo method)
+    {
+      ArgumentUtility.CheckNotNull ("method", method);
+
+      Func<MemberInfo, MemberInfo> getParent = memberInfo => _relatedMethodFinder.GetBaseMethod ((MethodInfo) memberInfo);
+      Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
+
+      return GetAspects (method, getParent, whileCondition);
+    }
+
+    private IEnumerable<ICompileTimeAspect> GetAspects (
+        MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)
+    {
+      var aspectsData = new List<CustomAttributeData>();
+      var it = member;
+
+      while (whileCondition(it))
+      {
+        var isBaseType = it != member;
+        var customAttributeDatas = CustomAttributeData.GetCustomAttributes (it)
+            .Where (x => x.IsAspectAttribute ())
+            .Where (x => !isBaseType || x.IsInheriting ());
+        aspectsData.AddRange (customAttributeDatas);
+
+        it = getParent (it);
+      }
+
+      return aspectsData.Select (x => new CompileTimeAspect (x)).Cast<ICompileTimeAspect> ();
     }
 
     // TODO: support aspects on interfaces?
@@ -58,7 +106,9 @@ namespace ActiveAttributes.Core.Assembly
       var aspects = customAttributeDatas
           .Select (x => new CompileTimeAspect (x))
           .Cast<ICompileTimeAspect>()
-          .Where (x => ShouldApply (x, methodInfo));
+          .Where (x => x.Matches (methodInfo));
+          //.Where (x => ShouldApply (x, methodInfo));
+
 
       return aspects;
     }
@@ -87,59 +137,8 @@ namespace ActiveAttributes.Core.Assembly
           .Where (x => !isBaseType || x.IsInheriting());
     }
 
-    private bool ShouldApply (ICompileTimeAspect aspect, MethodInfo methodInfo)
-    {
-      if (aspect.IfType != null && !ShouldApplyOnType (aspect.IfType, methodInfo))
-        return false;
 
-      if (aspect.IfSignature != null && !ShouldApplyOnSignature (aspect.IfSignature, methodInfo))
-        return false;
 
-      return true;
-    }
-
-    private bool ShouldApplyOnSignature (object signature, MethodInfo methodInfo)
-    {
-      if (signature is string)
-      {
-        var input = SignatureDebugStringGenerator.GetMethodSignature (methodInfo);
-        var pattern = ConvertToPattern ((string) signature);
-        var isMatch = Regex.IsMatch (input, pattern);
-        return isMatch;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    private bool ShouldApplyOnType (object type, MethodInfo methodInfo)
-    {
-      if (type is string)
-      {
-        var input = methodInfo.DeclaringType.FullName;
-        var pattern = ConvertToPattern ((string) type);
-        var isMatch = Regex.IsMatch (input, pattern);
-        return isMatch;
-      }
-      else
-      {
-        return type == methodInfo.DeclaringType;
-      }
-    }
-
-    private static string ConvertToPattern (string input)
-    {
-      return "^" +
-             input
-                 .Replace (".", "\\.")
-                 .Replace ("+", "\\+")
-                 .Replace ("*", ".*")
-                 .Replace ("(", "\\(")
-                 .Replace (")", "\\)")
-                 .Replace ("void", "Void")
-             + "$";
-    }
 
     private IEnumerable<CustomAttributeData> GetPropertyLevelAspects (MethodInfo methodInfo)
     {
@@ -147,24 +146,9 @@ namespace ActiveAttributes.Core.Assembly
       var propertyInfo = methodInfo.DeclaringType.GetProperty (propertyName);
 
       if (propertyInfo != null)
-      {
-        var customDatas = CustomAttributeData.GetCustomAttributes (propertyInfo);
-        return customDatas;
-      }
+        return CustomAttributeData.GetCustomAttributes (propertyInfo);
       else
-      {
         return Enumerable.Empty<CustomAttributeData>();
-      }
-    }
-  }
-
-  public static class CustomAttributeDataExtensions
-  {
-    public static bool IsInheriting (this CustomAttributeData customAttributeData)
-    {
-      var attributeType = customAttributeData.Constructor.DeclaringType;
-      var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute>().Single();
-      return attributeUsageAttr.Inherited;
     }
   }
 }

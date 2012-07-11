@@ -17,13 +17,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
+namespace ActiveAttributes.Core.Assembly
 {
   public interface ICompileTimeAspect
   {
@@ -33,9 +34,8 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
     ConstructorInfo ConstructorInfo { get; }
     IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
     IList<CustomAttributeNamedArgument> NamedArguments { get; }
-    object[] Arguments { get; }
-    object IfType { get; }
-    object IfSignature { get; }
+
+    bool Matches (MethodInfo method);
   }
 
   public class CompileTimeAspect : ICompileTimeAspect
@@ -80,19 +80,57 @@ namespace ActiveAttributes.Core.Assembly.CompileTimeAspects
       get { return _customData.NamedArguments; }
     }
 
-    public object[] Arguments
+    public bool Matches (MethodInfo method)
     {
-      get { throw new NotSupportedException(); }
+      if (_attribute.IfType != null && !MatchesType (_attribute.IfType, method))
+        return false;
+      if (_attribute.IfSignature != null && !MatchesSignature (_attribute.IfSignature, method))
+        return false;
+
+      return true;
     }
 
-    public object IfType
+    private bool MatchesSignature (object signature, MethodInfo method)
     {
-      get { return _attribute.IfType; }
+      if (signature is string)
+      {
+        var input = SignatureDebugStringGenerator.GetMethodSignature (method);
+        var pattern = ConvertToPattern ((string) signature);
+        var isMatch = Regex.IsMatch (input, pattern);
+        return isMatch;
+      }
+      else
+      {
+        return false;
+      }
     }
 
-    public object IfSignature
+    private bool MatchesType (object type, MethodInfo method)
     {
-      get { return _attribute.IfSignature; }
+      if (type is string)
+      {
+        var input = method.DeclaringType.FullName;
+        var pattern = ConvertToPattern ((string) type);
+        var isMatch = Regex.IsMatch (input, pattern);
+        return isMatch;
+      }
+      else
+      {
+        return type == method.DeclaringType;
+      }
+    }
+
+    private static string ConvertToPattern (string input)
+    {
+      return "^" +
+             input
+                 .Replace (".", "\\.")
+                 .Replace ("+", "\\+")
+                 .Replace ("*", ".*")
+                 .Replace ("(", "\\(")
+                 .Replace (")", "\\)")
+                 .Replace ("void", "Void")
+             + "$";
     }
   }
 }

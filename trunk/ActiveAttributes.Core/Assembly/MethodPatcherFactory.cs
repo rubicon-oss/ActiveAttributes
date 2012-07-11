@@ -16,7 +16,6 @@
 // 
 
 using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly

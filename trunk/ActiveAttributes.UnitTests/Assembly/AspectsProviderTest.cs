@@ -20,14 +20,19 @@ using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
+using FluentAssertions;
 using NUnit.Framework;
 using Remotion.Utilities;
+using Xunit;
+using Assert = NUnit.Framework.Assert;
 
 //[assembly: AspectsProviderTest.AssemblyAttribute]
 
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*AspectsProviderTest+DomainType3")]
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = typeof (AspectsProviderTest.DomainType4))]
 [assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "ActiveAttributes.UnitTests.Assembly.AspectsProviderTest+NestedClass+*")]
+
+[assembly: AspectsProviderTest.AssemblyLevelAspect (IfType = typeof(object))]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -36,6 +41,10 @@ namespace ActiveAttributes.UnitTests.Assembly
   {
     private AspectsProvider _provider;
 
+    public AspectsProviderTest ()
+    {
+      _provider = new AspectsProvider();
+    }
     [SetUp]
     public void SetUp ()
     {
@@ -197,9 +206,113 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Has.Length.EqualTo (0));
     }
 
-    public class AssemblyAttribute : AspectAttribute
+
+    public class AspectAttribute : Core.Aspects.AspectAttribute { }
+
+    public class NonAspectAttribute : Attribute { }
+
+    [AttributeUsage (AttributeTargets.All, Inherited = false)]
+    public class NonInheritingAspectAttribute2 : Core.Aspects.AspectAttribute { }
+
+    [AttributeUsage (AttributeTargets.All, Inherited = true)]
+    public class InheritingAspectAttribute2 : Core.Aspects.AspectAttribute { }
+
+
+
+    [Fact]
+    public void GetTypeLevelAspects ()
     {
+      var type = typeof (TypeLevelAspectClass);
+
+      var result = _provider.GetTypeLevelAspects (type);
+
+      result.Should().HaveCount (1);
     }
+
+    [Aspect]
+    public class TypeLevelAspectClass { }
+
+
+
+    [Fact]
+    public void GetTypeLevelAspectsSkipsNonAspectAttributes ()
+    {
+      var type = typeof (TypeLevelAspectClassWithNonAspectAttribute);
+
+      var result = _provider.GetTypeLevelAspects (type);
+
+      result.Should().HaveCount (1);
+    }
+
+    [Aspect]
+    [NonAspect]
+    public class TypeLevelAspectClassWithNonAspectAttribute { }
+
+
+
+    [Fact]
+    public void GetTypeLevelAspectsRespectsInheritingAspect ()
+    {
+      var type = typeof (TypeLevelAspectClassWithInheritingAspect);
+
+      var result = _provider.GetTypeLevelAspects (type);
+
+      result.Should().HaveCount (1);
+    }
+
+    [InheritingAspectAttribute2]
+    public class TypeLevelAspectClassWithInheritingAspectBase { }
+    public class TypeLevelAspectClassWithInheritingAspect : TypeLevelAspectClassWithInheritingAspectBase { }
+
+
+
+    [Fact]
+    public void GetTypeLevelAspectsRespectsNonInheritingAspect ()
+    {
+      var type = typeof (TypeLevelAspectClassWithoutAspectButBase);
+
+      var result = _provider.GetTypeLevelAspects (type);
+
+      result.Should ().HaveCount (0);
+    }
+
+    [NonInheritingAspectAttribute2]
+    public class TypeLevelAspectClassWithNonInheritingAspectBase { }
+    public class TypeLevelAspectClassWithoutAspectButBase : TypeLevelAspectClassWithNonInheritingAspectBase { }
+
+
+
+    [Fact]
+    public void GetTypeLevelAspectWithInheritingOnSelf ()
+    {
+      var type = typeof (TypeLevelAspectClassWithInheritingAspectOnSelf);
+
+      var result = _provider.GetTypeLevelAspects (type);
+
+      result.Should ().HaveCount (1);
+    }
+
+    [InheritingAspectAttribute2]
+    public class TypeLevelAspectClassWithInheritingAspectOnSelf { }
+
+
+
+    [Fact]
+    public void GetAssemblyLevelAspect ()
+    {
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
+
+      var result = _provider.GetAssemblyLevelAspects (assembly);
+
+      result.Should ().Contain (x => typeof (AssemblyLevelAspect).IsAssignableFrom (x.AspectType));
+    }
+
+    public class AssemblyLevelAspect : AspectAttribute { }
+
+
+
+
+
 
     public class DomainType
     {
@@ -217,7 +330,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       public string Property { get; set; }
     }
 
-    public class DomainAspectAttribute : AspectAttribute
+    public class DomainAspectAttribute : Core.Aspects.AspectAttribute
     {
     }
 
@@ -252,12 +365,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    public class InheritingAspectAttribute : AspectAttribute
+    public class InheritingAspectAttribute : Core.Aspects.AspectAttribute
     {
     }
 
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
-    public class NotInheritingAspectAttribute : AspectAttribute
+    public class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute
     {
     }
 

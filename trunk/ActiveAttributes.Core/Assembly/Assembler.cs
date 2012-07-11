@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.CompileTimeAspects;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
