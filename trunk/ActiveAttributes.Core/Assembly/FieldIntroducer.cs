@@ -74,38 +74,6 @@ namespace ActiveAttributes.Core.Assembly
       };
     }
 
-    public Data Introduce (MutableMethodInfo mutableMethod)
-    {
-      var mutableType = (MutableType) mutableMethod.DeclaringType;
-      var methodToken = GetUniqueFieldName (mutableMethod);
-
-      var methodInfoFieldName = c_instancePrefix + methodToken + "_MethodInfo";
-      var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
-
-      var delegateType = mutableMethod.GetDelegateType ();
-      var delegateFieldName = c_instancePrefix + methodToken + "_Delegate";
-      var delegateField = mutableType.AddField (delegateType, delegateFieldName);
-
-      var staticAspectsFieldName = c_staticPrefix + methodToken + "_StaticAspects";
-      var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
-
-      var instanceAspectsFieldName = c_instancePrefix + methodToken + "_InstanceAspects";
-      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
-
-      return new Data
-             {
-                 MethodInfoField = methodInfoField,
-                 DelegateField = delegateField,
-                 StaticAspectsField = staticAspectsField,
-                 InstanceAspectsField = instanceAspectsField
-             };
-    }
-
-    private string GetUniqueFieldName (MutableMethodInfo mutableMethod)
-    {
-      return mutableMethod.Name + Guid.NewGuid();
-    }
-
     public struct Data
     {
       public FieldInfo MethodInfoField;
