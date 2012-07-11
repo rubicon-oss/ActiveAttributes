@@ -86,10 +86,12 @@
     <Compile Include="Assembly\CompileTimeAspectTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
+    <Compile Include="Assembly\InstanceAspectExpressionGeneratorTest.cs" />
     <Compile Include="Assembly\MethodCopierTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
+    <Compile Include="Assembly\StaticAspectExpressionGeneratorTest.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
