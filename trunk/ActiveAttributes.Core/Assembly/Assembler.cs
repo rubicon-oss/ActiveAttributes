@@ -60,7 +60,7 @@ namespace ActiveAttributes.Core.Assembly
         if (aspects.Count == 0)
           continue;
 
-        var fieldData = fieldIntroducer.Introduce (mutableMethod);
+        var fieldData = fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
         // var methodLevelFieldData = fieldIntroducer.Introduce (mutableMethod);
         // constructorPatcher.AddFieldInitialization (mutableMethod, methodLevelFieldData);
         // var methodLevelAspectsForCodeGen = methodLevelAspects.Select (cta => cta.CreateAspectForCodeGeneration (cta, methodLevelFieldData));

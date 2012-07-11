@@ -38,71 +38,75 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void Introduce_MethodInfoField ()
+    public void IntroduceMethodLevelFields_MethodInfoField ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-      var result = _introducer.Introduce (mutableMethod);
+      var result = _introducer.IntroduceMethodLevelFields (mutableMethod);
 
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method1_MethodInfo");
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name.EndsWith ("MethodInfo"));
 
+      Assert.That (fieldInfo, Is.Not.Null);
       Assert.That (fieldInfo, Is.EqualTo (result.MethodInfoField));
       Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (MethodInfo)));
     }
 
     [Test]
-    public void Introduce_DelegateField ()
+    public void IntroduceMethodLevelFields_DelegateField ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-      var result = _introducer.Introduce (mutableMethod);
+      var result = _introducer.IntroduceMethodLevelFields (mutableMethod);
 
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method1_Delegate");
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name.EndsWith ("Delegate"));
 
+      Assert.That (fieldInfo, Is.Not.Null);
       Assert.That (fieldInfo, Is.EqualTo (result.DelegateField));
       Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (Action)));
     }
 
     [Test]
-    public void Introduce_StaticAspectsField ()
+    public void IntroduceMethodLevelFields_StaticAspectsField ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-      var result = _introducer.Introduce (mutableMethod);
+      var result = _introducer.IntroduceMethodLevelFields (mutableMethod);
 
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_s_Method1_StaticAspects");
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name.EndsWith ("StaticAspects"));
 
+      Assert.That (fieldInfo, Is.Not.Null);
       Assert.That (fieldInfo, Is.EqualTo (result.StaticAspectsField));
       Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Static | FieldAttributes.Private));
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
     }
 
     [Test]
-    public void Introduce_InstanceAspectsField ()
+    public void IntroduceMethodLevelFields_InstanceAspectsField ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-      var result = _introducer.Introduce (mutableMethod);
+      var result = _introducer.IntroduceMethodLevelFields (mutableMethod);
 
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method1_InstanceAspects");
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name.EndsWith ("InstanceAspects"));
 
+      Assert.That (fieldInfo, Is.Not.Null);
       Assert.That (fieldInfo, Is.EqualTo (result.InstanceAspectsField));
       Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
     }
 
     [Test]
-    public void Introduce_MethodOverloads ()
+    public void IntroduceMethodLevelFields_MethodOverloads ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
@@ -110,18 +114,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var mutableMethod1 = mutableType.GetOrAddMutableMethod (methodInfo1);
       var mutableMethod2 = mutableType.GetOrAddMutableMethod (methodInfo2);
 
-      _introducer.Introduce (mutableMethod1);
-      var result = _introducer.Introduce (mutableMethod2);
+      var result1 = _introducer.IntroduceMethodLevelFields (mutableMethod1);
+      var result2 = _introducer.IntroduceMethodLevelFields (mutableMethod2);
 
-      var methodInfoFieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method2_MethodInfo");
-      var delegateFieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method2_Delegate");
-      var staticAspectsFieldInfo = mutableType.AddedFields.First (x => x.Name == "_s_Method2_StaticAspects");
-      var instanceAspectsFieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_Method2_InstanceAspects");
-
-      Assert.That (result.MethodInfoField, Is.EqualTo (methodInfoFieldInfo));
-      Assert.That (result.DelegateField, Is.EqualTo (delegateFieldInfo));
-      Assert.That (result.StaticAspectsField, Is.EqualTo (staticAspectsFieldInfo));
-      Assert.That (result.InstanceAspectsField, Is.EqualTo (instanceAspectsFieldInfo));
+      Assert.That (result1.MethodInfoField, Is.Not.EqualTo (result2.MethodInfoField));
+      Assert.That (result1.DelegateField, Is.Not.EqualTo (result2.DelegateField));
+      Assert.That (result1.StaticAspectsField, Is.Not.EqualTo (result2.StaticAspectsField));
+      Assert.That (result1.InstanceAspectsField, Is.Not.EqualTo (result2.InstanceAspectsField));
     }
 
     [Test]

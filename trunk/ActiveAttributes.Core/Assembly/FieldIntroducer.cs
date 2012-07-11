@@ -19,12 +19,13 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
+using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Introduces fields for storing <see cref="MethodInfo"/>, <see cref="Delegate"/>, static/instance <see cref="AspectAttribute"/>'s for a given <see cref="MutableMethodInfo"/>.
+  /// Introduces fields for storing <see cref="MethodInfo"/>, <see cref="Delegate"/>, static/instance <see cref="AspectAttribute"/>'s for a given <see cref="MutableType"/>, or <see cref="MutableMethodInfo"/>.
   /// </summary>
   public class FieldIntroducer
   {
@@ -46,10 +47,37 @@ namespace ActiveAttributes.Core.Assembly
              };
     }
 
+    public Data IntroduceMethodLevelFields (MutableMethodInfo mutableMethod)
+    {
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
+      var uniqueMethodName = mutableMethod.Name + Guid.NewGuid ();
+
+      var methodInfoFieldName = c_instancePrefix + uniqueMethodName + "_MethodInfo";
+      var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
+
+      var delegateType = mutableMethod.GetDelegateType ();
+      var delegateFieldName = c_instancePrefix + uniqueMethodName + "_Delegate";
+      var delegateField = mutableType.AddField (delegateType, delegateFieldName);
+
+      var staticAspectsFieldName = c_staticPrefix + uniqueMethodName + "_StaticAspects";
+      var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
+
+      var instanceAspectsFieldName = c_instancePrefix + uniqueMethodName + "_InstanceAspects";
+      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
+
+      return new Data
+      {
+        MethodInfoField = methodInfoField,
+        DelegateField = delegateField,
+        StaticAspectsField = staticAspectsField,
+        InstanceAspectsField = instanceAspectsField
+      };
+    }
+
     public Data Introduce (MutableMethodInfo mutableMethod)
     {
       var mutableType = (MutableType) mutableMethod.DeclaringType;
-      var methodToken = GetMethodToken (mutableMethod);
+      var methodToken = GetUniqueFieldName (mutableMethod);
 
       var methodInfoFieldName = c_instancePrefix + methodToken + "_MethodInfo";
       var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
@@ -58,10 +86,8 @@ namespace ActiveAttributes.Core.Assembly
       var delegateFieldName = c_instancePrefix + methodToken + "_Delegate";
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
-
       var staticAspectsFieldName = c_staticPrefix + methodToken + "_StaticAspects";
       var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
-
 
       var instanceAspectsFieldName = c_instancePrefix + methodToken + "_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
@@ -75,19 +101,9 @@ namespace ActiveAttributes.Core.Assembly
              };
     }
 
-    // TODO: GetUniqueFieldID
-    private string GetMethodToken (MutableMethodInfo mutableMethod)
+    private string GetUniqueFieldName (MutableMethodInfo mutableMethod)
     {
-      var mutableType = (MutableType) mutableMethod.DeclaringType;
-
-      var baseName = mutableMethod.Name;
-      var i = 0;
-      do
-      {
-        i++;
-      } while (mutableType.AddedFields.Any (x => c_instancePrefix + baseName + i + "_MethodInfo" == x.Name));
-
-      return baseName + i;
+      return mutableMethod.Name + Guid.NewGuid();
     }
 
     public struct Data
