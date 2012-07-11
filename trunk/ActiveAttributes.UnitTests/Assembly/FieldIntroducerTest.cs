@@ -124,7 +124,34 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result.InstanceAspectsField, Is.EqualTo (instanceAspectsFieldInfo));
     }
 
-    [UsedImplicitly]
+    [Test]
+    public void IntroduceTypeLevelAspects_Instance ()
+    {
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+      var result = _introducer.IntroduceTypeLevelFields (mutableType);
+
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_TypeLevel_InstanceAspects");
+
+      Assert.That (fieldInfo, Is.Not.Null);
+      Assert.That (fieldInfo, Is.EqualTo (result.InstanceAspectsField));
+      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
+      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
+    }
+
+    [Test]
+    public void IntroduceTypeLevelAspects_Static ()
+    {
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+      var result = _introducer.IntroduceTypeLevelFields (mutableType);
+
+      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_s_TypeLevel_StaticAspects");
+
+      Assert.That (fieldInfo, Is.Not.Null);
+      Assert.That (fieldInfo, Is.EqualTo (result.StaticAspectsField));
+      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Static | FieldAttributes.Private));
+      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
+    }
+
     public class DomainType
     {
       public void Method () { }
