@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using ActiveAttributes.Core.Configuration;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -52,8 +53,18 @@ namespace ActiveAttributes.Core.Assembly
       var aspectsProvider = new AspectsProvider();
       var methodCopier = new MethodCopier();
 
-      var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType);
-      var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
+      //var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
+      //var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
+
+      //var instanceTypeLevelAspects = typeLevelAspects
+      //    .Where (x => x.Scope == AspectScope.Instance)
+      //    .Select ((x, i) => new InstanceAspectExpressionGenerator (typeFieldData.InstanceAspectsField, i, x));
+      //var staticTypeLevelAspects = typeLevelAspects
+      //    .Where (x => x.Scope == AspectScope.Static)
+      //    .Select ((x, i) => new StaticAspectExpressionGenerator (typeFieldData.StaticAspectsField, i, x));
+
+
+
 
 
 
