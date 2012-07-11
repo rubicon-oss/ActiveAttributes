@@ -22,7 +22,7 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class MethodPatcherFactory
   {
-    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects, TypeProvider typeProvider)
+    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectAttributeDescriptor> aspects, TypeProvider typeProvider)
     {
       return new MethodPatcher (mutableMethod, fieldData, aspects, typeProvider);
     }

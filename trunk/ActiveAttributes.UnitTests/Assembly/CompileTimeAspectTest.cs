@@ -39,7 +39,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      var result = new CompileTimeAspect (customData);
+      var result = new AspectAttributeDescriptor (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Static));
       Assert.That (result.Priority, Is.EqualTo (0));
@@ -53,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      new CompileTimeAspect (customData);
+      new AspectAttributeDescriptor (customData);
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
-      var result = new CompileTimeAspect (customData);
+      var result = new AspectAttributeDescriptor (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Instance));
       Assert.That (result.Priority, Is.EqualTo (10));
@@ -77,7 +77,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method4 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new CompileTimeAspect (customData);
+      var aspect = new AspectAttributeDescriptor (customData);
 
       var result = aspect.Matches (methodInfo);
 
@@ -89,7 +89,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method5 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new CompileTimeAspect (customData);
+      var aspect = new AspectAttributeDescriptor (customData);
 
       var result = aspect.Matches (methodInfo);
 
@@ -101,7 +101,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method6 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new CompileTimeAspect (customData);
+      var aspect = new AspectAttributeDescriptor (customData);
 
       var result = aspect.Matches (methodInfo);
 
@@ -113,7 +113,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method7 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new CompileTimeAspect (customData);
+      var aspect = new AspectAttributeDescriptor (customData);
 
       var result = aspect.Matches (methodInfo);
 

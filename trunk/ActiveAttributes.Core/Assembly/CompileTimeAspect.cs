@@ -26,7 +26,7 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface ICompileTimeAspect
+  public interface IAspectAttributeDescriptor
   {
     int Priority { get; }
     AspectScope Scope { get; }
@@ -38,12 +38,12 @@ namespace ActiveAttributes.Core.Assembly
     bool Matches (MethodInfo method);
   }
 
-  public class CompileTimeAspect : ICompileTimeAspect
+  public class AspectAttributeDescriptor : IAspectAttributeDescriptor
   {
     private readonly AspectAttribute _attribute;
     private readonly CustomAttributeData _customData;
 
-    public CompileTimeAspect (CustomAttributeData customData)
+    public AspectAttributeDescriptor (CustomAttributeData customData)
     {
       if (!typeof (AspectAttribute).IsAssignableFrom (customData.Constructor.DeclaringType))
         throw new ArgumentException ("CustomAttributeData must be from an AspectAttribute");

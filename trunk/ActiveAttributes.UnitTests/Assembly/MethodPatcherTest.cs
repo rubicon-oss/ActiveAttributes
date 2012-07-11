@@ -236,7 +236,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo, Delegate @delegate = null)
         where T: DomainTypeBase
     {
-      var compileAspects = aspects.Select (x => new TypeArgsCompileTimeAspect (x.GetType ())).Cast<ICompileTimeAspect> ();
+      var compileAspects = aspects.Select (x => new TypeArgsAspectAttributeDescriptor (x.GetType ())).Cast<IAspectAttributeDescriptor> ();
       var type = CreateType<T> (compileAspects, methodInfo);
 
       var instance = (T) Activator.CreateInstance (type);
@@ -255,7 +255,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       return instance;
     }
 
-    private Type CreateType<T> (IEnumerable<ICompileTimeAspect> aspects, MethodInfo methodInfo) where T: DomainTypeBase
+    private Type CreateType<T> (IEnumerable<IAspectAttributeDescriptor> aspects, MethodInfo methodInfo) where T: DomainTypeBase
     {
       var type = AssembleType<T> (
           mutableType =>
@@ -267,11 +267,11 @@ namespace ActiveAttributes.UnitTests.Assembly
       return type;
     }
 
-    public class TypeArgsCompileTimeAspect : ICompileTimeAspect
+    public class TypeArgsAspectAttributeDescriptor : IAspectAttributeDescriptor
     {
       private readonly Type _type;
 
-      public TypeArgsCompileTimeAspect (Type type)
+      public TypeArgsAspectAttributeDescriptor (Type type)
       {
         _type = type;
       }

@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Assembly
   {
     private readonly MutableMethodInfo _mutableMethod;
     private readonly FieldIntroducer.Data _fieldData;
-    private readonly IEnumerable<ICompileTimeAspect> _aspects;
+    private readonly IEnumerable<IAspectAttributeDescriptor> _aspects;
 
     private TypeProvider _typeProvider;
 
@@ -65,7 +65,7 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects, TypeProvider typeProvider)
+    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectAttributeDescriptor> aspects, TypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
       _fieldData = fieldData;
@@ -81,7 +81,7 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<ICompileTimeAspect> aspects)
+    public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectAttributeDescriptor> aspects)
     {
       _typeProvider = new TypeProvider (mutableMethod);
       mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, fieldData, aspects));
@@ -91,7 +91,7 @@ namespace ActiveAttributes.Core.Assembly
         MutableMethodInfo mutableMethod, 
         BodyContextBase ctx, 
         FieldIntroducer.Data fieldData,
-        IEnumerable<ICompileTimeAspect> aspects)
+        IEnumerable<IAspectAttributeDescriptor> aspects)
     {
       var aspectsAsList = aspects.ToList();
 
@@ -126,7 +126,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
-        IList<ICompileTimeAspect> aspects,
+        IList<IAspectAttributeDescriptor> aspects,
         MutableMethodInfo mutableMethod,
         Expression invocationContext,
         Expression originalBodyDelegate,

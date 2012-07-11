@@ -40,15 +40,15 @@ namespace ActiveAttributes.Core.Assembly
       _relatedMethodFinder = new RelatedMethodFinder();
     }
 
-    public IEnumerable<ICompileTimeAspect> GetAssemblyLevelAspects (System.Reflection.Assembly assembly)
+    public IEnumerable<IAspectAttributeDescriptor> GetAssemblyLevelAspects (System.Reflection.Assembly assembly)
     {
       return CustomAttributeData.GetCustomAttributes (assembly)
           .Where (x => x.IsAspectAttribute())
-          .Select (x => new CompileTimeAspect (x))
-          .Cast<ICompileTimeAspect>();
+          .Select (x => new AspectAttributeDescriptor (x))
+          .Cast<IAspectAttributeDescriptor>();
     }
 
-    public IEnumerable<ICompileTimeAspect> GetTypeLevelAspects (Type type)
+    public IEnumerable<IAspectAttributeDescriptor> GetTypeLevelAspects (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -58,7 +58,7 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (type, getParent, whileCondition);
     }
 
-    public IEnumerable<ICompileTimeAspect> GetMethodLevelAspects (MethodInfo method)
+    public IEnumerable<IAspectAttributeDescriptor> GetMethodLevelAspects (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
 
@@ -68,7 +68,7 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (method, getParent, whileCondition);
     }
 
-    private IEnumerable<ICompileTimeAspect> GetAspects (
+    private IEnumerable<IAspectAttributeDescriptor> GetAspects (
         MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)
     {
       var aspectsData = new List<CustomAttributeData>();
@@ -85,11 +85,11 @@ namespace ActiveAttributes.Core.Assembly
         it = getParent (it);
       }
 
-      return aspectsData.Select (x => new CompileTimeAspect (x)).Cast<ICompileTimeAspect> ();
+      return aspectsData.Select (x => new AspectAttributeDescriptor (x)).Cast<IAspectAttributeDescriptor> ();
     }
 
     // TODO: support aspects on interfaces?
-    public IEnumerable<ICompileTimeAspect> GetAspects (MethodInfo methodInfo)
+    public IEnumerable<IAspectAttributeDescriptor> GetAspects (MethodInfo methodInfo)
     {
       // TODO RM-4942, RM-4943: When custom attribute support is added to the type pipe, omit the "UnderlyingSystemMethodInfo"
       if (methodInfo is MutableMethodInfo)
@@ -104,8 +104,8 @@ namespace ActiveAttributes.Core.Assembly
       } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
 
       var aspects = customAttributeDatas
-          .Select (x => new CompileTimeAspect (x))
-          .Cast<ICompileTimeAspect>()
+          .Select (x => new AspectAttributeDescriptor (x))
+          .Cast<IAspectAttributeDescriptor>()
           .Where (x => x.Matches (methodInfo));
           //.Where (x => ShouldApply (x, methodInfo));
 

@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
   /// </remarks>
   public class ConstructorPatcher
   {
-    public void Patch (MutableMethodInfo mutableMethod, IEnumerable<ICompileTimeAspect> aspects, FieldIntroducer.Data fieldData, MutableMethodInfo copiedMethod)
+    public void Patch (MutableMethodInfo mutableMethod, IEnumerable<IAspectAttributeDescriptor> aspects, FieldIntroducer.Data fieldData, MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);
 
@@ -68,7 +68,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Expression GetAspectsInitExpression (FieldInfo staticAspectsField,
-        FieldInfo instanceAspectsField, IEnumerable<ICompileTimeAspect> compileTimeAspects, BodyContextBase ctx)
+        FieldInfo instanceAspectsField, IEnumerable<IAspectAttributeDescriptor> compileTimeAspects, BodyContextBase ctx)
     {
       var compileTimeAspectsAsCollection = compileTimeAspects.ConvertToCollection();
 
@@ -96,11 +96,11 @@ namespace ActiveAttributes.Core.Assembly
       return Expression.Block (staticAspectsAssignIfNullExpression, instanceAspectsAssignExpression);
     }
 
-    private Expression GetAspectInitExpression (ICompileTimeAspect customDataCompileTimeAspect)
+    private Expression GetAspectInitExpression (IAspectAttributeDescriptor customDataAspectAttributeDescriptor)
     {
-      var ctorArgumentExpressions = customDataCompileTimeAspect.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
-      var newExpression = Expression.New (customDataCompileTimeAspect.ConstructorInfo, ctorArgumentExpressions);
-      var memberBindingExpressions = customDataCompileTimeAspect.NamedArguments.Select (GetMemberBindingExpression);
+      var ctorArgumentExpressions = customDataAspectAttributeDescriptor.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
+      var newExpression = Expression.New (customDataAspectAttributeDescriptor.ConstructorInfo, ctorArgumentExpressions);
+      var memberBindingExpressions = customDataAspectAttributeDescriptor.NamedArguments.Select (GetMemberBindingExpression);
       var initExpression = Expression.MemberInit (newExpression, memberBindingExpressions.Cast<MemberBinding>());
       return initExpression;
     }

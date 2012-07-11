@@ -46,7 +46,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Init_MethodInfo ()
     {
-      var instance = CreateInstance<DomainType> (new CompileTimeAspect[0], _methodInfo, _copiedMethodInfo);
+      var instance = CreateInstance<DomainType> (new AspectAttributeDescriptor[0], _methodInfo, _copiedMethodInfo);
 
       Assert.That (instance.MethodInfo, Is.EqualTo (_methodInfo));
     }
@@ -54,7 +54,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Init_Delegate ()
     {
-      var instance = CreateInstance<DomainType> (new CompileTimeAspect[0], _methodInfo, _copiedMethodInfo);
+      var instance = CreateInstance<DomainType> (new AspectAttributeDescriptor[0], _methodInfo, _copiedMethodInfo);
 
       Assert.That (instance.Delegate, Is.EqualTo (new Action (instance.Method_Copy)));
     }
@@ -192,8 +192,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method ()));
       var ctorArgs = new object[] { "a" };
-      var instance = CreateInstance<DomainType2> (new CompileTimeAspect[0], methodInfo, methodInfo, ctorArgs);
-      var instance2 = CreateInstance<DomainType2> (new CompileTimeAspect[0], methodInfo, methodInfo);
+      var instance = CreateInstance<DomainType2> (new AspectAttributeDescriptor[0], methodInfo, methodInfo, ctorArgs);
+      var instance2 = CreateInstance<DomainType2> (new AspectAttributeDescriptor[0], methodInfo, methodInfo);
 
       Assert.That (instance.MethodInfo, Is.Not.Null);
       Assert.That (instance.Delegate, Is.Not.Null);
@@ -206,7 +206,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (instance2.InstanceAspects, Is.Not.Null);
     }
 
-    private T CreateInstance<T> (IEnumerable<ICompileTimeAspect> aspects, MethodInfo methodInfo, MethodInfo copiedMethod, params object[] args)
+    private T CreateInstance<T> (IEnumerable<IAspectAttributeDescriptor> aspects, MethodInfo methodInfo, MethodInfo copiedMethod, params object[] args)
       where T: DomainTypeBase
     {
       var methodInfoField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.MethodInfo));
@@ -233,10 +233,10 @@ namespace ActiveAttributes.UnitTests.Assembly
       return (T) Activator.CreateInstance (type, args);
     }
 
-    private ICompileTimeAspect[] GetCompileTimeAspects (MethodInfo methodInfo)
+    private IAspectAttributeDescriptor[] GetCompileTimeAspects (MethodInfo methodInfo)
     {
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo);
-      var compileTimeAspects = customAttributeData.Select (x => new CompileTimeAspect (x)).ToArray();
+      var compileTimeAspects = customAttributeData.Select (x => new AspectAttributeDescriptor (x)).ToArray();
       return compileTimeAspects;
     }
 
