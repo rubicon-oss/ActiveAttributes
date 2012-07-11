@@ -40,6 +40,46 @@ namespace ActiveAttributes.Core.Assembly
   /// </remarks>
   public class ConstructorPatcher
   {
+    public void AddTypeLevelAspectInitialization (
+        MutableType mutableType,
+        FieldInfo staticAspectsField,
+        FieldInfo instanceAspectsField,
+        IEnumerable<IAspectExpressionGenerator> staticAspectGenerators,
+        IEnumerable<IAspectExpressionGenerator> instanceAspectGenerators)
+    {
+      var staticAspectsArrayInitExpression =
+          Expression.NewArrayInit (
+              typeof (AspectAttribute),
+              staticAspectGenerators.Select (x => x.GetInitExpression()));
+      var instanceAspectsArrayInitExpression =
+          Expression.NewArrayInit (
+              typeof (AspectAttribute),
+              instanceAspectGenerators.Select (x => x.GetInitExpression()));
+      Func<Expression, Expression> ifStaticAspectsNullExpression =
+          initExpression => Expression.IfThen (
+              Expression.Equal (
+                  Expression.Field (null, staticAspectsField),
+                  Expression.Constant (null)),
+              initExpression);
+
+      foreach (var constructor in mutableType.AllMutableConstructors)
+      {
+
+      }
+
+    }
+
+    //private Expression GetInstanceAspectsArrayAssignExpression (FieldInfo field, IEnumerable<IAspectExpressionGenerator> aspects)
+    //{
+    //  var initExpression = Expression.NewArrayInit (
+    //          typeof (AspectAttribute),
+    //          staticAspectGenerators.Select (x => x.GetInitExpression ()));
+    //}
+
+
+
+
+
     public void Patch (MutableMethodInfo mutableMethod, IEnumerable<IAspectAttributeDescriptor> aspects, FieldIntroducer.Data fieldData, MutableMethodInfo copiedMethod)
     {
       var mutableType = ((MutableType) mutableMethod.DeclaringType);

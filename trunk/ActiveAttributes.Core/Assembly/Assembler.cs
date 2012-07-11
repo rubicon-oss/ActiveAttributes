@@ -53,17 +53,19 @@ namespace ActiveAttributes.Core.Assembly
       var aspectsProvider = new AspectsProvider();
       var methodCopier = new MethodCopier();
 
-      //var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
-      //var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
+      var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
+      var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
 
-      //var instanceTypeLevelAspects = typeLevelAspects
-      //    .Where (x => x.Scope == AspectScope.Instance)
-      //    .Select ((x, i) => new InstanceAspectExpressionGenerator (typeFieldData.InstanceAspectsField, i, x));
-      //var staticTypeLevelAspects = typeLevelAspects
-      //    .Where (x => x.Scope == AspectScope.Static)
-      //    .Select ((x, i) => new StaticAspectExpressionGenerator (typeFieldData.StaticAspectsField, i, x));
+      var instanceTypeLevelAspectGenerators = typeLevelAspects
+          .Where (x => x.Scope == AspectScope.Instance)
+          .Select ((x, i) => new InstanceAspectExpressionGenerator (typeFieldData.InstanceAspectsField, i, x))
+          .Cast<IAspectExpressionGenerator> ();
+      var staticTypeLevelAspectGenerators = typeLevelAspects
+          .Where (x => x.Scope == AspectScope.Static)
+          .Select ((x, i) => new StaticAspectExpressionGenerator (typeFieldData.StaticAspectsField, i, x))
+          .Cast<IAspectExpressionGenerator> ();
 
-
+      var typeLevelAspectGenerators = instanceTypeLevelAspectGenerators.Concat (staticTypeLevelAspectGenerators);
 
 
 
