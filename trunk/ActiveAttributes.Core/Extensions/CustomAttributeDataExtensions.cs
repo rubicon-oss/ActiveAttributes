@@ -33,7 +33,7 @@ namespace ActiveAttributes.Core.Extensions
     /// <returns></returns>
     public static Attribute CreateAttribute (this CustomAttributeData data)
     {
-      var argumentConverter = new Func<CustomAttributeTypedArgument, object> (ConvertTypedArgumentToObject);
+      Func<CustomAttributeTypedArgument, object> argumentConverter = ConvertTypedArgumentToObject;
 
       var arguments = data.ConstructorArguments.Select (argumentConverter);
       var attribute = (Attribute) data.Constructor.Invoke (arguments.ToArray());
