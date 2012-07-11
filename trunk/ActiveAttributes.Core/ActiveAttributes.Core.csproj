@@ -74,8 +74,8 @@
     <Compile Include="Contexts\FuncInvocationContext.template.cs" />
     <Compile Include="Contexts\FuncInvocationContextBase.cs" />
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
-    <Compile Include="Contexts\ArgumentCollection\IArgumentCollection.cs" />
-    <Compile Include="Contexts\ArgumentCollection\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Contexts\IArgumentCollection.cs" />
+    <Compile Include="Contexts\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
@@ -102,9 +102,7 @@
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assembly\CompileTimeAspects\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)\prereq\Tools\FuncGen\FuncGen.exe" "$(ProjectDir)*.template.cs" *.generated.cs /rec</PreBuildEvent>
