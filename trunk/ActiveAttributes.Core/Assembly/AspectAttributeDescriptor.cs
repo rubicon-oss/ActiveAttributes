@@ -26,18 +26,6 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface IAspectAttributeDescriptor
-  {
-    int Priority { get; }
-    AspectScope Scope { get; }
-    Type AspectType { get; }
-    ConstructorInfo ConstructorInfo { get; }
-    IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
-    IList<CustomAttributeNamedArgument> NamedArguments { get; }
-
-    bool Matches (MethodInfo method);
-  }
-
   public class AspectAttributeDescriptor : IAspectAttributeDescriptor
   {
     private readonly AspectAttribute _attribute;

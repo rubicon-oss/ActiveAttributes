@@ -59,10 +59,11 @@
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
-    <Compile Include="Assembly\CompileTimeAspect.cs" />
+    <Compile Include="Assembly\AspectAttributeDescriptor.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
+    <Compile Include="Assembly\IAspectAttributeDescriptor.cs" />
     <Compile Include="Assembly\MethodCopier.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\MethodPatcherFactory.cs" />
