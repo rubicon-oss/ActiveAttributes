@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -33,8 +32,7 @@ namespace ActiveAttributes.Core.Assembly
   {
     // private Dictionary<Assembly, Aspect[]> _assemblyLevelAspects = ...;
 
-    public void ModifyType (MutableType mutableType)
-    {
+
       // var instanceTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsInstance);
       // var staticTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsStatic);
 
@@ -43,12 +41,21 @@ namespace ActiveAttributes.Core.Assembly
       // var staticTypeLevelAspectsForCodeGen = staticTypeLevelAspects.Select ((cta, i) => cta.CreateAspectForCodeGeneration (cta, typeLevelFieldData, i));
       // var typeLevelAspectsForCodeGen = instanceTypeLevelAspectsForCodeGen.Concat (staticTypeLevelAspectsForCodeGen);
       // constructorPatcher.AddFieldInitialization (mutableMethod, typeLevelFieldData, typeLevelAspects);
-      
+            
+    public void ModifyType (MutableType mutableType)
+    {
+
+
       var fieldIntroducer = new FieldIntroducer();
       var constructorPatcher = new ConstructorPatcher();
       var methodPatcher = new MethodPatcher();
       var aspectsProvider = new AspectsProvider();
       var methodCopier = new MethodCopier();
+
+      var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType);
+      var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
+
+
 
       // TODO: Use GetMethods instead of AllMutableMethods. Use the MethodInfo (not MutableMethodInfo) to detect aspects on the methods. If there are aspects,
       // TODO: use GetMutableMethod to get the mutable method. If this throws an exception, wrap with a sensible ActiveAttributes configuration exception.
@@ -80,39 +87,3 @@ namespace ActiveAttributes.Core.Assembly
   }
 }
 
-//public interface IAspectForCodeGeneration
-//{
-//  CompileTimeAspectBase CompileTimeAspect { get; }
-//  Expression GetAspectStorageExpression (Expression thisExpression);
-//}
-
-//public class InstanceLevelAspectForCodeGeneration : IAspectForCodeGeneration
-//{
-//  private FieldInfo _aspectsField;
-//  private int _index;
-//  private CompileTimeAspect _compileTimeAspect;
-
-//  public Expression GetAspectStorageExpression (Expression thisExpression)
-//  {
-//    return Expression.ArrayAccess (Expression.Field (thisExpression, _aspectsField), Expression.Constant (_index));
-//  }
-//}
-
-//public class StaticAspectForCodeGeneration : IAspectForCodeGeneration
-//{
-//  private FieldInfo _aspectsField;
-//  private int _index;
-
-//  public Expression GetAspectStorageExpression (Expression thisExpression)
-//  {
-//    return Expression.ArrayAccess (Expression.Field (null, _aspectsField), Expression.Constant (_index));
-//  }
-//}
-
-//public class MethodPatcher
-//{
-//  public void PatchMethod (MutableMethodInfo mutableMethod, IEnumerable<IAspectForCodeGeneration> aspects)
-//  {
-//    mutableMethod.SetBody (ctx =>  );
-//  }
-//}
