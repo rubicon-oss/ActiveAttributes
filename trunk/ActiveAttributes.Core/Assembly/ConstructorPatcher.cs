@@ -40,41 +40,112 @@ namespace ActiveAttributes.Core.Assembly
   /// </remarks>
   public class ConstructorPatcher
   {
-    public void AddTypeLevelAspectInitialization (
-        MutableType mutableType,
-        FieldInfo staticAspectsField,
-        FieldInfo instanceAspectsField,
-        IEnumerable<IAspectExpressionGenerator> staticAspectGenerators,
-        IEnumerable<IAspectExpressionGenerator> instanceAspectGenerators)
+    public void AddMethodInfoAndDelegateInitialization (
+        MutableMethodInfo mutableMethod,
+        FieldInfo methodInfoFieldInfo,
+        FieldInfo delegateFieldInfo,
+        MutableMethodInfo copiedMethod)
     {
-      var staticAspectsArrayInitExpression =
-          Expression.NewArrayInit (
-              typeof (AspectAttribute),
-              staticAspectGenerators.Select (x => x.GetInitExpression()));
-      var instanceAspectsArrayInitExpression =
-          Expression.NewArrayInit (
-              typeof (AspectAttribute),
-              instanceAspectGenerators.Select (x => x.GetInitExpression()));
-      Func<Expression, Expression> ifStaticAspectsNullExpression =
-          initExpression => Expression.IfThen (
-              Expression.Equal (
-                  Expression.Field (null, staticAspectsField),
-                  Expression.Constant (null)),
-              initExpression);
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
+      Func<BodyContextBase, Expression> mutation =
+          ctx => Expression.Block (
+              GetMethodInfoAssignExpression (methodInfoFieldInfo, ctx, mutableMethod),
+              GetDelegateAssignExpression (delegateFieldInfo, ctx, copiedMethod));
 
-      foreach (var constructor in mutableType.AllMutableConstructors)
-      {
-
-      }
-
+      AddMutation (mutableType, mutation);
     }
 
-    //private Expression GetInstanceAspectsArrayAssignExpression (FieldInfo field, IEnumerable<IAspectExpressionGenerator> aspects)
-    //{
-    //  var initExpression = Expression.NewArrayInit (
-    //          typeof (AspectAttribute),
-    //          staticAspectGenerators.Select (x => x.GetInitExpression ()));
-    //}
+    private Expression GetDelegateAssignExpression (FieldInfo delegateFieldInfo, BodyContextBase ctx, MutableMethodInfo copiedMethodInfo)
+    {
+      var delegateField = Expression.Field (ctx.This, delegateFieldInfo);
+
+      var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+      var delegateType = Expression.Constant (copiedMethodInfo.GetDelegateType());
+      var copiedMethod = Expression.Constant (copiedMethodInfo);
+      var createDelegate = Expression.Call (null, createDelegateMethodInfo, delegateType, ctx.This, copiedMethod);
+      var convertedDelegate = Expression.Convert (createDelegate, delegateType.Type);
+
+      var delegateAssignExpression = Expression.Assign (delegateField, convertedDelegate);
+      return delegateAssignExpression;
+    }
+
+    private Expression GetMethodInfoAssignExpression (FieldInfo methodInfoFieldInfo, BodyContextBase ctx, MutableMethodInfo methodInfo)
+    {
+      var methodInfoField = Expression.Field (ctx.This, methodInfoFieldInfo);
+
+      var methodInfoConstantExpression = Expression.Constant (methodInfo.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
+      var methodInfoAssignExpression = Expression.Assign (methodInfoField, methodInfoConstantExpression);
+
+      return methodInfoAssignExpression;
+    }
+
+
+    public void AddAspectInitialization (
+        MutableType mutableType,
+        FieldInfo staticAspectsFieldInfo,
+        FieldInfo instanceAspectsFieldInfo,
+        IEnumerable<IAspectExpressionGenerator> staticAspects,
+        IEnumerable<IAspectExpressionGenerator> instanceAspects)
+    {
+      Func<BodyContextBase, Expression> mutation =
+          ctx => Expression.Block (
+              GetInstanceAspectsArrayAssignExpression (instanceAspectsFieldInfo, ctx, instanceAspects),
+              GetStaticAspectsArrayAssignExpression (staticAspectsFieldInfo, staticAspects));
+
+      AddMutation (mutableType, mutation);
+    }
+
+    private Expression GetInstanceAspectsArrayAssignExpression (FieldInfo fieldInfo, BodyContextBase ctx, IEnumerable<IAspectExpressionGenerator> aspects)
+    {
+      var instanceAspectsField = Expression.Field (ctx.This, fieldInfo);
+      var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
+      var instanceAspectsAssign = Expression.Assign (instanceAspectsField, instanceAspectsArray);
+      return instanceAspectsAssign;
+    }
+
+    private Expression GetStaticAspectsArrayAssignExpression (FieldInfo fieldInfo, IEnumerable<IAspectExpressionGenerator> aspects)
+    {
+      var staticAspectsField = Expression.Field (null, fieldInfo);
+      var staticAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
+      var staticAspectsAssign = Expression.Assign (staticAspectsField, staticAspectsArray);
+      var staticAspectsIfNull = Expression.IfThen(
+        Expression.Equal(staticAspectsField, Expression.Constant(null)),
+        staticAspectsAssign);
+      return staticAspectsIfNull;
+    }
+
+    private void AddMutation (MutableType mutableType, Func<BodyContextBase, Expression> expression)
+    {
+      foreach (var constructor in mutableType.AllMutableConstructors)
+        constructor.SetBody (ctx => Expression.Block (expression (ctx), ctx.PreviousBody));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -170,11 +241,20 @@ namespace ActiveAttributes.Core.Assembly
       return Expression.ArrayAccess (staticAspectsFieldExpression, Expression.Constant (instanceAspectToStaticAspectIndex++));
     }
 
-    private Expression GetDelegateAssignExpression (
-        FieldInfo delegateField, MutableMethodInfo mutableMethod, BodyContextBase ctx, MutableMethodInfo copiedMethod)
+
+    private Expression GetMethodInfoAssignExpression (FieldInfo methodInfoField, MutableMethodInfo mutableMethod, BodyContextBase ctx)
+    {
+      var methodInfoFieldExpression = Expression.Field (ctx.This, methodInfoField);
+      var methodInfoConstantExpression = Expression.Constant (mutableMethod.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
+      var methodInfoAssignExpression = Expression.Assign (methodInfoFieldExpression, methodInfoConstantExpression);
+
+      return methodInfoAssignExpression;
+    }
+
+    private Expression GetDelegateAssignExpression (FieldInfo delegateField, MutableMethodInfo mutableMethod, BodyContextBase ctx, MutableMethodInfo copiedMethod)
     {
       var delegateFieldExpression = Expression.Field (ctx.This, delegateField);
-      var delegateType = mutableMethod.GetDelegateType();
+      var delegateType = mutableMethod.GetDelegateType ();
       var createDelegateMethodInfo = typeof (Delegate).GetMethod (
           "CreateDelegate",
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
@@ -190,13 +270,5 @@ namespace ActiveAttributes.Core.Assembly
       return delegateAssignExpression;
     }
 
-    private Expression GetMethodInfoAssignExpression (FieldInfo methodInfoField, MutableMethodInfo mutableMethod, BodyContextBase ctx)
-    {
-      var methodInfoFieldExpression = Expression.Field (ctx.This, methodInfoField);
-      var methodInfoConstantExpression = Expression.Constant (mutableMethod.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
-      var methodInfoAssignExpression = Expression.Assign (methodInfoFieldExpression, methodInfoConstantExpression);
-
-      return methodInfoAssignExpression;
-    }
   }
 }
