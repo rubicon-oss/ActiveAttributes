@@ -48,7 +48,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorElementArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
 
       var expected = Expression.MemberInit (
           Expression.New (
@@ -65,7 +65,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorArrayArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
 
       var expected = Expression.MemberInit (Expression.New (customData.Constructor, _arrayExpression));
       var actual = generator.GetInitExpression ();
@@ -79,7 +79,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyElementArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
       var member = MemberInfoFromExpressionUtility.GetProperty (((DomainAttribute obj) => obj.PropertyElementArg));
 
       var expected = Expression.MemberInit (
@@ -96,7 +96,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyArrayArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
       var member = MemberInfoFromExpressionUtility.GetProperty (((DomainAttribute obj) => obj.PropertyArrayArg));
 
       var expected = Expression.MemberInit (
@@ -113,7 +113,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldElementArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
       var member = MemberInfoFromExpressionUtility.GetField (((DomainAttribute obj) => obj.FieldElementArg));
 
       var expected = Expression.MemberInit (
@@ -130,7 +130,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldArrayArg ()));
       var customData = CustomAttributeData.GetCustomAttributes (method).First ();
       var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectExpressionGenerator (_dummyField, 0, descriptor);
+      var generator = new AspectGenerator (_dummyField, 0, descriptor);
       var member = MemberInfoFromExpressionUtility.GetField (((DomainAttribute obj) => obj.FieldArrayArg));
 
       var expected = Expression.MemberInit (
@@ -141,9 +141,9 @@ namespace ActiveAttributes.UnitTests.Assembly
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }
 
-    private static IAspectAttributeDescriptor GetAspectAttributeDescriptorMock (CustomAttributeData customData)
+    private static IAspectDescriptor GetAspectAttributeDescriptorMock (CustomAttributeData customData)
     {
-      var descriptor = MockRepository.GenerateMock<IAspectAttributeDescriptor>();
+      var descriptor = MockRepository.GenerateMock<IAspectDescriptor>();
       descriptor.Expect (x => x.ConstructorInfo).Return (customData.Constructor);
       descriptor.Expect (x => x.ConstructorArguments).Return (customData.ConstructorArguments);
       descriptor.Expect (x => x.NamedArguments).Return (customData.NamedArguments);
@@ -197,9 +197,9 @@ namespace ActiveAttributes.UnitTests.Assembly
       public string[] PropertyArrayArg { get; set; }
     }
 
-  public class AspectExpressionGenerator : AspectExpressionGeneratorBase
+  public class AspectGenerator : AspectGeneratorBase
   {
-      public AspectExpressionGenerator (FieldInfo fieldInfo, int index, IAspectAttributeDescriptor descriptor)
+      public AspectGenerator (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
           : base(fieldInfo, index, descriptor)
       {
       }

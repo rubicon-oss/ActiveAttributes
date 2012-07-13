@@ -32,8 +32,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void GetStorageExpression ()
     {
       var field = MemberInfoFromExpressionUtility.GetField ((() => DomainType.AspectField));
-      var descriptorStub = MockRepository.GenerateStub<IAspectAttributeDescriptor> ();
-      var generator = new StaticAspectExpressionGenerator (field, 1, descriptorStub);
+      var descriptorStub = MockRepository.GenerateStub<IAspectDescriptor> ();
+      var generator = new StaticAspectGenerator (field, 1, descriptorStub);
       var thisExpression = Expression.Constant (new DomainType ());
 
       var actual = generator.GetStorageExpression (thisExpression);

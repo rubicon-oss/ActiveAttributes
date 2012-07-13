@@ -93,8 +93,10 @@
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\StaticAspectExpressionGeneratorTest.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />
+    <Compile Include="Extensions\MemberInfoExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
+    <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />
     <Compile Include="Invocations\InvocationTest.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttributeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

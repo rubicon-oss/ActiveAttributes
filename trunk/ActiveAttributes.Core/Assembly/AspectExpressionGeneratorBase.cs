@@ -25,12 +25,12 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public abstract class AspectExpressionGeneratorBase : IAspectExpressionGenerator
+  public abstract class AspectGeneratorBase : IAspectGenerator
   {
     protected readonly FieldInfo FieldInfo;
     protected readonly int Index;
 
-    protected AspectExpressionGeneratorBase (FieldInfo fieldInfo, int index, IAspectAttributeDescriptor descriptor)
+    protected AspectGeneratorBase (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
     {
       ArgumentUtility.CheckNotNull ("fieldInfo", fieldInfo);
       ArgumentUtility.CheckNotNull ("index", index);
@@ -43,7 +43,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public abstract Expression GetStorageExpression (Expression thisExpression);
 
-    public IAspectAttributeDescriptor Descriptor { get; private set; }
+    public IAspectDescriptor Descriptor { get; private set; }
 
     public Expression GetInitExpression ()
     {

@@ -27,7 +27,7 @@ using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
 using JetBrains.Annotations;
 using NUnit.Framework;
-
+using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -35,6 +35,13 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class MethodPatcherTest : TestBase
   {
+    [Test]
+    public void Simple ()
+    {
+      ExpressionTreeComparer
+    }
+
+
     private MethodPatcher _patcher;
     private BindingFlags _bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Instance;
     private FieldIntroducer.Data _fieldData;
@@ -236,7 +243,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo, Delegate @delegate = null)
         where T: DomainTypeBase
     {
-      var compileAspects = aspects.Select (x => new TypeArgsAspectAttributeDescriptor (x.GetType ())).Cast<IAspectAttributeDescriptor> ();
+      var compileAspects = aspects.Select (x => new TypeArgsAspectDescriptor (x.GetType ())).Cast<IAspectDescriptor> ();
       var type = CreateType<T> (compileAspects, methodInfo);
 
       var instance = (T) Activator.CreateInstance (type);
@@ -255,23 +262,24 @@ namespace ActiveAttributes.UnitTests.Assembly
       return instance;
     }
 
-    private Type CreateType<T> (IEnumerable<IAspectAttributeDescriptor> aspects, MethodInfo methodInfo) where T: DomainTypeBase
+    private Type CreateType<T> (IEnumerable<IAspectDescriptor> aspects, MethodInfo methodInfo) where T: DomainTypeBase
     {
       var type = AssembleType<T> (
           mutableType =>
           {
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-            _patcher.Patch (mutableMethod, _fieldData, aspects);
+            //_patcher.AddMethodInterception(mutableMethod, )
+            //_patcher.Patch (mutableMethod, _fieldData, aspects);
           });
       return type;
     }
 
-    public class TypeArgsAspectAttributeDescriptor : IAspectAttributeDescriptor
+    public class TypeArgsAspectDescriptor : IAspectDescriptor
     {
       private readonly Type _type;
 
-      public TypeArgsAspectAttributeDescriptor (Type type)
+      public TypeArgsAspectDescriptor (Type type)
       {
         _type = type;
       }

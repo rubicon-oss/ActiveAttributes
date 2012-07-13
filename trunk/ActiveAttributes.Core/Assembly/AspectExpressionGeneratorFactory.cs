@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,22 +14,31 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface IAspectAttributeDescriptor
+  public class AspectExpressionGeneratorFactory
   {
-    int Priority { get; }
-    AspectScope Scope { get; }
-    Type AspectType { get; }
-    ConstructorInfo ConstructorInfo { get; }
-    IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
-    IList<CustomAttributeNamedArgument> NamedArguments { get; }
+    public IEnumerable<IAspectGenerator> GetAspectGenerators (
+        IEnumerable<IAspectDescriptor> aspects, AspectScope scope, FieldInfo fieldInfo)
+    {
+      return aspects.Select ((x, i) => GetAspectGenerator(x, scope, fieldInfo, i));
+    }
 
-    bool Matches (MethodInfo method);
+    private IAspectGenerator GetAspectGenerator (IAspectDescriptor descriptor, AspectScope scope, FieldInfo fieldInfo, int index)
+    {
+      switch (scope)
+      {
+        case AspectScope.Instance: return new InstanceAspectGenerator (fieldInfo, index, descriptor);
+        case AspectScope.Static: return new StaticAspectGenerator (fieldInfo, index, descriptor);
+        default: throw new ArgumentOutOfRangeException ("scope");
+      }
+    }
   }
 }

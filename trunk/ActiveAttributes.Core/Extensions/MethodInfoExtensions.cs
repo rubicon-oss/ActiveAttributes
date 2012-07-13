@@ -19,11 +19,25 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.FunctionalProgramming;
+using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Extensions
 {
   public static class MethodInfoExtensions
   {
+    private static readonly IRelatedMethodFinder _relatedMethodFinder;
+
+    static MethodInfoExtensions ()
+    {
+      _relatedMethodFinder = new RelatedMethodFinder();
+    }
+
+    public static MethodInfo GetOverridenMethod (this MethodInfo methodInfo)
+    {
+      return _relatedMethodFinder.GetBaseMethod (methodInfo);
+    }
+
     public static Type GetDelegateType (this MethodInfo methodInfo, Type instanceType = null)
     {
       var instanceType2 = instanceType != null
@@ -44,6 +58,8 @@ namespace ActiveAttributes.Core.Extensions
 
       var delegateTypes = parameterTypes.Concat (returnType).ToArray ();
       return Expression.GetDelegateType (delegateTypes);
-    } 
+    }
+
+
   }
 }

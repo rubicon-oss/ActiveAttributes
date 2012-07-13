@@ -20,9 +20,9 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class InstanceAspectExpressionGenerator : AspectExpressionGeneratorBase
+  public class InstanceAspectGenerator : AspectGeneratorBase
   {
-    public InstanceAspectExpressionGenerator (FieldInfo fieldInfo, int index, IAspectAttributeDescriptor descriptor)
+    public InstanceAspectGenerator (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
         : base (fieldInfo, index, descriptor)
     {
     }

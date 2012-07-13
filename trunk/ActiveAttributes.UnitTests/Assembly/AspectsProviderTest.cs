@@ -207,6 +207,18 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     public class AspectAttribute : Core.Aspects.AspectAttribute { }
 
     public class NonAspectAttribute : Attribute { }
@@ -308,6 +320,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     public class AssemblyLevelAspect : AspectAttribute { }
+
 
 
 

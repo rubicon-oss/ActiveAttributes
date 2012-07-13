@@ -15,6 +15,8 @@
 // under the License.
 // 
 using System;
+using System.Linq;
+using System.Reflection;
 using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
 using Remotion.Utilities;

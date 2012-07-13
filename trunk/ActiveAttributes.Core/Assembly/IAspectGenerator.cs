@@ -14,25 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using System.Reflection;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class StaticAspectExpressionGenerator : AspectExpressionGeneratorBase
+  public interface IAspectGenerator
   {
-    public StaticAspectExpressionGenerator (FieldInfo fieldInfo, int index, IAspectAttributeDescriptor descriptor)
-        : base (fieldInfo, index, descriptor)
-    {
-    }
+    IAspectDescriptor Descriptor { get; }
 
-    public override Expression GetStorageExpression (Expression thisExpression)
-    {
-      var field = Expression.Field (null, FieldInfo);
-      var index = Expression.Constant (Index);
-
-      return Expression.ArrayAccess (field, index);
-    }
+    Expression GetStorageExpression (Expression thisExpression);
+    Expression GetInitExpression ();
   }
 }

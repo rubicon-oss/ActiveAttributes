@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,17 +14,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
+using System;
 using System.Collections.Generic;
-using Remotion.TypePipe.MutableReflection;
+using System.Reflection;
+using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class MethodPatcherFactory
+  public interface IAspectDescriptor
   {
-    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects, TypeProvider typeProvider)
-    {
-      return new MethodPatcher (mutableMethod, fieldData, aspects, typeProvider);
-    }
+    int Priority { get; }
+    AspectScope Scope { get; }
+    Type AspectType { get; }
+    ConstructorInfo ConstructorInfo { get; }
+    IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
+    IList<CustomAttributeNamedArgument> NamedArguments { get; }
+
+    bool Matches (MethodInfo method);
   }
 }

@@ -31,72 +31,78 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   public class Assembler : ITypeAssemblyParticipant
   {
-    // private Dictionary<Assembly, Aspect[]> _assemblyLevelAspects = ...;
+    private readonly FieldIntroducer _fieldIntroducer;
+    private readonly ConstructorPatcher _constructorPatcher;
+    private readonly MethodPatcher _methodPatcher;
+    private readonly AspectsProvider _aspectProvider;
+    private readonly MethodCopier _methodCopier;
+    private readonly AspectExpressionGeneratorFactory _generatorFactory;
 
+    public Assembler ()
+    {
+      _generatorFactory = new AspectExpressionGeneratorFactory ();
+      _methodCopier = new MethodCopier ();
+      _aspectProvider = new AspectsProvider ();
+      _methodPatcher = new MethodPatcher ();
+      _constructorPatcher = new ConstructorPatcher ();
+      _fieldIntroducer = new FieldIntroducer ();
+    }
 
-      // var instanceTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsInstance);
-      // var staticTypeLevelAspects = aspectsProvider.GetAspects (mutableType).Where (a => a.IsStatic);
-
-      // var typeLevelFieldData = fieldIntroducer.Introduce (mutableType); // typeName_StaticAspects, typeName_InstanceAspects
-      // var instanceTypeLevelAspectsForCodeGen = instanceTypeLevelAspects.Select ((cta, i) => cta.CreateAspectForCodeGeneration (cta, typeLevelFieldData, i));
-      // var staticTypeLevelAspectsForCodeGen = staticTypeLevelAspects.Select ((cta, i) => cta.CreateAspectForCodeGeneration (cta, typeLevelFieldData, i));
-      // var typeLevelAspectsForCodeGen = instanceTypeLevelAspectsForCodeGen.Concat (staticTypeLevelAspectsForCodeGen);
-      // constructorPatcher.AddFieldInitialization (mutableMethod, typeLevelFieldData, typeLevelAspects);
-            
     public void ModifyType (MutableType mutableType)
     {
+      var typeLevelAspectDescriptors = _aspectProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
+      var typeFieldData = _fieldIntroducer.IntroduceTypeLevelFields (mutableType);
 
+      var instanceTypeLevelField = typeFieldData.InstanceAspectsField;
+      var staticTypeLevelField = typeFieldData.StaticAspectsField;
 
-      var fieldIntroducer = new FieldIntroducer();
-      var constructorPatcher = new ConstructorPatcher();
-      var methodPatcher = new MethodPatcher();
-      var aspectsProvider = new AspectsProvider();
-      var methodCopier = new MethodCopier();
+      var instanceTypeLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
+          typeLevelAspectDescriptors, AspectScope.Instance, instanceTypeLevelField).ToList();
+      var staticTypeLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
+          typeLevelAspectDescriptors, AspectScope.Static, staticTypeLevelField).ToList();
+      var allTypeLevelAspectGenerators = instanceTypeLevelAspectGenerators.Concat (staticTypeLevelAspectGenerators).ToList();
 
-      var typeLevelAspects = aspectsProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
-      var typeFieldData = fieldIntroducer.IntroduceTypeLevelFields (mutableType);
-
-      var instanceTypeLevelAspectGenerators = typeLevelAspects
-          .Where (x => x.Scope == AspectScope.Instance)
-          .Select ((x, i) => new InstanceAspectExpressionGenerator (typeFieldData.InstanceAspectsField, i, x))
-          .Cast<IAspectExpressionGenerator> ();
-      var staticTypeLevelAspectGenerators = typeLevelAspects
-          .Where (x => x.Scope == AspectScope.Static)
-          .Select ((x, i) => new StaticAspectExpressionGenerator (typeFieldData.StaticAspectsField, i, x))
-          .Cast<IAspectExpressionGenerator> ();
-
-      var typeLevelAspectGenerators = instanceTypeLevelAspectGenerators.Concat (staticTypeLevelAspectGenerators);
-
-
-
+      _constructorPatcher.AddAspectInitialization (
+          mutableType, staticTypeLevelField, instanceTypeLevelField, staticTypeLevelAspectGenerators, instanceTypeLevelAspectGenerators);
 
       // TODO: Use GetMethods instead of AllMutableMethods. Use the MethodInfo (not MutableMethodInfo) to detect aspects on the methods. If there are aspects,
       // TODO: use GetMutableMethod to get the mutable method. If this throws an exception, wrap with a sensible ActiveAttributes configuration exception.
       // TODO: Then check MutableMethodInfo.CanSetBody, also throw a configuration exception if it is false.
-      foreach (var mutableMethod in mutableType.AllMutableMethods.ToList())
+      foreach (var mutableMethod in mutableType.AllMutableMethods.ToList ())
       {
-        var aspects = aspectsProvider.GetAspects (mutableMethod).ToList ();
-        // var methodLevelAspects = aspectsProvider.GetAspects (mutableMethod); // TODO: Also needs to differentiate static/instance aspects and associate indexes with them, see above
-        if (aspects.Count == 0)
-          continue;
+        var methodLevelAspectDescriptors = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo).ToList();
+        var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
 
-        var fieldData = fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
-        // var methodLevelFieldData = fieldIntroducer.Introduce (mutableMethod);
-        // constructorPatcher.AddFieldInitialization (mutableMethod, methodLevelFieldData);
-        // var methodLevelAspectsForCodeGen = methodLevelAspects.Select (cta => cta.CreateAspectForCodeGeneration (cta, methodLevelFieldData));
+        var methodInfoField = methodLevelFieldData.MethodInfoField;
+        var delegateField = methodLevelFieldData.DelegateField;
+        var instanceMethodLevelField = methodLevelFieldData.InstanceAspectsField;
+        var staticMethodLevelField = methodLevelFieldData.StaticAspectsField;
 
-        // var allAspectsForCodeGen = typeLevelAspectsForCodeGen.Concat (methodLevelAspectsForCodeGen).Where (aspect => aspect.CompileTimeAspect.Matches (mutableMethod).ToList();
+        var instanceMethodLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
+            methodLevelAspectDescriptors, AspectScope.Instance, instanceMethodLevelField).ToList();
+        var staticMethodLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
+            methodLevelAspectDescriptors, AspectScope.Static, staticMethodLevelField).ToList();
+        var allMethodLevelAspectGenerators = instanceMethodLevelAspectGenerators.Concat (staticMethodLevelAspectGenerators).ToList();
 
+        var allMatchingAspectGenerators = allTypeLevelAspectGenerators
+            .Where (x => x.Descriptor.Matches (mutableMethod))
+            .Concat (allMethodLevelAspectGenerators)
+            .ToList();
 
-        var copiedMethod = methodCopier.GetCopy (mutableMethod);
+        if (allMatchingAspectGenerators.Any())
 
-        // methodPatcher.Patch (mutableMethod, fieldData, typeLevelFieldData, allAspects);
-        methodPatcher.Patch (mutableMethod, fieldData, aspects);
-        constructorPatcher.Patch (mutableMethod, aspects, fieldData, copiedMethod);
+        {
+          var copiedMethod = _methodCopier.GetCopy (mutableMethod);
+
+          _constructorPatcher.AddMethodInfoAndDelegateInitialization (mutableMethod, methodInfoField, delegateField, copiedMethod);
+          _constructorPatcher.AddAspectInitialization (
+              mutableType, staticMethodLevelField, instanceMethodLevelField, staticMethodLevelAspectGenerators, instanceMethodLevelAspectGenerators);
+
+          _methodPatcher.AddMethodInterception (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators);
+
+        }
       }
     }
-
-    // private Aspect[] GetAssemblyLevelAspects (Assembly assembly)
   }
 }
 
