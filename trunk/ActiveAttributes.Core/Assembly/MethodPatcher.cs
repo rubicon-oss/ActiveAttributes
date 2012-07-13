@@ -90,6 +90,8 @@ namespace ActiveAttributes.Core.Assembly
     public void AddMethodInterception (
         MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspectGenerators)
     {
+      // TODO check for empty aspects
+
       _typeProvider = new TypeProvider (mutableMethod);
       mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, methodInfoFieldInfo, delegateFieldInfo, aspectGenerators));
     }
@@ -106,7 +108,7 @@ namespace ActiveAttributes.Core.Assembly
       var methodInfoField = Expression.Field (ctx.This, methodInfoFieldInfo);
       var delegateField = Expression.Field (ctx.This, delegateFieldInfo);
 
-      // ActionInvocationContext<...> ctx = new ActionInvocationContext<...> (_methodInfo, this, arg1, arg2, ...);
+      // InvocationContext<...> ctx = new InvocationContext<TInstance, TA1[, ...][, TR]> (_methodInfo, this, arg1, arg2[, ...]);
       var invocationContextType = _typeProvider.GetInvocationContextType ();
       var invocationContext = Expression.Variable (invocationContextType, "ctx");
       var invocationContextCreateExpression = GetInvocationContextNewExpression (invocationContextType, methodInfoField, ctx.This, ctx.Parameters);
@@ -117,19 +119,25 @@ namespace ActiveAttributes.Core.Assembly
       var invocations = invocationVariablesAndInitializations.Item1;
       var invocationInitExpressions = invocationVariablesAndInitializations.Item2;
 
-      var outermostAspect = generatorsAsList.Last().GetStorageExpression (ctx.This);
-      var outermostAspectInterceptMethod = GetAspectInterceptMethod (generatorsAsList.Last().Descriptor.AspectType, mutableMethod);
-      var outermostInvocation = invocations.Last();
-      var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
+      //var outermostAspect = generatorsAsList.Last ().GetStorageExpression (ctx.This);
+      //var outermostAspectInterceptMethod = GetAspectInterceptMethod (generatorsAsList.Last ().Descriptor.AspectType, mutableMethod);
+      //var outermostInvocation = invocations.Last ();
+      //var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
 
-      var returnValueExpression = Expression.Property (invocationContext, "ReturnValue");
+      //var returnValueExpression = Expression.Property (invocationContext, "ReturnValue");
 
       return Expression.Block (
           new[] { invocationContext }.Concat (invocations),
           invocationContextAssignExpression,
-          Expression.Block (invocationInitExpressions),
-          aspectCallExpression,
-          returnValueExpression);
+          Expression.Block (invocationInitExpressions));
+
+
+      //return Expression.Block (
+      //    new[] { invocationContext }.Concat (invocations),
+      //    invocationContextAssignExpression,
+      //    Expression.Block (invocationInitExpressions),
+      //    aspectCallExpression,
+      //    returnValueExpression);
     }
 
 

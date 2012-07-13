@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class MethodBoundaryTest
+  public class MethodBoundaryTest : TestBase
   {
     private DebugTarget _target;
     private DomainType _instance;
@@ -36,6 +36,8 @@ namespace ActiveAttributes.IntegrationTests
     [SetUp]
     public void SetUp ()
     {
+      base.SetUp();
+
       _target = new DebugTarget ();
       _target.Layout = new SimpleLayout ("${message}");
       var rule = new LoggingRule ("*", LogLevel.Trace, _target);

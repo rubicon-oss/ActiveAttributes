@@ -25,19 +25,22 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class InterceptionTest
+  public class InterceptionTest : TestBase
   {
     private DomainType _instance;
 
     [SetUp]
     public void SetUp ()
     {
-      _instance = ObjectFactory.Create<DomainType>();
+      base.SetUp();
+
     }
 
     [Test]
     public void ProceedMethod ()
     {
+      SkipDeletion();
+      _instance = ObjectFactory.Create<DomainType> ();
       _instance.Method1 ();
 
       Assert.That (_instance.Method1Called, Is.True);

@@ -23,7 +23,13 @@ using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class TypeProvider
+  public interface ITypeProvider
+  {
+    Type GetInvocationType ();
+    Type GetInvocationContextType ();
+  }
+
+  public class TypeProvider : ITypeProvider
   {
     private static readonly Type[] _actionInvocationOpenTypes
         = new[]

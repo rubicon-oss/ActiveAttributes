@@ -92,6 +92,8 @@
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\StaticAspectExpressionGeneratorTest.cs" />
+    <Compile Include="Assembly\TypeExtensions.cs" />
+    <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MemberInfoExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
