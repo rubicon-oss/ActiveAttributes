@@ -7849,7 +7849,7 @@
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IExpressionPreparer">
             <summary>
-            Defines an interface for classes preparing method bodies so that code can be generated for them.
+            Defines an interface for classes preparing method (and constructor) bodies so that code can be generated for them.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.ParameterDeclaration">
@@ -8670,6 +8670,12 @@
         <member name="T:Remotion.TypePipe.Expressions.OriginalBodyExpression">
             <summary>
             Represents the original body of a modified method or constructor.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.UnprocessableExpressionCodeGenerationVisitor">
+            <summary>
+            Replaces all occurences of <see cref="T:Remotion.TypePipe.Expressions.OriginalBodyExpression"/> and other expressions that can not be processedy by the 
+            <see cref="T:Microsoft.Scripting.Ast.Compiler.LambdaCompiler"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.MemberEmitter">
@@ -10096,14 +10102,6 @@
             Adapts <see cref="T:System.Reflection.Emit.ModuleBuilder"/> with the <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/> interface.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.OriginalBodyReplacingExpressionVisitor">
-            <summary>
-            Replaces all occurences of <see cref="T:Remotion.TypePipe.Expressions.OriginalBodyExpression"/> with <see cref="T:Microsoft.Scripting.Ast.MethodCallExpression"/>s that can be processed by the
-            <see cref="T:Microsoft.Scripting.Ast.Compiler.LambdaCompiler"/>.
-            </summary>
-            TODO: Adjust docu
-            BodyPreparingExpressionVisitor
-        </member>
         <member name="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo">
             <summary>
             Represents a method that does not exist yet. This is used to represent methods yet to be generated within an expression tree.
@@ -10741,8 +10739,8 @@
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ExpandingExpressionPreparer">
             <summary>
-            Prepares method bodies so that code can be generated for them by expanding all <see cref="T:Remotion.TypePipe.Expressions.ITypePipeExpression"/> nodes not understood by
-            <see cref="T:Microsoft.Scripting.Ast.Compiler.LambdaCompiler"/> and <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.ILGeneratingTypePipeExpressionVisitor"/>.
+            Prepares method (and constructor) bodies so that code can be generated for them by expanding all <see cref="T:Remotion.TypePipe.Expressions.ITypePipeExpression"/> nodes not
+            understood by <see cref="T:Microsoft.Scripting.Ast.Compiler.LambdaCompiler"/> and <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.ILGeneratingTypePipeExpressionVisitor"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.ILGeneratorDecoratorFactory">
