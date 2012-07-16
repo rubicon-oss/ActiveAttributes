@@ -21,6 +21,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Extensions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -71,6 +72,18 @@ namespace ActiveAttributes.Core.Assembly
       foreach (var mutableMethod in mutableType.AllMutableMethods.ToList ())
       {
         var methodLevelAspectDescriptors = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo).ToList();
+
+        if (mutableMethod.UnderlyingSystemMethodInfo.IsCompilerGenerated ())
+        {
+          var propertyName = mutableMethod.Name.Substring (4);
+          var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (propertyName, BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
+          if (propertyInfo != null)
+          {
+            var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (propertyInfo);
+            methodLevelAspectDescriptors.AddRange (propertyLevelAspects);
+          }
+        }
+
         var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
 
         var methodInfoField = methodLevelFieldData.MethodInfoField;

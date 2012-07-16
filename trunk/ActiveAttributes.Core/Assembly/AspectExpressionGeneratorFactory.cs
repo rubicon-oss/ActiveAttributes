@@ -25,20 +25,19 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class AspectExpressionGeneratorFactory
   {
+    
     public IEnumerable<IAspectGenerator> GetAspectGenerators (
         IEnumerable<IAspectDescriptor> aspects, AspectScope scope, FieldInfo fieldInfo)
     {
-      return aspects.Select ((x, i) => GetAspectGenerator(x, scope, fieldInfo, i));
+      return aspects.Where (x => x.Scope == scope).Select ((x, i) => GetAspectGenerator(x, scope, fieldInfo, i));
     }
 
     private IAspectGenerator GetAspectGenerator (IAspectDescriptor descriptor, AspectScope scope, FieldInfo fieldInfo, int index)
     {
-      switch (scope)
-      {
-        case AspectScope.Instance: return new InstanceAspectGenerator (fieldInfo, index, descriptor);
-        case AspectScope.Static: return new StaticAspectGenerator (fieldInfo, index, descriptor);
-        default: throw new ArgumentOutOfRangeException ("scope");
-      }
+      if (scope == AspectScope.Instance)
+        return new InstanceAspectGenerator (fieldInfo, index, descriptor);
+      else
+        return new StaticAspectGenerator (fieldInfo, index, descriptor);
     }
   }
 }

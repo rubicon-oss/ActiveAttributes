@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectExpressionGeneratorBaseTest.cs" />
+    <Compile Include="Assembly\AspectExpressionGeneratorFactoryTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest2.cs" />
     <Compile Include="Assembly\CompileTimeAspectTest.cs" />
