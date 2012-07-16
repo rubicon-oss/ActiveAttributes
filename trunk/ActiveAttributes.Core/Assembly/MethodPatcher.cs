@@ -126,12 +126,6 @@ namespace ActiveAttributes.Core.Assembly
 
       var returnValueExpression = Expression.Property (invocationContext, "ReturnValue");
 
-      //return Expression.Block (
-      //    new[] { invocationContext }.Concat (invocations),
-      //    invocationContextAssignExpression,
-      //    Expression.Block (invocationInitExpressions));
-
-
       return Expression.Block (
           new[] { invocationContext }.Concat (invocations),
           invocationContextAssignExpression,

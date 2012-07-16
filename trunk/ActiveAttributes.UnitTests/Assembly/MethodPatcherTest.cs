@@ -34,6 +34,7 @@ using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using Xunit;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -51,10 +52,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IEnumerable<IAspectGenerator> _oneGenerator;
     private IEnumerable<IAspectGenerator> _twoGenerators;
 
-
-    public MethodPatcherTest ()
-    {
-    }
+    private MethodInfo _createDelegate;
+    private MethodInfo _onInterceptMethod;
+    private MethodInfo _onInterceptGetMethod;
+    private MethodInfo _onInterceptSetMethod;
 
     [SetUp]
     public override void SetUp ()
@@ -65,6 +66,9 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
       _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
+
+      _descriptor1.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
+      _descriptor2.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
 
       _generator1 = MockRepository.GenerateMock<IAspectGenerator> ();
       _generator2 = MockRepository.GenerateMock<IAspectGenerator>();
@@ -81,11 +85,27 @@ namespace ActiveAttributes.UnitTests.Assembly
       _generator1.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (fieldExpression1);
       _generator2.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (fieldExpression2);
       
-
       _oneGenerator = new[] { _generator1 };
       _twoGenerators = new[] { _generator1, _generator2 };
+
+      _createDelegate = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+      _onInterceptMethod = typeof (MethodInterceptionAspectAttribute).GetMethods().Where (x => x.Name == "OnIntercept").Single();
+      _onInterceptGetMethod = typeof (PropertyInterceptionAspectAttribute).GetMethods().Where (x => x.Name == "OnInterceptGet").Single();
+      _onInterceptSetMethod = typeof (PropertyInterceptionAspectAttribute).GetMethods().Where (x => x.Name == "OnInterceptSet").Single();
     }
 
+    public class DomainTypeBase
+    {
+      public AspectAttribute AspectField1;
+      public AspectAttribute AspectField2;
+    }
+
+    public class DomainType : DomainTypeBase
+    {
+      public MethodInfo MethodInfo;
+      public Action Delegate;
+      public virtual void Method () { }
+    }
 
     [Test]
     public void ContainsInvocationContext ()
@@ -118,6 +138,163 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
+    public void ContainsInvocationContextAssign ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // var ctx = GetInvocationContext();
+            var invocationContext = InvocationContext<DomainType> (mutableMethod);
+            var invocationContextCreate = InvocationContextCreate<DomainType> (mutableMethod, methodInfoField);
+            var assign = Expression.Assign (invocationContext, invocationContextCreate);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, assign);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _oneGenerator, test);
+    }
+
+    [Test]
+    public void ContainsFirstInvocation ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // Invocation invocation1;
+            var invocation = Invocation<DomainType> (mutableMethod, 1);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocation);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _oneGenerator, test);
+    }
+
+    [Test]
+    public void ContainsInnermostInvocationCreate ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // new Invocation(ctx, originalMethodDelegate)
+            var invocationContext = InvocationContext<DomainType> (mutableMethod);
+            var invocationCreate = InnerInvocationCreate<DomainType> (mutableMethod, invocationContext, delegateField);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationCreate);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _oneGenerator, test);
+    }
+
+    [Test]
+    public void ContainsInnermostInvocationAssign ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // var invocation1 = GetInnermostInvocation();
+            var invocationContext = InvocationContext<DomainType> (mutableMethod);
+            var invocation = Invocation<DomainType> (mutableMethod, 1);
+            var invocationCreate = InnerInvocationCreate<DomainType> (mutableMethod, invocationContext, delegateField);
+            var expression = Expression.Assign (invocation, invocationCreate);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, expression);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _oneGenerator, test);
+    }
+
+    [Test]
+    public void ContainsOuterInvocation ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // OuterInvocation invocation2;
+            var invocation = Invocation<DomainType> (mutableMethod, 2);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocation);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _twoGenerators, test);
+    }
+
+    [Test]
+    public void ContainsOuterInvocationCreate ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // new OuterInvocation(ctx, innerInvocationDelegate, innerInvocation);
+            var invocationContext = InvocationContext<DomainType> (mutableMethod);
+            var innerInvocation = Invocation<DomainType> (mutableMethod, 1);
+            var outerInvocationCreate = OuterInvocationCreate<DomainType> (invocationContext, innerInvocation);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, outerInvocationCreate);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _twoGenerators, test);
+    }
+
+    [Test]
+    public void ContainsOuterInvocationAssign ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // new OuterInvocation(ctx, innerInvocationDelegate, innerInvocation);
+            var invocationContext = InvocationContext<DomainType> (mutableMethod);
+            var innerInvocation = Invocation<DomainType> (mutableMethod, 1);
+            var outerInvocation = Invocation<DomainType> (mutableMethod, 2);
+            var outerInvocationCreate = OuterInvocationCreate<DomainType> (invocationContext, innerInvocation);
+            var assign = Expression.Assign (outerInvocation, outerInvocationCreate);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, assign);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _twoGenerators, test);
+    }
+
+    [Test]
+    public void ContainsOutermostAspectCall ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            // outermostAspect.Intercept(outermostInvocation);
+            var outerInvocation = Invocation<DomainType> (mutableMethod, 2);
+            var outerAspectCall = OutermostAspectCall<DomainType> (_generator2, outerInvocation);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, outerAspectCall);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _twoGenerators, test);
+    }
+
+    [Test]
+    public void ContainsPropertyAsReturnValue ()
+    {
+      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
+          (mutableMethod, methodInfoField, delegateField) =>
+          {
+            var invocatonContext = InvocationContext<DomainType> (mutableMethod);
+            var propertyAsReturnValue = PropertyAsReturnValue (invocatonContext);
+            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, propertyAsReturnValue);
+          };
+
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+      PatchAndTest<DomainType> (methodInfo, _twoGenerators, test);
+    }
+
+
+
+    public class DomainType2 : DomainTypeBase
+    {
+      public MethodInfo MethodInfo;
+      public Action<string, int> Delegate;
+      public virtual void MethodWithArgs (string a, int b) { }
+    }
+
+    [Test]
     public void ContainsInvocationContextCreateWithArgs ()
     {
       Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
@@ -133,118 +310,85 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void ContainsInvocationContextAssign ()
+    public void FullTreeTest ()
     {
       Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
           (mutableMethod, methodInfoField, delegateField) =>
           {
-            // var ctx = GetInvocationContext();
-            var invocationContext = InvocationContext<DomainType> (mutableMethod);
-            var invocationContextCreate = InvocationContextCreate<DomainType> (mutableMethod, methodInfoField);
-            var expression = Expression.Assign (invocationContext, invocationContextCreate);
-            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, expression);
-          };
-
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
-      PatchAndTest<DomainType> (methodInfo, _oneGenerator, test);
-    }
-
-    [Test]
-    public void ContainsFirstInvocation ()
-    {
-      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
-          (mutableMethod, methodInfoField, delegateField) =>
-          {
-            // Invocation invocation1;
-            var invocation = Invocation<DomainType2> (mutableMethod, 1);
-            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocation);
-          };
-
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.MethodWithArgs ("a", 1)));
-      PatchAndTest<DomainType2> (methodInfo, _oneGenerator, test);
-    }
-
-    [Test]
-    public void ContainsInnermostInvocationCreate ()
-    {
-      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
-          (mutableMethod, methodInfoField, delegateField) =>
-          {
-            // new Invocation(ctx, originalMethodDelegate)
+            // ActionInvocationContext ctx = new ActionInvocationContext<TInstance, TA1, TA2> (this, methodInfo);
             var invocationContext = InvocationContext<DomainType2> (mutableMethod);
-            var invocationCreate = InvocationCreate<DomainType2> (mutableMethod, invocationContext, delegateField);
-            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationCreate);
-          };
+            var invocationContextCreate = InvocationContextCreate<DomainType2> (mutableMethod, methodInfoField);
+            var invocationContextAssign = Expression.Assign (invocationContext, invocationContextCreate);
 
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.MethodWithArgs ("a", 1)));
-      PatchAndTest<DomainType2> (methodInfo, _oneGenerator, test);
-    }
+            // ActionInvocation<TInstance, TA1, TA2> invocation1 = new ActionInvocation<TInstance, TA1, TA2> (ctx, methodDelegate);
+            var innermostInvocation = Invocation<DomainType2> (mutableMethod, 1);
+            var innermostInvocationCreate = InnerInvocationCreate<DomainType2> (mutableMethod, invocationContext, delegateField);
+            var innermostInvocationAssign = Expression.Assign (innermostInvocation, innermostInvocationCreate);
 
-    [Test]
-    public void ContainsInnermostInvocationAssign ()
-    {
-      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
-          (mutableMethod, methodInfoField, delegateField) =>
-          {
-            // var invocation1 = GetInvocation();
-            var invocationContext = InvocationContext<DomainType2> (mutableMethod);
-            var invocation = Invocation<DomainType2> (mutableMethod, 1);
-            var invocationCreate = InvocationCreate<DomainType2> (mutableMethod, invocationContext, delegateField);
-            var expression = Expression.Assign (invocation, invocationCreate);
-            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, expression);
-          };
+            // OuterInvocation invocation2 = new OuterInvocation(ctx, invocation1, aspect1);
+            var outermostInvocation = Invocation<DomainType2> (mutableMethod, 2);
+            var outermostInvocationCreate = OuterInvocationCreate<DomainType2> (invocationContext, innermostInvocation);
+            var outermostInvocationAssign = Expression.Assign (outermostInvocation, outermostInvocationCreate);
 
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.MethodWithArgs ("a", 1)));
-      PatchAndTest<DomainType2> (methodInfo, _oneGenerator, test);
-    }
+            // aspect2.OnIntercept
+            var outermostAspectCall = OutermostAspectCall<DomainType2> (_generator2, outermostInvocation);
 
-    [Test]
-    public void ContainsOuterInvocation ()
-    {
-      Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
-          (mutableMethod, methodInfoField, delegateField) =>
-          {
-            // OuterInvocation invocation2;
-            var invocation = Invocation<DomainType2> (mutableMethod, 2);
-            ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocation);
+            // return ctx.ReturnValue;
+            var propertyAsReturnValue = PropertyAsReturnValue (invocationContext);
+
+            var block = Expression.Block (
+                new[] { invocationContext, innermostInvocation, outermostInvocation }.Cast<ParameterExpression>(),
+                invocationContextAssign,
+                Expression.Block (
+                    innermostInvocationAssign,
+                    outermostInvocationAssign),
+                outermostAspectCall,
+                propertyAsReturnValue);
+
+            ExpressionTreeComparer.CheckAreEqualTrees (mutableMethod.Body, Expression.Block(typeof(void), block));
           };
 
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.MethodWithArgs ("a", 1)));
       PatchAndTest<DomainType2> (methodInfo, _twoGenerators, test);
     }
 
-    public class DomainTypeBase
+
+
+
+
+
+
+    private Expression OutermostAspectCall<T> (IAspectGenerator generator, Expression invocation)
     {
-      public AspectAttribute AspectField1;
-      public AspectAttribute AspectField2;
+      var convertedAspect = Expression.Convert (generator.GetStorageExpression (ThisExpression<T>()), generator.Descriptor.AspectType);
+      var call = Expression.Call (convertedAspect, _onInterceptMethod, new[] { invocation });
+      return call;
     }
 
-    public class DomainType : DomainTypeBase
+    private Expression ThisExpression<T> ()
     {
-      public MethodInfo MethodInfo;
-      public Action Delegate;
-      public virtual void Method () { }
+      return new ThisExpression (typeof (T));
     }
 
-    public class DomainType2 : DomainTypeBase
+    private Expression OuterInvocationCreate<T> (Expression ctx, Expression innerInvocation)
     {
-      public MethodInfo MethodInfo;
-      public Action<string, int> Delegate;
-      public virtual void MethodWithArgs (string a, int b) { }
+      var constructor = typeof (OuterInvocation).GetConstructors ().Single ();
+      var innerInvocationDelegateType = Expression.Constant (typeof (Action<IInvocation>));
+      var innerInvocationMethod = Expression.Constant (_generator2.Descriptor.AspectType.GetMethods ().Where (x => x.Name.EndsWith ("Intercept")).Single ());
+      var innerInvocationDelegate = Expression.Call (
+          null, _createDelegate, innerInvocationDelegateType, _generator1.GetStorageExpression (ThisExpression<T> ()), innerInvocationMethod);
+      var create = Expression.New (constructor, ctx, Expression.Convert (innerInvocationDelegate, typeof (Action<IInvocation>)), innerInvocation);
+
+      return create;
     }
 
-
-
-
-
-
-    private Expression InvocationCreate<T> (MutableMethodInfo mutableMethod, Expression invocationContext, FieldInfo delegateField)
+    private Expression InnerInvocationCreate<T> (MutableMethodInfo mutableMethod, Expression invocationContext, FieldInfo delegateField)
     {
       var invocationType = new TypeProvider (mutableMethod).GetInvocationType ();
       var invocationCreate = Expression.New (
           invocationType.GetConstructors().Single(),
           invocationContext,
-          Expression.Field (new ThisExpression (typeof (T)), delegateField));
+          Expression.Field (ThisExpression<T>(), delegateField));
       return invocationCreate;
     }
 
@@ -258,7 +402,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var invocationContextType = new TypeProvider(mutableMethod).GetInvocationContextType();
       var methodInfoField = GetField<T> (methodInfoFieldInfo);
-      var thisExpression = new ThisExpression (typeof (T));
+      var thisExpression = ThisExpression<T>();
       var parameters = mutableMethod.GetParameters().Select (x => Expression.Parameter (x.ParameterType, x.Name)).Cast<Expression>();
       var invocationContextCreate = Expression.New (
           invocationContextType.GetConstructors().Single(),
@@ -281,8 +425,19 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private Expression GetField<T> (FieldInfo fieldInfo)
     {
-      return Expression.Field (new ThisExpression (typeof (T)), fieldInfo);
+      return Expression.Field (ThisExpression<T>(), fieldInfo);
     }
+
+    private Expression PropertyAsReturnValue (Expression ctx)
+    {
+      return Expression.Property (ctx, "ReturnValue");
+    }
+
+
+
+
+
+
 
 
     private void PatchAndTest<T> (MethodInfo methodInfo, IEnumerable<IAspectGenerator> aspects, Action<MutableMethodInfo, FieldInfo, FieldInfo> test)
@@ -300,372 +455,5 @@ namespace ActiveAttributes.UnitTests.Assembly
             test (mutableMethod, methodInfoField, delegateField);
           });
     }
-
-
-
-
-
-
-
-    //private MethodPatcher _patcher;
-    //private BindingFlags _bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Instance;
-    //private FieldIntroducer.Data _fieldData;
-
-
-
-    //[Test]
-    //public void CallAspect_MethodInterception ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.Method ();
-
-    //  Assert.That (aspects[0].OnInterceptCalled, Is.True);
-    //}
-
-    //[Test]
-    //public void CallAspect_PropertyInterception_Set ()
-    //{
-    //  var aspects = new[] { new DomainPropertyAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.set_Property ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.set_Property ();
-
-    //  Assert.That (aspects[0].OnSetInterceptCalled, Is.True);
-    //  Assert.That (aspects[0].OnGetInterceptCalled, Is.False);
-    //}
-
-    //[Test]
-    //public void CallAspect_PropertyInterception_Get ()
-    //{
-    //  var aspects = new[] { new DomainPropertyAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.get_Property ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.get_Property ();
-
-    //  Assert.That (aspects[0].OnGetInterceptCalled, Is.True);
-    //  Assert.That (aspects[0].OnSetInterceptCalled, Is.False);
-    //}
-
-    //[Test]
-    //public void CallAspect_WithInvocation ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.Method ();
-
-    //  Assert.That (aspects[0].Invocation, Is.Not.Null);
-    //  Assert.That (aspects[0].Invocation, Is.TypeOf<ActionInvocation<DomainType2>> ());
-    //}
-
-    //[Test]
-    //public void CallAspect_WithInvocation_WithContext ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.Method ();
-
-    //  var ctx = aspects[0].Invocation.Context;
-    //  Assert.That (ctx, Is.Not.Null);
-    //  Assert.That (ctx, Is.TypeOf<ActionInvocationContext<DomainType2>>());
-    //  Assert.That (ctx.MethodInfo, Is.EqualTo (methodInfo));
-    //  Assert.That (ctx.Instance, Is.EqualTo (instance));
-    //}
-
-    //[Test]
-    //public void CallAspect_Proceeding ()
-    //{
-    //  var aspects = new[] { new ProceedingDomainAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType3 obj) => obj.Method ());
-    //  var called = false;
-    //  var instance = CreateInstance<DomainType3> (aspects, methodInfo, new Action (() => { called = true; }));
-
-    //  instance.Method ();
-
-    //  Assert.That (called, Is.True);
-    //}
-
-    //[Test]
-    //public void CallAspect_MethodWithArgs ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType4 obj) => obj.Delegate));
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType4 obj) => obj.Method (""));
-    //  var instance = CreateInstance<DomainType4> (aspects, methodInfo);
-
-    //  var input = "a";
-    //  instance.Method (input);
-
-    //  var arguments = aspects[0].Invocation.Context.Arguments;
-    //  Assert.That (arguments, Has.Count.EqualTo (1));
-    //  Assert.That (arguments[0], Is.EqualTo (input));
-    //}
-
-    //[Test]
-    //public void CallAspect_ReturnValue_WithSet_ValueType ()
-    //{
-    //  var aspects = new[] { new ReturnValueTypeDomainAspectAttribute () };
-    //  _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
-    //  var instance = CreateInstance<DomainType5> (aspects, methodInfo);
-
-    //  var result = instance.Return100Method ();
-
-    //  Assert.That (result, Is.EqualTo (1));
-    //}
-
-    //[Test]
-    //public void CallAspect_ReturnValue_WithSet_ReferenceType ()
-    //{
-    //  var aspects = new[] { new ReturnReferenceTypeDomainAspectAttribute () };
-    //  _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType6> (aspects, methodInfo);
-
-    //  var result = instance.Method ();
-
-    //  Assert.That (result, Is.InstanceOf<DomainType5>());
-    //}
-
-    //[Test]
-    //public void CallAspect_ReturnValue_WithoutSet_ValueType ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType5 obj) => obj.Delegate));
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType5 obj) => obj.Return100Method ());
-    //  var instance = CreateInstance<DomainType5> (aspects, methodInfo);
-
-    //  var result = instance.Return100Method ();
-
-    //  Assert.That (result, Is.EqualTo (0));
-    //}
-
-    //[Test]
-    //public void CallAspect_ReturnValue_WithoutSet_ReferenceType ()
-    //{
-    //  var aspects = new[] { new DomainAspectAttribute () };
-    //  _fieldData.DelegateField = MemberInfoFromExpressionUtility.GetField (((DomainType6 obj) => obj.Delegate));
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType6 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType6> (aspects, methodInfo);
-
-    //  var result = instance.Method ();
-
-    //  Assert.That (result, Is.EqualTo (null));
-    //}
-
-    //[Test]
-    //public void CallAspect_Multiple ()
-    //{
-    //  var aspects = new[] { new ProceedingDomainAspectAttribute (), new ProceedingDomainAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo, new Action (() => { }));
-
-    //  instance.Method ();
-
-    //  Assert.That (aspects[0].OnInterceptCalled, Is.True);
-    //  Assert.That (aspects[1].OnInterceptCalled, Is.True);
-    //  Assert.That (aspects[1].Invocation, Is.InstanceOf<OuterInvocation> ());
-    //}
-
-
-    //[Test]
-    //public void CallAspect_Multiple_MixedTypes ()
-    //{
-    //  var aspects = new AspectAttribute[] { new DomainAspectAttribute (), new DomainPropertyAspectAttribute () };
-    //  var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType2 obj) => obj.Method ());
-    //  var instance = CreateInstance<DomainType2> (aspects, methodInfo);
-
-    //  instance.Method ();
-    //}
-
-    //private T CreateInstance<T> (IEnumerable<AspectAttribute> aspects, MethodInfo methodInfo, Delegate @delegate = null)
-    //    where T: DomainTypeBase
-    //{
-    //  var compileAspects = aspects.Select (x => new TypeArgsAspectDescriptor (x.GetType ())).Cast<IAspectDescriptor> ();
-    //  var type = CreateType<T> (compileAspects, methodInfo);
-
-    //  var instance = (T) Activator.CreateInstance (type);
-
-    //  var aspectsField = _fieldData.InstanceAspectsField;
-    //  aspectsField.SetValue (instance, aspects.ToArray());
-
-    //  var methodInfoField = _fieldData.MethodInfoField;
-    //  methodInfoField.SetValue (instance, methodInfo);
-
-    //  var delegateField = _fieldData.DelegateField;
-    //  //var copyMethodInfo = instance.GetType().GetMethod ("_m_" + methodInfo.Name + "_Copy", _bindingFlags);
-    //  //var  = Delegate.CreateDelegate (methodInfo.GetDelegateType(), instance, copyMethodInfo);
-    //  delegateField.SetValue (instance, @delegate);
-
-    //  return instance;
-    //}
-
-    //private Type CreateType<T> (IEnumerable<IAspectDescriptor> aspects, MethodInfo methodInfo) where T: DomainTypeBase
-    //{
-    //  var type = AssembleType<T> (
-    //      mutableType =>
-    //      {
-    //        var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-
-    //        //_patcher.AddMethodInterception(mutableMethod, )
-    //        //_patcher.Patch (mutableMethod, _fieldData, aspects);
-    //      });
-    //  return type;
-    //}
-
-    //public class TypeArgsAspectDescriptor : IAspectDescriptor
-    //{
-    //  private readonly Type _type;
-
-    //  public TypeArgsAspectDescriptor (Type type)
-    //  {
-    //    _type = type;
-    //  }
-
-    //  public int Priority
-    //  {
-    //    get { throw new NotImplementedException(); }
-    //  }
-
-    //  public AspectScope Scope
-    //  {
-    //    get { throw new NotImplementedException(); }
-    //  }
-
-    //  public Type AspectType
-    //  {
-    //    get { return _type; }
-    //  }
-
-    //  public ConstructorInfo ConstructorInfo
-    //  {
-    //    get { throw new NotImplementedException(); }
-    //  }
-
-    //  public IList<CustomAttributeTypedArgument> ConstructorArguments
-    //  {
-    //    get { throw new NotImplementedException(); }
-    //  }
-
-    //  public IList<CustomAttributeNamedArgument> NamedArguments
-    //  {
-    //    get { throw new NotImplementedException(); }
-    //  }
-
-    //  public bool Matches (MethodInfo method)
-    //  {
-    //    throw new NotImplementedException();
-    //  }
-    //}
-
-    //public class DomainType2 : DomainTypeBase
-    //{
-    //  public virtual void Method () { }
-
-    //  [CompilerGenerated]
-    //  public virtual void set_Property () { }
-
-    //  [CompilerGenerated]
-    //  public virtual void get_Property () { }
-
-    //  public virtual void MethodWithArgs (string arg) { }
-    //}
-
-    //public class DomainType3 : DomainTypeBase
-    //{
-    //  public bool MethodCalled { get; private set; }
-    //  public virtual void Method () { MethodCalled = true; }
-    //}
-
-    //public class DomainType4 : DomainTypeBase
-    //{
-    //  public new Action<string> Delegate;
-
-    //  public virtual void Method (string a) { }
-    //}
-
-    //public class DomainType5 : DomainTypeBase
-    //{
-    //  public new Func<int> Delegate;
-
-    //  public virtual int Return100Method () { return 100; }
-    //}
-
-    //public class DomainType6 : DomainTypeBase
-    //{
-    //  public new Func<DomainType5> Delegate;
-
-    //  public virtual DomainType5 Method () { return new DomainType5(); }
-    //}
-
-    //public class DomainAspectAttribute : MethodInterceptionAspectAttribute
-    //{
-    //  public bool OnInterceptCalled { get; private set; }
-
-    //  public IInvocation Invocation { get; private set; }
-
-    //  public override void OnIntercept (IInvocation invocation)
-    //  {
-    //    OnInterceptCalled = true;
-
-    //    Invocation = invocation;
-    //  }
-    //}
-
-    //public class DomainPropertyAspectAttribute : PropertyInterceptionAspectAttribute
-    //{
-    //  public bool OnGetInterceptCalled { get; private set; }
-    //  public bool OnSetInterceptCalled { get; private set; }
-
-    //  public IInvocation GetInvocation { get; private set; }
-    //  public IInvocation SetInvocation { get; private set; }
-
-    //  public override void OnInterceptGet (IInvocation invocation)
-    //  {
-    //    OnGetInterceptCalled = true;
-
-    //    GetInvocation = invocation;
-    //  }
-
-    //  public override void OnInterceptSet (IInvocation invocation)
-    //  {
-    //    OnSetInterceptCalled = true;
-
-    //    SetInvocation = invocation;
-    //  }
-    //}
-
-    //public class ProceedingDomainAspectAttribute : DomainAspectAttribute
-    //{
-    //  public override void OnIntercept (IInvocation invocation)
-    //  {
-    //    base.OnIntercept (invocation);
-    //    invocation.Proceed();
-    //  }
-    //}
-
-    //public class ReturnValueTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
-    //{
-    //  public override void OnIntercept (IInvocation invocation)
-    //  {
-    //    invocation.Context.ReturnValue = 1;
-    //  }
-    //}
-
-    //public class ReturnReferenceTypeDomainAspectAttribute : MethodInterceptionAspectAttribute
-    //{
-    //  public override void OnIntercept (IInvocation invocation)
-    //  {
-    //    invocation.Context.ReturnValue = new DomainType5();
-    //  }
-    //}
   }
 }
