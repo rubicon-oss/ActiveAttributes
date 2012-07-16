@@ -16,11 +16,14 @@
 // 
 using System;
 using ActiveAttributes.Core.Contexts;
+using Remotion.Logging;
 
 namespace ActiveAttributes.Core.Invocations
 {
   public class OuterInvocation : Invocation
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocation));
+
     private readonly IInvocationContext _context;
     private readonly Action<IInvocation> _innerIntercepting;
     private readonly IInvocation _innerInvocation;
@@ -39,6 +42,7 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
+      s_log.DebugFormat ("Proceeding with '{0}'", _innerIntercepting);
       _innerIntercepting (_innerInvocation);
     }
   }

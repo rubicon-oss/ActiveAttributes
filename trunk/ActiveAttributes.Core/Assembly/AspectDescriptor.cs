@@ -17,7 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
@@ -119,6 +121,29 @@ namespace ActiveAttributes.Core.Assembly
                  .Replace (")", "\\)")
                  .Replace ("void", "Void")
              + "$";
+    }
+
+    public override string ToString ()
+    {
+      var stringBuilder = new StringBuilder();
+      stringBuilder.Append (_attribute.GetType())
+          .Append ("(");
+
+      stringBuilder.Append (string.Join (", ", _customData.ConstructorArguments.Select (x => x.Value.ToString()).ToArray()));
+
+      if (_customData.ConstructorArguments.Count > 0)
+        stringBuilder.Append (", ");
+
+      stringBuilder.Append (string.Join (", ", _customData.NamedArguments.Select (x => x.MemberInfo.Name + " = " + x.TypedValue.Value).ToArray()));
+
+      if (_customData.NamedArguments.Count > 0)
+        stringBuilder.Append (", ");
+
+      stringBuilder.Append ("Scope = ").Append (Scope);
+
+      stringBuilder.Append (")");
+
+      return stringBuilder.ToString();
     }
   }
 }

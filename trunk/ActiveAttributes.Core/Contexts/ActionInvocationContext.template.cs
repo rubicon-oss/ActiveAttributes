@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Remotion.Logging;
 
 namespace ActiveAttributes.Core.Contexts
 {
@@ -8,6 +9,8 @@ namespace ActiveAttributes.Core.Contexts
   // @replace ", TA<n>"
   public class ActionInvocationContext<TInstance, TA1> : ActionInvocationContextBase<TInstance>
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocationContext));
+
     public ActionInvocationContext (MethodInfo methodInfo, TInstance instance, TA1 arg1)
         : base(methodInfo, instance)
     {
@@ -47,7 +50,7 @@ namespace ActiveAttributes.Core.Contexts
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: Arg1 = (TA1) value; break;
+          case 1: Arg1 = (TA1) value; s_log.DebugFormat ("Set 'Arg1' of method '{0}' to '{1}'.", MethodInfo, value); break;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }

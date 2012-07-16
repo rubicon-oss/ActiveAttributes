@@ -15,3 +15,14 @@
 // under the License.
 // 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using NUnit.Framework;
+using Rhino.Mocks;
+
+public class DomainClass
+{
+  public DomainClass ()
+  {
+  }
+}

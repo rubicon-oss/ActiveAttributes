@@ -22,6 +22,8 @@ using System.Net.Sockets;
 using System.Reflection;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
+using Remotion.Globalization;
+using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -32,6 +34,8 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   public class Assembler : ITypeAssemblyParticipant
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (Assembler));
+
     private readonly FieldIntroducer _fieldIntroducer;
     private readonly ConstructorPatcher _constructorPatcher;
     private readonly MethodPatcher _methodPatcher;
@@ -41,6 +45,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public Assembler ()
     {
+      LogManager.InitializeConsole (LogLevel.Debug);
+
       _generatorFactory = new AspectGeneratorFactory ();
       _methodCopier = new MethodCopier ();
       _aspectProvider = new AspectsProvider ();
@@ -51,6 +57,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyType (MutableType mutableType)
     {
+      s_log.InfoFormat ("Modifying type '{0}'", mutableType);
+
       var typeLevelAspectDescriptors = _aspectProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
       var typeFieldData = _fieldIntroducer.IntroduceTypeLevelFields (mutableType);
 
@@ -103,7 +111,6 @@ namespace ActiveAttributes.Core.Assembly
             .ToList();
 
         if (allMatchingAspectGenerators.Any())
-
         {
           var copiedMethod = _methodCopier.GetCopy (mutableMethod);
 
@@ -113,9 +120,15 @@ namespace ActiveAttributes.Core.Assembly
 
           _methodPatcher.AddMethodInterception (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators);
 
+          s_log.InfoFormat ("Mutated method '{0}' to be intercepted with:", mutableMethod);
+          foreach (var aspect in allMatchingAspectGenerators)
+            s_log.InfoFormat (" - {0}", aspect.Descriptor);
+        }
+        else
+        {
+          s_log.InfoFormat ("Skipped method '{0}' that was not marked with any aspects.", mutableMethod);
         }
       }
     }
   }
 }
-

@@ -51,8 +51,8 @@ namespace ActiveAttributes.IntegrationTests
     {
       public int MethodExecutionCounter { get; private set; }
 
-      [CacheAspect]
-      [CacheAspect]
+      [CacheAspect("test")]
+      [CacheAspect("test")]
       public virtual string Method (string arg)
       {
         MethodExecutionCounter++;
@@ -62,8 +62,14 @@ namespace ActiveAttributes.IntegrationTests
 
     public class CacheAspectAttribute : MethodInterceptionAspectAttribute
     {
+      public string Arg { get; set; }
       private object _key;
       private object _value;
+
+      public CacheAspectAttribute (string arg)
+      {
+        Arg = arg;
+      }
 
       public override void OnIntercept (IInvocation invocation)
       {
