@@ -75,19 +75,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
-    <Compile Include="Assembly\AspectExpressionGeneratorBaseTest.cs" />
-    <Compile Include="Assembly\AspectExpressionGeneratorFactoryTest.cs" />
+    <Compile Include="Assembly\AspectGeneratorBaseTest.cs" />
+    <Compile Include="Assembly\AspectGeneratorFactoryTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest2.cs" />
     <Compile Include="Assembly\CompileTimeAspectTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
-    <Compile Include="Assembly\InstanceAspectExpressionGeneratorTest.cs" />
+    <Compile Include="Assembly\InstanceAspectGeneratorTest.cs" />
     <Compile Include="Assembly\MethodCopierTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
-    <Compile Include="Assembly\StaticAspectExpressionGeneratorTest.cs" />
+    <Compile Include="Assembly\StaticAspectGeneratorTest.cs" />
     <Compile Include="Assembly\TypeExtensions.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />

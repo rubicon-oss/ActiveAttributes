@@ -57,8 +57,8 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
-    <Compile Include="Assembly\AspectExpressionGeneratorBase.cs" />
-    <Compile Include="Assembly\AspectExpressionGeneratorFactory.cs" />
+    <Compile Include="Assembly\AspectGeneratorBase.cs" />
+    <Compile Include="Assembly\AspectGeneratorFactory.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
     <Compile Include="Assembly\AspectDescriptor.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />

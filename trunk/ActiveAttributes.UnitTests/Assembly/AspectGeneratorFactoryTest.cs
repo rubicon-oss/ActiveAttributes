@@ -26,14 +26,14 @@ using Rhino.Mocks;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class AspectExpressionGeneratorFactoryTest
+  public class AspectGeneratorFactoryTest
   {
     private IAspectDescriptor _descriptor;
     private IAspectDescriptor[] _enumerable;
 
     private FieldInfo _fieldInfo;
 
-    private AspectExpressionGeneratorFactory _factory;
+    private AspectGeneratorFactory _factory;
 
     [SetUp]
     public void SetUp ()
@@ -43,7 +43,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _fieldInfo = MemberInfoFromExpressionUtility.GetField (() => _fieldInfo);
 
-      _factory = new AspectExpressionGeneratorFactory();
+      _factory = new AspectGeneratorFactory();
     }
 
     [Test]

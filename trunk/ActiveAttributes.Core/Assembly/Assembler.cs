@@ -37,11 +37,11 @@ namespace ActiveAttributes.Core.Assembly
     private readonly MethodPatcher _methodPatcher;
     private readonly AspectsProvider _aspectProvider;
     private readonly MethodCopier _methodCopier;
-    private readonly AspectExpressionGeneratorFactory _generatorFactory;
+    private readonly AspectGeneratorFactory _generatorFactory;
 
     public Assembler ()
     {
-      _generatorFactory = new AspectExpressionGeneratorFactory ();
+      _generatorFactory = new AspectGeneratorFactory ();
       _methodCopier = new MethodCopier ();
       _aspectProvider = new AspectsProvider ();
       _methodPatcher = new MethodPatcher ();

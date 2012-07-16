@@ -19,7 +19,6 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -27,25 +26,25 @@ using Rhino.Mocks;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class InstanceAspectExpressionGeneratorTest
+  public class StaticAspectGeneratorTest
   {
     [Test]
     public void GetStorageExpression ()
     {
-      var field = MemberInfoFromExpressionUtility.GetField (((DomainType obj) => obj.AspectField));
-      var descriptorStub = MockRepository.GenerateStub<IAspectDescriptor>();
-      var generator = new InstanceAspectGenerator (field, 1, descriptorStub);
-      var thisExpression = Expression.Constant (new DomainType());
+      var field = MemberInfoFromExpressionUtility.GetField ((() => DomainType.AspectField));
+      var descriptorStub = MockRepository.GenerateStub<IAspectDescriptor> ();
+      var generator = new StaticAspectGenerator (field, 1, descriptorStub);
+      var thisExpression = Expression.Constant (new DomainType ());
 
       var actual = generator.GetStorageExpression (thisExpression);
-      var expected = Expression.ArrayAccess (Expression.Field (thisExpression, field), Expression.Constant (1));
+      var expected = Expression.ArrayAccess (Expression.Field (null, field), Expression.Constant (1));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }
 
     public class DomainType
     {
-      public AspectAttribute[] AspectField;
+      public static AspectAttribute[] AspectField;
     }
   }
 }

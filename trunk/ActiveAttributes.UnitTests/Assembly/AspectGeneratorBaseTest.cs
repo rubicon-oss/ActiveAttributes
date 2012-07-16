@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class AspectExpressionGeneratorBaseTest
+  public class AspectGeneratorBaseTest
   {
     private FieldInfo _dummyField;
     private Expression _elementExpression;

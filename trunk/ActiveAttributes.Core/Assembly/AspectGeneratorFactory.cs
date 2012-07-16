@@ -23,7 +23,7 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class AspectExpressionGeneratorFactory
+  public class AspectGeneratorFactory
   {
     
     public IEnumerable<IAspectGenerator> GetAspectGenerators (
