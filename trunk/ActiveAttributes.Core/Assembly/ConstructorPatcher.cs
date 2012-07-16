@@ -61,7 +61,7 @@ namespace ActiveAttributes.Core.Assembly
 
       var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
       var delegateType = Expression.Constant (copiedMethodInfo.GetDelegateType());
-      var copiedMethod = Expression.Constant (copiedMethodInfo);
+      var copiedMethod = Expression.Constant (copiedMethodInfo, typeof(MethodInfo));
       var createDelegate = Expression.Call (null, createDelegateMethodInfo, delegateType, ctx.This, copiedMethod);
       var convertedDelegate = Expression.Convert (createDelegate, (Type) delegateType.Value);
 
@@ -117,7 +117,7 @@ namespace ActiveAttributes.Core.Assembly
     private void AddMutation (MutableType mutableType, Func<BodyContextBase, Expression> expression)
     {
       foreach (var constructor in mutableType.AllMutableConstructors)
-        constructor.SetBody (ctx => Expression.Block (expression (ctx), ctx.PreviousBody));
+        constructor.SetBody (ctx => Expression.Block (ctx.PreviousBody, expression (ctx)));
     }
 
 

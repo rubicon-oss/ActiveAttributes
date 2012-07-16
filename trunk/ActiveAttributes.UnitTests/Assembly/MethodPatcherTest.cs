@@ -51,8 +51,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IEnumerable<IAspectGenerator> _oneGenerator;
     private IEnumerable<IAspectGenerator> _twoGenerators;
 
-    private AspectAttribute _dummyField1;
-    private AspectAttribute _dummyField2;
 
     public MethodPatcherTest ()
     {
@@ -74,10 +72,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       _generator1.Stub (x => x.Descriptor).Return (_descriptor1);
       _generator2.Stub (x => x.Descriptor).Return (_descriptor2);
 
-      var fieldExpression1 = Expression.Field(Expressions.Constant  ())
+      var fieldInfo1 = MemberInfoFromExpressionUtility.GetField ((DomainTypeBase obj) => obj.AspectField1);
+      var fieldInfo2 = MemberInfoFromExpressionUtility.GetField ((DomainTypeBase obj) => obj.AspectField2);
 
-      _generator1.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (Expression.Variable (typeof (AspectAttribute), "aspect1"));
-      _generator2.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (Expression.Variable (typeof (AspectAttribute), "aspect2"));
+      var fieldExpression1 = Expression.Field (new ThisExpression (typeof (DomainTypeBase)), fieldInfo1);
+      var fieldExpression2 = Expression.Field (new ThisExpression (typeof (DomainTypeBase)), fieldInfo2);
+
+      _generator1.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (fieldExpression1);
+      _generator2.Stub (x => x.GetStorageExpression (null)).IgnoreArguments().Return (fieldExpression2);
       
 
       _oneGenerator = new[] { _generator1 };
@@ -211,16 +213,20 @@ namespace ActiveAttributes.UnitTests.Assembly
       PatchAndTest<DomainType2> (methodInfo, _twoGenerators, test);
     }
 
+    public class DomainTypeBase
+    {
+      public AspectAttribute AspectField1;
+      public AspectAttribute AspectField2;
+    }
 
-
-    public class DomainType
+    public class DomainType : DomainTypeBase
     {
       public MethodInfo MethodInfo;
       public Action Delegate;
       public virtual void Method () { }
     }
 
-    public class DomainType2
+    public class DomainType2 : DomainTypeBase
     {
       public MethodInfo MethodInfo;
       public Action<string, int> Delegate;

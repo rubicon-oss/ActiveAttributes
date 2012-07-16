@@ -18,74 +18,73 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Extensions;
-using FluentAssertions;
+
 using NUnit.Framework;
 using Remotion.Utilities;
-using Xunit;
 
 namespace ActiveAttributes.UnitTests.Extensions
 {
   [TestFixture]
   public class CustomAttributeDataExtensionsTest
   {
-    [Fact]
+    [Test]
     public void ConstructorElementArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorElementArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.ConstructorElementArg.Should().Be ("a");
+      Assert.That (attribute.ConstructorElementArg, Is.EqualTo ("a"));
     }
 
-    [Fact]
+    [Test]
     public void ConstructorArrayArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorArrayArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.ConstructorArrayArg.Should().BeEquivalentTo (new[] { "a" });
+      Assert.That (attribute.ConstructorArrayArg, Is.EquivalentTo (new[] { "a" }));
     }
 
-    [Fact]
+    [Test]
     public void PropertyElementArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyElementArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.PropertyElementArg.Should().Be ("a");
+      Assert.That (attribute.PropertyElementArg, Is.EqualTo ("a"));
     }
 
-    [Fact]
+    [Test]
     public void PropertyArrayArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyArrayArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.PropertyArrayArg.Should().BeEquivalentTo (new[] { "a" });
+      Assert.That (attribute.PropertyArrayArg, Is.EquivalentTo (new[] { "a" }));
     }
 
-    [Fact]
+    [Test]
     public void FieldElementArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldElementArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.FieldElementArg.Should().Be ("a");
+      Assert.That (attribute.FieldElementArg, Is.EqualTo ("a"));
     }
 
-    [Fact]
+    [Test]
     public void FieldArrayArg ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldArrayArg()));
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
       var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
 
-      attribute.FieldArrayArg.Should ().BeEquivalentTo (new[] { "a" });
+      Assert.That (attribute.FieldArrayArg, Is.EquivalentTo (new[] { "a" }));
     }
 
 

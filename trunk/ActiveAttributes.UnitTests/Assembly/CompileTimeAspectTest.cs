@@ -18,13 +18,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
+
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using NUnit.Framework;
 using Remotion.Utilities;
-using FluentAssertions;
-using Xunit;
+
 using Assert = NUnit.Framework.Assert;
 
 namespace ActiveAttributes.UnitTests.Assembly

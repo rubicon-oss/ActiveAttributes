@@ -18,25 +18,29 @@
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ReturnValueManipulationTest
+  public class ReturnValueManipulationTest : TestBase
   {
     private DomainType _instance;
 
     [SetUp]
     public void SetUp ()
     {
-      _instance = ObjectFactory.Create<DomainType>();
     }
 
     [Test]
     public void SetReturnValueNull ()
     {
+      SkipDeletion();
+      var type = AssembleType<DomainType> (new Assembler().ModifyType);
+      _instance = (DomainType) Activator.CreateInstance (type);
+      //_instance = ObjectFactory.Create<DomainType> ();
       var result = _instance.Method();
 
       Assert.That (result, Is.Null);

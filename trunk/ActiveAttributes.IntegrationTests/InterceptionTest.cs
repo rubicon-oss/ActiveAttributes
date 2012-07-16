@@ -34,13 +34,12 @@ namespace ActiveAttributes.IntegrationTests
     {
       base.SetUp();
 
+      _instance = ObjectFactory.Create<DomainType> ();
     }
 
     [Test]
     public void ProceedMethod ()
     {
-      SkipDeletion();
-      _instance = ObjectFactory.Create<DomainType> ();
       _instance.Method1 ();
 
       Assert.That (_instance.Method1Called, Is.True);

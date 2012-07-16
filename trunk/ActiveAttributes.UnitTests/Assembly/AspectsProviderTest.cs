@@ -16,14 +16,13 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
-using FluentAssertions;
 using NUnit.Framework;
 using Remotion.Utilities;
-using Xunit;
 using Assert = NUnit.Framework.Assert;
 
 //[assembly: AspectsProviderTest.AssemblyAttribute]
@@ -215,10 +214,6 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-
-
-
-
     public class AspectAttribute : Core.Aspects.AspectAttribute { }
 
     public class NonAspectAttribute : Attribute { }
@@ -230,15 +225,14 @@ namespace ActiveAttributes.UnitTests.Assembly
     public class InheritingAspectAttribute2 : Core.Aspects.AspectAttribute { }
 
 
-
-    [Fact]
+    [Test]
     public void GetTypeLevelAspects ()
     {
       var type = typeof (TypeLevelAspectClass);
 
-      var result = _provider.GetTypeLevelAspects (type);
+      var result = _provider.GetTypeLevelAspects (type).ToArray();
 
-      result.Should().HaveCount (1);
+      Assert.That (result, Has.Length.EqualTo (1));
     }
 
     [Aspect]
@@ -246,14 +240,14 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    [Fact]
+    [Test]
     public void GetTypeLevelAspectsSkipsNonAspectAttributes ()
     {
       var type = typeof (TypeLevelAspectClassWithNonAspectAttribute);
 
-      var result = _provider.GetTypeLevelAspects (type);
+      var result = _provider.GetTypeLevelAspects (type).ToArray ();
 
-      result.Should().HaveCount (1);
+      Assert.That (result, Has.Length.EqualTo (1));
     }
 
     [Aspect]
@@ -262,14 +256,14 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    [Fact]
+    [Test]
     public void GetTypeLevelAspectsRespectsInheritingAspect ()
     {
       var type = typeof (TypeLevelAspectClassWithInheritingAspect);
 
-      var result = _provider.GetTypeLevelAspects (type);
+      var result = _provider.GetTypeLevelAspects (type).ToArray ();
 
-      result.Should().HaveCount (1);
+      Assert.That (result, Has.Length.EqualTo (1));
     }
 
     [InheritingAspectAttribute2]
@@ -278,14 +272,14 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    [Fact]
+    [Test]
     public void GetTypeLevelAspectsRespectsNonInheritingAspect ()
     {
       var type = typeof (TypeLevelAspectClassWithoutAspectButBase);
 
-      var result = _provider.GetTypeLevelAspects (type);
+      var result = _provider.GetTypeLevelAspects (type).ToArray ();
 
-      result.Should ().HaveCount (0);
+      Assert.That (result, Has.Length.EqualTo (0));
     }
 
     [NonInheritingAspectAttribute2]
@@ -294,14 +288,14 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    [Fact]
+    [Test]
     public void GetTypeLevelAspectWithInheritingOnSelf ()
     {
       var type = typeof (TypeLevelAspectClassWithInheritingAspectOnSelf);
 
-      var result = _provider.GetTypeLevelAspects (type);
+      var result = _provider.GetTypeLevelAspects (type).ToArray ();
 
-      result.Should ().HaveCount (1);
+      Assert.That (result, Has.Length.EqualTo (1));
     }
 
     [InheritingAspectAttribute2]
@@ -309,14 +303,14 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    [Fact]
+    [Test]
     public void GetAssemblyLevelAspect ()
     {
       var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
 
-      var result = _provider.GetAssemblyLevelAspects (assembly);
+      var result = _provider.GetAssemblyLevelAspects (assembly).ToArray();
 
-      result.Should ().Contain (x => typeof (AssemblyLevelAspect).IsAssignableFrom (x.AspectType));
+      Assert.That (result, Has.Some.Property ("AspectType").EqualTo (typeof (AssemblyLevelAspect)));
     }
 
     public class AssemblyLevelAspect : AspectAttribute { }
