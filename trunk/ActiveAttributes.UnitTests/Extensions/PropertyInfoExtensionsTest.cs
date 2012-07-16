@@ -29,16 +29,6 @@ namespace ActiveAttributes.UnitTests.Extensions
   public class PropertyInfoExtensionsTest
   {
     [Test]
-    public void GetOverriden_DirectBaseType2 ()
-    {
-      var expected = typeof (B).GetProperties (BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public).First ();
-      var actual = PropertyInfoExtensions.GetProperty ((((B obj) => obj.PropertyA)));
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-
-    [Test]
     public void GetBaseDefinition ()
     {
       var expected = typeof (B).GetProperties ().Where (x => x.Name == "PropertyA").Single ();

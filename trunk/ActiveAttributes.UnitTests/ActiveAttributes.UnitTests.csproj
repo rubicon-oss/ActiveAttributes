@@ -35,9 +35,6 @@
     <Reference Include="Castle.Core">
       <HintPath>..\prereq\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions">
-      <HintPath>..\packages\FluentAssertions.1.7.1.1\Lib\net35\FluentAssertions.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\prereq\log4net.dll</HintPath>
     </Reference>
@@ -74,9 +71,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="TypePipe.IntegrationTests">
       <HintPath>..\prereq\TypePipe.IntegrationTests.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit">
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -116,7 +110,6 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

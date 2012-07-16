@@ -222,7 +222,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public class NonInheritingAspectAttribute2 : Core.Aspects.AspectAttribute { }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    public class InheritingAspectAttribute2 : Core.Aspects.AspectAttribute { }
+    public class InheritingAspect2Attribute : Core.Aspects.AspectAttribute { }
 
 
     [Test]
@@ -266,7 +266,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Has.Length.EqualTo (1));
     }
 
-    [InheritingAspectAttribute2]
+    [InheritingAspect2]
     public class TypeLevelAspectClassWithInheritingAspectBase { }
     public class TypeLevelAspectClassWithInheritingAspect : TypeLevelAspectClassWithInheritingAspectBase { }
 
@@ -298,7 +298,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Has.Length.EqualTo (1));
     }
 
-    [InheritingAspectAttribute2]
+    [InheritingAspect2]
     public class TypeLevelAspectClassWithInheritingAspectOnSelf { }
 
 
@@ -317,6 +317,120 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
+    [Test]
+    public void GetMethodLevelAspect ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClass obj) => obj.Method ());
+
+      var result = _provider.GetMethodLevelAspects (method).ToArray();
+
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (DomainAspectAttribute)));
+    }
+
+    public class MethodLevelAspectClass
+    {
+      [DomainAspect]
+      public void Method () { }
+    }
+
+
+    [Test]
+    public void GetMethodLevelAspectsRespectsInheritingAspect ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithInheritingAspect obj) => obj.Method ());
+
+      var result = _provider.GetMethodLevelAspects (method).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    public abstract class MethodLevelAspectClassWithInheritingAspectBase
+    {
+      [InheritingAspect2]
+      public virtual void Method () { }
+    }
+    public class MethodLevelAspectClassWithInheritingAspect : MethodLevelAspectClassWithInheritingAspectBase
+    {
+      public override void Method () { }
+    }
+
+    [Test]
+    public void GetMethodLevelAspectsRespectsNotInheritingAspect ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithNotInheritingAspect obj) => obj.Method ());
+
+      var result = _provider.GetMethodLevelAspects (method).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    public abstract class MethodLevelAspectClassWithNotInheritingAspectBase
+    {
+      [NotInheritingAspect]
+      public virtual void Method () { }
+    }
+    public class MethodLevelAspectClassWithNotInheritingAspect : MethodLevelAspectClassWithNotInheritingAspectBase
+    {
+      public override void Method () { }
+    }
+
+
+    [Test]
+    public void GetPropertyLevelAspect ()
+    {
+      var property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClass obj) => obj.Property);
+
+      var result = _provider.GetPropertyLevelAspects (property).ToArray ();
+
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (DomainAspectAttribute)));
+    }
+
+    public class PropertyLevelAspectClass
+    {
+      [DomainAspect]
+      public string Property { get; set; }
+    }
+
+
+    [Test]
+    public void GetPropertyLevelAspectsRespectsInheritingAspect ()
+    {
+      var Property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithInheritingAspect obj) => obj.Property);
+
+      var result = _provider.GetPropertyLevelAspects (Property).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    public abstract class PropertyLevelAspectClassWithInheritingAspectBase
+    {
+      [InheritingAspect2]
+      public virtual string Property { get; set; }
+    }
+    public class PropertyLevelAspectClassWithInheritingAspect : PropertyLevelAspectClassWithInheritingAspectBase
+    {
+      public override string Property { get; set; }
+    }
+
+    [Test]
+    public void GetPropertyLevelAspectsRespectsNotInheritingAspect ()
+    {
+      var Property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithNotInheritingAspect obj) => obj.Property);
+
+      var result = _provider.GetPropertyLevelAspects (Property).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    public abstract class PropertyLevelAspectClassWithNotInheritingAspectBase
+    {
+      [NotInheritingAspect]
+      public virtual string Property { get; set; }
+    }
+    public class PropertyLevelAspectClassWithNotInheritingAspect : PropertyLevelAspectClassWithNotInheritingAspectBase
+    {
+      public override string Property { get; set; }
+    }
 
 
 

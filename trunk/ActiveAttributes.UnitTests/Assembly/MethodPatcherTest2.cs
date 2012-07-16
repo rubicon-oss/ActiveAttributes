@@ -30,6 +30,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
+  [TestFixture, Ignore]
   public class MethodPatcherTest2 : TestBase
   {
     private MethodPatcher _patcher;

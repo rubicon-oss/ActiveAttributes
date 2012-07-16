@@ -58,6 +58,16 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (type, getParent, whileCondition);
     }
 
+    public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      Func<MemberInfo, MemberInfo> getParent = memberInfo => ((PropertyInfo) memberInfo).GetOverridenProperty ();
+      Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
+
+      return GetAspects (propertyInfo, getParent, whileCondition);
+    }
+
     public IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
