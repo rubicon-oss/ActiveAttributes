@@ -29,13 +29,12 @@ using Assert = NUnit.Framework.Assert;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class CompileTimeAspectTest
+  public class AspectDescriptorTest
   {
     [Test]
     public void Initialization ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method1 ()));
-
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
       var result = new AspectDescriptor (customData);
@@ -49,7 +48,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void ThrowsExceptionForNonAspectAttributes ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method2 ()));
-
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
       new AspectDescriptor (customData);
@@ -59,7 +57,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void Initialization_WithData ()
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method3()));
-
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
       var result = new AspectDescriptor (customData);
@@ -76,9 +73,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method4 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new AspectDescriptor (customData);
+      var descriptor = new AspectDescriptor (customData);
 
-      var result = aspect.Matches (methodInfo);
+      var result = descriptor.Matches (methodInfo);
 
       Assert.That (result, Is.True);
     }
@@ -88,9 +85,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method5 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new AspectDescriptor (customData);
+      var descriptor = new AspectDescriptor (customData);
 
-      var result = aspect.Matches (methodInfo);
+      var result = descriptor.Matches (methodInfo);
 
       Assert.That (result, Is.False);
     }
@@ -100,9 +97,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method6 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new AspectDescriptor (customData);
+      var descriptor = new AspectDescriptor (customData);
 
-      var result = aspect.Matches (methodInfo);
+      var result = descriptor.Matches (methodInfo);
 
       Assert.That (result, Is.True);
     }
@@ -112,11 +109,35 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method7 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var aspect = new AspectDescriptor (customData);
+      var descriptor = new AspectDescriptor (customData);
 
-      var result = aspect.Matches (methodInfo);
+      var result = descriptor.Matches (methodInfo);
 
       Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void ToString_ ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method1 ());
+      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
+      var descriptor = new AspectDescriptor (customData);
+
+      var result = descriptor.ToString ();
+
+      Assert.That (result, Is.StringEnding ("AspectAttribute(Scope = Static)"));
+    }
+
+    [Test]
+    public void ToStringWithArguments ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method8 ());
+      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
+      var descriptor = new AspectDescriptor (customData);
+
+      var result = descriptor.ToString ();
+
+      Assert.That (result, Is.StringEnding ("AspectAttribute({test}, PropertyArgument = {test2}, Scope = Static)"));
     }
 
     public class DomainType
@@ -141,10 +162,22 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       [Aspect (IfType = typeof (object))]
       public void Method7 () { }
+
+      [Aspect("test", PropertyArgument = "test2")]
+      public void Method8 () { }
     }
 
     public class AspectAttribute : Core.Aspects.AspectAttribute
     {
+      public AspectAttribute ()
+      {
+      }
+
+      public AspectAttribute (string constructorArgument)
+      {
+      }
+
+      public string PropertyArgument { get; set; }
     }
 
     public class NonAspectAttribute : Attribute

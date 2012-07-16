@@ -129,12 +129,12 @@ namespace ActiveAttributes.Core.Assembly
       stringBuilder.Append (_attribute.GetType())
           .Append ("(");
 
-      stringBuilder.Append (string.Join (", ", _customData.ConstructorArguments.Select (x => x.Value.ToString()).ToArray()));
+      stringBuilder.Append (string.Join (", ", _customData.ConstructorArguments.Select (x => "{" + x.Value + "}").ToArray()));
 
       if (_customData.ConstructorArguments.Count > 0)
         stringBuilder.Append (", ");
 
-      stringBuilder.Append (string.Join (", ", _customData.NamedArguments.Select (x => x.MemberInfo.Name + " = " + x.TypedValue.Value).ToArray()));
+      stringBuilder.Append (string.Join (", ", _customData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
 
       if (_customData.NamedArguments.Count > 0)
         stringBuilder.Append (", ");
