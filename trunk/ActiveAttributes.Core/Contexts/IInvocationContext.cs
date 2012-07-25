@@ -14,17 +14,37 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Contexts.ArgumentCollection;
+using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Contexts
 {
+  /// <summary>
+  ///   Provides information about the interception.
+  /// </summary>
   public interface IInvocationContext
   {
+    /// <summary>
+    ///   The <see cref = "MethodInfo" /> of the intercepted action (i.e., constructor, method, property).
+    /// </summary>
     MethodInfo MethodInfo { get; }
+
+    /// <summary>
+    ///   The <code>this</code> object whose action is intercepted.
+    /// </summary>
     object Instance { get; }
+
+    /// <summary>
+    ///   The collection of arguments passed to the intercepted action.
+    /// </summary>
     IArgumentCollection Arguments { get; }
+
+    /// <summary>
+    ///   The return value of the intercepted method. It holds the return value of the intercepted action after calling
+    ///   <see cref = "IInvocation.Proceed" />.
+    /// </summary>
     object ReturnValue { get; set; }
   }
 }

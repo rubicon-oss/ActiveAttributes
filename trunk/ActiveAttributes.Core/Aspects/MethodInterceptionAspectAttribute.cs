@@ -20,14 +20,21 @@ using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {
+  /// <summary>
+  ///   Provides facilities to intercept a method.
+  /// </summary>
   [Serializable]
-  [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)] // TODO ctor
   public abstract class MethodInterceptionAspectAttribute : AspectAttribute
   {
-    protected MethodInterceptionAspectAttribute () {}
+    protected MethodInterceptionAspectAttribute ()
+    {
+    }
 
     protected MethodInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
-        : base (info, context) {}
+      : base (info, context)
+    {
+    }
 
     public abstract void OnIntercept (IInvocation invocation);
   }

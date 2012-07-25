@@ -14,13 +14,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 
 namespace ActiveAttributes.Core.Configuration
 {
+  /// <summary>
+  ///   Defines the scope of an aspect.
+  /// </summary>
   public enum AspectScope
   {
+    /// <summary>
+    ///   Created once per attribute.
+    /// </summary>
     Static,
+
+    /// <summary>
+    ///   Created for each new object.
+    /// </summary>
     Instance
   }
 }

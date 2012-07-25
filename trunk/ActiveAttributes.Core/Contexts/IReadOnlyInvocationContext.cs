@@ -16,10 +16,12 @@
 // 
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Contexts.ArgumentCollection;
 
 namespace ActiveAttributes.Core.Contexts
 {
+  /// <summary>
+  ///   A read-only interface of <see cref="IInvocationContext"/> (i.e., with <see cref="IReadOnlyArgumentCollection"/>).
+  /// </summary>
   public interface IReadOnlyInvocationContext
   {
     MethodInfo MethodInfo { get; }

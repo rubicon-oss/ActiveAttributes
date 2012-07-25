@@ -14,14 +14,29 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
+using System.Runtime.Serialization;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {
+  /// <summary>
+  ///   Provides facilities to intercept the get, and set method of a property.
+  /// </summary>
+  [Serializable]
   [AttributeUsage (AttributeTargets.Property)]
   public abstract class PropertyInterceptionAspectAttribute : AspectAttribute
   {
+    protected PropertyInterceptionAspectAttribute ()
+    {
+    }
+
+    protected PropertyInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+    }
+
     public abstract void OnInterceptGet (IInvocation invocation);
     public abstract void OnInterceptSet (IInvocation invocation);
   }

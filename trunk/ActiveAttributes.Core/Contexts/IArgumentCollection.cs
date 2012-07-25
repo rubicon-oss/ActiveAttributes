@@ -14,11 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ActiveAttributes.Core.Contexts.ArgumentCollection
+namespace ActiveAttributes.Core.Contexts
 {
+  /// <summary>
+  ///   Provides read/write access to a collection of arguments.
+  /// </summary>
   public interface IArgumentCollection : ICollection, IEnumerable<object>
   {
     object this [int idx] { get; set; }

@@ -15,13 +15,24 @@
 // under the License.
 // 
 using System;
+using System.Reflection;
 using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
+  /// <summary>
+  ///   Provides facilities to change the behavior of an intercepted action.
+  /// </summary>
   public interface IInvocation
   {
+    /// <summary>
+    ///   The context in which the particular action was intercepted.
+    /// </summary>
     IInvocationContext Context { get; }
+
+    /// <summary>
+    ///   Proceed with the intercepted action.
+    /// </summary>
     void Proceed ();
   }
 }

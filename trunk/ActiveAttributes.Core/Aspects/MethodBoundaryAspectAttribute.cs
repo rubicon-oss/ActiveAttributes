@@ -14,15 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {
   /// <summary>
-  /// Provides common pointcuts for the execution of methods. This aspect provides observing functionality only.
+  ///   Provides common pointcuts for the execution of methods. This aspect provides observing functionality only.
   /// </summary>
+  [Serializable]
+  [AttributeUsage (AttributeTargets.Method)]
   public class MethodBoundaryAspectAttribute : MethodInterceptionAspectAttribute
   {
     public override sealed void OnIntercept (IInvocation invocation)
@@ -46,6 +48,22 @@ namespace ActiveAttributes.Core.Aspects
       }
     }
 
+    protected virtual void OnEntry (IReadOnlyInvocation invocationInfo)
+    {
+    }
+
+    protected virtual void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue)
+    {
+    }
+
+    protected virtual void OnException (IReadOnlyInvocation invocationInfo, Exception exception)
+    {
+    }
+
+    protected virtual void OnExit (IReadOnlyInvocation invocationInfo)
+    {
+    }
+
     private void WrapIfThrowing (Action action)
     {
       try
@@ -54,13 +72,8 @@ namespace ActiveAttributes.Core.Aspects
       }
       catch (Exception exception)
       {
-        throw new AspectInvocationException ("TODO", exception);
+        throw new AspectInvocationException ("TODO", exception); // TODO
       }
     }
-
-    protected virtual void OnEntry (IReadOnlyInvocation invocationInfo) {}
-    protected virtual void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue) { }
-    protected virtual void OnException (IReadOnlyInvocation invocationInfo, Exception exception) { }
-    protected virtual void OnExit (IReadOnlyInvocation invocationInfo) { }
   }
 }

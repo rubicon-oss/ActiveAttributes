@@ -19,6 +19,9 @@ using ActiveAttributes.Core.Contexts;
 
 namespace ActiveAttributes.Core.Invocations
 {
+  /// <summary>
+  ///   A read-only interface of <see cref="IInvocation"/> (i.e., without <see cref="IInvocation.Proceed"/> method).
+  /// </summary>
   public interface IReadOnlyInvocation
   {
     IReadOnlyInvocationContext Context { get; }

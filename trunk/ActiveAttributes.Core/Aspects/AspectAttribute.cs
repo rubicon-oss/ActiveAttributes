@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -22,15 +23,17 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Aspects
 {
-  [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+  /// <summary>
+  ///   Provides base functionality of an aspect.
+  /// </summary>
+  [AttributeUsage (AttributeTargets.All, AllowMultiple = true)]
   public abstract class AspectAttribute : Attribute, ISerializable
   {
-    protected AspectAttribute (AspectScope scope = AspectScope.Static)
+    protected AspectAttribute ()
     {
-      Scope = scope;
     }
 
-    #region ISerializable members
+    #region Serialization
 
     protected AspectAttribute (SerializationInfo info, StreamingContext context)
     {
@@ -47,15 +50,6 @@ namespace ActiveAttributes.Core.Aspects
 
     #endregion
 
-    #region IClonable members
-
-    public object Clone ()
-    {
-      return MemberwiseClone();
-    }
-
-    #endregion
-
     public AspectScope Scope { get; set; }
 
     public int Priority { get; set; }
@@ -66,6 +60,11 @@ namespace ActiveAttributes.Core.Aspects
     public virtual bool Validate (MethodInfo method)
     {
       return true;
+    }
+
+    public object Clone ()
+    {
+      return MemberwiseClone();
     }
   }
 }
