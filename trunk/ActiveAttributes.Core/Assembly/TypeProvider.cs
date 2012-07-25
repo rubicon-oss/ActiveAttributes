@@ -36,7 +36,9 @@ namespace ActiveAttributes.Core.Assembly
           {
               typeof (ActionInvocation<>),
               typeof (ActionInvocation<,>),
-              typeof (ActionInvocation<,,>)
+              typeof (ActionInvocation<,,>),
+              typeof (ActionInvocation<,,,>),
+              typeof (ActionInvocation<,,,,>)
           };
 
     private static readonly Type[] _funcInvocationOpenTypes
@@ -45,7 +47,9 @@ namespace ActiveAttributes.Core.Assembly
               null,
               typeof (FuncInvocation<,>),
               typeof (FuncInvocation<,,>),
-              typeof (FuncInvocation<,,,>)
+              typeof (FuncInvocation<,,,>),
+              typeof (FuncInvocation<,,,,>),
+              typeof (FuncInvocation<,,,,,>)
           };
 
     private static readonly Type[] _actionInvocationContextOpenTypes
@@ -53,7 +57,9 @@ namespace ActiveAttributes.Core.Assembly
           {
               typeof (ActionInvocationContext<>),
               typeof (ActionInvocationContext<,>),
-              typeof (ActionInvocationContext<,,>)
+              typeof (ActionInvocationContext<,,>),
+              typeof (ActionInvocationContext<,,,>),
+              typeof (ActionInvocationContext<,,,,>)
           };
 
     private static readonly Type[] _funcInvocationContextOpenTypes
@@ -62,7 +68,9 @@ namespace ActiveAttributes.Core.Assembly
               null,
               typeof (FuncInvocationContext<,>),
               typeof (FuncInvocationContext<,,>),
-              typeof (FuncInvocationContext<,,,>)
+              typeof (FuncInvocationContext<,,,>),
+              typeof (FuncInvocationContext<,,,,>),
+              typeof (FuncInvocationContext<,,,,,>)
           };
 
 
@@ -71,7 +79,9 @@ namespace ActiveAttributes.Core.Assembly
           {
               typeof (Action),
               typeof (Action<>),
-              typeof (Action<,>)
+              typeof (Action<,>),
+              typeof (Action<,,>),
+              typeof (Action<,,,>)
           };
 
     private static readonly Type[] _funcOpenTypes
@@ -79,7 +89,10 @@ namespace ActiveAttributes.Core.Assembly
           {
               null,
               typeof (Func<>),
-              typeof (Func<,>)
+              typeof (Func<,>),
+              typeof (Func<,,>),
+              typeof (Func<,,,>),
+              typeof (Func<,,,,>)
           };
 
 

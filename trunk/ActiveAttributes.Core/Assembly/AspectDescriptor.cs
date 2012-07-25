@@ -126,7 +126,7 @@ namespace ActiveAttributes.Core.Assembly
     public override string ToString ()
     {
       var stringBuilder = new StringBuilder();
-      stringBuilder.Append (_attribute.GetType())
+      stringBuilder.Append (_attribute.GetType().Name)
           .Append ("(");
 
       stringBuilder.Append (string.Join (", ", _customData.ConstructorArguments.Select (x => "{" + x.Value + "}").ToArray()));

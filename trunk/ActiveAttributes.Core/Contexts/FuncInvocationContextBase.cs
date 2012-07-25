@@ -24,7 +24,9 @@ namespace ActiveAttributes.Core.Contexts
 {
   public abstract class FuncInvocationContextBase<TInstance, TR> : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
   {
+    // ReSharper disable StaticFieldInGenericType
     private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocationContext));
+    // ReSharper restore StaticFieldInGenericType
 
     protected FuncInvocationContextBase (MethodInfo methodInfo, TInstance instance)
     {

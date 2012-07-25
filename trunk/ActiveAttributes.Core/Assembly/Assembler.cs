@@ -16,13 +16,9 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
-using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
@@ -36,6 +32,19 @@ namespace ActiveAttributes.Core.Assembly
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Assembler));
 
+    static Assembler ()
+    {
+      var generatorFactory = new AspectGeneratorFactory();
+      var methodCopier = new MethodCopier();
+      var aspectProvider = new AspectsProvider();
+      var methodPatcher = new MethodPatcher();
+      var constructorPatcher = new ConstructorPatcher();
+      var fieldIntroducer = new FieldIntroducer();
+      Singleton = new Assembler (aspectProvider, generatorFactory, fieldIntroducer, constructorPatcher, methodPatcher, methodCopier);
+    }
+
+    public static Assembler Singleton { get; private set; }
+
     private readonly FieldIntroducer _fieldIntroducer;
     private readonly ConstructorPatcher _constructorPatcher;
     private readonly MethodPatcher _methodPatcher;
@@ -43,16 +52,14 @@ namespace ActiveAttributes.Core.Assembly
     private readonly MethodCopier _methodCopier;
     private readonly AspectGeneratorFactory _generatorFactory;
 
-    public Assembler ()
+    private Assembler (AspectsProvider aspectProvider, AspectGeneratorFactory generatorFactory, FieldIntroducer fieldIntroducer, ConstructorPatcher constructorPatcher, MethodPatcher methodPatcher, MethodCopier methodCopier)
     {
-      LogManager.InitializeConsole (LogLevel.Debug);
-
-      _generatorFactory = new AspectGeneratorFactory ();
-      _methodCopier = new MethodCopier ();
-      _aspectProvider = new AspectsProvider ();
-      _methodPatcher = new MethodPatcher ();
-      _constructorPatcher = new ConstructorPatcher ();
-      _fieldIntroducer = new FieldIntroducer ();
+      _fieldIntroducer = fieldIntroducer;
+      _constructorPatcher = constructorPatcher;
+      _methodPatcher = methodPatcher;
+      _aspectProvider = aspectProvider;
+      _methodCopier = methodCopier;
+      _generatorFactory = generatorFactory;
     }
 
     public void ModifyType (MutableType mutableType)
@@ -77,19 +84,16 @@ namespace ActiveAttributes.Core.Assembly
       // TODO: Use GetMethods instead of AllMutableMethods. Use the MethodInfo (not MutableMethodInfo) to detect aspects on the methods. If there are aspects,
       // TODO: use GetMutableMethod to get the mutable method. If this throws an exception, wrap with a sensible ActiveAttributes configuration exception.
       // TODO: Then check MutableMethodInfo.CanSetBody, also throw a configuration exception if it is false.
-      foreach (var mutableMethod in mutableType.AllMutableMethods.ToList ())
+      var mutableMethodInfos = mutableType.AllMutableMethods.ToList ();
+      foreach (var mutableMethod in mutableMethodInfos)
       {
         var methodLevelAspectDescriptors = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo).ToList();
 
-        if (mutableMethod.UnderlyingSystemMethodInfo.IsCompilerGenerated ())
+        var propertyInfo = mutableMethod.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo();
+        if (propertyInfo != null)
         {
-          var propertyName = mutableMethod.Name.Substring (4);
-          var propertyInfo = mutableType.UnderlyingSystemType.GetProperty (propertyName, BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
-          if (propertyInfo != null)
-          {
-            var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (propertyInfo);
-            methodLevelAspectDescriptors.AddRange (propertyLevelAspects);
-          }
+          var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (propertyInfo);
+          methodLevelAspectDescriptors.AddRange (propertyLevelAspects);
         }
 
         var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
@@ -120,13 +124,13 @@ namespace ActiveAttributes.Core.Assembly
 
           _methodPatcher.AddMethodInterception (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators);
 
-          s_log.InfoFormat ("Mutated method '{0}' to be intercepted with:", mutableMethod);
+          s_log.InfoFormat ("Intercepting method '{0}' with:", mutableMethod);
           foreach (var aspect in allMatchingAspectGenerators)
             s_log.InfoFormat (" - {0}", aspect.Descriptor);
         }
         else
         {
-          s_log.InfoFormat ("Skipped method '{0}' that was not marked with any aspects.", mutableMethod);
+          s_log.DebugFormat ("Skipping unmarked method '{0}'.", mutableMethod);
         }
       }
     }

@@ -62,15 +62,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
     }
 
-    [Test]
-    public void GetDelegateType_AddInstanceType ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.MixedMethod ("a", 1)));
-      var result = methodInfo.GetDelegateType (methodInfo.DeclaringType);
-
-      Assert.That (result, Is.EqualTo (typeof (Func<DomainType, string, int, object>)));
-    }
-
     public class DomainType
     {
       public void SimpleMethod () { }

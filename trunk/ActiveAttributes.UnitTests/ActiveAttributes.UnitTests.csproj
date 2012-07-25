@@ -88,7 +88,7 @@
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\StaticAspectGeneratorTest.cs" />
-    <Compile Include="Assembly\TypeExtensions.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MemberInfoExtensionsTest.cs" />

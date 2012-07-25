@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly FieldIntroducer.Data _fieldData;
     private readonly IEnumerable<IAspectDescriptor> _aspects;
 
-    private TypeProvider _typeProvider;
+    private ITypeProvider _typeProvider;
 
     private readonly MethodInfo _onInterceptMethodInfo;
     private readonly MethodInfo _onInterceptGetMethodInfo;
@@ -65,7 +65,7 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects, TypeProvider typeProvider)
+    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects, ITypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
       _fieldData = fieldData;

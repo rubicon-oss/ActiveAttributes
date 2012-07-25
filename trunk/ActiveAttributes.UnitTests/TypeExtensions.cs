@@ -14,9 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests
 {
   public static class TypeExtensions
   {

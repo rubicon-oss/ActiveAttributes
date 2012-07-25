@@ -54,8 +54,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     public override void SetUp ()
     {
       base.SetUp ();
-      
-      _patcher = new MethodPatcher ();
+
+      _patcher = new MethodPatcher();
 
       _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
       _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
@@ -290,6 +290,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ContainsInvocationContextCreateWithArgs ()
     {
+
+
       Action<MutableMethodInfo, FieldInfo, FieldInfo> test =
           (mutableMethod, methodInfoField, delegateField) =>
           {
@@ -344,8 +346,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.MethodWithArgs ("a", 1)));
       PatchAndTest<DomainType2> (methodInfo, _twoGenerators, test);
     }
-
-
 
 
 

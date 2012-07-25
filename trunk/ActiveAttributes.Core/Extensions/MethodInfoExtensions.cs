@@ -38,19 +38,6 @@ namespace ActiveAttributes.Core.Extensions
       return _relatedMethodFinder.GetBaseMethod (methodInfo);
     }
 
-    public static Type GetDelegateType (this MethodInfo methodInfo, Type instanceType = null)
-    {
-      var instanceType2 = instanceType != null
-                              ? new[] { instanceType }
-                              : new Type[0];
-
-      var parameterTypes = methodInfo.GetParameters ().Select (x => x.ParameterType);
-      var returnType = new[] { methodInfo.ReturnType };
-
-      var delegateTypes = instanceType2.Concat (parameterTypes).Concat (returnType).ToArray ();
-      return Expression.GetDelegateType (delegateTypes);
-    }
-
     public static Type GetDelegateType (this MethodInfo methodInfo)
     {
       var parameterTypes = methodInfo.GetParameters ().Select (x => x.ParameterType);
@@ -60,6 +47,12 @@ namespace ActiveAttributes.Core.Extensions
       return Expression.GetDelegateType (delegateTypes);
     }
 
-
+    public static PropertyInfo GetRelatedPropertyInfo (this MethodInfo methodInfo)
+    {
+      var propertyName = methodInfo.Name.Substring (4);
+      var propertyInfo = methodInfo.DeclaringType.GetProperty (
+          propertyName, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+      return propertyInfo;
+    }
   }
 }

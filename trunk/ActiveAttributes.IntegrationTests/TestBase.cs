@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Logging;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
@@ -53,6 +54,8 @@ namespace ActiveAttributes.IntegrationTests
     [SetUp]
     public virtual void SetUp ()
     {
+      LogManager.InitializeConsole (LogLevel.Debug);
+
       _shouldDeleteGeneratedFiles = true;
       _generatedFileName = null;
     }
