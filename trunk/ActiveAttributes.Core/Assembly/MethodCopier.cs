@@ -5,6 +5,7 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
