@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
@@ -40,10 +41,6 @@ namespace ActiveAttributes.UnitTests.Assembly
   {
     private AspectsProvider _provider;
 
-    public AspectsProviderTest ()
-    {
-      _provider = new AspectsProvider();
-    }
     [SetUp]
     public void SetUp ()
     {
@@ -431,6 +428,80 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       public override string Property { get; set; }
     }
+
+    [Test]
+    public void GetMethodLevelAspectsIncludingInterfaces ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((ClassWithInterfaceAspect obj) => obj.Method ());
+      var method2 = typeof (IDomainInterface).GetMethod ("Method", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+      var map = typeof (ClassWithInterfaceAspect).GetInterfaceMap (typeof (IDomainBase));
+
+
+      var result = _provider.GetMethodLevelAspects (method).ToArray ();
+
+      //var interfaces = method.DeclaringType.GetInterfaces();
+
+      //Assert.That (interfaces, Has.Length.EqualTo (1));
+
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+
+    public interface IDomainBase
+    {
+      void Method2 ();
+    }
+
+    public class Class21 : IDomainBase
+    {
+      public void Method2 ()
+      {
+        throw new NotImplementedException();
+      }
+    }
+
+    public interface IDomainInterface
+    {
+      [DomainAspect]
+      void Method ();
+
+      string Property { get; set; }
+    }
+
+    public class ClassWithInterfaceAspect : Class21, IDomainInterface
+    {
+      public void Method ()
+      {
+      }
+
+      public string Property
+      {
+        get { throw new NotImplementedException(); }
+        set { throw new NotImplementedException(); }
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -78,6 +79,22 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (method, getParent, whileCondition);
     }
 
+    //public IEnumerable<IAspectDescriptor> GetMethodLevelInterfaceAspects (MethodInfo method)
+    //{
+    //  var ifaces = method.DeclaringType.GetInterfaces();
+    //  foreach (var iface in ifaces)
+    //  {
+    //    var map = method.DeclaringType.GetInterfaceMap (iface);
+    //    var zipped = map.TargetMethods.Zip (map.InterfaceMethods, (TargetMember, InterfaceMember) => new { TargetMember, InterfaceMember });
+    //    foreach (var item in zipped)
+    //    {
+    //      if (item.TargetMember.GetBaseDefinition () != method)
+    //        continue;
+
+    //    }
+    //  }
+    //}
+
     private IEnumerable<IAspectDescriptor> GetAspects (
         MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)
     {
@@ -90,6 +107,7 @@ namespace ActiveAttributes.Core.Assembly
         var customAttributeDatas = CustomAttributeData.GetCustomAttributes (it)
             .Where (x => x.IsAspectAttribute ())
             .Where (x => !isBaseType || x.IsInheriting ());
+
         aspectsData.AddRange (customAttributeDatas);
 
         it = getParent (it);
@@ -117,8 +135,6 @@ namespace ActiveAttributes.Core.Assembly
           .Select (x => new AspectDescriptor (x))
           .Cast<IAspectDescriptor>()
           .Where (x => x.Matches (methodInfo));
-          //.Where (x => ShouldApply (x, methodInfo));
-
 
       return aspects;
     }
@@ -146,9 +162,6 @@ namespace ActiveAttributes.Core.Assembly
           .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
           .Where (x => !isBaseType || x.IsInheriting());
     }
-
-
-
 
     private IEnumerable<CustomAttributeData> GetPropertyLevelAspects (MethodInfo methodInfo)
     {
