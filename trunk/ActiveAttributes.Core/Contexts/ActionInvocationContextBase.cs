@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-using ActiveAttributes.Core.Contexts.ArgumentCollection;
-
 namespace ActiveAttributes.Core.Contexts
 {
   public abstract class ActionInvocationContextBase<TInstance> : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
