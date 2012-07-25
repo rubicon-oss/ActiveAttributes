@@ -62,12 +62,11 @@
     <Compile Include="AspectScopeTest.cs" />
     <Compile Include="CachingAspectTest.cs" />
     <Compile Include="MethodBoundaryTest.cs" />
-    <Compile Include="InterceptionTest.cs" />
+    <Compile Include="ProceedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnValueManipulationTest.cs" />
+    <Compile Include="ReturnManipulationTest.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="TraceAspectTest.cs" />
     <Compile Include="TypedAspectTest.cs" />
   </ItemGroup>
   <ItemGroup>

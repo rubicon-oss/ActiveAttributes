@@ -16,13 +16,11 @@
 // 
 
 using System;
-using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -35,6 +33,8 @@ namespace ActiveAttributes.IntegrationTests
     [SetUp]
     public void SetUp ()
     {
+      base.SetUp();
+
       var type = AssembleType<DomainType> (new Assembler().ModifyType);
       _instance1 = (DomainType) Activator.CreateInstance (type);
       _instance2 = (DomainType) Activator.CreateInstance (type);
@@ -46,9 +46,6 @@ namespace ActiveAttributes.IntegrationTests
       var guid1 = _instance1.InstanceMethod ();
       var guid2 = _instance2.InstanceMethod ();
 
-      Assert.That (guid1, Is.Not.EqualTo (Guid.Empty));
-      Assert.That (guid2, Is.Not.EqualTo (Guid.Empty));
-
       Assert.That (guid1, Is.Not.EqualTo (guid2));
     }
 
@@ -57,9 +54,6 @@ namespace ActiveAttributes.IntegrationTests
     {
       var guid1 = _instance1.StaticMethod ();
       var guid2 = _instance2.StaticMethod ();
-
-      Assert.That (guid1, Is.Not.EqualTo (Guid.Empty));
-      Assert.That (guid2, Is.Not.EqualTo (Guid.Empty));
 
       Assert.That (guid1, Is.EqualTo (guid2));
     }

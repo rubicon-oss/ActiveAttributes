@@ -15,44 +15,47 @@
 // under the License.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
-using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
-
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class CachingAspectTest
+  public class CachingAspectTest : TestBase
   {
+    private DomainType _instance;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      base.SetUp ();
+
+      var type = AssembleType<DomainType> (new Assembler ().ModifyType);
+      _instance = (DomainType) Activator.CreateInstance (type);
+    }
+
     [Test]
     public void Cache ()
     {
       var input = "a";
 
-      var instance = ObjectFactory.Create<DomainType>();
-      var result1 = instance.Method (input);
-      var result2 = instance.Method (input);
+      var result1 = _instance.Method (input);
+      var result2 = _instance.Method (input);
 
-      Assert.AreEqual (instance.MethodExecutionCounter, 1);
-      Assert.AreEqual (result1, result2);
-
-      // TODO: Move to utility
-      //var assemblyFileName = instance.GetType ().Module.ScopeName;
-      //((AssemblyBuilder) instance.GetType().Assembly).Save (assemblyFileName);
+      Assert.That (_instance.MethodExecutionCounter, Is.EqualTo (1));
+      Assert.That (result1, Is.EqualTo (result2));
     }
 
     public class DomainType
     {
       public int MethodExecutionCounter { get; private set; }
 
-      [CacheAspect("test")]
-      [CacheAspect("test")]
+      [CacheAspect]
       public virtual string Method (string arg)
       {
         MethodExecutionCounter++;
@@ -62,26 +65,59 @@ namespace ActiveAttributes.IntegrationTests
 
     public class CacheAspectAttribute : MethodInterceptionAspectAttribute
     {
-      public string Arg { get; set; }
-      private object _key;
-      private object _value;
+      private readonly ICache _cache;
 
-      public CacheAspectAttribute (string arg)
+      public CacheAspectAttribute ()
       {
-        Arg = arg;
+        _cache = new SimpleCache();
       }
 
       public override void OnIntercept (IInvocation invocation)
       {
-        var context = invocation.Context;
-        if (_key != context.Arguments[0])
+        var ctx = invocation.Context;
+        var key = _cache.GenerateKey (ctx);
+        if (!_cache.Contains (key))
         {
-          invocation.Proceed();
-          _key = context.Arguments[0];
-          _value = context.ReturnValue;
+          invocation.Proceed ();
+          _cache[key] = ctx.ReturnValue;
         }
         else
-          context.ReturnValue = _value;
+        {
+          ctx.ReturnValue = _cache[key];
+        }
+      }
+    }
+
+    public interface ICache
+    {
+      object GenerateKey (IInvocationContext ctx);
+      bool Contains (object key);
+      object this [object key] { get; set; }
+    }
+
+    public class SimpleCache : ICache
+    {
+      private readonly IDictionary<object, object> _dictionary;
+
+      public SimpleCache ()
+      {
+        _dictionary = new Dictionary<object, object>();
+      }
+
+      public object GenerateKey (IInvocationContext ctx)
+      {
+        return ctx.Arguments.Aggregate (ctx.MethodInfo.GetHashCode(), (current, arg) => current ^ arg.GetHashCode());
+      }
+
+      public object this [object key]
+      {
+        get { return _dictionary[key]; }
+        set { _dictionary[key] = value; }
+      }
+
+      public bool Contains (object key)
+      {
+        return _dictionary.ContainsKey (key);
       }
     }
   }

@@ -16,7 +16,6 @@
 // 
 
 using System;
-using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
@@ -25,7 +24,7 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ArgumentManipulationTest : TestBase
+  public class ReturnManipulationTest : TestBase
   {
     private DomainType _instance;
 
@@ -39,31 +38,63 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    public void IncrementArguments ()
+    public void ReturnNullReferenceType ()
     {
-      var a = 10;
-      var b = 20;
-      var actual = _instance.Multiply (a, b);
-      var expected = (a + 1) * (b + 1);
+      var result = _instance.Method1 ();
 
-      Assert.That (actual, Is.EqualTo (expected));
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException(typeof(NullReferenceException))]
+    public void ReturnNullValueType ()
+    {
+      // TODO: is this behavior really expected?
+      _instance.Method2 ();
+    }
+
+    [Test]
+    public void ReturnTenReferenceType ()
+    {
+      var result = _instance.Method3 ();
+
+      Assert.That (result, Is.EqualTo (10));
     }
 
     public class DomainType
     {
-      [IncrementArgumentsAspect]
-      public virtual int Multiply (int a, int b) { return a * b; }
+      [ReturnNullAspect]
+      public virtual string Method1 ()
+      {
+        return "abc";
+      }
+
+      [ReturnNullAspect]
+      public virtual int Method2 ()
+      {
+        return 1;
+      }
+
+      [ReturnTenAspect]
+      public virtual int Method3 ()
+      {
+        return 1;
+      }
     }
 
-    public class IncrementArgumentsAspectAttribute : MethodInterceptionAspectAttribute
+    public class ReturnNullAspectAttribute : MethodInterceptionAspectAttribute
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        var arguments = invocation.Context.Arguments;
-        for (var i = 0; i < arguments.Count; i++)
-          arguments[i] = (int) arguments[i] + 1;
+        invocation.Context.ReturnValue = null;
+      }
+    }
 
-        invocation.Proceed();
+    public class ReturnTenAspectAttribute : MethodInterceptionAspectAttribute
+    {
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Context.ReturnValue = 10;
       }
     }
   }

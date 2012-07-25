@@ -18,6 +18,7 @@
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
 using NLog;
 using NLog.Config;
@@ -48,7 +49,8 @@ namespace ActiveAttributes.IntegrationTests
       LogManager.Configuration.Reload ();
       LogManager.ReconfigExistingLoggers ();
 
-      _instance = ObjectFactory.Create<DomainType> ();
+      var type = AssembleType<DomainType> (new Assembler ().ModifyType);
+      _instance = (DomainType) Activator.CreateInstance (type);
     }
 
     [Test]
