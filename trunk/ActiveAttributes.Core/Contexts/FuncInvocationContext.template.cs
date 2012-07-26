@@ -4,7 +4,7 @@ using Remotion.Logging;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  // @begin-template first=1 template=1 generate=0..15 suppressTemplate=true
+  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
   public class FuncInvocationContext<TInstance, TA1, TR> : FuncInvocationContextBase<TInstance, TR>
@@ -50,7 +50,7 @@ namespace ActiveAttributes.Core.Contexts
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: Arg1 = (TA1) value; s_log.DebugFormat ("Set 'Arg1' of method '{0}' to '{1}'.", MethodInfo, value); break;
+          case 1: Arg1 = (TA1) value; s_log.DebugFormat ("Set 'Arg1' of method '{0}' to '{2}'.", MethodInfo, null, value); break;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }

@@ -20,7 +20,7 @@ using Remotion;
 
 namespace ActiveAttributes.Core.Invocations
 {
-  // @begin-template first=1 template=1 generate=0..15 suppressTemplate=true
+  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
   // @replace ", TA<n>"
   // @replace "TA<n>, "
   // @replace "_context.Arg<n>" ", "
