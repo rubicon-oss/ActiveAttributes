@@ -151,6 +151,21 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
     }
 
+    [Test]
+    public void IntroduceAssemblyLevelAspects_Instance ()
+    {
+      var mutableAssembly = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+      var result = _introducer.IntroduceAssemblyLevelFields (mutableAssembly);
+
+      var fieldInfo = mutableAssembly.AddedFields.First (x => x.Name == "_m_AssemblyLevel_InstanceAspects");
+
+      Assert.That (fieldInfo, Is.Not.Null);
+      Assert.That (fieldInfo, Is.EqualTo (result.InstanceAspectsField));
+      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
+      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
+    }
+
+
     public class DomainType
     {
       public void Method () { }

@@ -32,6 +32,14 @@ namespace ActiveAttributes.Core.Assembly
     private const string c_instancePrefix = "_m_";
     private const string c_staticPrefix = "_s_";
 
+    public Data IntroduceAssemblyLevelFields (MutableType mutableType)
+    {
+      var instanceAspectFieldName = c_instancePrefix + "AssemblyLevel_InstanceAspects";
+      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectFieldName);
+
+      return new Data { InstanceAspectsField = instanceAspectsField };
+    }
+
     public Data IntroduceTypeLevelFields (MutableType mutableType)
     {
       var instanceAspectsFieldName = c_instancePrefix + "TypeLevel_InstanceAspects";
