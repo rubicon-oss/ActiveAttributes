@@ -14,17 +14,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
+using System.Reflection;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface IAspectGenerator
+  public class StaticArrayAccessor : IArrayAccessor
   {
-    IAspectDescriptor Descriptor { get; }
+    private readonly MemberExpression _accessExpression;
 
-    Expression GetStorageExpression (Expression thisExpression);
-    Expression GetInitExpression ();
+    public StaticArrayAccessor (FieldInfo fieldInfo)
+    {
+      _accessExpression = Expression.Field (null, fieldInfo);
+    }
+
+    public Expression GetAccessExpression (Expression thisExpression)
+    {
+      return _accessExpression;
+    }
   }
 }

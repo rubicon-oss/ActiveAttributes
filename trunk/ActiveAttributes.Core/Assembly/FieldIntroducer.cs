@@ -36,7 +36,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       var instanceAspectFieldName = c_instancePrefix + "AssemblyLevel_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectFieldName);
-
+      
       return new Data { InstanceAspectsField = instanceAspectsField };
     }
 

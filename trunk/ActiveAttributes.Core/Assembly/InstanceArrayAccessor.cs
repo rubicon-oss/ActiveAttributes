@@ -17,24 +17,21 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class StaticAspectGenerator : AspectGeneratorBase
+  public class InstanceArrayAccessor : IArrayAccessor
   {
-    public StaticAspectGenerator (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
-        : base (fieldInfo, index, descriptor)
+    private readonly FieldInfo _fieldInfo;
+
+    public InstanceArrayAccessor (FieldInfo fieldInfo)
     {
-      ArgumentUtility.CheckNotNull ("fieldInfo", fieldInfo);
+      _fieldInfo = fieldInfo;
     }
 
-    public override Expression GetStorageExpression (Expression thisExpression)
+    public Expression GetAccessExpression (Expression thisExpression)
     {
-      var field = Expression.Field (null, FieldInfo);
-      var index = Expression.Constant (Index);
-
-      return Expression.ArrayAccess (field, index);
+      return Expression.Field (thisExpression, _fieldInfo);
     }
   }
 }

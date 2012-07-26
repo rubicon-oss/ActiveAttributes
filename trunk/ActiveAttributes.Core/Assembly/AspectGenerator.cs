@@ -25,24 +25,58 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public abstract class AspectGeneratorBase : IAspectGenerator
+  public interface IAspectGenerator
   {
-    protected readonly FieldInfo FieldInfo;
-    protected readonly int Index;
+    IAspectDescriptor Descriptor { get; }
+    Expression GetStorageExpression (Expression thisExpression);
+    Expression GetInitExpression ();
+  }
 
-    protected AspectGeneratorBase (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
+  public class AspectGenerator : IAspectGenerator
+  {
+    private static Expression ConvertTypedArgumentToExpression (CustomAttributeTypedArgument typedArgument)
     {
-      ArgumentUtility.CheckNotNull ("index", index);
+      return typedArgument.ConvertTo (CreateElement, CreateArray);
+    }
+
+    private static MemberBinding GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
+    {
+      var constantExpression = ConvertTypedArgumentToExpression (namedArgument.TypedValue);
+      var bindingExpression = Expression.Bind (namedArgument.MemberInfo, constantExpression);
+      return bindingExpression;
+    }
+
+    private static Expression CreateElement (Type type, object obj)
+    {
+      return Expression.Convert (Expression.Constant (obj), type);
+    }
+
+    private static Expression CreateArray (Type type, IEnumerable<Expression> objs)
+    {
+      return Expression.NewArrayInit (type, objs);
+    }
+
+    private readonly IArrayAccessor _arrayAccessor;
+    private readonly int _index;
+
+    public AspectGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor descriptor)
+    {
+      ArgumentUtility.CheckNotNull ("arrayAccessor", arrayAccessor);
       ArgumentUtility.CheckNotNull ("descriptor", descriptor);
 
-      FieldInfo = fieldInfo;
-      Index = index;
+      _arrayAccessor = arrayAccessor;
+      _index = index;
       Descriptor = descriptor;
     }
 
-    public abstract Expression GetStorageExpression (Expression thisExpression);
-
     public IAspectDescriptor Descriptor { get; private set; }
+
+    public Expression GetStorageExpression (Expression thisExpression)
+    {
+      var array = _arrayAccessor.GetAccessExpression (thisExpression);
+      var index = Expression.Constant (_index);
+      return Expression.ArrayAccess (array, index);
+    }
 
     public Expression GetInitExpression ()
     {
@@ -58,27 +92,5 @@ namespace ActiveAttributes.Core.Assembly
 
       return initExpression;
     }
-
-    private static Expression ConvertTypedArgumentToExpression (CustomAttributeTypedArgument typedArgument)
-    {
-      return typedArgument.ConvertTo (CreateElement, CreateArray);
-    }
-
-    private static MemberBinding GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
-    {
-      var constantExpression = ConvertTypedArgumentToExpression (namedArgument.TypedValue);
-      var bindingExpression = Expression.Bind (namedArgument.MemberInfo, constantExpression);
-      return bindingExpression;
-    }
-    private static Expression CreateElement (Type type, object obj)
-    {
-      return Expression.Convert (Expression.Constant (obj), type);
-    }
-
-    private static Expression CreateArray (Type type, IEnumerable<Expression> objs)
-    {
-      return Expression.NewArrayInit (type, objs);
-    }
-
   }
 }

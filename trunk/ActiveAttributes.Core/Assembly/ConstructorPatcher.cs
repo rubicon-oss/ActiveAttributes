@@ -82,8 +82,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public void AddAspectInitialization (
         MutableType mutableType,
-        FieldInfo staticAspectsFieldInfo,
-        FieldInfo instanceAspectsFieldInfo,
+        IArrayAccessor staticAspectsFieldInfo,
+        IArrayAccessor instanceAspectsFieldInfo,
         IEnumerable<IAspectGenerator> staticAspects,
         IEnumerable<IAspectGenerator> instanceAspects)
     {
@@ -95,22 +95,23 @@ namespace ActiveAttributes.Core.Assembly
       AddMutation (mutableType, mutation);
     }
 
-    private Expression GetInstanceAspectsArrayAssignExpression (FieldInfo fieldInfo, BodyContextBase ctx, IEnumerable<IAspectGenerator> aspects)
+    private Expression GetInstanceAspectsArrayAssignExpression (IArrayAccessor fieldInfo, BodyContextBase ctx, IEnumerable<IAspectGenerator> aspects)
     {
-      var instanceAspectsField = Expression.Field (ctx.This, fieldInfo);
+      var instanceAspectsField = fieldInfo.GetAccessExpression (ctx.This);
       var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
       var instanceAspectsAssign = Expression.Assign (instanceAspectsField, instanceAspectsArray);
       return instanceAspectsAssign;
     }
 
-    private Expression GetStaticAspectsArrayAssignExpression (FieldInfo fieldInfo, IEnumerable<IAspectGenerator> aspects)
+    private Expression GetStaticAspectsArrayAssignExpression (IArrayAccessor fieldInfo, IEnumerable<IAspectGenerator> aspects)
     {
-      var staticAspectsField = Expression.Field (null, fieldInfo);
+      var staticAspectsField = fieldInfo.GetAccessExpression (null);
       var staticAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
       var staticAspectsAssign = Expression.Assign (staticAspectsField, staticAspectsArray);
       var staticAspectsIfNull = Expression.IfThen(
         Expression.Equal(staticAspectsField, Expression.Constant(null)),
         staticAspectsAssign);
+      
       return staticAspectsIfNull;
     }
 

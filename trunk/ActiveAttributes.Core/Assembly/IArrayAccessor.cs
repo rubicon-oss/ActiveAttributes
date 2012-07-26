@@ -15,26 +15,12 @@
 // under the License.
 // 
 using System;
-using System.Reflection;
 using Microsoft.Scripting.Ast;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class InstanceAspectGenerator : AspectGeneratorBase
+  public interface IArrayAccessor
   {
-    public InstanceAspectGenerator (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
-        : base (fieldInfo, index, descriptor)
-    {
-      ArgumentUtility.CheckNotNull ("fieldInfo", fieldInfo);
-    }
-
-    public override Expression GetStorageExpression (Expression thisExpression)
-    {
-      var field = Expression.Field (thisExpression, FieldInfo);
-      var index = Expression.Constant (Index);
-
-      return Expression.ArrayAccess (field, index);
-    }
+    Expression GetAccessExpression (Expression thisExpression);
   }
 }

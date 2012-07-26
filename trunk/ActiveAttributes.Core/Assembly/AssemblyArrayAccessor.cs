@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,34 +14,28 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
+using System;
 using System.Linq;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class AssemblyAspectGenerator : AspectGeneratorBase
+  public class AssemblyArrayAccessor : IArrayAccessor
   {
-    private readonly System.Reflection.Assembly _assembly;
+    private readonly Expression _accessExpression;
 
-    public AssemblyAspectGenerator (System.Reflection.Assembly assembly, int index, IAspectDescriptor descriptor)
-        : base(null, index, descriptor)
+    public AssemblyArrayAccessor (System.Reflection.Assembly assembly)
     {
-      _assembly = assembly;
-    }
-
-    public override Expression GetStorageExpression (Expression thisExpression)
-    {
-      var dictionaryPropertyInfo = typeof (AssemblyAspectManager).GetProperties().Single();
+      var dictionaryPropertyInfo = typeof (AssemblyAspectManager).GetProperties ().Single ();
       var dictionary = Expression.Property (null, dictionaryPropertyInfo);
 
-      var assembly = Expression.Constant (_assembly);
-      var array = Expression.Property (dictionary, "Item", assembly);
+      var assemblyConst = Expression.Constant(assembly);
+      _accessExpression = Expression.Property (dictionary, "Item", assemblyConst);
+    }
 
-      var index = Expression.Constant (Index);
-      var access = Expression.ArrayAccess (array, index);
-
-      return access;
+    public Expression GetAccessExpression (Expression thisExpression)
+    {
+      return _accessExpression;
     }
   }
 }

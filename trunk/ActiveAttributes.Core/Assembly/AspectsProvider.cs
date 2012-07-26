@@ -19,18 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
-using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Provides all aspects (including inherited) applied to a method.
+  ///   Provides all aspects (including inherited) applied to a method.
   /// </summary>
   public class AspectsProvider
   {
@@ -63,7 +61,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      Func<MemberInfo, MemberInfo> getParent = memberInfo => ((PropertyInfo) memberInfo).GetOverridenProperty ();
+      Func<MemberInfo, MemberInfo> getParent = memberInfo => ((PropertyInfo) memberInfo).GetOverridenProperty();
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
 
       return GetAspects (propertyInfo, getParent, whileCondition);
@@ -81,7 +79,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo method)
     {
-      var ifaces = method.DeclaringType.GetInterfaces ();
+      var ifaces = method.DeclaringType.GetInterfaces();
       foreach (var iface in ifaces)
       {
         var map = method.DeclaringType.GetInterfaceMap (iface);
@@ -99,27 +97,6 @@ namespace ActiveAttributes.Core.Assembly
       return Enumerable.Empty<IAspectDescriptor>();
     }
 
-    private IEnumerable<IAspectDescriptor> GetAspects (
-        MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)
-    {
-      var aspectsData = new List<CustomAttributeData>();
-      var it = member;
-
-      while (whileCondition(it))
-      {
-        var isBaseType = it != member;
-        var customAttributeDatas = CustomAttributeData.GetCustomAttributes (it)
-            .Where (x => x.IsAspectAttribute ())
-            .Where (x => !isBaseType || x.IsInheriting ());
-
-        aspectsData.AddRange (customAttributeDatas);
-
-        it = getParent (it);
-      }
-
-      return aspectsData.Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor> ();
-    }
-
     // TODO: support aspects on interfaces?
     public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo methodInfo)
     {
@@ -127,11 +104,11 @@ namespace ActiveAttributes.Core.Assembly
       if (methodInfo is MutableMethodInfo)
         methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
 
-      var customAttributeDatas = new List<CustomAttributeData> ();
+      var customAttributeDatas = new List<CustomAttributeData>();
       var iteratingMethodInfo = methodInfo;
       do
       {
-        var isBaseType = !iteratingMethodInfo.Equals(methodInfo);
+        var isBaseType = !iteratingMethodInfo.Equals (methodInfo);
         customAttributeDatas.AddRange (GetAspects (iteratingMethodInfo, isBaseType));
       } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
 
@@ -143,16 +120,37 @@ namespace ActiveAttributes.Core.Assembly
       return aspects;
     }
 
+    private IEnumerable<IAspectDescriptor> GetAspects (
+        MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)
+    {
+      var aspectsData = new List<CustomAttributeData>();
+      var it = member;
+
+      while (whileCondition (it))
+      {
+        var isBaseType = it != member;
+        var customAttributeDatas = CustomAttributeData.GetCustomAttributes (it)
+            .Where (x => x.IsAspectAttribute())
+            .Where (x => !isBaseType || x.IsInheriting());
+
+        aspectsData.AddRange (customAttributeDatas);
+
+        it = getParent (it);
+      }
+
+      return aspectsData.Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
+    }
+
     private IEnumerable<CustomAttributeData> GetAspects (MethodInfo methodInfo, bool isBaseType)
     {
-      var customAttributeDatas = new List<CustomAttributeData> ();
+      var customAttributeDatas = new List<CustomAttributeData>();
 
       var methodLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo);
       customAttributeDatas.AddRange (methodLevelAspects);
 
-      if (methodInfo.IsCompilerGenerated ())
+      if (methodInfo.IsCompilerGenerated())
       {
-        var propertyLevelAspects = GetPropertyLevelAspects(methodInfo);
+        var propertyLevelAspects = GetPropertyLevelAspects (methodInfo);
         customAttributeDatas.AddRange (propertyLevelAspects);
       }
 
