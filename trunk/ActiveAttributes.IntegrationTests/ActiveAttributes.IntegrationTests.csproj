@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="ArgumentManipulationTest.cs" />
     <Compile Include="AspectScopeTest.cs" />
+    <Compile Include="AssemblyAspectTest.cs" />
     <Compile Include="CachingAspectTest.cs" />
     <Compile Include="InterfaceAspectsTest.cs" />
     <Compile Include="MethodBoundaryTest.cs" />

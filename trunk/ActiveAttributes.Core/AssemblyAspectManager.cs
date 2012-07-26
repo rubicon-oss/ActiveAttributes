@@ -24,9 +24,9 @@ namespace ActiveAttributes.Core
   {
     static AssemblyAspectManager ()
     {
-      Aspects = new Dictionary<System.Reflection.Assembly, AspectAttribute[]>();
+      Aspects = new Dictionary<string, AspectAttribute[]>();
     }
 
-    public static IDictionary<System.Reflection.Assembly, AspectAttribute[]> Aspects { get; private set; }
+    public static IDictionary<string, AspectAttribute[]> Aspects { get; private set; }
   }
 }

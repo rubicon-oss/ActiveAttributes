@@ -29,8 +29,8 @@ namespace ActiveAttributes.Core.Assembly
       var dictionaryPropertyInfo = typeof (AssemblyAspectManager).GetProperties ().Single ();
       var dictionary = Expression.Property (null, dictionaryPropertyInfo);
 
-      var assemblyConst = Expression.Constant(assembly);
-      _accessExpression = Expression.Property (dictionary, "Item", assemblyConst);
+      var assemblyFullName = Expression.Constant(assembly.FullName);
+      _accessExpression = Expression.Property (dictionary, "Item", assemblyFullName);
     }
 
     public Expression GetAccessExpression (Expression thisExpression)

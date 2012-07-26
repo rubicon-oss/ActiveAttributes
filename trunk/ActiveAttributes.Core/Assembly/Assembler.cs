@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.Logging;
@@ -78,17 +79,19 @@ namespace ActiveAttributes.Core.Assembly
       var assemblyLevelAspectDescriptors = _aspectProvider.GetAssemblyLevelAspects (assembly).ToList();
       var assemblyFieldData = _fieldIntroducer.IntroduceAssemblyLevelFields (mutableType);
 
-      var instanceAssemblyLevelField = assemblyFieldData.InstanceAspectsField;
+      var instanceAssemblyLevelArrayAccessor = new InstanceArrayAccessor (assemblyFieldData.InstanceAspectsField);
+      var staticAssemblyLevelArrayAccessor = new AssemblyArrayAccessor (assembly);
 
-      // create generators
-      //var instanceAssemblyLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
-      //    assemblyLevelAspectDescriptors, AspectScope.Instance, instanceAssemblyLevelField).ToList ();
-      //var staticAssemblyLevelAspectGenerators = _generatorFactory.GetAspectGenerators (
-      //    assemblyLevelAspectDescriptors, assembly);
+      var instanceAssemblyLevelAspectGenerators =
+          GetGenerators (instanceAssemblyLevelArrayAccessor, assemblyLevelAspectDescriptors, AspectScope.Instance).ToList();
+      var staticAssemblyLevelAspectGenerators =
+          GetGenerators (staticAssemblyLevelArrayAccessor, assemblyLevelAspectDescriptors, AspectScope.Static).ToList();
 
-      // add initialization
-      //_constructorPatcher.AddAspectInitialization()
+      if (!AssemblyAspectManager.Aspects.ContainsKey (assembly.FullName))
+        AssemblyAspectManager.Aspects[assembly.FullName] = new AspectAttribute[0];
 
+      _constructorPatcher.AddAspectInitialization(mutableType, staticAssemblyLevelArrayAccessor, instanceAssemblyLevelArrayAccessor,
+        staticAssemblyLevelAspectGenerators, instanceAssemblyLevelAspectGenerators);
 
       // TYPE LEVEL ASPECTS
 
@@ -102,8 +105,6 @@ namespace ActiveAttributes.Core.Assembly
       // create generators
       var instanceTypeLevelAspectGenerators = GetGenerators (instanceTypeLevelArrayAccessor, typeLevelAspectDescriptors, AspectScope.Instance).ToList();
       var staticTypeLevelAspectGenerators = GetGenerators (staticTypeLevelArrayAccessor, typeLevelAspectDescriptors, AspectScope.Static).ToList();
-
-      var allTypeLevelAspectGenerators = instanceTypeLevelAspectGenerators.Concat (staticTypeLevelAspectGenerators).ToList();
 
       // add initialization
       _constructorPatcher.AddAspectInitialization (
@@ -142,12 +143,15 @@ namespace ActiveAttributes.Core.Assembly
         var instanceMethodLevelAspectGenerators = GetGenerators (instanceMethodLevelArrayAccessor, methodLevelAspectDescriptors, AspectScope.Instance).ToList ();
         var staticMethodLevelAspectGenerators = GetGenerators (staticMethodLevelArrayAccessor, methodLevelAspectDescriptors, AspectScope.Static).ToList ();
 
-        var allMethodLevelAspectGenerators = instanceMethodLevelAspectGenerators.Concat (staticMethodLevelAspectGenerators).ToList();
-
         // get all matching
-        var allMatchingAspectGenerators = allTypeLevelAspectGenerators
-            .Where (x => x.Descriptor.Matches (mutableMethod))
-            .Concat (allMethodLevelAspectGenerators)
+        var allMatchingAspectGenerators = Enumerable.Empty<IAspectGenerator>()
+            .Concat (instanceAssemblyLevelAspectGenerators)
+            .Concat (staticAssemblyLevelAspectGenerators)
+            .Concat (instanceTypeLevelAspectGenerators)
+            .Concat (staticTypeLevelAspectGenerators)
+            .Where (x => x.Descriptor.Matches (mutableMethod.UnderlyingSystemMethodInfo))
+            .Concat (instanceMethodLevelAspectGenerators)
+            .Concat (staticMethodLevelAspectGenerators)
             .ToList();
 
         // if any
