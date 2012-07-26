@@ -32,7 +32,6 @@ namespace ActiveAttributes.Core.Assembly
 
     protected AspectGeneratorBase (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
     {
-      ArgumentUtility.CheckNotNull ("fieldInfo", fieldInfo);
       ArgumentUtility.CheckNotNull ("index", index);
       ArgumentUtility.CheckNotNull ("descriptor", descriptor);
 
@@ -67,7 +66,6 @@ namespace ActiveAttributes.Core.Assembly
 
     private static MemberBinding GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
     {
-      var argumentType = namedArgument.TypedValue.ArgumentType;
       var constantExpression = ConvertTypedArgumentToExpression (namedArgument.TypedValue);
       var bindingExpression = Expression.Bind (namedArgument.MemberInfo, constantExpression);
       return bindingExpression;

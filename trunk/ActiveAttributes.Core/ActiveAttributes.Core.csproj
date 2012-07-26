@@ -57,10 +57,12 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
+    <Compile Include="AssemblyAspectManager.cs" />
     <Compile Include="Assembly\AspectGeneratorBase.cs" />
     <Compile Include="Assembly\AspectGeneratorFactory.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
     <Compile Include="Assembly\AspectDescriptor.cs" />
+    <Compile Include="Assembly\AssemblyAspectGenerator.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\Assembler.cs" />

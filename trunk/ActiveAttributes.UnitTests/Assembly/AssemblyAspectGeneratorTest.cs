@@ -15,36 +15,38 @@
 // under the License.
 // 
 using System;
-using ActiveAttributes.Core.Aspects;
+using System.Linq;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.UnitTests.Expressions;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class InstanceAspectGeneratorTest
+  public class AssemblyAspectGeneratorTest
   {
     [Test]
     public void GetStorageExpression ()
     {
-      var field = MemberInfoFromExpressionUtility.GetField (((DomainType obj) => obj.AspectField));
-      var descriptorStub = MockRepository.GenerateStub<IAspectDescriptor>();
-      var generator = new InstanceAspectGenerator (field, 1, descriptorStub);
-      var thisExpression = Expression.Constant (new DomainType());
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+      var descriptor = MockRepository.GenerateMock<IAspectDescriptor>();
+      var generator = new AssemblyAspectGenerator (assembly, 0, descriptor);
 
-      var actual = generator.GetStorageExpression (thisExpression);
-      var expected = Expression.ArrayAccess (Expression.Field (thisExpression, field), Expression.Constant (1));
+      var propertyInfo = typeof (AssemblyAspectManager).GetProperties().Single();
+      var expected =
+          Expression.ArrayAccess (
+              Expression.Property (
+                  Expression.Property (null, propertyInfo),
+                  "Item",
+                  Expression.Constant (assembly)),
+              Expression.Constant (0));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
+      var result = generator.GetStorageExpression (null);
 
-    public class DomainType
-    {
-      public AspectAttribute[] AspectField;
+      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
   }
 }
