@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -25,6 +26,7 @@ namespace ActiveAttributes.Core.Assembly
     public StaticAspectGenerator (FieldInfo fieldInfo, int index, IAspectDescriptor descriptor)
         : base (fieldInfo, index, descriptor)
     {
+      ArgumentUtility.CheckNotNull ("fieldInfo", fieldInfo);
     }
 
     public override Expression GetStorageExpression (Expression thisExpression)
