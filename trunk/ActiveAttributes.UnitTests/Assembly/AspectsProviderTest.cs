@@ -409,6 +409,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       public override string Property { get; set; }
     }
 
+
     [Test]
     public void GetPropertyLevelAspectsRespectsNotInheritingAspect ()
     {
@@ -429,61 +430,31 @@ namespace ActiveAttributes.UnitTests.Assembly
       public override string Property { get; set; }
     }
 
+
     [Test]
     public void GetMethodLevelAspectsIncludingInterfaces ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((ClassWithInterfaceAspect obj) => obj.Method ());
       var method2 = typeof (IDomainInterface).GetMethod ("Method", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
-      var map = typeof (ClassWithInterfaceAspect).GetInterfaceMap (typeof (IDomainBase));
+      var map = typeof (ClassWithInterfaceAspect).GetInterfaceMap (typeof (IDomainInterface));
 
-
-      var result = _provider.GetMethodLevelAspects (method).ToArray ();
-
-      //var interfaces = method.DeclaringType.GetInterfaces();
-
-      //Assert.That (interfaces, Has.Length.EqualTo (1));
-
+      var result = _provider.GetInterfaceLevelAspects (method).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-
-    public interface IDomainBase
-    {
-      void Method2 ();
-    }
-
-    public class Class21 : IDomainBase
-    {
-      public void Method2 ()
-      {
-        throw new NotImplementedException();
-      }
     }
 
     public interface IDomainInterface
     {
       [DomainAspect]
       void Method ();
-
-      string Property { get; set; }
     }
-
-    public class ClassWithInterfaceAspect : Class21, IDomainInterface
+    public class ClassWithInterfaceAspect : IDomainInterface
     {
       public void Method ()
       {
       }
-
-      public string Property
-      {
-        get { throw new NotImplementedException(); }
-        set { throw new NotImplementedException(); }
-      }
     }
-
-
 
 
 

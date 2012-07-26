@@ -79,21 +79,25 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (method, getParent, whileCondition);
     }
 
-    //public IEnumerable<IAspectDescriptor> GetMethodLevelInterfaceAspects (MethodInfo method)
-    //{
-    //  var ifaces = method.DeclaringType.GetInterfaces();
-    //  foreach (var iface in ifaces)
-    //  {
-    //    var map = method.DeclaringType.GetInterfaceMap (iface);
-    //    var zipped = map.TargetMethods.Zip (map.InterfaceMethods, (TargetMember, InterfaceMember) => new { TargetMember, InterfaceMember });
-    //    foreach (var item in zipped)
-    //    {
-    //      if (item.TargetMember.GetBaseDefinition () != method)
-    //        continue;
+    public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo method)
+    {
+      var ifaces = method.DeclaringType.GetInterfaces ();
+      foreach (var iface in ifaces)
+      {
+        var map = method.DeclaringType.GetInterfaceMap (iface);
+        var zipped = map.TargetMethods.Zip (map.InterfaceMethods, (TargetMember, InterfaceMember) => new { TargetMember, InterfaceMember });
+        foreach (var item in zipped)
+        {
+          if (item.TargetMember != method)
+            continue;
 
-    //    }
-    //  }
-    //}
+          return CustomAttributeData.GetCustomAttributes (item.InterfaceMember)
+              .Where (x => x.IsAspectAttribute())
+              .Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
+        }
+      }
+      return Enumerable.Empty<IAspectDescriptor>();
+    }
 
     private IEnumerable<IAspectDescriptor> GetAspects (
         MemberInfo member, Func<MemberInfo, MemberInfo> getParent, Func<MemberInfo, bool> whileCondition)

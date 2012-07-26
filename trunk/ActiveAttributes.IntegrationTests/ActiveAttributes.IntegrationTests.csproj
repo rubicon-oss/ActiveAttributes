@@ -61,6 +61,7 @@
     <Compile Include="ArgumentManipulationTest.cs" />
     <Compile Include="AspectScopeTest.cs" />
     <Compile Include="CachingAspectTest.cs" />
+    <Compile Include="InterfaceAspectsTest.cs" />
     <Compile Include="MethodBoundaryTest.cs" />
     <Compile Include="ProceedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="TypedAspectTest.cs" />
+    <Compile Include="TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">

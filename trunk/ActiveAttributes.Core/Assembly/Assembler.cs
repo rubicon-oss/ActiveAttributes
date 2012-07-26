@@ -89,6 +89,9 @@ namespace ActiveAttributes.Core.Assembly
       {
         var methodLevelAspectDescriptors = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo).ToList();
 
+        var interfaceLevelAspects = _aspectProvider.GetInterfaceLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
+        methodLevelAspectDescriptors.AddRange (interfaceLevelAspects);
+
         var propertyInfo = mutableMethod.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo();
         if (propertyInfo != null)
         {
