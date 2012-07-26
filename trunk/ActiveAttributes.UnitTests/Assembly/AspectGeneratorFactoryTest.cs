@@ -47,7 +47,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void RespectsInstanceScope ()
+    public void GetAspectGenerators_RespectsInstanceScope ()
     {
       var scope = AspectScope.Instance;
       _descriptor.Expect (x => x.Scope).Return (scope);
@@ -59,7 +59,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void RespectsStaticScope ()
+    public void GetAspectGenerators_RespectsStaticScope ()
     {
       var scope = AspectScope.Static;
       _descriptor.Expect (x => x.Scope).Return (scope);
@@ -71,11 +71,33 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void RespectsUnrelatedDueScope ()
+    public void GetAspectGenerators_RespectsUnrelatedScope ()
     {
       _descriptor.Expect (x => x.Scope).Return (AspectScope.Static);
 
       var result = _factory.GetAspectGenerators (_enumerable, AspectScope.Instance, _fieldInfo).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (0));
+    }
+
+    [Test]
+    public void GetAspectGenerators_Assembly_RespectsStaticScope ()
+    {
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
+      _descriptor.Stub (x => x.Scope).Return (AspectScope.Static);
+
+      var result = _factory.GetAspectGenerators (_enumerable, assembly).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+    }
+
+    [Test]
+    public void GetAspectGenerators_Assembly_RespectsUnrelatedScope ()
+    {
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
+      _descriptor.Stub (x => x.Scope).Return (AspectScope.Instance);
+
+      var result = _factory.GetAspectGenerators (_enumerable, assembly).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (0));
     }

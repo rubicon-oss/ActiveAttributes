@@ -29,7 +29,17 @@ namespace ActiveAttributes.Core.Assembly
     public IEnumerable<IAspectGenerator> GetAspectGenerators (
         IEnumerable<IAspectDescriptor> aspects, AspectScope scope, FieldInfo fieldInfo)
     {
-      return aspects.Where (x => x.Scope == scope).Select ((x, i) => GetAspectGenerator(x, scope, fieldInfo, i));
+      return aspects
+        .Where (x => x.Scope == scope)
+        .Select ((x, i) => GetAspectGenerator(x, scope, fieldInfo, i));
+    }
+
+    public IEnumerable<IAspectGenerator> GetAspectGenerators (IEnumerable<IAspectDescriptor> aspects, System.Reflection.Assembly assembly)
+    {
+      return aspects
+        .Where (x => x.Scope == AspectScope.Static)
+        .Select ((x, i) => new AssemblyAspectGenerator (assembly, i, x))
+        .Cast<IAspectGenerator>();
     }
 
     private IAspectGenerator GetAspectGenerator (IAspectDescriptor descriptor, AspectScope scope, FieldInfo fieldInfo, int index)
