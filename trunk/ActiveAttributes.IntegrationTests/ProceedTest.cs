@@ -77,13 +77,40 @@ namespace ActiveAttributes.IntegrationTests
       Assert.That (_instance.Property2Called, Is.False);
     }
 
+
+    [Test]
+    public void ProceedPropertyAsMethod ()
+    {
+      _instance.Property3 = "test";
+
+      Assert.That (_instance.Property3Called, Is.True);
+      _instance.Property3Called = false;
+
+      var x = _instance.Property3;
+      Assert.That (_instance.Property3Called, Is.True);
+    }
+
+    [Test]
+    public void NotProceedPropertyAsMethod ()
+    {
+      _instance.Property4 = "test";
+
+      Assert.That (_instance.Property4Called, Is.False);
+      _instance.Property4Called = false;
+
+      var x = _instance.Property4;
+      Assert.That (_instance.Property4Called, Is.False);
+    }
+
     public class DomainType
     {
       public bool Method1Called { get; set; }
       public bool Method2Called { get; set; }
       public bool Property1Called { get; set; }
       public bool Property2Called { get; set; }
-
+      public bool Property3Called { get; set; }
+      public bool Property4Called { get; set; }
+      
       [ProceedMethodAspect]
       public virtual void Method1 ()
       {
@@ -116,6 +143,30 @@ namespace ActiveAttributes.IntegrationTests
           return "test";
         }
         set { Property2Called = true; }
+      }
+
+      public virtual string Property3
+      {
+        [ProceedMethodAspect]
+        get
+        {
+          Property3Called = true;
+          return "test";
+        }
+        [ProceedMethodAspect]
+        set { Property3Called = true; }
+      }
+
+      public virtual string Property4
+      {
+        [NoProceedMethodAspect]
+        get
+        {
+          Property4Called = true;
+          return "test";
+        }
+        [NoProceedMethodAspect]
+        set { Property4Called = true; }
       }
 
       public class ProceedMethodAspectAttribute : MethodInterceptionAspectAttribute

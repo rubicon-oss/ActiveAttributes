@@ -21,6 +21,7 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.IntegrationTests
 {

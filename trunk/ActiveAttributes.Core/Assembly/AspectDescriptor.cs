@@ -80,10 +80,12 @@ namespace ActiveAttributes.Core.Assembly
       return true;
     }
 
+    // TODO: "Require"
     private bool MatchesSignature (object signature, MethodInfo method)
     {
       if (signature is string)
       {
+        // TODO replace
         var input = SignatureDebugStringGenerator.GetMethodSignature (method);
         var pattern = ConvertToPattern ((string) signature);
         var isMatch = Regex.IsMatch (input, pattern);

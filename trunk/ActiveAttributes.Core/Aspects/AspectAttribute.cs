@@ -16,10 +16,14 @@
 // 
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Extensions;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Aspects
 {
@@ -57,6 +61,8 @@ namespace ActiveAttributes.Core.Aspects
     public object IfType { get; set; }
     public object IfSignature { get; set; }
 
+
+
     public virtual bool Validate (MethodInfo method)
     {
       return true;
@@ -65,6 +71,85 @@ namespace ActiveAttributes.Core.Aspects
     public object Clone ()
     {
       return MemberwiseClone();
+    }
+
+    public Type RequiresType { get; set; }
+    public string RequiresMethodName { get; set; }
+    public string RequiresNamespace { get; set; }
+    public Visibility RequiresVisibility { get; set; }
+    public Type[] RequiresMarkers { get; set; }
+    public TargetAttributes RequiresMethodAttributes { get; set; }
+    public Type RequiresReturnType { get; set; }
+    public Type[] RequiresArguments { get; set; }
+
+    public virtual bool Matches (MethodInfo methodInfo)
+    {
+      var declaringType = methodInfo.DeclaringType;
+
+      return MatchesType (RequiresType, declaringType) &&
+             MatchesMethodName (methodInfo.Name) &&
+             MatchesNamespace (declaringType.Namespace) &&
+             MatchesVisibility (methodInfo.Attributes) &&
+             MatchesMarkers (methodInfo) &&
+             MatchesType (RequiresReturnType, methodInfo.ReturnType) &&
+             MatchesArguments (methodInfo);
+    }
+
+    private bool MatchesType (Type expected, Type actual)
+    {
+      return expected == null || expected.IsAssignableFrom (actual);
+    }
+
+    private bool MatchesMethodName (string methodName)
+    {
+      return RequiresMethodName == null || Regex.IsMatch (methodName, GetRegexPattern(RequiresMethodName));
+    }
+
+    private bool MatchesNamespace (string ns)
+    {
+      return RequiresNamespace == null || Regex.IsMatch (ns, GetRegexPattern (RequiresNamespace));
+    }
+
+    private bool MatchesVisibility (MethodAttributes attributes)
+    {
+      if (RequiresVisibility == Visibility.None)
+        return true;
+
+      var flags = Visibility.None;
+
+      if (attributes.HasFlags (MethodAttributes.Assembly)) flags |= Visibility.Assembly;
+      if (attributes.HasFlags (MethodAttributes.Public)) flags |= Visibility.Public;
+      if (attributes.HasFlags (MethodAttributes.Family)) flags |= Visibility.Family;
+      if (attributes.HasFlags (MethodAttributes.Private)) flags |= Visibility.Private;
+      if (attributes.HasFlags (MethodAttributes.FamANDAssem)) flags |= Visibility.FamilyAndAssembly;
+      if (attributes.HasFlags (MethodAttributes.FamORAssem)) flags |= Visibility.FamilyOrAssembly;
+      // TODO: ?
+      
+      return (RequiresVisibility & flags) == RequiresVisibility;
+    }
+
+    private bool MatchesMarkers (MethodInfo methodInfo)
+    {
+      if (RequiresMarkers == null)
+        return true;
+
+      var customAttributes = methodInfo.GetCustomAttributes (true);
+      return RequiresMarkers.All (marker => customAttributes.Any (x => marker.IsAssignableFrom (x.GetType())));
+    }
+
+    private bool MatchesArguments (MethodInfo methodInfo)
+    {
+      if (RequiresArguments == null)
+        return true;
+
+      var arguments = methodInfo.GetParameters();
+      var zipped = RequiresArguments.Zip (arguments, (expected, actual) => new { Expected = expected, Actual = actual.ParameterType });
+      return zipped.All (zip => zip.Actual == zip.Expected);
+    }
+
+    private string GetRegexPattern (string wildcardPattern)
+    {
+      return "^" + wildcardPattern.Replace ("*", ".*") + "$";
     }
   }
 }

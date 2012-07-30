@@ -73,6 +73,8 @@
     <Compile Include="Assembly\MethodPatcherFactory.cs" />
     <Compile Include="Assembly\StaticArrayAccessor.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
+    <Compile Include="Configuration\TargetAttributes.cs" />
+    <Compile Include="Configuration\Visibility.cs" />
     <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Contexts\ActionInvocationContext.template.cs" />
     <Compile Include="Contexts\ActionInvocationContextBase.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Contexts\IArgumentCollection.cs" />
     <Compile Include="Contexts\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensions.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />

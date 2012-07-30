@@ -171,6 +171,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       public AspectAttribute ()
       {
+        //MethodAttributes.
       }
 
       public AspectAttribute (string constructorArgument)
