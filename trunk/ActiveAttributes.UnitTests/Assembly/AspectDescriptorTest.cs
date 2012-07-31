@@ -56,7 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Initialization_WithData ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method3()));
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method5()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
       var result = new AspectDescriptor (customData);
@@ -68,50 +68,27 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result.ConstructorArguments, Is.EqualTo (customData.ConstructorArguments));
       Assert.That (result.NamedArguments, Is.EqualTo (customData.NamedArguments));
     }
+
     [Test]
-    public void Matches_Signature ()
+    public void DelegatesMatches1 ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method4 ()));
-      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method3 ());
+      var customData = CustomAttributeData.GetCustomAttributes (method).Single ();
       var descriptor = new AspectDescriptor (customData);
 
-      var result = descriptor.Matches (methodInfo);
+      var result = descriptor.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void Matches_SignatureNot ()
+    public void DelegatesMatches2 ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method5 ()));
-      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method4 ());
+      var customData = CustomAttributeData.GetCustomAttributes (method).Single ();
       var descriptor = new AspectDescriptor (customData);
 
-      var result = descriptor.Matches (methodInfo);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void Matches_Type ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method6 ()));
-      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var descriptor = new AspectDescriptor (customData);
-
-      var result = descriptor.Matches (methodInfo);
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void Matches_TypeNot ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method7 ()));
-      var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var descriptor = new AspectDescriptor (customData);
-
-      var result = descriptor.Matches (methodInfo);
+      var result = descriptor.Matches (method);
 
       Assert.That (result, Is.False);
     }
@@ -131,7 +108,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ToStringWithArguments ()
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method8 ());
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method6 ());
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
       var descriptor = new AspectDescriptor (customData);
 
@@ -148,41 +125,38 @@ namespace ActiveAttributes.UnitTests.Assembly
       [NonAspect]
       public void Method2 () { }
 
-      [Aspect (Scope = AspectScope.Instance, Priority = 10)]
+      [MatchingAspect]
       public void Method3 () { }
 
-      [Aspect (IfSignature = "void *()")]
+      [NotMatchingAspect]
       public void Method4 () { }
 
-      [Aspect (IfSignature = "void *4()")]
+      [Aspect (Scope = AspectScope.Instance, Priority = 10)]
       public void Method5 () { }
 
-      [Aspect (IfType = typeof (DomainType))]
-      public void Method6 () { }
-
-      [Aspect (IfType = typeof (object))]
-      public void Method7 () { }
-
       [Aspect("test", PropertyArgument = "test2")]
-      public void Method8 () { }
+      public void Method6 () { }
     }
-
+    
     public class AspectAttribute : Core.Aspects.AspectAttribute
     {
-      public AspectAttribute ()
-      {
-        //MethodAttributes.
-      }
+      public AspectAttribute () { }
 
-      public AspectAttribute (string constructorArgument)
-      {
-      }
+      public AspectAttribute (string constructorArgument) { }
 
       public string PropertyArgument { get; set; }
     }
 
-    public class NonAspectAttribute : Attribute
+    public class NonAspectAttribute : Attribute { }
+
+    public class MatchingAspectAttribute : AspectAttribute
     {
+      public override bool Matches (MethodInfo methodInfo) { return true; }
+    }
+
+    public class NotMatchingAspectAttribute : AspectAttribute
+    {
+      public override bool Matches (MethodInfo methodInfo) { return false; }
     }
   }
 }

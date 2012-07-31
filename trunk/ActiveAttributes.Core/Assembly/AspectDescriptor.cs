@@ -30,115 +30,65 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class AspectDescriptor : IAspectDescriptor
   {
-    private readonly AspectAttribute _attribute;
-    private readonly CustomAttributeData _customData;
+    private readonly AspectAttribute _aspectAttribute;
+    private readonly CustomAttributeData _customAttributeData;
 
-    public AspectDescriptor (CustomAttributeData customData)
+    public AspectDescriptor (CustomAttributeData customAttributeData)
     {
-      if (!typeof (AspectAttribute).IsAssignableFrom (customData.Constructor.DeclaringType))
+      if (!typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new ArgumentException ("CustomAttributeData must be from an AspectAttribute");
 
-      _customData = customData;
-      _attribute = (AspectAttribute) customData.CreateAttribute();
+      _customAttributeData = customAttributeData;
+      _aspectAttribute = (AspectAttribute) customAttributeData.CreateAttribute();
     }
 
     public int Priority
     {
-      get { return _attribute.Priority; }
+      get { return _aspectAttribute.Priority; }
     }
 
     public AspectScope Scope
     {
-      get { return _attribute.Scope; }
+      get { return _aspectAttribute.Scope; }
     }
 
     public Type AspectType
     {
-      get { return _attribute.GetType(); }
+      get { return _aspectAttribute.GetType(); }
     }
 
     public ConstructorInfo ConstructorInfo
     {
-      get { return _customData.Constructor; }
+      get { return _customAttributeData.Constructor; }
     }
     public IList<CustomAttributeTypedArgument> ConstructorArguments
     {
-      get { return _customData.ConstructorArguments; }
+      get { return _customAttributeData.ConstructorArguments; }
     }
     public IList<CustomAttributeNamedArgument> NamedArguments
     {
-      get { return _customData.NamedArguments; }
+      get { return _customAttributeData.NamedArguments; }
     }
 
     public bool Matches (MethodInfo method)
     {
-      if (_attribute.IfType != null && !MatchesType (_attribute.IfType, method))
-        return false;
-      if (_attribute.IfSignature != null && !MatchesSignature (_attribute.IfSignature, method))
-        return false;
-
-      return true;
-    }
-
-    // TODO: "Require"
-    private bool MatchesSignature (object signature, MethodInfo method)
-    {
-      if (signature is string)
-      {
-        // TODO replace
-        var input = SignatureDebugStringGenerator.GetMethodSignature (method);
-        var pattern = ConvertToPattern ((string) signature);
-        var isMatch = Regex.IsMatch (input, pattern);
-        return isMatch;
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    private bool MatchesType (object type, MethodInfo method)
-    {
-      if (type is string)
-      {
-        var input = method.DeclaringType.FullName;
-        var pattern = ConvertToPattern ((string) type);
-        var isMatch = Regex.IsMatch (input, pattern);
-        return isMatch;
-      }
-      else
-      {
-        return type == method.DeclaringType;
-      }
-    }
-
-    private static string ConvertToPattern (string input)
-    {
-      return "^" +
-             input
-                 .Replace (".", "\\.")
-                 .Replace ("+", "\\+")
-                 .Replace ("*", ".*")
-                 .Replace ("(", "\\(")
-                 .Replace (")", "\\)")
-                 .Replace ("void", "Void")
-             + "$";
+      return _aspectAttribute.Matches (method);
     }
 
     public override string ToString ()
     {
       var stringBuilder = new StringBuilder();
-      stringBuilder.Append (_attribute.GetType().Name)
+      stringBuilder.Append (_aspectAttribute.GetType().Name)
           .Append ("(");
 
-      stringBuilder.Append (string.Join (", ", _customData.ConstructorArguments.Select (x => "{" + x.Value + "}").ToArray()));
+      stringBuilder.Append (string.Join (", ", _customAttributeData.ConstructorArguments.Select (x => "{" + x.Value + "}").ToArray()));
 
-      if (_customData.ConstructorArguments.Count > 0)
+      if (_customAttributeData.ConstructorArguments.Count > 0)
         stringBuilder.Append (", ");
 
-      stringBuilder.Append (string.Join (", ", _customData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
+      stringBuilder.Append (string.Join (", ", _customAttributeData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
 
-      if (_customData.NamedArguments.Count > 0)
+      if (_customAttributeData.NamedArguments.Count > 0)
         stringBuilder.Append (", ");
 
       stringBuilder.Append ("Scope = ").Append (Scope);
