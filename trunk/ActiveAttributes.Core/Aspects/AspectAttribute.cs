@@ -58,10 +58,6 @@ namespace ActiveAttributes.Core.Aspects
 
     public int Priority { get; set; }
 
-    public object IfType { get; set; }
-    public object IfSignature { get; set; }
-
-
 
     public virtual bool Validate (MethodInfo method)
     {
@@ -73,12 +69,12 @@ namespace ActiveAttributes.Core.Aspects
       return MemberwiseClone();
     }
 
-    public Type RequiresType { get; set; }
-    public string RequiresMethodName { get; set; }
+    public Type RequiresTargetType { get; set; }
+    public string RequiresMemberName { get; set; }
     public string RequiresNamespace { get; set; }
-    public Visibility RequiresVisibility { get; set; }
+    public Visibility RequiresMemberVisibility { get; set; }
     public Type[] RequiresMarkers { get; set; }
-    public TargetAttributes RequiresMethodAttributes { get; set; }
+    public TargetAttributes RequiresMemberAttributes { get; set; }
     public Type RequiresReturnType { get; set; }
     public Type[] RequiresArguments { get; set; }
 
@@ -86,10 +82,10 @@ namespace ActiveAttributes.Core.Aspects
     {
       var declaringType = methodInfo.DeclaringType;
 
-      return MatchesType (RequiresType, declaringType) &&
-             MatchesMethodName (methodInfo.Name) &&
+      return MatchesType (RequiresTargetType, declaringType) &&
+             MatchesMemberName (methodInfo.Name) &&
              MatchesNamespace (declaringType.Namespace) &&
-             MatchesVisibility (methodInfo.Attributes) &&
+             MatchesMemberVisibility (methodInfo.Attributes) &&
              MatchesMarkers (methodInfo) &&
              MatchesType (RequiresReturnType, methodInfo.ReturnType) &&
              MatchesArguments (methodInfo);
@@ -100,9 +96,9 @@ namespace ActiveAttributes.Core.Aspects
       return expected == null || expected.IsAssignableFrom (actual);
     }
 
-    private bool MatchesMethodName (string methodName)
+    private bool MatchesMemberName (string methodName)
     {
-      return RequiresMethodName == null || Regex.IsMatch (methodName, GetRegexPattern(RequiresMethodName));
+      return RequiresMemberName == null || Regex.IsMatch (methodName, GetRegexPattern(RequiresMemberName));
     }
 
     private bool MatchesNamespace (string ns)
@@ -110,9 +106,9 @@ namespace ActiveAttributes.Core.Aspects
       return RequiresNamespace == null || Regex.IsMatch (ns, GetRegexPattern (RequiresNamespace));
     }
 
-    private bool MatchesVisibility (MethodAttributes attributes)
+    private bool MatchesMemberVisibility (MethodAttributes attributes)
     {
-      if (RequiresVisibility == Visibility.None)
+      if (RequiresMemberVisibility == Visibility.None)
         return true;
 
       var flags = Visibility.None;
@@ -125,7 +121,7 @@ namespace ActiveAttributes.Core.Aspects
       if (attributes.HasFlags (MethodAttributes.FamORAssem)) flags |= Visibility.FamilyOrAssembly;
       // TODO: ?
       
-      return (RequiresVisibility & flags) == RequiresVisibility;
+      return (RequiresMemberVisibility & flags) == RequiresMemberVisibility;
     }
 
     private bool MatchesMarkers (MethodInfo methodInfo)

@@ -76,19 +76,21 @@ namespace ActiveAttributes.Core.Assembly
 
       // ASSEMBLY LEVEL ASPECTS
       var assembly = mutableType.UnderlyingSystemType.Assembly;
-      var assemblyLevelAspectDescriptors = _aspectProvider.GetAssemblyLevelAspects (assembly).ToList();
+      var assemblyKey = assembly.FullName;
+
+      var assemblyLevelAspectDescriptors = _aspectProvider.GetAssemblyLevelAspects (assembly).ToList ();
       var assemblyFieldData = _fieldIntroducer.IntroduceAssemblyLevelFields (mutableType);
 
       var instanceAssemblyLevelArrayAccessor = new InstanceArrayAccessor (assemblyFieldData.InstanceAspectsField);
-      var staticAssemblyLevelArrayAccessor = new AssemblyArrayAccessor (assembly);
+      var staticAssemblyLevelArrayAccessor = new AssemblyArrayAccessor (assemblyKey);
 
       var instanceAssemblyLevelAspectGenerators =
           GetGenerators (instanceAssemblyLevelArrayAccessor, assemblyLevelAspectDescriptors, AspectScope.Instance).ToList();
       var staticAssemblyLevelAspectGenerators =
           GetGenerators (staticAssemblyLevelArrayAccessor, assemblyLevelAspectDescriptors, AspectScope.Static).ToList();
 
-      if (!AssemblyAspectManager.Aspects.ContainsKey (assembly.FullName))
-        AssemblyAspectManager.Aspects[assembly.FullName] = new AspectAttribute[0];
+      if (!AssemblyAspectManager.Aspects.ContainsKey (assemblyKey))
+        AssemblyAspectManager.Aspects[assemblyKey] = null;
 
       _constructorPatcher.AddAspectInitialization(mutableType, staticAssemblyLevelArrayAccessor, instanceAssemblyLevelArrayAccessor,
         staticAssemblyLevelAspectGenerators, instanceAssemblyLevelAspectGenerators);

@@ -17,19 +17,13 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-//[assembly: AspectsProviderTest.AssemblyAttribute]
-
-[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "*AspectsProviderTest+DomainType3")]
-[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = typeof (AspectsProviderTest.DomainType4))]
-[assembly: AspectsProviderTest.DomainAspectAttribute (IfType = "ActiveAttributes.UnitTests.Assembly.AspectsProviderTest+NestedClass+*")]
-
-[assembly: AspectsProviderTest.AssemblyLevelAspect (IfType = typeof(object))]
+[assembly: AspectsProviderTest.AspectAttribute (RequiresTargetType = typeof (AspectsProviderTest.DomainType4))]
+[assembly: AspectsProviderTest.AssemblyLevelAspect (RequiresTargetType = typeof (object))]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -43,170 +37,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       _provider = new AspectsProvider();
     }
-
-    [Test]
-    public void GetAspects_OneElement ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result, Has.Some.Property ("AspectType").EqualTo (typeof (DomainAspectAttribute)));
-    }
-
-    [Test]
-    public void GetAspects_MultipleElement ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.OtherMethod ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray();
-
-      Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (result, Has.Some.Property ("Priority").EqualTo (5));
-      Assert.That (result, Has.Some.Property ("Priority").EqualTo (10));
-    }
-
-    [Test]
-    public void GetAspects_Derived_Inheriting ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DerivedType obj) => obj.Method1 ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_Derived_NonInheriting ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DerivedType obj) => obj.Method2 ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (0));
-    }
-
-    [Test]
-    public void GetAspects_Derived_Inheriting_Property ()
-    {
-      var methodInfo = typeof (DerivedType).GetMethods ().Where (x => x.Name == "get_Property1").First ();
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-
-    [Test]
-    public void GetAspects_Derived_NotInheriting_Property ()
-    {
-      var methodInfo = typeof (DerivedType).GetMethods ().Where (x => x.Name == "get_Property2").First ();
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (0));
-    }
-
-    [Test]
-    public void GetAspects_Base_NonInheriting ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((BaseType obj) => obj.Method2 ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_OnlyAspectAttributes ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.AnotherMethod()));
-
-      var result = _provider.GetAspects (methodInfo);
-
-      Assert.That (result, Is.Empty);
-    }
-
-    [Test]
-    public void GetAspects_FromProperties ()
-    {
-      var methodInfo = typeof (DomainType).GetMethods().Where (x => x.Name == "get_Property").First();
-
-      var result = _provider.GetAspects (methodInfo).ToArray();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-
-    [Test]
-    public void GetAspects_IfSignature_Match ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.Method1 ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_IfSignature_NoMatch ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType2 obj) => obj.SkipMethod ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (0));
-    }
-
-    [Test]
-    public void GetAspects_AssemblyLevel_StringType ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType3 obj) => obj.Method ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_AssemblyLevel_StrongType ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType4 obj) => obj.Method ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_AssemblyLevel_Namespace ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((NestedClass.DomainType5 obj) => obj.Method ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (1));
-    }
-
-    [Test]
-    public void GetAspects_AssemblyLevel_Namespace_EscapeDot ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((NestedClassX.DomainType5 obj) => obj.Method ()));
-
-      var result = _provider.GetAspects (methodInfo).ToArray ();
-
-      Assert.That (result, Has.Length.EqualTo (0));
-    }
-
-
-
-
-
-
-
-
-
 
     public class AspectAttribute : Core.Aspects.AspectAttribute { }
 
@@ -318,12 +148,12 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _provider.GetMethodLevelAspects (method).ToArray();
 
-      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (DomainAspectAttribute)));
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AspectAttribute)));
     }
 
     public class MethodLevelAspectClass
     {
-      [DomainAspect]
+      [Aspect]
       public void Method () { }
     }
 
@@ -376,12 +206,12 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _provider.GetPropertyLevelAspects (property).ToArray ();
 
-      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (DomainAspectAttribute)));
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AspectAttribute)));
     }
 
     public class PropertyLevelAspectClass
     {
-      [DomainAspect]
+      [Aspect]
       public string Property { get; set; }
     }
 
@@ -432,9 +262,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void GetMethodLevelAspectsIncludingInterfaces ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((ClassWithInterfaceAspect obj) => obj.Method ());
-      var method2 = typeof (IDomainInterface).GetMethod ("Method", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
-
-      var map = typeof (ClassWithInterfaceAspect).GetInterfaceMap (typeof (IDomainInterface));
 
       var result = _provider.GetInterfaceLevelAspects (method).ToArray ();
 
@@ -443,7 +270,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public interface IDomainInterface
     {
-      [DomainAspect]
+      [Aspect]
       void Method ();
     }
     public class ClassWithInterfaceAspect : IDomainInterface
@@ -453,125 +280,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public class DomainType
-    {
-      [DomainAspect]
-      public void Method () { }
-
-      [DomainAspect (Priority = 5)]
-      [DomainAspect (Priority = 10)]
-      public void OtherMethod () { }
-
-      [Dummy]
-      public void AnotherMethod () { }
-
-      [DomainAspect]
-      public string Property { get; set; }
-    }
-
-    public class DomainAspectAttribute : Core.Aspects.AspectAttribute
-    {
-    }
-
-    public class DummyAttribute : Attribute
-    {
-    }
-
-    public class BaseType
-    {
-      [InheritingAspect]
-      public virtual void Method1 () { }
-
-      [NotInheritingAspect]
-      public virtual void Method2 () { }
-
-      [InheritingAspect]
-      public virtual string Property1 { get; set; }
-
-      [NotInheritingAspect]
-      public virtual string Property2 { get; set; }
-    }
-
-    public class DerivedType : BaseType
-    {
-      public override void Method1 () { }
-
-      public override void Method2 () { }
-
-      public override string Property1 { get; set; }
-
-      public override string Property2 { get; set; }
-    }
-
-    [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    public class InheritingAspectAttribute : Core.Aspects.AspectAttribute
-    {
-    }
-
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
     public class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute
     {
     }
 
-    [DomainAspect (IfSignature = "void Method*(*)")]
-    public class DomainType2
-    {
-      public virtual void Method1 () { }
-
-      public virtual void SkipMethod () { }
-    }
-
-    public class DomainType3
-    {
-      public virtual void Method () { }
-    }
-
     public class DomainType4
     {
       public virtual void Method () { }
-    }
-
-    public class NestedClass
-    {
-      public class DomainType5
-      {
-        public virtual object Method ()
-        {
-          return null;
-        }
-      }
-    }
-
-    public class NestedClassX
-    {
-      public class DomainType5
-      {
-        public virtual object Method ()
-        {
-          return null;
-        }
-      }
     }
   }
 }

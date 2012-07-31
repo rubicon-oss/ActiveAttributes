@@ -77,7 +77,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresType_Matching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1());
-      var aspect = new TestableAspectAttribute { RequiresType = typeof (RequireTypeMatchingClass) };
+      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (RequireTypeMatchingClass) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
@@ -87,7 +87,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresType_NotMatching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresType = typeof (int) };
+      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (int) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
@@ -97,7 +97,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresType_MatchingSub ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresType = typeof (object) };
+      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (object) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
@@ -107,7 +107,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresMethodName_Matching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresMethodName = "Method2" };
+      var aspect = new TestableAspectAttribute { RequiresMemberName = "Method2" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
@@ -117,7 +117,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresMethodName_NotMatching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresMethodName = "Method2" };
+      var aspect = new TestableAspectAttribute { RequiresMemberName = "Method2" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
@@ -127,7 +127,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresMethodName_MatchingWildcard ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresMethodName = "*2" };
+      var aspect = new TestableAspectAttribute { RequiresMemberName = "*2" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
@@ -168,7 +168,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresVisibility_PublicMatching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.PublicMethod ());
-      var aspect = new TestableAspectAttribute { RequiresVisibility = Visibility.Public };
+      var aspect = new TestableAspectAttribute { RequiresMemberVisibility = Visibility.Public };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
@@ -178,7 +178,7 @@ namespace ActiveAttributes.UnitTests.Aspects
     public void RequiresVisibility_PublicNotMatching ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.InternalMethod ());
-      var aspect = new TestableAspectAttribute { RequiresVisibility = Visibility.Public };
+      var aspect = new TestableAspectAttribute { RequiresMemberVisibility = Visibility.Public };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);

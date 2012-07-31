@@ -24,12 +24,12 @@ namespace ActiveAttributes.Core.Assembly
   {
     private readonly Expression _accessExpression;
 
-    public AssemblyArrayAccessor (System.Reflection.Assembly assembly)
+    public AssemblyArrayAccessor (string assemblyKey)
     {
       var dictionaryPropertyInfo = typeof (AssemblyAspectManager).GetProperties ().Single ();
       var dictionary = Expression.Property (null, dictionaryPropertyInfo);
 
-      var assemblyFullName = Expression.Constant(assembly.FullName);
+      var assemblyFullName = Expression.Constant(assemblyKey);
       _accessExpression = Expression.Property (dictionary, "Item", assemblyFullName);
     }
 

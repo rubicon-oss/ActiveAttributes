@@ -44,7 +44,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _arrayAccessor = MockRepository.GenerateMock<IArrayAccessor>();
       _arrayAccessor.Stub (x => x.GetAccessExpression (null)).IgnoreArguments().Return (_fieldExpression);
 
-      _elementExpression = Expression.Convert (Expression.Constant ("a"), typeof (string));
+      _elementExpression = Expression.Constant ("a", typeof (string));
       _arrayExpression = Expression.NewArrayInit (typeof (string), _elementExpression);
     }
 
@@ -177,34 +177,22 @@ namespace ActiveAttributes.UnitTests.Assembly
       public static AspectAttribute[] Dummy;
 
       [Domain ("a")]
-      public void ConstructorElementArg ()
-      {
-      }
+      public void ConstructorElementArg () { }
 
       [Domain (new[] { "a" })]
-      public void ConstructorArrayArg ()
-      {
-      }
+      public void ConstructorArrayArg () { }
 
       [Domain (PropertyElementArg = "a")]
-      public void PropertyElementArg ()
-      {
-      }
+      public void PropertyElementArg () { }
 
       [Domain (PropertyArrayArg = new[] { "a" })]
-      public void PropertyArrayArg ()
-      {
-      }
+      public void PropertyArrayArg () { }
 
       [Domain (FieldElementArg = "a")]
-      public void FieldElementArg ()
-      {
-      }
+      public void FieldElementArg () { }
 
       [Domain (FieldArrayArg = new[] { "a" })]
-      public void FieldArrayArg ()
-      {
-      }
+      public void FieldArrayArg () { }
     }
 
     public class DomainAttribute : Attribute
@@ -212,9 +200,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       public string FieldElementArg;
       public string[] FieldArrayArg;
 
-      public DomainAttribute ()
-      {
-      }
+      public DomainAttribute () { }
 
       public DomainAttribute (string constructorElementArg)
       {

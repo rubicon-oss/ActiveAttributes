@@ -22,7 +22,7 @@ using ActiveAttributes.Core.Invocations;
 using ActiveAttributes.IntegrationTests;
 using NUnit.Framework;
 
-[assembly: AssemblyAspectTest.AssemblyAspectAttribute(IfType = typeof(AssemblyAspectTest.DomainClass))]
+[assembly: AssemblyAspectTest.AssemblyAspectAttribute(RequiresTargetType = typeof(AssemblyAspectTest.DomainClass))]
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -41,15 +41,11 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void name ()
     {
+      SkipDeletion();
       _instance.Method();
     }
 
-    public interface IDomainInterface
-    {
-      Guid Method();
-    }
-
-    public class DomainClass : IDomainInterface
+    public class DomainClass
     {
       public virtual Guid Method()
       {
