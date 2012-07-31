@@ -35,7 +35,7 @@ namespace ActiveAttributes.IntegrationTests
     private DomainType _instance;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
       base.SetUp();
 

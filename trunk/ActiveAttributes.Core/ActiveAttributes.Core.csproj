@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
+    <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="AssemblyAspectManager.cs" />
     <Compile Include="Assembly\AspectGenerator.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />

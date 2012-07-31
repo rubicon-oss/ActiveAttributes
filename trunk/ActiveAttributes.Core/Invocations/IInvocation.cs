@@ -35,4 +35,95 @@ namespace ActiveAttributes.Core.Invocations
     /// </summary>
     void Proceed ();
   }
+
+  //public interface IEventInvocation : IInvocation
+  //{
+  //  new IEventInvocationContext Context { get; }
+  //}
+
+  //public interface IEventInvocationContext : IInvocationContext
+  //{
+  //  Delegate Event { get; }
+  //}
+
+  //public interface IPropertyInvocation : IInvocation
+  //{
+  //  new IPropertyInvocationContext Context { get; }
+  //}
+
+  //public interface IPropertyInvocationContext : IInvocationContext
+  //{
+  //  object Value { get; }
+  //  object Index { get; }
+  //}
+
+  //public class PropertyInvocation : IPropertyInvocation
+  //{
+  //  private readonly IInvocation _invocation;
+
+  //  public PropertyInvocation (IInvocation invocation)
+  //  {
+  //    _invocation = invocation;
+  //  }
+
+  //  IInvocationContext IInvocation.Context
+  //  {
+  //    get { return Context; }
+  //  }
+
+  //  public IPropertyInvocationContext Context
+  //  {
+  //    get { }
+  //  }
+
+  //  public void Proceed ()
+  //  {
+  //    _invocation.Proceed();
+  //  }
+  //}
+
+  //public class PropertyInvocationContext : IPropertyInvocationContext
+  //{
+  //  private readonly IInvocationContext _invocationContext;
+
+  //  public PropertyInvocationContext (IInvocationContext invocationContext)
+  //  {
+  //    _invocationContext = invocationContext;
+  //  }
+
+  //  public object Value
+  //  {
+  //    // TODO: this will fail because getter of index has one argument.
+  //    get { return Arguments[Arguments.Count == 1 ? 0 : 1]; }
+  //    set { Arguments[Arguments.Count == 1 ? 0 : 1] = value; }
+  //  }
+
+  //  public object Index
+  //  {
+  //    get { throw new NotImplementedException(); }
+  //  }
+
+  //  public MethodInfo MethodInfo
+  //  {
+  //    get { return _invocationContext.MethodInfo; }
+  //  }
+
+  //  public object Instance
+  //  {
+  //    get { return _invocationContext.Instance; }
+  //  }
+
+  //  public IArgumentCollection Arguments
+  //  {
+  //    get { return _invocationContext.Arguments; }
+  //  }
+
+  //  public object ReturnValue
+  //  {
+  //    get { return _invocationContext.ReturnValue; }
+  //    set { _invocationContext.ReturnValue = value; }
+  //  }
+  //}
+
+
 }

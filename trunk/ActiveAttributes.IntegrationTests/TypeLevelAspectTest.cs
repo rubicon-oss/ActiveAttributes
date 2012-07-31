@@ -29,8 +29,9 @@ namespace ActiveAttributes.IntegrationTests
     private DomainClass _instance2;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
       _instance1 = type.CreateInstance<DomainClass> ();
       _instance2 = type.CreateInstance<DomainClass> ();

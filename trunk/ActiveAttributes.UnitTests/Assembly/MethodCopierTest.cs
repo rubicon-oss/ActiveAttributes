@@ -33,8 +33,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     private MethodCopier _copier;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _copier = new MethodCopier();
     }
 

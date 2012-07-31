@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using ActiveAttributes.Core.Aspects;
@@ -14,8 +8,6 @@ namespace ActiveAttributes.UseCases
 {
   public partial class ThreadingForm : Form
   {
-    private readonly Thread _thread;
-
     public ThreadingForm ()
     {
       InitializeComponent ();

@@ -131,6 +131,7 @@ namespace ActiveAttributes.Core.Assembly
           var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (propertyInfo);
           methodLevelAspectDescriptors.AddRange (propertyLevelAspects);
         }
+        // ... by event
 
         // get field data
         var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);

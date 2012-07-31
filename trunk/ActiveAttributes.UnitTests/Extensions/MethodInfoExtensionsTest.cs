@@ -62,12 +62,29 @@ namespace ActiveAttributes.UnitTests.Extensions
       Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
     }
 
+    [Test]
+    public void GetEventInfo ()
+    {
+      var fields = typeof (DomainType).GetFields (BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+      var methods = typeof (DomainType).GetMethods();
+
+      var eventInfo = typeof (DomainType).GetEvents().Single();
+      var raiseMethod = eventInfo.GetRaiseMethod();
+      var addMethod = eventInfo.GetAddMethod();
+    }
+
     public class DomainType
     {
       public void SimpleMethod () { }
       public void ArgMethod (string a) { }
       public string ReturnMethod () { return default (string); }
       public object MixedMethod (string a, int b) { return default (object); }
+
+      public object this[int index] { set { } }
+      public string Property { get; set; }
+      private Delegate _delegate;
+
+      public event EventHandler MyEvent;
     }
   }
 }

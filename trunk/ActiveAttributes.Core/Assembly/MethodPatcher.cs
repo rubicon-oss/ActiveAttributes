@@ -134,46 +134,6 @@ namespace ActiveAttributes.Core.Assembly
           returnValueExpression);
     }
 
-
-
-    //private Expression GetPatchedBody (
-    //    MutableMethodInfo mutableMethod, 
-    //    BodyContextBase ctx, 
-    //    FieldIntroducer.Data fieldData,
-    //    IEnumerable<IAspectDescriptor> aspects)
-    //{
-    //  var aspectsAsList = aspects.ToList();
-
-    //  var methodInfoField = Expression.Field (ctx.This, fieldData.MethodInfoField);
-    //  var delegateField = Expression.Field (ctx.This, fieldData.DelegateField);
-    //  var aspectsField = Expression.Field (ctx.This, fieldData.InstanceAspectsField);
-
-    //  // ActionInvocationContext<...> ctx = new ActionInvocationContext<...> (_methodInfo, this, arg1, arg2, ...);
-    //  var invocationContextType = _typeProvider.GetInvocationContextType();
-    //  var invocationContext = Expression.Variable (invocationContextType, "ctx");
-    //  var invocationContextCreateExpression = GetInvocationContextNewExpression (invocationContextType, methodInfoField, ctx.This, ctx.Parameters);
-    //  var invocationContextAssignExpression = Expression.Assign (invocationContext, invocationContextCreateExpression);
-
-    //  var invocationVariablesAndInitializations = GetInvocationVariablesAndAssignExpressions (
-    //      aspectsAsList, mutableMethod, invocationContext, delegateField, aspectsField);
-    //  var invocations = invocationVariablesAndInitializations.Item1;
-    //  var invocationInitExpressions = invocationVariablesAndInitializations.Item2;
-
-    //  var outermostAspect = Expression.ArrayAccess (aspectsField, Expression.Constant (invocations.Length - 1));
-    //  var outermostAspectInterceptMethod = GetAspectInterceptMethod (aspectsAsList.Last ().AspectType, mutableMethod);
-    //  var outermostInvocation = invocations.Last ();
-    //  var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
-
-    //  var returnValueExpression = Expression.Property (invocationContext, "ReturnValue");
-
-    //  return Expression.Block (
-    //      new[] { invocationContext }.Concat(invocations),
-    //      invocationContextAssignExpression,
-    //      Expression.Block(invocationInitExpressions),
-    //      aspectCallExpression,
-    //      returnValueExpression);
-    //}
-
     private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
         List<IAspectGenerator> aspects,
         MutableMethodInfo mutableMethod,
@@ -213,48 +173,6 @@ namespace ActiveAttributes.Core.Assembly
         invocationAssignExpressions[i] = Expression.Assign (invocations[i], invocationCreateExpression);
       }
 
-      return Tuple.Create (invocations, invocationAssignExpressions);
-    }
-
-    private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
-        IList<IAspectDescriptor> aspects,
-        MutableMethodInfo mutableMethod,
-        Expression invocationContext,
-        Expression originalBodyDelegate,
-        Expression aspectArray)
-    {
-      // var invocation0 = new InnerInvocation (invocationContext, _originalBodyDelegate);
-      // var invocation1 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[0], method), invocation0);
-      // var invocation2 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[1], method), invocation1);
-
-      var invocations = new ParameterExpression[aspects.Count];
-      var invocationAssignExpressions = new Expression[aspects.Count];
-
-      for (var i = 0; i < aspects.Count; i++)
-      {
-        Expression invocationCreateExpression;
-        if (i == 0)
-        {
-          invocationCreateExpression = GetInnermostInvocationCreationExpression (invocationContext, originalBodyDelegate);
-        }
-        else
-        {
-          var innerAspectType = aspects[i - 1].AspectType;
-          var innerAspect = Expression.ArrayAccess (aspectArray, Expression.Constant (i - 1));
-          var innerAspectInterceptMethod = GetAspectInterceptMethod (innerAspectType, mutableMethod);
-          var innerInvocation = invocations[i - 1];
-
-          invocationCreateExpression = GetOuterInvocationCreationExpression (
-              invocationContext,
-              innerAspect,
-              innerAspectInterceptMethod,
-              innerInvocation);
-        }
-
-        invocations[i] = Expression.Variable (invocationCreateExpression.Type, "invocation" + (i + 1));
-        invocationAssignExpressions[i] = Expression.Assign (invocations[i], invocationCreateExpression);
-      }
-      
       return Tuple.Create (invocations, invocationAssignExpressions);
     }
 

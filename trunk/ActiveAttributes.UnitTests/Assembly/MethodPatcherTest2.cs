@@ -34,12 +34,12 @@ namespace ActiveAttributes.UnitTests.Assembly
   public class MethodPatcherTest2 : TestBase
   {
     private MethodPatcher _patcher;
-    private BindingFlags _bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Instance;
     private FieldIntroducer.Data _fieldData;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
       _patcher = new MethodPatcher();
     }
 
@@ -337,21 +337,21 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public class DomainType4 : DomainTypeBase
     {
-      public new Action<string> Delegate;
+      public Action<string> Delegate;
 
       public virtual void Method (string a) { }
     }
 
     public class DomainType5 : DomainTypeBase
     {
-      public new Func<int> Delegate;
+      public Func<int> Delegate;
 
       public virtual int Return100Method () { return 100; }
     }
 
     public class DomainType6 : DomainTypeBase
     {
-      public new Func<DomainType5> Delegate;
+      public Func<DomainType5> Delegate;
 
       public virtual DomainType5 Method () { return new DomainType5 (); }
     }

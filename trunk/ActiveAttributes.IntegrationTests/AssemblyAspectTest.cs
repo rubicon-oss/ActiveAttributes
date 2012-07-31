@@ -32,7 +32,7 @@ namespace ActiveAttributes.IntegrationTests
     private DomainClass _instance;
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
       var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
       _instance = type.CreateInstance<DomainClass>();
