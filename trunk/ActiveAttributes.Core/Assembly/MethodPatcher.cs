@@ -102,7 +102,7 @@ namespace ActiveAttributes.Core.Assembly
       var delegateField = Expression.Field (ctx.This, _delegateFieldInfo);
 
       // InvocationContext<...> ctx = new InvocationContext<TInstance, TA1[, ...][, TR]> (_methodInfo, this, arg1, arg2[, ...]);
-      var invocationContextType = _typeProvider.GetInvocationContextType ();
+      var invocationContextType = _typeProvider.InvocationContextType;
       var invocationContext = Expression.Variable (invocationContextType, "ctx");
       var invocationContextCreateExpression = GetInvocationContextNewExpression (invocationContextType, methodInfoField, ctx.This, ctx.Parameters);
       var invocationContextAssignExpression = Expression.Assign (invocationContext, invocationContextCreateExpression);
@@ -179,7 +179,7 @@ namespace ActiveAttributes.Core.Assembly
     
     private Expression GetInnermostInvocationCreationExpression (Expression invocationContext, Expression originalBodyDelegate)
     {
-      var invocationType = _typeProvider.GetInvocationType();
+      var invocationType = _typeProvider.InvocationType;
       var invocationConstructor = invocationType.GetConstructors().Single();
 
       return Expression.New (invocationConstructor, invocationContext, originalBodyDelegate);

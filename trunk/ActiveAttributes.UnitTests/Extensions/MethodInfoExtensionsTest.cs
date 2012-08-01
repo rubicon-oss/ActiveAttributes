@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace ActiveAttributes.UnitTests.Extensions
 {
   [TestFixture]
-  public class MutableMethodInfoExtensionsTest
+  public class MethodInfoExtensionsTest
   {
     [Test]
     public void GetDelegateType_SimpleMethod ()
@@ -62,15 +62,52 @@ namespace ActiveAttributes.UnitTests.Extensions
       Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
     }
 
-    [Test]
-    public void GetEventInfo ()
-    {
-      var fields = typeof (DomainType).GetFields (BindingFlags.DeclaredOnly | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-      var methods = typeof (DomainType).GetMethods();
+    //[Test]
+    //public void GetEventInfo ()
+    //{
+    //  var eventInfo = typeof (DomainType).GetEvents().Single();
+    //  var raiseMethod = eventInfo.GetRaiseMethod();
+    //  var addMethod = eventInfo.GetAddMethod();
+    //}
 
-      var eventInfo = typeof (DomainType).GetEvents().Single();
-      var raiseMethod = eventInfo.GetRaiseMethod();
-      var addMethod = eventInfo.GetAddMethod();
+    [Test]
+    public void GetRelatedPropertyInfo_Match ()
+    {
+      var propertyInfo = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property2);
+      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.GetRelatedPropertyInfo ();
+
+      Assert.That (result, Is.EqualTo (propertyInfo));
+    }
+
+    [Test]
+    public void GetRelatedPropertyInfo_NoMatch ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.SimpleMethod ());
+      var result = method.GetRelatedPropertyInfo ();
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetRelatedEventInfo_Match ()
+    {
+      var eventInfo = typeof (DomainType).GetEvent ("Event2", BindingFlags.Instance | BindingFlags.Public);
+      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.GetRelatedEventInfo ();
+
+      Assert.That (result, Is.EqualTo (eventInfo));
+    }
+
+    [Test]
+    public void GetRelatedEventInfo_NoMatch ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.SimpleMethod ());
+      var result = method.GetRelatedEventInfo ();
+
+      Assert.That (result, Is.Null);
     }
 
     public class DomainType
@@ -80,11 +117,11 @@ namespace ActiveAttributes.UnitTests.Extensions
       public string ReturnMethod () { return default (string); }
       public object MixedMethod (string a, int b) { return default (object); }
 
-      public object this[int index] { set { } }
       public string Property { get; set; }
-      private Delegate _delegate;
+      public string Property2 { get; set; }
 
-      public event EventHandler MyEvent;
+      public event EventHandler Event1;
+      public event EventHandler Event2;
     }
   }
 }

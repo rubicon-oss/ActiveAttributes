@@ -25,8 +25,8 @@ namespace ActiveAttributes.Core.Assembly
 {
   public interface ITypeProvider
   {
-    Type GetInvocationType ();
-    Type GetInvocationContextType ();
+    Type InvocationType { get; }
+    Type InvocationContextType { get; }
   }
 
   public class TypeProvider : ITypeProvider
@@ -73,126 +73,34 @@ namespace ActiveAttributes.Core.Assembly
               typeof (FuncInvocationContext<,,,,,>)
           };
 
-
-    private static readonly Type[] _actionOpenTypes
-        = new[]
-          {
-              typeof (Action),
-              typeof (Action<>),
-              typeof (Action<,>),
-              typeof (Action<,,>),
-              typeof (Action<,,,>)
-          };
-
-    private static readonly Type[] _funcOpenTypes
-        = new[]
-          {
-              null,
-              typeof (Func<>),
-              typeof (Func<,>),
-              typeof (Func<,,>),
-              typeof (Func<,,,>),
-              typeof (Func<,,,,>)
-          };
-
-
-    private readonly bool _isAction;
-    private readonly Type[] _instanceType;
-    private readonly Type[] _parameterTypes;
-    private readonly Type[] _returnType;
-    private readonly int _parameterCount;
-
     public TypeProvider (MethodInfo methodInfo)
     {
-      _isAction = methodInfo.ReturnType == typeof (void);
-      _instanceType = new[] { methodInfo.DeclaringType.UnderlyingSystemType };
-      _parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).ToArray();
-      _returnType = new[] { methodInfo.ReturnType };
-      _parameterCount = _parameterTypes.Length;
-    }
+      var instanceType = new[] { methodInfo.DeclaringType.UnderlyingSystemType };
+      var parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).ToArray();
+      var returnType = new[] { methodInfo.ReturnType };
 
-    #region InvocationType
-
-    public Type GetInvocationType ()
-    {
-      if (_isAction)
-        return GetActionInvocationOpenType ();
+      var isAction = methodInfo.ReturnType == typeof (void);
+      if (isAction)
+      {
+        var genericTypes = instanceType.Concat (parameterTypes).ToArray();
+        InvocationType = GetType (_actionInvocationOpenTypes, genericTypes);
+        InvocationContextType = GetType (_actionInvocationContextOpenTypes, genericTypes);
+      }
       else
-        return GetFuncInvocationOpenType();
+      {
+        var genericTypes = instanceType.Concat (parameterTypes).Concat (returnType).ToArray();
+        InvocationType = GetType (_funcInvocationOpenTypes, genericTypes);
+        InvocationContextType = GetType (_funcInvocationContextOpenTypes, genericTypes);
+      }
     }
 
-    private Type GetActionInvocationOpenType ()
+    private Type GetType (Type[] openTypes, Type[] genericTypes)
     {
-      var typeArguments = _instanceType.Concat(_parameterTypes).ToArray();
-      var openType = _actionInvocationOpenTypes[typeArguments.Length - 1];
-      return openType.MakeGenericType (typeArguments);
+      var openType = openTypes[genericTypes.Length - 1];
+      return openType.MakeGenericType (genericTypes);
     }
 
-    private Type GetFuncInvocationOpenType ()
-    {
-      var typeArguments = _instanceType.Concat(_parameterTypes).Concat (_returnType).ToArray();
-      var openType = _funcInvocationOpenTypes[typeArguments.Length - 1];
-      return openType.MakeGenericType (typeArguments);
-    }
-
-    #endregion
-
-    #region InvocationContextType
-
-    public Type GetInvocationContextType ()
-    {
-      if (_isAction)
-        return GetActionInvocationContextType ();
-      else
-        return GetFuncInvocationContextType ();
-    }
-
-    private Type GetActionInvocationContextType ()
-    {
-      var typeArguments = _instanceType.Concat (_parameterTypes).ToArray ();
-      var openType = _actionInvocationContextOpenTypes[typeArguments.Length - 1];
-      return openType.MakeGenericType (typeArguments);
-    }
-
-    private Type GetFuncInvocationContextType ()
-    {
-      var typeArguments = _instanceType.Concat (_parameterTypes).Concat(_returnType).ToArray ();
-      var openType = _funcInvocationContextOpenTypes[typeArguments.Length - 1];
-      return openType.MakeGenericType (typeArguments);
-    }
-
-    #endregion
-
-    #region InvocationActionType
-
-    public Type GetDelegateType ()
-    {
-      if (_isAction)
-        return GetActionDelegateType ();
-      else
-        return GetFuncDelegateType ();
-    }
-
-    private Type GetActionDelegateType ()
-    {
-      var typeArguments = _parameterTypes;
-      var openType = _actionOpenTypes[typeArguments.Length];
-      if (openType.IsGenericTypeDefinition)
-        return openType.MakeGenericType (typeArguments);
-      else
-        return openType;
-    }
-
-    private Type GetFuncDelegateType ()
-    {
-      var typeArguments = _parameterTypes.Concat (_returnType).ToArray();
-      var openType = _actionOpenTypes[typeArguments.Length];
-      if (openType.IsGenericTypeDefinition)
-        return openType.MakeGenericType (typeArguments);
-      else
-        return openType;
-    }
-
-    #endregion
+    public Type InvocationType { get; private set; }
+    public Type InvocationContextType { get; private set; }
   }
 }

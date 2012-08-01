@@ -377,7 +377,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private Expression InnerInvocationCreate<T> (MutableMethodInfo mutableMethod, Expression invocationContext, FieldInfo delegateField)
     {
-      var invocationType = new TypeProvider (mutableMethod).GetInvocationType ();
+      var invocationType = new TypeProvider (mutableMethod).InvocationType;
       var invocationCreate = Expression.New (
           invocationType.GetConstructors().Single(),
           invocationContext,
@@ -387,13 +387,13 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private Expression InvocationContext (MutableMethodInfo mutableMethod)
     {
-      var invocationContextType = new TypeProvider (mutableMethod).GetInvocationContextType();
+      var invocationContextType = new TypeProvider (mutableMethod).InvocationContextType;
       return Expression.Variable (invocationContextType, "ctx");
     }
 
     private NewExpression InvocationContextCreate<T> (MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo)
     {
-      var invocationContextType = new TypeProvider(mutableMethod).GetInvocationContextType();
+      var invocationContextType = new TypeProvider(mutableMethod).InvocationContextType;
       var methodInfoField = GetField<T> (methodInfoFieldInfo);
       var thisExpression = ThisExpression<T>();
       var parameters = mutableMethod.GetParameters().Select (x => Expression.Parameter (x.ParameterType, x.Name)).Cast<Expression>();
@@ -407,7 +407,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       if (index == 1)
       {
-        var invocationType = new TypeProvider (mutableMethod).GetInvocationType ();
+        var invocationType = new TypeProvider (mutableMethod).InvocationType;
         return Expression.Variable (invocationType, "invocation" + index);
       }
       else

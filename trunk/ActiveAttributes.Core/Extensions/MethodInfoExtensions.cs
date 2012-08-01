@@ -53,10 +53,16 @@ namespace ActiveAttributes.Core.Extensions
       if (!methodName.StartsWith ("get_") && !methodName.StartsWith ("set_"))
         return null;
 
-      var propertyName = methodName.Substring (4);
-      var propertyInfo = methodInfo.DeclaringType.GetProperty (
-          propertyName, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      return propertyInfo;
+      var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
+      var typeSequence = methodInfo.DeclaringType.CreateSequence (x => x.BaseType);
+      var properties = typeSequence.SelectMany (x => x.GetProperties (bindingFlags));
+
+      return properties.First (x => methodInfo.IsRootEqualTo(x.GetGetMethod (true)) || methodInfo.IsRootEqualTo(x.GetSetMethod (true)));
+    }
+
+    private static bool IsRootEqualTo (this MethodInfo method1, MethodInfo method2)
+    {
+      return method1.GetBaseDefinition() == method2.GetBaseDefinition();
     }
 
     public static EventInfo GetRelatedEventInfo (this MethodInfo methodInfo)
@@ -65,16 +71,21 @@ namespace ActiveAttributes.Core.Extensions
       if (!methodName.StartsWith ("add_") && !methodName.StartsWith ("remove_"))
         return null;
 
-      var startIndex = methodName.IndexOf('_') + 1;
-      var eventName = methodName.Substring(startIndex);
-      var eventInfo = methodInfo.DeclaringType.GetEvent (
-          eventName, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      return eventInfo;
+      var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
+      var typeSequence = methodInfo.DeclaringType.CreateSequence (x => x.BaseType);
+      var events = typeSequence.SelectMany (x => x.GetEvents (bindingFlags));
+
+      return events.First (x => methodInfo.IsRootEqualTo (x.GetAddMethod (true)) || methodInfo.IsRootEqualTo (x.GetRemoveMethod (true)));
     }
 
-    public static EventInfo GetRelatedEventInfo2 (this MethodInfo methodInfo)
+    public static bool BelongsToEvent (this MethodInfo methodInfo)
     {
-      return null;
+      return methodInfo.GetRelatedEventInfo() != null;
+    }
+
+    public static bool BelongsToProperty (this MethodInfo methodInfo)
+    {
+      return methodInfo.GetRelatedEventInfo() != null;
     }
   }
 }
