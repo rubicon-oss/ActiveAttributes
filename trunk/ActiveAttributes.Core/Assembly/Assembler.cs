@@ -52,7 +52,12 @@ namespace ActiveAttributes.Core.Assembly
     private readonly AspectsProvider _aspectProvider;
     private readonly MethodCopier _methodCopier;
 
-    private Assembler (AspectsProvider aspectProvider, FieldIntroducer fieldIntroducer, ConstructorPatcher constructorPatcher, MethodPatcherFactory methodPatcherFactory, MethodCopier methodCopier)
+    private Assembler (
+        AspectsProvider aspectProvider,
+        FieldIntroducer fieldIntroducer,
+        ConstructorPatcher constructorPatcher,
+        MethodPatcherFactory methodPatcherFactory,
+        MethodCopier methodCopier)
     {
       _fieldIntroducer = fieldIntroducer;
       _constructorPatcher = constructorPatcher;

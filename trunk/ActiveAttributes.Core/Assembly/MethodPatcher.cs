@@ -45,7 +45,6 @@ namespace ActiveAttributes.Core.Assembly
     private readonly MutableMethodInfo _mutableMethod;
     private readonly FieldInfo _methodInfoFieldInfo;
     private readonly FieldInfo _delegateFieldInfo;
-    private readonly FieldIntroducer.Data _fieldData;
     private readonly IList<IAspectGenerator> _aspects;
     private readonly ITypeProvider _typeProvider;
 
@@ -67,7 +66,12 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public MethodPatcher (MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspects, ITypeProvider typeProvider)
+    public MethodPatcher (
+        MutableMethodInfo mutableMethod,
+        FieldInfo methodInfoFieldInfo,
+        FieldInfo delegateFieldInfo,
+        IEnumerable<IAspectGenerator> aspects,
+        ITypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
       _methodInfoFieldInfo = methodInfoFieldInfo;
@@ -78,7 +82,7 @@ namespace ActiveAttributes.Core.Assembly
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
       _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
       _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
-
+      
       _createDelegateMethodInfo = typeof (Delegate).GetMethod (
           "CreateDelegate",
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
@@ -123,8 +127,8 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
-        ParameterExpression invocationContext,
-        MemberExpression originalBodyDelegate,
+        Expression invocationContext,
+        Expression originalBodyDelegate,
         Expression thisExpression)
     {   
       // var invocation0 = new InnerInvocation (invocationContext, _originalBodyDelegate);

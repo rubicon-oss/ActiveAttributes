@@ -134,5 +134,17 @@ namespace ActiveAttributes.UnitTests.Extensions
       public string PropertyElementArg { get; set; }
       public string[] PropertyArrayArg { get; set; }
     }
+
+    [Test]
+    public void name ()
+    {
+      Delegate dDelegate = new Action<object> (MyMethod);
+      dDelegate.DynamicInvoke ("muh");
+    }
+
+    public void MyMethod (object arg1)
+    {
+
+    }
   }
 }

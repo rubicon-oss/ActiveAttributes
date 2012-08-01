@@ -16,7 +16,9 @@
 // 
 
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
@@ -40,19 +42,51 @@ namespace ActiveAttributes.Core.Aspects
     {
     }
 
-    protected virtual void OnAddHandler (IInvocation invocation)
+    protected virtual void OnInterceptAdd (IEventInvocation invocation)
     {
+      if (!_registered)
+      {
+        //invocation.Context.Delegate.
+        _registered = true;
+      }
       _eventHandlers = Delegate.Combine (_eventHandlers, (Delegate) invocation.Context.Arguments[0]);
     }
 
-    protected virtual void OnRemoveHandler (IInvocation invocation)
+    protected virtual void OnInterceptRemove (IEventInvocation invocation)
     {
       _eventHandlers = Delegate.Remove (_eventHandlers, (Delegate) invocation.Context.Arguments[0]);
     }
 
-    protected virtual void OnInvokeHandlers (IInvocation invocation)
+    protected virtual void OnInterceptInvoke (IEventInvocation invocation)
     {
-
     }
   }
+
+  //public class EventInvocationContext<TInstance> : ActionInvocationContext<TInstance>, IEventInvocationContext
+  //{
+  //  public EventInfo EventInfo { get; private set; }
+
+  //  public EventInvocationContext (EventInfo eventInfo, MethodInfo methodInfo, TInstance instance)
+  //    : base (methodInfo, instance)
+  //  {
+  //    EventInfo = eventInfo;
+  //  }
+  //}
+
+  //public class EventInvocation<TInstance> : ActionInvocation<TInstance>, IEventInvocation
+  //{
+  //  public EventInvocation (EventInvocationContext<TInstance> context, Action action)
+  //    : base (context, action)
+  //  {
+  //    Context = context;
+  //  }
+
+  //  IInvocationContext IInvocation.Context
+  //  {
+  //    get { return Context; }
+  //  }
+
+  //  public new IEventInvocationContext Context { get; private set; }
+  //}
 }
+  

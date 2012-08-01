@@ -13,8 +13,9 @@ namespace ActiveAttributes.Core.Contexts
       Instance = instance;
     }
 
-    public MethodInfo MethodInfo { get; private set; }
+    public virtual MethodInfo MethodInfo { get; private set; }
     public TInstance Instance { get; private set; }
+
     public object ReturnValue { get; set; }
 
     public abstract int Count { get; }
