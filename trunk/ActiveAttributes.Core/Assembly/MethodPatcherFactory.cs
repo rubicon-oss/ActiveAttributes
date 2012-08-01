@@ -16,15 +16,16 @@
 // 
 
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public class MethodPatcherFactory
   {
-    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects, ITypeProvider typeProvider)
+    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspects, ITypeProvider typeProvider)
     {
-      return new MethodPatcher (mutableMethod, fieldData, aspects, typeProvider);
+      return new MethodPatcher (mutableMethod, methodInfoFieldInfo, delegateFieldInfo, aspects, typeProvider);
     }
   }
 }

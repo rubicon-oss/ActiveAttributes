@@ -43,10 +43,12 @@ namespace ActiveAttributes.Core.Assembly
   public class MethodPatcher
   {
     private readonly MutableMethodInfo _mutableMethod;
+    private readonly FieldInfo _methodInfoFieldInfo;
+    private readonly FieldInfo _delegateFieldInfo;
     private readonly FieldIntroducer.Data _fieldData;
-    private readonly IEnumerable<IAspectDescriptor> _aspects;
+    private readonly IList<IAspectGenerator> _aspects;
+    private readonly ITypeProvider _typeProvider;
 
-    private ITypeProvider _typeProvider;
 
     private readonly MethodInfo _onInterceptMethodInfo;
     private readonly MethodInfo _onInterceptGetMethodInfo;
@@ -65,11 +67,12 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    public MethodPatcher (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects, ITypeProvider typeProvider)
+    public MethodPatcher (MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspects, ITypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
-      _fieldData = fieldData;
-      _aspects = aspects;
+      _methodInfoFieldInfo = methodInfoFieldInfo;
+      _delegateFieldInfo = delegateFieldInfo;
+      _aspects = aspects.ToList();
       _typeProvider = typeProvider;
 
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
@@ -81,32 +84,18 @@ namespace ActiveAttributes.Core.Assembly
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
     }
 
-    //public void Patch (MutableMethodInfo mutableMethod, FieldIntroducer.Data fieldData, IEnumerable<IAspectDescriptor> aspects)
-    //{
-    //  _typeProvider = new TypeProvider (mutableMethod);
-    //  mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, fieldData, aspects));
-    //}
-
-    public void AddMethodInterception (
-        MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspectGenerators)
+    public void AddMethodInterception ()
     {
       // TODO check for empty aspects
-
-      _typeProvider = new TypeProvider (mutableMethod);
-      mutableMethod.SetBody (ctx => GetPatchedBody (mutableMethod, ctx, methodInfoFieldInfo, delegateFieldInfo, aspectGenerators));
+      _mutableMethod.SetBody (GetPatchedBody);
     }
 
-    private Expression GetPatchedBody (
-        MutableMethodInfo mutableMethod,
-        MethodBodyModificationContext ctx,
-        FieldInfo methodInfoFieldInfo,
-        FieldInfo delegateFieldInfo,
-        IEnumerable<IAspectGenerator> aspectGenerators)
+    private Expression GetPatchedBody (MethodBodyModificationContext ctx)
     {
-      var generatorsAsList = aspectGenerators.ToList();
+      var generatorsAsList = _aspects.ToList();
 
-      var methodInfoField = Expression.Field (ctx.This, methodInfoFieldInfo);
-      var delegateField = Expression.Field (ctx.This, delegateFieldInfo);
+      var methodInfoField = Expression.Field (ctx.This, _methodInfoFieldInfo);
+      var delegateField = Expression.Field (ctx.This, _delegateFieldInfo);
 
       // InvocationContext<...> ctx = new InvocationContext<TInstance, TA1[, ...][, TR]> (_methodInfo, this, arg1, arg2[, ...]);
       var invocationContextType = _typeProvider.GetInvocationContextType ();
@@ -114,13 +103,12 @@ namespace ActiveAttributes.Core.Assembly
       var invocationContextCreateExpression = GetInvocationContextNewExpression (invocationContextType, methodInfoField, ctx.This, ctx.Parameters);
       var invocationContextAssignExpression = Expression.Assign (invocationContext, invocationContextCreateExpression);
 
-      var invocationVariablesAndInitializations = GetInvocationVariablesAndAssignExpressions (
-          generatorsAsList, mutableMethod, invocationContext, delegateField, ctx.This);
+      var invocationVariablesAndInitializations = GetInvocationVariablesAndAssignExpressions (invocationContext, delegateField, ctx.This);
       var invocations = invocationVariablesAndInitializations.Item1;
       var invocationInitExpressions = invocationVariablesAndInitializations.Item2;
 
       var outermostAspect = generatorsAsList.Last ().GetStorageExpression (ctx.This);
-      var outermostAspectInterceptMethod = GetAspectInterceptMethod (generatorsAsList.Last ().Descriptor.AspectType, mutableMethod);
+      var outermostAspectInterceptMethod = GetAspectInterceptMethod (_aspects.Last ().Descriptor.AspectType);
       var outermostInvocation = invocations.Last ();
       var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
 
@@ -135,8 +123,6 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     private Tuple<ParameterExpression[], Expression[]> GetInvocationVariablesAndAssignExpressions (
-        List<IAspectGenerator> aspects,
-        MutableMethodInfo mutableMethod,
         ParameterExpression invocationContext,
         MemberExpression originalBodyDelegate,
         Expression thisExpression)
@@ -145,10 +131,10 @@ namespace ActiveAttributes.Core.Assembly
       // var invocation1 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[0], method), invocation0);
       // var invocation2 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[1], method), invocation1);
 
-      var invocations = new ParameterExpression[aspects.Count];
-      var invocationAssignExpressions = new Expression[aspects.Count];
+      var invocations = new ParameterExpression[_aspects.Count];
+      var invocationAssignExpressions = new Expression[_aspects.Count];
 
-      for (var i = 0; i < aspects.Count; i++)
+      for (var i = 0; i < _aspects.Count; i++)
       {
         Expression invocationCreateExpression;
         if (i == 0)
@@ -157,9 +143,9 @@ namespace ActiveAttributes.Core.Assembly
         }
         else
         {
-          var innerAspectType = aspects[i - 1].Descriptor.AspectType;
-          var innerAspect = aspects[i - 1].GetStorageExpression (thisExpression);
-          var innerAspectInterceptMethod = GetAspectInterceptMethod (innerAspectType, mutableMethod);
+          var innerAspectType = _aspects[i - 1].Descriptor.AspectType;
+          var innerAspect = _aspects[i - 1].GetStorageExpression (thisExpression);
+          var innerAspectInterceptMethod = GetAspectInterceptMethod (innerAspectType);
           var innerInvocation = invocations[i - 1];
 
           invocationCreateExpression = GetOuterInvocationCreationExpression (
@@ -228,13 +214,13 @@ namespace ActiveAttributes.Core.Assembly
       return outermostAspectCall;
     }
 
-    private MethodInfo GetAspectInterceptMethod (Type aspectType, MutableMethodInfo mutableMethod)
+    private MethodInfo GetAspectInterceptMethod (Type aspectType)
     {
       if (typeof (MethodInterceptionAspectAttribute).IsAssignableFrom (aspectType))
         return _onInterceptMethodInfo;
       else
       {
-        if (mutableMethod.Name.StartsWith ("set"))
+        if (_mutableMethod.Name.StartsWith ("set"))
           return _onInterceptSetMethodInfo;
         else
           return _onInterceptGetMethodInfo;

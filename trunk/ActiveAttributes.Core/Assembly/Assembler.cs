@@ -38,25 +38,25 @@ namespace ActiveAttributes.Core.Assembly
     {
       var methodCopier = new MethodCopier();
       var aspectProvider = new AspectsProvider();
-      var methodPatcher = new MethodPatcher();
+      var methodPatcherFactory = new MethodPatcherFactory();
       var constructorPatcher = new ConstructorPatcher();
       var fieldIntroducer = new FieldIntroducer();
-      Singleton = new Assembler (aspectProvider, fieldIntroducer, constructorPatcher, methodPatcher, methodCopier);
+      Singleton = new Assembler (aspectProvider, fieldIntroducer, constructorPatcher, methodPatcherFactory, methodCopier);
     }
 
     public static Assembler Singleton { get; private set; }
 
     private readonly FieldIntroducer _fieldIntroducer;
     private readonly ConstructorPatcher _constructorPatcher;
-    private readonly MethodPatcher _methodPatcher;
+    private readonly MethodPatcherFactory _methodPatcherFactory;
     private readonly AspectsProvider _aspectProvider;
     private readonly MethodCopier _methodCopier;
 
-    private Assembler (AspectsProvider aspectProvider, FieldIntroducer fieldIntroducer, ConstructorPatcher constructorPatcher, MethodPatcher methodPatcher, MethodCopier methodCopier)
+    private Assembler (AspectsProvider aspectProvider, FieldIntroducer fieldIntroducer, ConstructorPatcher constructorPatcher, MethodPatcherFactory methodPatcherFactory, MethodCopier methodCopier)
     {
       _fieldIntroducer = fieldIntroducer;
       _constructorPatcher = constructorPatcher;
-      _methodPatcher = methodPatcher;
+      _methodPatcherFactory = methodPatcherFactory;
       _aspectProvider = aspectProvider;
       _methodCopier = methodCopier;
     }
@@ -165,10 +165,16 @@ namespace ActiveAttributes.Core.Assembly
           // add initialization
           _constructorPatcher.AddMethodInfoAndDelegateInitialization (mutableMethod, methodInfoField, delegateField, copiedMethod);
           _constructorPatcher.AddAspectInitialization (
-              mutableType, staticMethodLevelArrayAccessor, instanceMethodLevelArrayAccessor, staticMethodLevelAspectGenerators, instanceMethodLevelAspectGenerators);
+              mutableType,
+              staticMethodLevelArrayAccessor,
+              instanceMethodLevelArrayAccessor,
+              staticMethodLevelAspectGenerators,
+              instanceMethodLevelAspectGenerators);
 
           // add interception
-          _methodPatcher.AddMethodInterception (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators);
+          var typeProvider = new TypeProvider (mutableMethod);
+          var methodPatcher = _methodPatcherFactory.GetMethodPatcher (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators, typeProvider);
+          methodPatcher.AddMethodInterception ();
 
           s_log.InfoFormat ("Intercepting method '{0}' with:", mutableMethod);
           foreach (var aspect in allMatchingAspectGenerators)

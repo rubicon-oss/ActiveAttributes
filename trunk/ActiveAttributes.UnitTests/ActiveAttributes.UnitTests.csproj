@@ -77,7 +77,6 @@
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectGeneratorTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
-    <Compile Include="Assembly\MethodPatcherTest2.cs" />
     <Compile Include="Assembly\AspectDescriptorTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />

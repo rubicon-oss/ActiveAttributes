@@ -91,6 +91,8 @@ namespace ActiveAttributes.Core.Aspects
              MatchesArguments (methodInfo);
     }
 
+    #region Match methods
+
     private bool MatchesType (Type expected, Type actual)
     {
       return expected == null || expected.IsAssignableFrom (actual);
@@ -147,5 +149,7 @@ namespace ActiveAttributes.Core.Aspects
     {
       return "^" + wildcardPattern.Replace ("*", ".*") + "$";
     }
+
+    #endregion
   }
 }
