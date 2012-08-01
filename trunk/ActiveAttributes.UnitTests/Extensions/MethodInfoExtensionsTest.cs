@@ -62,14 +62,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
     }
 
-    //[Test]
-    //public void GetEventInfo ()
-    //{
-    //  var eventInfo = typeof (DomainType).GetEvents().Single();
-    //  var raiseMethod = eventInfo.GetRaiseMethod();
-    //  var addMethod = eventInfo.GetAddMethod();
-    //}
-
     [Test]
     public void GetRelatedPropertyInfo_Match ()
     {
@@ -108,6 +100,47 @@ namespace ActiveAttributes.UnitTests.Extensions
       var result = method.GetRelatedEventInfo ();
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void IsPropertyAccessor_True ()
+    {
+      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.IsPropertyAccessor ();
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsPropertyAccessor_False ()
+    {
+      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.IsPropertyAccessor ();
+
+      Assert.That (result, Is.False);
+    }
+
+
+    [Test]
+    public void IsEventAccessor_True ()
+    {
+      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.IsEventAccessor ();
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void IsEventAccessor_False ()
+    {
+      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
+
+      var result = accessorMethod.IsEventAccessor ();
+
+      Assert.That (result, Is.False);
     }
 
     public class DomainType

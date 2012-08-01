@@ -186,12 +186,12 @@ namespace ActiveAttributes.IntegrationTests
 
       public class ProceedPropertyAspectAttribute : PropertyInterceptionAspectAttribute
       {
-        public override void OnInterceptGet (IInvocation invocation)
+        public override void OnInterceptGet (IPropertyInvocation invocation)
         {
           invocation.Proceed();
         }
 
-        public override void OnInterceptSet (IInvocation invocation)
+        public override void OnInterceptSet (IPropertyInvocation invocation)
         {
           invocation.Proceed();
         }
@@ -199,11 +199,11 @@ namespace ActiveAttributes.IntegrationTests
 
       public class NoProceedPropertyAspectAttribute : PropertyInterceptionAspectAttribute
       {
-        public override void OnInterceptGet (IInvocation invocation)
+        public override void OnInterceptGet (IPropertyInvocation invocation)
         {
         }
 
-        public override void OnInterceptSet (IInvocation invocation)
+        public override void OnInterceptSet (IPropertyInvocation invocation)
         {
         }
       }

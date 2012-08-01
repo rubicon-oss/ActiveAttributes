@@ -177,7 +177,7 @@ namespace ActiveAttributes.Core.Assembly
               instanceMethodLevelAspectGenerators);
 
           // add interception
-          var typeProvider = new TypeProvider (mutableMethod);
+          var typeProvider = new TypeProvider (mutableMethod.UnderlyingSystemMethodInfo);
           var methodPatcher = _methodPatcherFactory.GetMethodPatcher (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators, typeProvider);
           methodPatcher.AddMethodInterception ();
 

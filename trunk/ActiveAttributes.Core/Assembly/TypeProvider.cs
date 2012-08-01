@@ -16,9 +16,11 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Assembly
@@ -79,22 +81,26 @@ namespace ActiveAttributes.Core.Assembly
       var parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).ToArray();
       var returnType = new[] { methodInfo.ReturnType };
 
-      var isAction = methodInfo.ReturnType == typeof (void);
-      if (isAction)
-      {
-        var genericTypes = instanceType.Concat (parameterTypes).ToArray();
-        InvocationType = GetType (_actionInvocationOpenTypes, genericTypes);
-        InvocationContextType = GetType (_actionInvocationContextOpenTypes, genericTypes);
-      }
-      else
-      {
-        var genericTypes = instanceType.Concat (parameterTypes).Concat (returnType).ToArray();
-        InvocationType = GetType (_funcInvocationOpenTypes, genericTypes);
-        InvocationContextType = GetType (_funcInvocationContextOpenTypes, genericTypes);
-      }
+      var isPropertyAccessor = methodInfo.IsPropertyAccessor();
+      var isEventAccessor = methodInfo.IsEventAccessor ();
+      //if (!isPropertyAccessor && !isEventAccessor)
+      //{
+        if (methodInfo.IsAction ())
+        {
+          var genericTypes = instanceType.Concat (parameterTypes).ToArray ();
+          InvocationType = GetType (_actionInvocationOpenTypes, genericTypes);
+          InvocationContextType = GetType (_actionInvocationContextOpenTypes, genericTypes);
+        }
+        else
+        {
+          var genericTypes = instanceType.Concat (parameterTypes).Concat (returnType).ToArray ();
+          InvocationType = GetType (_funcInvocationOpenTypes, genericTypes);
+          InvocationContextType = GetType (_funcInvocationContextOpenTypes, genericTypes);
+        }
+      //}
     }
 
-    private Type GetType (Type[] openTypes, Type[] genericTypes)
+    private Type GetType (IList<Type> openTypes, Type[] genericTypes)
     {
       var openType = openTypes[genericTypes.Length - 1];
       return openType.MakeGenericType (genericTypes);

@@ -57,7 +57,7 @@ namespace ActiveAttributes.Core.Extensions
       var typeSequence = methodInfo.DeclaringType.CreateSequence (x => x.BaseType);
       var properties = typeSequence.SelectMany (x => x.GetProperties (bindingFlags));
 
-      return properties.First (x => methodInfo.IsRootEqualTo(x.GetGetMethod (true)) || methodInfo.IsRootEqualTo(x.GetSetMethod (true)));
+      return properties.FirstOrDefault (x => methodInfo.IsRootEqualTo(x.GetGetMethod (true)) || methodInfo.IsRootEqualTo(x.GetSetMethod (true)));
     }
 
     private static bool IsRootEqualTo (this MethodInfo method1, MethodInfo method2)
@@ -75,17 +75,27 @@ namespace ActiveAttributes.Core.Extensions
       var typeSequence = methodInfo.DeclaringType.CreateSequence (x => x.BaseType);
       var events = typeSequence.SelectMany (x => x.GetEvents (bindingFlags));
 
-      return events.First (x => methodInfo.IsRootEqualTo (x.GetAddMethod (true)) || methodInfo.IsRootEqualTo (x.GetRemoveMethod (true)));
+      return events.FirstOrDefault (x => methodInfo.IsRootEqualTo (x.GetAddMethod (true)) || methodInfo.IsRootEqualTo (x.GetRemoveMethod (true)));
     }
 
-    public static bool BelongsToEvent (this MethodInfo methodInfo)
+    public static bool IsPropertyAccessor (this MethodInfo methodInfo)
+    {
+      return methodInfo.GetRelatedPropertyInfo() != null;
+    }
+
+    public static bool IsEventAccessor (this MethodInfo methodInfo)
     {
       return methodInfo.GetRelatedEventInfo() != null;
     }
 
-    public static bool BelongsToProperty (this MethodInfo methodInfo)
+    public static bool IsAction (this MethodInfo methodInfo)
     {
-      return methodInfo.GetRelatedEventInfo() != null;
+      return methodInfo.ReturnType == typeof (void);
+    }
+
+    public static bool IsFunc (this MethodInfo methodInfo)
+    {
+      return methodInfo.ReturnType != typeof (void);
     }
   }
 }

@@ -37,7 +37,7 @@ namespace ActiveAttributes.Core.Aspects
     {
     }
 
-    public abstract void OnInterceptGet (IInvocation invocation);
-    public abstract void OnInterceptSet (IInvocation invocation);
+    public abstract void OnInterceptGet (IPropertyInvocation invocation);
+    public abstract void OnInterceptSet (IPropertyInvocation invocation);
   }
 }

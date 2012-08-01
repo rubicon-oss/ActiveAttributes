@@ -80,6 +80,8 @@ namespace ActiveAttributes.IntegrationTests
       {
         return 1;
       }
+
+
     }
 
     public class ReturnNullAspectAttribute : MethodInterceptionAspectAttribute
@@ -95,6 +97,18 @@ namespace ActiveAttributes.IntegrationTests
       public override void OnIntercept (IInvocation invocation)
       {
         invocation.Context.ReturnValue = 10;
+      }
+    }
+
+    public class ReturnTwentyAspectAttribute : PropertyInterceptionAspectAttribute
+    {
+      public override void OnInterceptGet (IPropertyInvocation invocation)
+      {
+        
+      }
+
+      public override void OnInterceptSet (IPropertyInvocation invocation)
+      {
       }
     }
   }
