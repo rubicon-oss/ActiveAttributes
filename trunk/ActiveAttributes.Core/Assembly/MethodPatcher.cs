@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
@@ -43,6 +44,8 @@ namespace ActiveAttributes.Core.Assembly
   public class MethodPatcher
   {
     private readonly MutableMethodInfo _mutableMethod;
+    private readonly FieldInfo _propertyInfoFieldInfo;
+    private readonly FieldInfo _eventInfoFieldInfo;
     private readonly FieldInfo _methodInfoFieldInfo;
     private readonly FieldInfo _delegateFieldInfo;
     private readonly IList<IAspectGenerator> _aspects;
@@ -68,12 +71,16 @@ namespace ActiveAttributes.Core.Assembly
 
     public MethodPatcher (
         MutableMethodInfo mutableMethod,
+        FieldInfo propertyInfoFieldInfo,
+        FieldInfo eventInfoFieldInfo,
         FieldInfo methodInfoFieldInfo,
         FieldInfo delegateFieldInfo,
         IEnumerable<IAspectGenerator> aspects,
         ITypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
+      _propertyInfoFieldInfo = propertyInfoFieldInfo;
+      _eventInfoFieldInfo = eventInfoFieldInfo;
       _methodInfoFieldInfo = methodInfoFieldInfo;
       _delegateFieldInfo = delegateFieldInfo;
       _aspects = aspects.ToList();
@@ -166,12 +173,16 @@ namespace ActiveAttributes.Core.Assembly
       return Tuple.Create (invocations, invocationAssignExpressions);
     }
 
-    private static NewExpression GetInvocationContextNewExpression (
+    private NewExpression GetInvocationContextNewExpression (
         Type invocationContextType, Expression methodInfo, Expression thisExpression, IEnumerable<ParameterExpression> parameters)
     {
       var invocationContextConstructor = invocationContextType.GetConstructors().Single();
 
       var invocationContextArguments = new[] { methodInfo, thisExpression }.Concat (parameters.Cast<Expression>());
+      if (typeof (IPropertyInvocationContext).IsAssignableFrom (invocationContextType))
+      {
+        invocationContextArguments = new[] { Expression.Field (thisExpression, _propertyInfoFieldInfo) }.Concat (invocationContextArguments);
+      }
 
       var invocationContextCreateExpression = Expression.New (invocationContextConstructor, invocationContextArguments);
       return invocationContextCreateExpression;

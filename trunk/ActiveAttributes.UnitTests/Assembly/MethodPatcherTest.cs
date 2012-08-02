@@ -95,6 +95,8 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     public class DomainType : DomainTypeBase
     {
+      public PropertyInfo PropertyInfo;
+      public EventInfo EventInfo;
       public MethodInfo MethodInfo;
       public Action Delegate;
       public virtual void Method () { }
@@ -438,11 +440,13 @@ namespace ActiveAttributes.UnitTests.Assembly
           {
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
+            var propertyInfoField = typeof (T).GetFields().Where (x => x.Name == "PropertyInfo").Single();
+            var eventInfoField = typeof (T).GetFields().Where (x => x.Name == "EventInfo").Single();
             var methodInfoField = typeof (T).GetFields().Where (x => x.Name == "MethodInfo").Single();
             var delegateField = typeof (T).GetFields().Where (x => x.Name == "Delegate").Single();
 
             var typeProvider = new TypeProvider (mutableMethod);
-            var patcher = new MethodPatcher (mutableMethod, methodInfoField, delegateField, aspects, typeProvider);
+            var patcher = new MethodPatcher (mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, aspects, typeProvider);
             patcher.AddMethodInterception();
 
             test (mutableMethod, methodInfoField, delegateField);

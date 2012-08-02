@@ -141,8 +141,11 @@ namespace ActiveAttributes.Core.Assembly
         // get field data
         var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
 
+        var propertyInfoField = methodLevelFieldData.PropertyInfoField;
+        var eventInfoField = methodLevelFieldData.EventInfoField;
         var methodInfoField = methodLevelFieldData.MethodInfoField;
         var delegateField = methodLevelFieldData.DelegateField;
+
         var instanceMethodLevelArrayAccessor = new InstanceArrayAccessor (methodLevelFieldData.InstanceAspectsField);
         var staticMethodLevelArrayAccessor = new StaticArrayAccessor (methodLevelFieldData.StaticAspectsField);
 
@@ -168,7 +171,8 @@ namespace ActiveAttributes.Core.Assembly
           var copiedMethod = _methodCopier.GetCopy (mutableMethod);
 
           // add initialization
-          _constructorPatcher.AddMethodInfoAndDelegateInitialization (mutableMethod, methodInfoField, delegateField, copiedMethod);
+          _constructorPatcher.AddReflectionAndDelegateInitialization (
+              mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, copiedMethod);
           _constructorPatcher.AddAspectInitialization (
               mutableType,
               staticMethodLevelArrayAccessor,
@@ -178,7 +182,7 @@ namespace ActiveAttributes.Core.Assembly
 
           // add interception
           var typeProvider = new TypeProvider (mutableMethod.UnderlyingSystemMethodInfo);
-          var methodPatcher = _methodPatcherFactory.GetMethodPatcher (mutableMethod, methodInfoField, delegateField, allMatchingAspectGenerators, typeProvider);
+          var methodPatcher = _methodPatcherFactory.GetMethodPatcher (mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, allMatchingAspectGenerators, typeProvider);
           methodPatcher.AddMethodInterception ();
 
           s_log.InfoFormat ("Intercepting method '{0}' with:", mutableMethod);

@@ -69,12 +69,31 @@ namespace ActiveAttributes.Core.Aspects
       return MemberwiseClone();
     }
 
-    public Type RequiresTargetType { get; set; }
-    public string RequiresMemberName { get; set; }
-    public string RequiresNamespace { get; set; }
+    /// <summary>Use only for assembly-level attributes.</summary>
+    public Type RequiresTargetType { get; set; }      // AffectedType = typeof(T1), AffectedTypes = new [] {typeof(T1),typeof(T2)}
+    // condition for interface types: target type implements interface-type
+    //           for class types: target type is equal to class-type
+    //              if aspect has [AspectUsage (Inherits=true)] also target type inherits from class-type
+    /// <summary>Use only for assembly-level attributes.</summary>
+    public string RequiresNamespace { get; set; }     // AffectedTypeNamePattern/Patterns
+    /// <summary>Use only for assembly-level attributes.</summary>
+    public bool ApplyToDerivedTypes { get; set; }
+
+
+    //public Type ApplyTo { get; set; }
+    //[assembly: LogAspect ("LoggingNamespace....", ApplyTo = typeof (Muh))]
+    //[assembly: LogAspect ("LoggingNamespace....", ApplyTo = typeof (Woof))]
+
+    //void Setup ()
+    //{
+    //   ApplyAspect (() => new LogAspectAttribute("LoggingNamespace..."), typeof (Meow)); 
+    //}
+
+    // MemberNameFilter, MemberVisibilityFilter, MemberCustomAttributeFilter, MemberFlagsFilter
+    public string RequiresMemberName { get; set; }    // 
     public Visibility RequiresMemberVisibility { get; set; }
     public Type[] RequiresMarkers { get; set; }
-    public TargetAttributes RequiresMemberAttributes { get; set; }
+    public MemberFlags RequiresMemberAttributes { get; set; }
     public Type RequiresReturnType { get; set; }
     public Type[] RequiresArguments { get; set; }
 

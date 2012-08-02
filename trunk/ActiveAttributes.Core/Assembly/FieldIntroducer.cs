@@ -29,6 +29,7 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   public class FieldIntroducer
   {
+    private int _counter = 1;
     private const string c_instancePrefix = "_m_";
     private const string c_staticPrefix = "_s_";
 
@@ -58,23 +59,32 @@ namespace ActiveAttributes.Core.Assembly
     public Data IntroduceMethodLevelFields (MutableMethodInfo mutableMethod)
     {
       var mutableType = (MutableType) mutableMethod.DeclaringType;
-      var uniqueMethodName = mutableMethod.Name + Guid.NewGuid ();
+      var uniqueMethodName = mutableMethod.Name + _counter++;
+      var instanceBaseName = c_instancePrefix + uniqueMethodName;
 
-      var methodInfoFieldName = c_instancePrefix + uniqueMethodName + "_MethodInfo";
+      var propertyInfoFieldName = instanceBaseName + "_PropertyInfo";
+      var propertyInfoField = mutableType.AddField (typeof (PropertyInfo), propertyInfoFieldName);
+
+      var eventInfoFieldName = instanceBaseName + "_EventInfo";
+      var eventInfoField = mutableType.AddField (typeof (EventInfo), eventInfoFieldName);
+
+      var methodInfoFieldName = instanceBaseName + "_MethodInfo";
       var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
 
       var delegateType = mutableMethod.GetDelegateType ();
-      var delegateFieldName = c_instancePrefix + uniqueMethodName + "_Delegate";
+      var delegateFieldName = instanceBaseName + "_Delegate";
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
       var staticAspectsFieldName = c_staticPrefix + uniqueMethodName + "_StaticAspects";
       var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
 
-      var instanceAspectsFieldName = c_instancePrefix + uniqueMethodName + "_InstanceAspects";
+      var instanceAspectsFieldName = instanceBaseName + "_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
 
       return new Data
       {
+        PropertyInfoField = propertyInfoField,
+        EventInfoField = eventInfoField,
         MethodInfoField = methodInfoField,
         DelegateField = delegateField,
         StaticAspectsField = staticAspectsField,
@@ -84,6 +94,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public struct Data
     {
+      public FieldInfo PropertyInfoField;
+      public FieldInfo EventInfoField;
       public FieldInfo MethodInfoField;
       public FieldInfo DelegateField;
       public FieldInfo StaticAspectsField;

@@ -23,9 +23,9 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class MethodPatcherFactory
   {
-    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspects, ITypeProvider typeProvider)
+    public MethodPatcher GetMethodPatcher (MutableMethodInfo mutableMethod, FieldInfo propertyInfoFieldInfo, FieldInfo eventInfoFieldInfo, FieldInfo methodInfoFieldInfo, FieldInfo delegateFieldInfo, IEnumerable<IAspectGenerator> aspects, ITypeProvider typeProvider)
     {
-      return new MethodPatcher (mutableMethod, methodInfoFieldInfo, delegateFieldInfo, aspects, typeProvider);
+      return new MethodPatcher (mutableMethod, propertyInfoFieldInfo, eventInfoFieldInfo, methodInfoFieldInfo, delegateFieldInfo, aspects, typeProvider);
     }
   }
 }

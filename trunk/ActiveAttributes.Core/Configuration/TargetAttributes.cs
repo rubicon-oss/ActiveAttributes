@@ -18,11 +18,19 @@ using System;
 
 namespace ActiveAttributes.Core.Configuration
 {
-  public enum TargetAttributes
+  [Flags]
+  public enum MemberFlags
   {
-    Static,
-    Final,
-    Virtual,
-    NewSlot
+    Static = 1,
+    NonStatic = 2,
+    Final = 4,
+    NonFinal = 8,
+    Virtual = 16,
+    NonVirtual = 32,
+    NewSlot = 64,
+    NonNewSlot = 128,
+    Overridable = NonStatic | NonFinal | Virtual, // default
+    All = ~0,
+    None = 0,
   }
 }

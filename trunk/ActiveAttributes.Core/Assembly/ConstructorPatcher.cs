@@ -40,8 +40,10 @@ namespace ActiveAttributes.Core.Assembly
   /// </remarks>
   public class ConstructorPatcher
   {
-    public void AddMethodInfoAndDelegateInitialization (
+    public void AddReflectionAndDelegateInitialization (
         MutableMethodInfo mutableMethod,
+        FieldInfo propertyInfoFieldInfo,
+        FieldInfo eventInfoFieldInfo,
         FieldInfo methodInfoFieldInfo,
         FieldInfo delegateFieldInfo,
         MutableMethodInfo copiedMethod)
@@ -49,6 +51,8 @@ namespace ActiveAttributes.Core.Assembly
       var mutableType = (MutableType) mutableMethod.DeclaringType;
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
+              GetPropertyInfoAssignExpression (propertyInfoFieldInfo, ctx, mutableMethod),
+              GetEventInfoAssignExpression (eventInfoFieldInfo, ctx, mutableMethod),
               GetMethodInfoAssignExpression (methodInfoFieldInfo, ctx, mutableMethod),
               GetDelegateAssignExpression (delegateFieldInfo, ctx, copiedMethod));
 
@@ -79,6 +83,34 @@ namespace ActiveAttributes.Core.Assembly
       return methodInfoAssignExpression;
     }
 
+    private Expression GetPropertyInfoAssignExpression (FieldInfo propertyInfoFieldInfo, BodyContextBase ctx, MutableMethodInfo methodInfo)
+    {
+      var propertyInfo = methodInfo.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo ();
+      if (propertyInfo == null)
+        return Expression.Empty();
+
+      var propertyInfoField = Expression.Field (ctx.This, propertyInfoFieldInfo);
+      var propertyInfoGetExpression =
+          Expression.Call (
+          Expression.Constant (methodInfo.UnderlyingSystemMethodInfo.DeclaringType, typeof (Type)),
+              typeof (Type).GetMethod ("GetProperty", new[] { typeof (string), typeof (BindingFlags) }),
+              Expression.Constant (propertyInfo.Name),
+              Expression.Constant (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+      var propertyInfoAssignExpression = Expression.Assign (propertyInfoField, propertyInfoGetExpression);
+
+      return propertyInfoAssignExpression;
+    }
+
+    private Expression GetEventInfoAssignExpression (FieldInfo eventInfoFieldInfo, BodyContextBase ctx, MutableMethodInfo methodInfo)
+    {
+      var eventInfoField = Expression.Field (ctx.This, eventInfoFieldInfo);
+
+      var eventInfo = methodInfo.UnderlyingSystemMethodInfo.GetRelatedEventInfo ();
+      var eventInfoConstantExpression = Expression.Constant (null, typeof (EventInfo)); // TODO HOW TO TEST????
+      var eventInfoAssignExpression = Expression.Assign (eventInfoField, eventInfoConstantExpression);
+
+      return eventInfoAssignExpression;
+    }
 
     public void AddAspectInitialization (
         MutableType mutableType,

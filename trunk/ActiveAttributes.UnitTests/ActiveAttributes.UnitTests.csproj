@@ -84,6 +84,7 @@
     <Compile Include="Assembly\MethodPatcherTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
+    <Compile Include="Assembly\TypeProviderTest.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />

@@ -44,6 +44,10 @@ namespace ActiveAttributes.Core.Extensions
           .FirstOrDefault();
     }
 
+    public static bool IsIndexer (this PropertyInfo propertyInfo)
+    {
+      return propertyInfo.GetIndexParameters().Length == 1;
+    }
 
 
     public static PropertyInfo GetProperty<TObject, TProperty> (Expression<Func<TObject, TProperty>> expression)

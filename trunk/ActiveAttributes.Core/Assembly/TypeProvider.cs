@@ -22,6 +22,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
+using Castle.DynamicProxy.Generators;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -81,28 +82,67 @@ namespace ActiveAttributes.Core.Assembly
       var parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).ToArray();
       var returnType = new[] { methodInfo.ReturnType };
 
-      var isPropertyAccessor = methodInfo.IsPropertyAccessor();
-      var isEventAccessor = methodInfo.IsEventAccessor ();
-      //if (!isPropertyAccessor && !isEventAccessor)
-      //{
-        if (methodInfo.IsAction ())
+      var invocationOpenType = default (Type);
+      var invocationContextOpenType = default (Type);
+
+      var genericTypes = methodInfo.IsAction()
+        ? instanceType.Concat (parameterTypes).ToArray ()
+        : instanceType.Concat (parameterTypes).Concat (returnType).ToArray ();        
+
+      if (methodInfo.IsPropertyAccessor())
+      {
+        var propertyInfo = methodInfo.GetRelatedPropertyInfo();
+        if (methodInfo.IsAction())
         {
-          var genericTypes = instanceType.Concat (parameterTypes).ToArray ();
-          InvocationType = GetType (_actionInvocationOpenTypes, genericTypes);
-          InvocationContextType = GetType (_actionInvocationContextOpenTypes, genericTypes);
+          if (propertyInfo.IsIndexer ())
+          {
+            invocationOpenType = typeof (IndexerSetInvocation<,,>);
+            invocationContextOpenType = typeof (IndexerSetInvocationContext<,,>);
+          }
+          else
+          {
+            invocationOpenType = typeof (PropertySetInvocation<,>);
+            invocationContextOpenType = typeof (PropertySetInvocationContext<,>);
+          }
         }
         else
         {
-          var genericTypes = instanceType.Concat (parameterTypes).Concat (returnType).ToArray ();
-          InvocationType = GetType (_funcInvocationOpenTypes, genericTypes);
-          InvocationContextType = GetType (_funcInvocationContextOpenTypes, genericTypes);
+          if (propertyInfo.IsIndexer ())
+          {
+            invocationOpenType = typeof (IndexerGetInvocation<,,>);
+            invocationContextOpenType = typeof (IndexerGetInvocationContext<,,>);
+          }
+          else
+          {
+            invocationOpenType = typeof (PropertyGetInvocation<,>);
+            invocationContextOpenType = typeof (PropertyGetInvocationContext<,>);
+          }
         }
-      //}
+      }
+      else if (methodInfo.IsEventAccessor ())
+      {
+        throw new NotImplementedException();
+      }
+      else
+      {
+        if (methodInfo.IsAction ())
+        {
+          invocationOpenType = _actionInvocationOpenTypes[genericTypes.Length - 1];
+          invocationContextOpenType = _actionInvocationContextOpenTypes[genericTypes.Length - 1];
+        }
+        else
+        {
+          invocationOpenType = _funcInvocationOpenTypes[genericTypes.Length - 1];
+          invocationContextOpenType = _funcInvocationContextOpenTypes[genericTypes.Length - 1];
+        }
+      }
+
+      InvocationType = invocationOpenType.MakeGenericType (genericTypes);
+      InvocationContextType = invocationContextOpenType.MakeGenericType (genericTypes);
     }
 
-    private Type GetType (IList<Type> openTypes, Type[] genericTypes)
+    private Type GetType (Type openType, Type[] genericTypes)
     {
-      var openType = openTypes[genericTypes.Length - 1];
       return openType.MakeGenericType (genericTypes);
     }
 
