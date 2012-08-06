@@ -22,8 +22,12 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
 using JetBrains.Annotations;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.TypePipe.Expressions;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -34,6 +38,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     private MethodInfo _methodInfo;
     private MethodInfo _copiedMethodInfo;
 
+
+
     [SetUp]
     public override void SetUp ()
     {
@@ -42,6 +48,143 @@ namespace ActiveAttributes.UnitTests.Assembly
       _copiedMethodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method_Copy ()));
       DomainTypeBase.StaticAspects = null;
     }
+
+    public class DomainClassBase
+    {
+      public PropertyInfo PropertyInfo;
+      public EventInfo EventInfo;
+      public MethodInfo MethodInfo;
+    }
+
+    public class DomainClass : DomainClassBase
+    {
+      public Action Delegate; 
+      public void Method () { }
+    }
+
+    public class DomainClass2 : DomainClassBase
+    {
+      public Action<string> Delegate;
+      public string Property { get; set; }
+    }
+
+    [Test]
+    public void AssignMethodInfo ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method ());
+      Action<IEnumerable<MutableConstructorInfo>> test = constructors =>
+      {
+        var methodInfoAssign = MethodInfoAssign (methodInfo);
+        var constructor = constructors.Single ();
+        ExpressionTreeComparer2.CheckTreeContains (constructor.Body, methodInfoAssign);
+      };
+
+      PatchAndTest (methodInfo, methodInfo, test);
+    }
+
+    [Test]
+    public void AssignDelegate ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method ());
+      Action<IEnumerable<MutableConstructorInfo>> test = constructors =>
+      {
+        var delegateAssign = DelegateAssign (methodInfo);
+        var constructor = constructors.Single ();
+        ExpressionTreeComparer2.CheckTreeContains (constructor.Body, delegateAssign);
+      };
+
+      PatchAndTest (methodInfo, methodInfo, test);
+    }
+
+    [Test]
+    public void AssignPropertyInfo ()
+    {
+      var methodInfo = typeof (DomainClass2).GetMethods().Single (x => x.Name == "set_Property");
+      Action<IEnumerable<MutableConstructorInfo>> test = constructors =>
+      {
+        var propertyInfoAssign = PropertyInfoAssign (methodInfo);
+        var constructor = constructors.Single ();
+        ExpressionTreeComparer2.CheckTreeContains (constructor.Body, propertyInfoAssign);
+      };
+
+      PatchAndTest (methodInfo, methodInfo, test);
+    }
+
+    private Expression PropertyInfoAssign (MethodInfo methodInfo)
+    {
+      var propertyInfo = methodInfo.GetRelatedPropertyInfo ();
+      if (propertyInfo == null)
+        return Expression.Empty();
+
+      var declaringType = methodInfo.DeclaringType;
+      var propertyInfoField = GetField (declaringType, "PropertyInfo");
+      var getPropertyMethd = typeof (Type).GetMethod ("GetProperty", new[] { typeof (string), typeof (BindingFlags) });
+      var getProperty = Expression.Call (
+          Expression.Constant (declaringType, typeof (Type)),
+          getPropertyMethd,
+          Expression.Constant (propertyInfo.Name),
+          Expression.Constant (BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic));
+      return Expression.Assign (propertyInfoField, getProperty);
+    }
+
+    private Expression DelegateAssign (MethodInfo methodInfo)
+    {
+      var declaringType = methodInfo.DeclaringType;
+      var delegateField = GetField (declaringType, "Delegate");
+      var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+      var parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).Concat (new[] { methodInfo.ReturnType }).ToArray();
+      var delegateType = Expression.GetDelegateType (parameterTypes);
+      var createExpression = Expression.Call (
+          null,
+          createDelegateMethodInfo,
+          Expression.Constant (delegateType),
+          ThisExpression (declaringType),
+          Expression.Constant (methodInfo, typeof (MethodInfo)));
+      return Expression.Assign (delegateField, Expression.Convert(createExpression, delegateType));
+    }
+
+    private Expression MethodInfoAssign (MethodInfo methodInfo)
+    {
+      var declaringType = methodInfo.DeclaringType;
+      var methodInfoField = GetField (declaringType, "MethodInfo");
+      return Expression.Assign (methodInfoField, Expression.Constant (methodInfo, typeof(MethodInfo)));
+    }
+
+    private Expression GetField (Type declaringType, string fieldName)
+    {
+      var fieldInfo = declaringType.GetFields ().Single (x => x.Name == fieldName);
+      return Expression.Field (ThisExpression (declaringType), fieldInfo);
+    }
+
+    private Expression ThisExpression (Type type)
+    {
+      return new ThisExpression (type);
+    }
+
+    private void PatchAndTest (
+        MethodInfo methodInfo, MethodInfo copyInfo, Action<IEnumerable<MutableConstructorInfo>> test)
+    {
+      var declaringType = methodInfo.DeclaringType;
+      var patcher = new ConstructorPatcher();
+      AssembleType (
+          declaringType,
+          mutableType =>
+          {
+            var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
+            var mutableCopy = mutableType.GetOrAddMutableMethod (copyInfo);
+            var propertyInfoField = declaringType.GetFields().Where (x => x.Name == "PropertyInfo").Single();
+            var eventInfoField = declaringType.GetFields().Where (x => x.Name == "EventInfo").Single();
+            var methodInfoField = declaringType.GetFields().Where (x => x.Name == "MethodInfo").Single();
+            var delegateField = declaringType.GetFields().Where (x => x.Name == "Delegate").Single();
+
+            patcher.AddReflectionAndDelegateInitialization (
+                mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, mutableCopy);
+
+            test (mutableType.AllMutableConstructors);
+          });
+    }
+
+
 
     [Test]
     public void Init_MethodInfo ()
@@ -206,13 +349,26 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (instance2.InstanceAspects, Is.Not.Null);
     }
 
+    [Test]
+    public void name ()
+    {
+      SkipDeletion();
+      var methodInfo = typeof (DomainType3).GetMethods().Single (x => x.Name == "set_Property");
+      var compileTimeAspects = GetCompileTimeAspects (methodInfo);
+      var isntance = CreateInstance<DomainType3> (compileTimeAspects, methodInfo, methodInfo);
+
+      Assert.That (isntance.PropertyInfo, Is.Not.Null);
+    }
+
     private T CreateInstance<T> (IEnumerable<IAspectDescriptor> aspects, MethodInfo methodInfo, MethodInfo copiedMethod, params object[] args)
       where T: DomainTypeBase
     {
-      var methodInfoField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.MethodInfo));
-      var delegateField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.Delegate));
-      var staticAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => DomainTypeBase.StaticAspects));
-      var instanceAspectsField = MemberInfoFromExpressionUtility.GetField (((T obj) => obj.InstanceAspects));
+      var propertyInfoField = typeof (T).GetFields().Single (x => x.Name == "PropertyInfo");
+      var eventInfoField = typeof (T).GetFields().Single (x => x.Name == "EventInfo");
+      var methodInfoField = typeof (T).GetFields().Single (x => x.Name == "MethodInfo");
+      var delegateField = typeof (T).GetFields().Single (x => x.Name == "Delegate");
+      var staticAspectsField = typeof (DomainTypeBase).GetFields (BindingFlags.Static | BindingFlags.Public).Single();
+      var instanceAspectsField = typeof (T).GetFields().Single (x => x.Name == "InstanceAspects");
       var fieldData = new FieldIntroducer.Data
                       {
                           MethodInfoField = methodInfoField,
@@ -227,7 +383,9 @@ namespace ActiveAttributes.UnitTests.Assembly
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
             var mutableCopy = mutableType.GetOrAddMutableMethod (copiedMethod);
 
-            _patcher.Patch (mutableMethod, aspects, fieldData, mutableCopy);
+            _patcher.AddReflectionAndDelegateInitialization (
+                mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, mutableCopy);
+            //_patcher.AddAspectInitialization(mutableMethod, )
           });
 
       return (T) Activator.CreateInstance (type, args);
@@ -236,20 +394,25 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IAspectDescriptor[] GetCompileTimeAspects (MethodInfo methodInfo)
     {
       var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo);
-      var compileTimeAspects = customAttributeData.Select (x => new AspectDescriptor (x)).ToArray();
+      var compileTimeAspects = customAttributeData
+          .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
+          .Select (x => new AspectDescriptor (x)).ToArray();
       return compileTimeAspects;
     }
 
     public abstract class DomainTypeBase
     {
+      public PropertyInfo PropertyInfo;
+      public EventInfo EventInfo;
       public MethodInfo MethodInfo;
-      public Action Delegate;
       public static AspectAttribute[] StaticAspects;
       public AspectAttribute[] InstanceAspects;
     }
 
     public class DomainType : DomainTypeBase
     {
+      public Action Delegate;
+
       public virtual void Method () { }
 
       public virtual void Method_Copy () { }
@@ -284,6 +447,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [UsedImplicitly]
     public class DomainType2 : DomainTypeBase
     {
+      public Action Delegate;
+
       public DomainType2 ()
       {
       }
@@ -292,6 +457,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       }
 
       public virtual void Method () { }
+    }
+
+    public class DomainType3 : DomainTypeBase
+    {
+      public Action<string> Delegate;
+
+      [DomainAspect]
+      public virtual string Property { get; set; }
     }
 
     public class DomainAspectAttribute : AspectAttribute

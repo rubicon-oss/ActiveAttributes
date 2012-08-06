@@ -30,7 +30,7 @@ namespace ActiveAttributes.UnitTests
   [TestFixture]
   public class ExpressionTreeComparer2
   {
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static void CheckTreeContains (Expression tree, Expression searchedTree)
     {
       var subTrees = GetSubTrees (tree).ToArray();
