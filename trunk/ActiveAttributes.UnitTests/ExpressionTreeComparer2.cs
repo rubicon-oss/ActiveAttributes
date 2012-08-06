@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
@@ -29,6 +30,7 @@ namespace ActiveAttributes.UnitTests
   [TestFixture]
   public class ExpressionTreeComparer2
   {
+    [DebuggerStepThrough]
     public static void CheckTreeContains (Expression tree, Expression searchedTree)
     {
       var subTrees = GetSubTrees (tree).ToArray();
