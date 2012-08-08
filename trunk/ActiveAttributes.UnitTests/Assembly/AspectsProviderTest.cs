@@ -20,6 +20,7 @@ using System.Linq;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Utilities;
 
 [assembly: AspectsProviderTest.AspectAttribute (RequiresTargetType = typeof (AspectsProviderTest.DomainType4))]
@@ -181,7 +182,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetMethodLevelAspectsRespectsNotInheritingAspect ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithNotInheritingAspect obj) => obj.Method ());
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithNotInheritingAspect obj) => obj.Method ());
 
       var result = _provider.GetMethodLevelAspects (method).ToArray ();
 
@@ -240,7 +241,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetPropertyLevelAspectsRespectsNotInheritingAspect ()
     {
-      var Property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithNotInheritingAspect obj) => obj.Property);
+      var Property = NormalizingMemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithNotInheritingAspect obj) => obj.Property);
 
       var result = _provider.GetPropertyLevelAspects (Property).ToArray ();
 
