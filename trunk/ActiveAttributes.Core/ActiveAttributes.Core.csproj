@@ -58,6 +58,10 @@
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
+    <Compile Include="Configuration\AspectOrderingAttribute.cs" />
+    <Compile Include="Configuration\AspectOrderingPresetAttribute.cs" />
+    <Compile Include="Configuration\OrderPosition.cs" />
+    <Compile Include="Configuration\StandardRoles.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
     <Compile Include="Invocations\IndexerSetInvocation.cs" />
     <Compile Include="Invocations\PropertySetInvocation.cs" />
