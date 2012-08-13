@@ -21,17 +21,15 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.UnitTests.MutableReflection;
 using Remotion.Utilities;
-
-[assembly: AspectsProviderTest.AspectAttribute (RequiresTargetType = typeof (AspectsProviderTest.DomainType4))]
-[assembly: AspectsProviderTest.AssemblyLevelAspect (RequiresTargetType = typeof (object))]
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
   public class AspectsProviderTest
   {
-    private AspectsProvider _provider;
+    private IAspectsProvider _provider;
 
     [SetUp]
     public void SetUp ()
@@ -53,9 +51,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetTypeLevelAspects ()
     {
-      var type = typeof (TypeLevelAspectClass);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (TypeLevelAspectClass));
 
-      var result = _provider.GetTypeLevelAspects (type).ToArray();
+      var result = _provider.GetTypeLevelAspects (mutableType).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
@@ -68,9 +66,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetTypeLevelAspectsSkipsNonAspectAttributes ()
     {
-      var type = typeof (TypeLevelAspectClassWithNonAspectAttribute);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (TypeLevelAspectClassWithNonAspectAttribute));
 
-      var result = _provider.GetTypeLevelAspects (type).ToArray ();
+      var result = _provider.GetTypeLevelAspects (mutableType).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
@@ -84,9 +82,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetTypeLevelAspectsRespectsInheritingAspect ()
     {
-      var type = typeof (TypeLevelAspectClassWithInheritingAspect);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (TypeLevelAspectClassWithInheritingAspect));
 
-      var result = _provider.GetTypeLevelAspects (type).ToArray ();
+      var result = _provider.GetTypeLevelAspects (mutableType).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
@@ -100,9 +98,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetTypeLevelAspectsRespectsNonInheritingAspect ()
     {
-      var type = typeof (TypeLevelAspectClassWithoutAspectButBase);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (TypeLevelAspectClassWithoutAspectButBase));
 
-      var result = _provider.GetTypeLevelAspects (type).ToArray ();
+      var result = _provider.GetTypeLevelAspects (mutableType).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (0));
     }
@@ -116,9 +114,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetTypeLevelAspectWithInheritingOnSelf ()
     {
-      var type = typeof (TypeLevelAspectClassWithInheritingAspectOnSelf);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (TypeLevelAspectClassWithInheritingAspectOnSelf));
 
-      var result = _provider.GetTypeLevelAspects (type).ToArray ();
+      var result = _provider.GetTypeLevelAspects (mutableType).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
@@ -129,23 +127,10 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
     [Test]
-    public void GetAssemblyLevelAspect ()
-    {
-      var assembly = System.Reflection.Assembly.GetExecutingAssembly ();
-
-      var result = _provider.GetAssemblyLevelAspects (assembly).ToArray();
-
-      Assert.That (result, Has.Some.Property ("AspectType").EqualTo (typeof (AssemblyLevelAspect)));
-    }
-
-    public class AssemblyLevelAspect : AspectAttribute { }
-
-
-
-    [Test]
     public void GetMethodLevelAspect ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClass obj) => obj.Method ());
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (MethodLevelAspectClass));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "Method").Single();
 
       var result = _provider.GetMethodLevelAspects (method).ToArray();
 
@@ -162,7 +147,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetMethodLevelAspectsRespectsInheritingAspect ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithInheritingAspect obj) => obj.Method ());
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (MethodLevelAspectClassWithInheritingAspect));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "Method").Single ();
 
       var result = _provider.GetMethodLevelAspects (method).ToArray ();
 
@@ -182,7 +168,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetMethodLevelAspectsRespectsNotInheritingAspect ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((MethodLevelAspectClassWithNotInheritingAspect obj) => obj.Method ());
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (MethodLevelAspectClassWithNotInheritingAspect));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "Method").Single ();
 
       var result = _provider.GetMethodLevelAspects (method).ToArray ();
 
@@ -203,9 +190,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetPropertyLevelAspect ()
     {
-      var property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClass obj) => obj.Property);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (PropertyLevelAspectClass));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "get_Property").Single ();
 
-      var result = _provider.GetPropertyLevelAspects (property).ToArray ();
+      var result = _provider.GetPropertyLevelAspects (method).ToArray ();
 
       Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AspectAttribute)));
     }
@@ -220,9 +208,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetPropertyLevelAspectsRespectsInheritingAspect ()
     {
-      var Property = MemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithInheritingAspect obj) => obj.Property);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (PropertyLevelAspectClassWithInheritingAspect));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "get_Property").Single ();
 
-      var result = _provider.GetPropertyLevelAspects (Property).ToArray ();
+      var result = _provider.GetPropertyLevelAspects (method).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (1));
     }
@@ -241,9 +230,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetPropertyLevelAspectsRespectsNotInheritingAspect ()
     {
-      var Property = NormalizingMemberInfoFromExpressionUtility.GetProperty ((PropertyLevelAspectClassWithNotInheritingAspect obj) => obj.Property);
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (PropertyLevelAspectClassWithNotInheritingAspect));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "get_Property").Single ();
 
-      var result = _provider.GetPropertyLevelAspects (Property).ToArray ();
+      var result = _provider.GetPropertyLevelAspects (method).ToArray ();
 
       Assert.That (result, Has.Length.EqualTo (0));
     }
@@ -262,7 +252,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetMethodLevelAspectsIncludingInterfaces ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((ClassWithInterfaceAspect obj) => obj.Method ());
+      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (ClassWithInterfaceAspect));
+      var method = mutableType.AllMutableMethods.Where (x => x.Name == "Method").Single ();
 
       var result = _provider.GetInterfaceLevelAspects (method).ToArray ();
 
@@ -284,11 +275,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
     public class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute
     {
-    }
-
-    public class DomainType4
-    {
-      public virtual void Method () { }
     }
   }
 }

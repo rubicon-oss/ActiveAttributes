@@ -19,9 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
@@ -30,7 +32,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   ///   Provides all aspects (including inherited) applied to a method.
   /// </summary>
-  public class AspectsProvider
+  public class AspectsProvider : IAspectsProvider
   {
     private readonly IRelatedMethodFinder _relatedMethodFinder;
 
@@ -39,37 +41,45 @@ namespace ActiveAttributes.Core.Assembly
       _relatedMethodFinder = new RelatedMethodFinder();
     }
 
-    public IEnumerable<IAspectDescriptor> GetAssemblyLevelAspects (System.Reflection.Assembly assembly)
+    public IEnumerable<IAspectDescriptor> GetTypeLevelAspects (MutableType mutableType)
     {
-      return CustomAttributeData.GetCustomAttributes (assembly)
-          .Where (x => x.IsAspectAttribute())
-          .Select (x => new AspectDescriptor (x))
-          .Cast<IAspectDescriptor>();
-    }
-
-    public IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+      var type = mutableType.UnderlyingSystemType;
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => ((Type) memberInfo).BaseType;
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != typeof (object);
+      var fromType = GetAspects (type, getParent, whileCondition);
 
-      return GetAspects (type, getParent, whileCondition);
+      var assemblies = GetAssemblies();
+      var fromAssemblies = assemblies
+          .SelectMany (CustomAttributeData.GetCustomAttributes)
+          .Where (x => x.IsAspectAttribute())
+          .Select (x => new AspectDescriptor (x))
+          .Cast<IAspectDescriptor>();
+
+      return fromType.Concat (fromAssemblies);
     }
 
-    public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (PropertyInfo propertyInfo)
+    public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MutableMethodInfo mutableMethod)
     {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      var method = mutableMethod.UnderlyingSystemMethodInfo;
 
-      Func<MemberInfo, MemberInfo> getParent = memberInfo => ((PropertyInfo) memberInfo).GetOverridenProperty();
-      Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
-
-      return GetAspects (propertyInfo, getParent, whileCondition);
+      var propertyInfo = method.GetRelatedPropertyInfo();
+      if (propertyInfo == null)
+        return Enumerable.Empty<IAspectDescriptor>();
+      else
+      {
+        Func<MemberInfo, MemberInfo> getParent = memberInfo => ((PropertyInfo) memberInfo).GetOverridenProperty();
+        Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
+        return GetAspects (propertyInfo, getParent, whileCondition);
+      }
     }
 
-    public IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MethodInfo method)
+    public IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MutableMethodInfo mutableMethod)
     {
-      ArgumentUtility.CheckNotNull ("method", method);
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      var method = mutableMethod.UnderlyingSystemMethodInfo;
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => _relatedMethodFinder.GetBaseMethod ((MethodInfo) memberInfo);
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
@@ -77,8 +87,11 @@ namespace ActiveAttributes.Core.Assembly
       return GetAspects (method, getParent, whileCondition);
     }
 
-    public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo method)
+    public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MutableMethodInfo mutableMethod)
     {
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      var method = mutableMethod.UnderlyingSystemMethodInfo;
+
       var ifaces = method.DeclaringType.GetInterfaces();
       foreach (var iface in ifaces)
       {
@@ -95,29 +108,6 @@ namespace ActiveAttributes.Core.Assembly
         }
       }
       return Enumerable.Empty<IAspectDescriptor>();
-    }
-
-    // TODO: support aspects on interfaces?
-    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo methodInfo)
-    {
-      // TODO RM-4942, RM-4943: When custom attribute support is added to the type pipe, omit the "UnderlyingSystemMethodInfo"
-      if (methodInfo is MutableMethodInfo)
-        methodInfo = ((MutableMethodInfo) methodInfo).UnderlyingSystemMethodInfo;
-
-      var customAttributeDatas = new List<CustomAttributeData>();
-      var iteratingMethodInfo = methodInfo;
-      do
-      {
-        var isBaseType = !iteratingMethodInfo.Equals (methodInfo);
-        customAttributeDatas.AddRange (GetAspects (iteratingMethodInfo, isBaseType));
-      } while ((iteratingMethodInfo = _relatedMethodFinder.GetBaseMethod (iteratingMethodInfo)) != null);
-
-      var aspects = customAttributeDatas
-          .Select (x => new AspectDescriptor (x))
-          .Cast<IAspectDescriptor>()
-          .Where (x => x.Matches (methodInfo));
-
-      return aspects;
     }
 
     private IEnumerable<IAspectDescriptor> GetAspects (
@@ -141,39 +131,12 @@ namespace ActiveAttributes.Core.Assembly
       return aspectsData.Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
     }
 
-    private IEnumerable<CustomAttributeData> GetAspects (MethodInfo methodInfo, bool isBaseType)
+    private IEnumerable<System.Reflection.Assembly> GetAssemblies ()
     {
-      var customAttributeDatas = new List<CustomAttributeData>();
-
-      var methodLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo);
-      customAttributeDatas.AddRange (methodLevelAspects);
-
-      if (methodInfo.IsCompilerGenerated())
-      {
-        var propertyLevelAspects = GetPropertyLevelAspects (methodInfo);
-        customAttributeDatas.AddRange (propertyLevelAspects);
-      }
-
-      var typeLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType);
-      customAttributeDatas.AddRange (typeLevelAspects);
-
-      var assemblyLevelAspects = CustomAttributeData.GetCustomAttributes (methodInfo.DeclaringType.Assembly);
-      customAttributeDatas.AddRange (assemblyLevelAspects);
-
-      return customAttributeDatas
-          .Where (x => typeof (AspectAttribute).IsAssignableFrom (x.Constructor.DeclaringType))
-          .Where (x => !isBaseType || x.IsInheriting());
-    }
-
-    private IEnumerable<CustomAttributeData> GetPropertyLevelAspects (MethodInfo methodInfo)
-    {
-      var propertyName = methodInfo.Name.Substring (4);
-      var propertyInfo = methodInfo.DeclaringType.GetProperty (propertyName);
-
-      if (propertyInfo != null)
-        return CustomAttributeData.GetCustomAttributes (propertyInfo);
-      else
-        return Enumerable.Empty<CustomAttributeData>();
+      var assemblyLoader = new FilteringAssemblyLoader(new LoadAllAssemblyLoaderFilter());
+      var assemblyFinder = new AssemblyFinder (SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true, assemblyLoader), assemblyLoader);
+      var assemblies = assemblyFinder.FindAssemblies ();
+      return assemblies;
     }
   }
 }

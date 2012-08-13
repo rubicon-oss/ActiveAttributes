@@ -58,6 +58,7 @@
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
+    <Compile Include="Assembly\IAspectsProvider.cs" />
     <Compile Include="Configuration\AspectOrderingAttribute.cs" />
     <Compile Include="Configuration\AspectOrderingPresetAttribute.cs" />
     <Compile Include="Configuration\AspectRoleAttribute.cs" />
