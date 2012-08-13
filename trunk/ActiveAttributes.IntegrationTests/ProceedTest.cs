@@ -17,11 +17,14 @@
 
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Invocations;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using ActiveAttributes.Core.Assembly;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -31,7 +34,8 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedMethod ()
     {
-      var instance = ObjectFactory.Create<DomainType1>();
+      var type = AssembleType<DomainType1> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType1> ();
 
       instance.Method1();
 
@@ -41,7 +45,8 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedMethod ()
     {
-      var instance = ObjectFactory.Create<DomainType1> ();
+      var type = AssembleType<DomainType1> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType1> ();
 
       instance.Method2();
 
@@ -51,8 +56,9 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedProperty ()
     {
+      var type = AssembleType<DomainType3> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType3> ();
       SkipDeletion();
-      var instance = ObjectFactory.Create<DomainType3> ();
       
       instance.Property1 = "test";
 
@@ -67,12 +73,8 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedProperty ()
     {
-      var prop = typeof (DT4).GetProperty ("Property1", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      Assert.That (prop, Is.Not.Null);
       var type = AssembleType<DomainType3> (Assembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType3>();
-      SkipDeletion();
-      //var instance = ObjectFactory.Create<DomainType3> ();
 
       instance.Property2 = "test";
 
@@ -88,7 +90,8 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedPropertyAsMethod ()
     {
-      var instance = ObjectFactory.Create<DomainType2> ();
+      var type = AssembleType<DomainType2> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType2> ();
 
       instance.Property3 = "test";
 
@@ -103,7 +106,8 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedPropertyAsMethod ()
     {
-      var instance = ObjectFactory.Create<DomainType2> ();
+      var type = AssembleType<DomainType2> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType2> ();
 
       instance.Property4 = "test";
 
@@ -166,8 +170,8 @@ namespace ActiveAttributes.IntegrationTests
 
     public class DomainType3
     {
-      public bool Property1Called { get; set; }
-      public bool Property2Called { get; set; }
+      public virtual bool Property1Called { get; set; }
+      public virtual bool Property2Called { get; set; }
 
       [ProceedPropertyAspect]
       public virtual string Property1

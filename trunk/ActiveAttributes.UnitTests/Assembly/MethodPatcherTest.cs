@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,6 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Contexts;
-using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -36,8 +36,6 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class MethodPatcherTest : TestBase
   {
-    private MethodPatcher _patcher;
-
     private IAspectGenerator _generator1;
     private IAspectGenerator _generator2;
 
@@ -54,8 +52,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     public override void SetUp ()
     {
       base.SetUp ();
-
-      _patcher = new MethodPatcher();
 
       _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
       _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
@@ -418,7 +414,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private Expression InnerInvocationCreate<TInvocation> (Expression invocationContext) where TInvocation : IInvocation
     {
       var declaringType = typeof (TInvocation).GetGenericArguments().First();
-      var delegate2 = GetField (declaringType, "Delegate");
+      var delegate2 = Field (declaringType, "Delegate");
 
       var invocationCreate = Expression.New (
           typeof (TInvocation).GetConstructors().Single(),
@@ -451,9 +447,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var declaringType = typeof (TInvocationContext).GetGenericArguments().First();
 
-      var propertyInfoField = GetField (declaringType, "PropertyInfo");
-      var eventInfo = GetField (declaringType, "EventInfo");
-      var methodInfoField = GetField (declaringType, "MethodInfo");
+      var propertyInfoField = Field (declaringType, "PropertyInfo");
+      var eventInfo = Field (declaringType, "EventInfo");
+      var methodInfoField = Field (declaringType, "MethodInfo");
       var this2 = ThisExpression (declaringType);
       var parameters = mutableMethod.GetParameters ().Select (x => Expression.Parameter (x.ParameterType, x.Name)).Cast<Expression> ();
 
@@ -471,7 +467,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       return invocationContextCreate;
     }
 
-    private Expression GetField (Type declaringType, string fieldName)
+    private Expression Field (Type declaringType, string fieldName)
     {
       var fieldInfo = declaringType.GetFields().Single (x => x.Name == fieldName);
       return Expression.Field (ThisExpression (declaringType), fieldInfo);

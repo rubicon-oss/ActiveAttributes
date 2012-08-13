@@ -48,7 +48,6 @@ namespace ActiveAttributes.Core.Assembly
         FieldInfo delegateFieldInfo,
         MutableMethodInfo copiedMethod)
     {
-      var mutableType = (MutableType) mutableMethod.DeclaringType;
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
               GetPropertyInfoAssignExpression (propertyInfoFieldInfo, ctx, mutableMethod),
@@ -56,6 +55,7 @@ namespace ActiveAttributes.Core.Assembly
               GetMethodInfoAssignExpression (methodInfoFieldInfo, ctx, mutableMethod),
               GetDelegateAssignExpression (delegateFieldInfo, ctx, copiedMethod));
 
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
       AddMutation (mutableType, mutation);
     }
 
@@ -92,7 +92,7 @@ namespace ActiveAttributes.Core.Assembly
       var propertyInfoField = Expression.Field (ctx.This, propertyInfoFieldInfo);
       var propertyInfoGetExpression =
           Expression.Call (
-          Expression.Constant (methodInfo.UnderlyingSystemMethodInfo.DeclaringType, typeof (Type)),
+              Expression.Constant (methodInfo.UnderlyingSystemMethodInfo.DeclaringType, typeof (Type)),
               typeof (Type).GetMethod ("GetProperty", new[] { typeof (string), typeof (BindingFlags) }),
               Expression.Constant (propertyInfo.Name),
               Expression.Constant (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
@@ -103,11 +103,18 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GetEventInfoAssignExpression (FieldInfo eventInfoFieldInfo, BodyContextBase ctx, MutableMethodInfo methodInfo)
     {
-      var eventInfoField = Expression.Field (ctx.This, eventInfoFieldInfo);
+      var eventInfo = methodInfo.UnderlyingSystemMethodInfo.GetRelatedEventInfo();
+      if (eventInfo == null)
+        return Expression.Empty();
 
-      var eventInfo = methodInfo.UnderlyingSystemMethodInfo.GetRelatedEventInfo ();
-      var eventInfoConstantExpression = Expression.Constant (null, typeof (EventInfo)); // TODO HOW TO TEST????
-      var eventInfoAssignExpression = Expression.Assign (eventInfoField, eventInfoConstantExpression);
+      var eventInfoField = Expression.Field (ctx.This, eventInfoFieldInfo);
+      var eventInfoGetExpression =
+          Expression.Call (
+              Expression.Constant (methodInfo.UnderlyingSystemMethodInfo.DeclaringType, typeof (Type)),
+              typeof (Type).GetMethod ("GetEvent", new[] { typeof (string), typeof (BindingFlags) }),
+              Expression.Constant (eventInfo.Name),
+              Expression.Constant (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+      var eventInfoAssignExpression = Expression.Assign (eventInfoField, eventInfoGetExpression);
 
       return eventInfoAssignExpression;
     }
