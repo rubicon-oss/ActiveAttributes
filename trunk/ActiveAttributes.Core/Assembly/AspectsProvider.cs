@@ -41,10 +41,9 @@ namespace ActiveAttributes.Core.Assembly
       _relatedMethodFinder = new RelatedMethodFinder();
     }
 
-    public IEnumerable<IAspectDescriptor> GetTypeLevelAspects (MutableType mutableType)
+    public IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type)
     {
-      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-      var type = mutableType.UnderlyingSystemType;
+      ArgumentUtility.CheckNotNull ("type", type);
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => ((Type) memberInfo).BaseType;
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != typeof (object);
@@ -60,12 +59,11 @@ namespace ActiveAttributes.Core.Assembly
       return fromType.Concat (fromAssemblies);
     }
 
-    public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MutableMethodInfo mutableMethod)
+    public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MethodInfo methodInfo)
     {
-      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
-      var method = mutableMethod.UnderlyingSystemMethodInfo;
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      var propertyInfo = method.GetRelatedPropertyInfo();
+      var propertyInfo = methodInfo.GetRelatedPropertyInfo();
       if (propertyInfo == null)
         return Enumerable.Empty<IAspectDescriptor>();
       else
@@ -76,30 +74,28 @@ namespace ActiveAttributes.Core.Assembly
       }
     }
 
-    public IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MutableMethodInfo mutableMethod)
+    public IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MethodInfo methodInfo)
     {
-      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
-      var method = mutableMethod.UnderlyingSystemMethodInfo;
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => _relatedMethodFinder.GetBaseMethod ((MethodInfo) memberInfo);
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
 
-      return GetAspects (method, getParent, whileCondition);
+      return GetAspects (methodInfo, getParent, whileCondition);
     }
 
-    public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MutableMethodInfo mutableMethod)
+    public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo methodInfo)
     {
-      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
-      var method = mutableMethod.UnderlyingSystemMethodInfo;
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      var ifaces = method.DeclaringType.GetInterfaces();
+      var ifaces = methodInfo.DeclaringType.GetInterfaces ();
       foreach (var iface in ifaces)
       {
-        var map = method.DeclaringType.GetInterfaceMap (iface);
+        var map = methodInfo.DeclaringType.GetInterfaceMap (iface);
         var zipped = map.TargetMethods.Zip (map.InterfaceMethods, (TargetMember, InterfaceMember) => new { TargetMember, InterfaceMember });
         foreach (var item in zipped)
         {
-          if (item.TargetMember != method)
+          if (item.TargetMember != methodInfo)
             continue;
 
           return CustomAttributeData.GetCustomAttributes (item.InterfaceMember)
@@ -108,6 +104,11 @@ namespace ActiveAttributes.Core.Assembly
         }
       }
       return Enumerable.Empty<IAspectDescriptor>();
+    }
+
+    public IEnumerable<IAspectDescriptor> GetEventLevelAspects (MethodInfo methodInfo)
+    {
+      throw new NotImplementedException();
     }
 
     private IEnumerable<IAspectDescriptor> GetAspects (

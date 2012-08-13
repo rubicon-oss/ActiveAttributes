@@ -21,6 +21,7 @@ using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
+using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
@@ -82,7 +83,7 @@ namespace ActiveAttributes.Core.Assembly
       // TYPE LEVEL ASPECTS
 
       // get aspects and field data
-      var typeLevelAspectDescriptors = _aspectProvider.GetTypeLevelAspects (mutableType).ToList();
+      var typeLevelAspectDescriptors = _aspectProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList ();
       var typeFieldData = _fieldIntroducer.IntroduceTypeLevelFields (mutableType);
 
       var instanceTypeLevelArrayAccessor = new InstanceArrayAccessor (typeFieldData.InstanceAspectsField);
@@ -103,15 +104,13 @@ namespace ActiveAttributes.Core.Assembly
       foreach (var mutableMethod in mutableMethodInfos)
       {
         // get aspects
-        // ... by method
-        var methodLevelAspectDescriptors = _aspectProvider.GetMethodLevelAspects (mutableMethod).ToList();
-        // ... by interface
-        var interfaceLevelAspects = _aspectProvider.GetInterfaceLevelAspects (mutableMethod);
-        methodLevelAspectDescriptors.AddRange (interfaceLevelAspects);
-        // ... by property
-        var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (mutableMethod);
-        methodLevelAspectDescriptors.AddRange (propertyLevelAspects);
-        // ... by event
+        var methodLevelAspects = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
+        var interfaceLevelAspects = _aspectProvider.GetInterfaceLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
+        var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
+        var relatedMethodAspects = methodLevelAspects
+            .Concat (interfaceLevelAspects)
+            .Concat (propertyLevelAspects)
+            .ConvertToCollection();
 
         // get field data
         var methodLevelFieldData = _fieldIntroducer.IntroduceMethodLevelFields (mutableMethod);
@@ -125,8 +124,8 @@ namespace ActiveAttributes.Core.Assembly
         var staticMethodLevelArrayAccessor = new StaticArrayAccessor (methodLevelFieldData.StaticAspectsField);
 
         // create generators
-        var instanceMethodLevelAspectGenerators = GetGenerators (instanceMethodLevelArrayAccessor, methodLevelAspectDescriptors, AspectScope.Instance).ToList ();
-        var staticMethodLevelAspectGenerators = GetGenerators (staticMethodLevelArrayAccessor, methodLevelAspectDescriptors, AspectScope.Static).ToList ();
+        var instanceMethodLevelAspectGenerators = GetGenerators (instanceMethodLevelArrayAccessor, relatedMethodAspects, AspectScope.Instance).ToList ();
+        var staticMethodLevelAspectGenerators = GetGenerators (staticMethodLevelArrayAccessor, relatedMethodAspects, AspectScope.Static).ToList ();
 
         // get all matching
         var allMatchingAspectGenerators = Enumerable.Empty<IAspectGenerator>()

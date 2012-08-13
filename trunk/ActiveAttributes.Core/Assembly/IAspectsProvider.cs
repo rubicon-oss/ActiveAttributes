@@ -14,17 +14,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public interface IAspectsProvider
   {
-    IEnumerable<IAspectDescriptor> GetTypeLevelAspects (MutableType mutableType);
-    IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MutableMethodInfo mutableMethod);
-    IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MutableMethodInfo mutableMethod);
-    IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MutableMethodInfo mutableMethod);
+    IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type);
+
+    IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MethodInfo methodInfo);
+    IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo methodInfo);
+    IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MethodInfo methodInfo);
+    IEnumerable<IAspectDescriptor> GetEventLevelAspects (MethodInfo methodInfo);
   }
 }
