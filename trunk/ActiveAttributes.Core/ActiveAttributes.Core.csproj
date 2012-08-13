@@ -60,6 +60,7 @@
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="Configuration\AspectOrderingAttribute.cs" />
     <Compile Include="Configuration\AspectOrderingPresetAttribute.cs" />
+    <Compile Include="Configuration\AspectRoleAttribute.cs" />
     <Compile Include="Configuration\OrderPosition.cs" />
     <Compile Include="Configuration\StandardRoles.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
