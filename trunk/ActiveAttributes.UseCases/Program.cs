@@ -17,7 +17,7 @@ namespace ActiveAttributes.UseCases
       Application.EnableVisualStyles ();
       Application.SetCompatibleTextRenderingDefault (false);
 
-      var threadingForm = ObjectFactory.Create<ThreadingForm>();
+      var threadingForm = ObjectFactory.Create<MainForm>();
       Application.Run (threadingForm);
     }
   }

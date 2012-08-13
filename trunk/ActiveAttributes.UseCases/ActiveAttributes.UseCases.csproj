@@ -46,12 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ThreadingForm.cs">
+    <Compile Include="Aspects\CacheAspectAttribute.cs" />
+    <Compile Include="Aspects\CatchExceptionAspectAttribute.cs" />
+    <Compile Include="Aspects\InvokeAspectAttribute.cs" />
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ThreadingForm.Designer.cs">
-      <DependentUpon>ThreadingForm.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Aspects\NotifyPropertyChangedAspectAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -64,8 +68,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ThreadingForm.resx">
-      <DependentUpon>ThreadingForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ActiveAttributes.UseCases.licenseheader" />
     <None Include="app.config" />
