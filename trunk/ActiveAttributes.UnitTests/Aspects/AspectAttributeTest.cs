@@ -31,250 +31,208 @@ namespace ActiveAttributes.UnitTests.Aspects
   [TestFixture]
   public class AspectAttributeTest
   {
-    //[Serializable]
-    //private class TestableAspectAttribute : MethodInterceptionAspectAttribute
-    //{
-    //  public TestableAspectAttribute () {}
-
-    //  protected TestableAspectAttribute (SerializationInfo info, StreamingContext context)
-    //      : base (info, context) {}
-
-    //  public override void OnIntercept (IInvocation invocation)
-    //  {
-    //    throw new NotImplementedException();
-    //  }
-    //}
-
-    //[Test]
-    //public void Clone ()
-    //{
-    //  var aspect = new TestableAspectAttribute { Scope = AspectScope.Instance };
-    //  var copy = (MethodInterceptionAspectAttribute) aspect.Clone();
-
-    //  Assert.That (copy.Scope, Is.EqualTo (AspectScope.Instance));
-    //}
-
-    //[Test]
-    //public void Serialize ()
-    //{
-    //  var aspect = new TestableAspectAttribute
-    //               {
-    //                   Scope = AspectScope.Instance,
-    //                   Priority = 10
-    //               };
-    //  var formatter = new BinaryFormatter();
-    //  var memoryStream = new MemoryStream();
-
-    //  formatter.Serialize (memoryStream, aspect);
-    //  memoryStream.Position = 0;
-    //  var copy = (MethodInterceptionAspectAttribute) formatter.Deserialize (memoryStream);
-
-    //  Assert.That (copy.Scope, Is.EqualTo (aspect.Scope));
-    //  Assert.That (copy.Priority, Is.EqualTo (aspect.Priority));
-    //}
-
     [Test]
-    public void RequiresType_Matching ()
+    public void ApplyToType_Matching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1());
-      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (RequireTypeMatchingClass) };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1());
+      var aspect = new TestableAspectAttribute { ApplyToType = typeof (DomainClass) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresType_NotMatching ()
+    public void ApplyToType_NotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (int) };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { ApplyToType = typeof (int) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void RequiresType_MatchingSub ()
+    public void ApplyToType_MatchingSub ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresTargetType = typeof (object) };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { ApplyToType = typeof (object) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresMethodName_Matching ()
+    public void ApplyToTypeNamePattern_Matching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresMemberName = "Method2" };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 ());
+      var aspect = new TestableAspectAttribute { ApplyToTypeNamePattern = "ActiveAttributes.UnitTests.Aspects" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresMethodName_NotMatching ()
+    public void ApplyToTypeNamePattern_NotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresMemberName = "Method2" };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { ApplyToTypeNamePattern = "ActiveAttributes.UnitTests2.Aspects" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void RequiresMethodName_MatchingWildcard ()
+    public void ApplyToTypeNamePattern_MatchingWildcard ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresMemberName = "*2" };
-      var result = aspect.Matches (method);
-
-      Assert.That (result, Is.True);
-    }
-
-
-    [Test]
-    public void RequiresNamespace_Matching ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresNamespace = "ActiveAttributes.UnitTests.Aspects" };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 ());
+      var aspect = new TestableAspectAttribute { ApplyToTypeNamePattern = "ActiveAttributes.UnitTests.*" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresNamespace_NotMatching ()
+    public void MemberNameFilter_Matching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresNamespace = "ActiveAttributes.UnitTests2.Aspects" };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 ());
+      var aspect = new TestableAspectAttribute { MemberNameFilter = "Method2" };
+      var result = aspect.Matches (method);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void MemberNameFilter_NotMatching ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { MemberNameFilter = "Method2" };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void RequiresNamespace_MatchingWildcard ()
+    public void MemberNameFilter_MatchingWildcard ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresNamespace = "ActiveAttributes.UnitTests.*" };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 ());
+      var aspect = new TestableAspectAttribute { MemberNameFilter = "*2" };
+      var result = aspect.Matches (method);
+
+      Assert.That (result, Is.True);
+    }
+
+
+    [Test]
+    public void MemberVisibilityFilter_PublicMatching ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.PublicMethod ());
+      var aspect = new TestableAspectAttribute { MemberVisibilityFilter = Visibility.Public };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresVisibility_PublicMatching ()
+    public void MemberVisibilityFilter_PublicNotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.PublicMethod ());
-      var aspect = new TestableAspectAttribute { RequiresMemberVisibility = Visibility.Public };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.InternalMethod ());
+      var aspect = new TestableAspectAttribute { MemberVisibilityFilter = Visibility.Public };
+      var result = aspect.Matches (method);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberCustomAttributeFilter_Matching ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { MemberCustomAttributeFilter = new[] { typeof (CompilerGeneratedAttribute) } };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresVisibility_PublicNotMatching ()
+    public void MemberCustomAttributeFilter_NotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.InternalMethod ());
-      var aspect = new TestableAspectAttribute { RequiresMemberVisibility = Visibility.Public };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 ());
+      var aspect = new TestableAspectAttribute { MemberCustomAttributeFilter = new[] { typeof (CompilerGeneratedAttribute) } };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void RequiresAttribute_Matching ()
+    public void MemberCustomAttributeFilter_MatchingMultiple ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresMarkers = new[] { typeof (CompilerGeneratedAttribute) } };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { MemberCustomAttributeFilter = new[] { typeof (CompilerGeneratedAttribute), typeof (MethodImplAttribute) } };
+      var result = aspect.Matches (method);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberCustomAttributeFilter_NotMatchingMultiple ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 ());
+      var aspect = new TestableAspectAttribute { MemberCustomAttributeFilter = new[] { typeof (CompilerGeneratedAttribute), typeof (ObsoleteAttribute) } };
+      var result = aspect.Matches (method);
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void MemberReturnTypeFilter_Matching ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.IntegerMethod ());
+      var aspect = new TestableAspectAttribute { MemberReturnTypeFilter = typeof (int) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresAttribute_NotMatching ()
+    public void MemberReturnTypeFilter_NotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method2 ());
-      var aspect = new TestableAspectAttribute { RequiresMarkers = new[] { typeof (CompilerGeneratedAttribute) } };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.IntegerMethod ());
+      var aspect = new TestableAspectAttribute { MemberReturnTypeFilter = typeof (double) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
     [Test]
-    public void RequiresAttribute_MatchingMultiple ()
+    public void MemberReturnTypeFilter_MatchingSub ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresMarkers = new[] { typeof (CompilerGeneratedAttribute), typeof (MethodImplAttribute) } };
-      var result = aspect.Matches (method);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void RequiresAttribute_NotMatchingMultiple ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.Method1 ());
-      var aspect = new TestableAspectAttribute { RequiresMarkers = new[] { typeof (CompilerGeneratedAttribute), typeof (ObsoleteAttribute) } };
-      var result = aspect.Matches (method);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void RequiresReturnType_Matching ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.IntegerMethod ());
-      var aspect = new TestableAspectAttribute { RequiresReturnType = typeof (int) };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.IntegerMethod ());
+      var aspect = new TestableAspectAttribute { MemberReturnTypeFilter = typeof (object) };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresReturnType_NotMatching ()
+    public void MemberAttributeFilter_Matching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.IntegerMethod ());
-      var aspect = new TestableAspectAttribute { RequiresReturnType = typeof (double) };
-      var result = aspect.Matches (method);
-
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void RequiresReturnType_MatchingSub ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.IntegerMethod ());
-      var aspect = new TestableAspectAttribute { RequiresReturnType = typeof (object) };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.MethodWithArg (1, ""));
+      var aspect = new TestableAspectAttribute { MemberArgumentsFilter = new[] { typeof (int), typeof (string) } };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void RequiresArguments_Matching ()
+    public void MemberAttributeFilter_NotMatching ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.MethodWithArg (1, ""));
-      var aspect = new TestableAspectAttribute { RequiresArguments = new[] { typeof (int), typeof (string) } };
-      var result = aspect.Matches (method);
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void RequiresArguments_NotMatching ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((RequireTypeMatchingClass obj) => obj.MethodWithArg (1, ""));
-      var aspect = new TestableAspectAttribute { RequiresArguments = new[] { typeof (int), typeof (int) } };
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.MethodWithArg (1, ""));
+      var aspect = new TestableAspectAttribute { MemberArgumentsFilter = new[] { typeof (int), typeof (int) } };
       var result = aspect.Matches (method);
 
       Assert.That (result, Is.False);
     }
 
-    public class RequireTypeMatchingClass
+    public class DomainClass
     {
       [CompilerGenerated]
       [MethodImpl]

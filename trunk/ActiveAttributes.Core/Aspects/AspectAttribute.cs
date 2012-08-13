@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -70,43 +71,57 @@ namespace ActiveAttributes.Core.Aspects
     }
 
     /// <summary>Use only for assembly-level attributes.</summary>
-    public Type RequiresTargetType { get; set; }      // AffectedType = typeof(T1), AffectedTypes = new [] {typeof(T1),typeof(T2)}
-    // condition for interface types: target type implements interface-type
-    //           for class types: target type is equal to class-type
-    //              if aspect has [AspectUsage (Inherits=true)] also target type inherits from class-type
-    /// <summary>Use only for assembly-level attributes.</summary>
-    public string RequiresNamespace { get; set; }     // AffectedTypeNamePattern/Patterns
-    /// <summary>Use only for assembly-level attributes.</summary>
-    public bool ApplyToDerivedTypes { get; set; }
+    /// <remarks>
+    /// Type = Interface: target type must implement interface
+    /// Type = Class: (a) target type must be equal to the class, or (b) target type inherits from class and aspect inheritance is set to true
+    /// </remarks>
+    public Type ApplyToType { get; set; }
+    public Type[] ApplyToTypes { get; set; }
 
+    public string ApplyToTypeNamePattern { get; set; }
+    public string[] ApplyToTypeNamePatterns { get; set; }
 
-    //public Type ApplyTo { get; set; }
-    //[assembly: LogAspect ("LoggingNamespace....", ApplyTo = typeof (Muh))]
-    //[assembly: LogAspect ("LoggingNamespace....", ApplyTo = typeof (Woof))]
+    public string MemberNameFilter { get; set; }
+    public Visibility MemberVisibilityFilter { get; set; }
+    public Type[] MemberCustomAttributeFilter { get; set; }
+    public MemberFlags MemberFlagsFilter { get; set; }
+    public Type MemberReturnTypeFilter { get; set; }
+    public Type[] MemberArgumentsFilter { get; set; }
 
-    //void Setup ()
-    //{
-    //   ApplyAspect (() => new LogAspectAttribute("LoggingNamespace..."), typeof (Meow)); 
-    //}
+    private IEnumerable<Type> GetApplyToTypes ()
+    {
+      yield return ApplyToType;
 
-    // MemberNameFilter, MemberVisibilityFilter, MemberCustomAttributeFilter, MemberFlagsFilter
-    public string RequiresMemberName { get; set; }    // 
-    public Visibility RequiresMemberVisibility { get; set; }
-    public Type[] RequiresMarkers { get; set; }
-    public MemberFlags RequiresMemberAttributes { get; set; }
-    public Type RequiresReturnType { get; set; }
-    public Type[] RequiresArguments { get; set; }
+      if (ApplyToTypes != null)
+      {
+        foreach (var type in ApplyToTypes)
+          yield return type;
+      }
+    }
+
+    private IEnumerable<string> GetApplyToTypeNamePatterns ()
+    {
+      yield return ApplyToTypeNamePattern;
+
+      if (ApplyToTypeNamePatterns != null)
+      {
+        foreach (var pattern in ApplyToTypeNamePatterns)
+          yield return pattern;
+      }
+    }
 
     public virtual bool Matches (MethodInfo methodInfo)
     {
       var declaringType = methodInfo.DeclaringType;
+      var applyToTypes = GetApplyToTypes();
+      var applyToTypeNamePatterns = GetApplyToTypeNamePatterns();
 
-      return MatchesType (RequiresTargetType, declaringType) &&
+      return applyToTypes.All (x => MatchesType (x, declaringType)) &&
+             applyToTypeNamePatterns.All(x => MatchesNamespace(x, declaringType.Namespace)) &&
              MatchesMemberName (methodInfo.Name) &&
-             MatchesNamespace (declaringType.Namespace) &&
              MatchesMemberVisibility (methodInfo.Attributes) &&
              MatchesMarkers (methodInfo) &&
-             MatchesType (RequiresReturnType, methodInfo.ReturnType) &&
+             MatchesType (MemberReturnTypeFilter, methodInfo.ReturnType) &&
              MatchesArguments (methodInfo);
     }
 
@@ -117,19 +132,19 @@ namespace ActiveAttributes.Core.Aspects
       return expected == null || expected.IsAssignableFrom (actual);
     }
 
-    private bool MatchesMemberName (string methodName)
+    private bool MatchesNamespace (string expected, string actual)
     {
-      return RequiresMemberName == null || Regex.IsMatch (methodName, GetRegexPattern(RequiresMemberName));
+      return expected == null || Regex.IsMatch (actual, GetRegexPattern (expected));
     }
 
-    private bool MatchesNamespace (string ns)
+    private bool MatchesMemberName (string methodName)
     {
-      return RequiresNamespace == null || Regex.IsMatch (ns, GetRegexPattern (RequiresNamespace));
+      return MemberNameFilter == null || Regex.IsMatch (methodName, GetRegexPattern(MemberNameFilter));
     }
 
     private bool MatchesMemberVisibility (MethodAttributes attributes)
     {
-      if (RequiresMemberVisibility == Visibility.None)
+      if (MemberVisibilityFilter == Visibility.None)
         return true;
 
       var flags = Visibility.None;
@@ -142,25 +157,25 @@ namespace ActiveAttributes.Core.Aspects
       if (attributes.HasFlags (MethodAttributes.FamORAssem)) flags |= Visibility.FamilyOrAssembly;
       // TODO: ?
       
-      return (RequiresMemberVisibility & flags) == RequiresMemberVisibility;
+      return (MemberVisibilityFilter & flags) == MemberVisibilityFilter;
     }
 
     private bool MatchesMarkers (MethodInfo methodInfo)
     {
-      if (RequiresMarkers == null)
+      if (MemberCustomAttributeFilter == null)
         return true;
 
       var customAttributes = methodInfo.GetCustomAttributes (true);
-      return RequiresMarkers.All (marker => customAttributes.Any (x => marker.IsAssignableFrom (x.GetType())));
+      return MemberCustomAttributeFilter.All (marker => customAttributes.Any (x => marker.IsAssignableFrom (x.GetType())));
     }
 
     private bool MatchesArguments (MethodInfo methodInfo)
     {
-      if (RequiresArguments == null)
+      if (MemberArgumentsFilter == null)
         return true;
 
       var arguments = methodInfo.GetParameters();
-      var zipped = RequiresArguments.Zip (arguments, (expected, actual) => new { Expected = expected, Actual = actual.ParameterType });
+      var zipped = MemberArgumentsFilter.Zip (arguments, (expected, actual) => new { Expected = expected, Actual = actual.ParameterType });
       return zipped.All (zip => zip.Actual == zip.Expected);
     }
 
