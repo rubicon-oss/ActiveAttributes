@@ -48,6 +48,7 @@
       <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -59,11 +60,23 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="Assembly\IAspectsProvider.cs" />
+    <Compile Include="Configuration\Configurator\AppConfigAspectConfigurator.cs" />
     <Compile Include="Configuration\AspectOrderingAttribute.cs" />
     <Compile Include="Configuration\AspectOrderingPresetAttribute.cs" />
     <Compile Include="Configuration\AspectRoleAttribute.cs" />
+    <Compile Include="Configuration\Configurator\AssemblyAspectConfigurator.cs" />
+    <Compile Include="Configuration\Configurator\EntryPointAspectConfigurator.cs" />
+    <Compile Include="Configuration\Configurator\PresetAspectConfigurator.cs" />
+    <Compile Include="Configuration\IAspectConfiguration.cs" />
+    <Compile Include="Configuration\IAspectConfigurator.cs" />
+    <Compile Include="Configuration\IAspectScheduler.cs" />
+    <Compile Include="Configuration\Configurator\NamedAssemblyAspectConfigurator.cs" />
     <Compile Include="Configuration\OrderPosition.cs" />
+    <Compile Include="Configuration\Rules\RoleOrderRule.cs" />
     <Compile Include="Configuration\StandardRoles.cs" />
+    <Compile Include="Configuration\Rules\TypeOrderRule.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
     <Compile Include="Invocations\IndexerSetInvocation.cs" />
     <Compile Include="Invocations\PropertySetInvocation.cs" />
@@ -134,6 +147,7 @@
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /D /Y "$(SolutionDir)\..\..\Remotion2\Remotion\TypePipe\UnitTests\bin\Release\*" "$(SolutionDir)\prereq\"
