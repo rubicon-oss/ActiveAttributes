@@ -1,4 +1,19 @@
-//Sample license text.
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// See the NOTICE file distributed with this work for additional information
+// regarding copyright ownership.  rubicon licenses this file to you under 
+// the Apache License, Version 2.0 (the "License"); you may not use this 
+// file except in compliance with the License.  You may obtain a copy of the 
+// License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+// License for the specific language governing permissions and limitations
+// under the License.
+// 
 
 using System;
 using System.Collections.Generic;
@@ -28,7 +43,7 @@ namespace ActiveAttributes.Common
       var infoAndValues = parameterInfos.Zip (context.Arguments, (x, y) => new { Info = x, Value = y });
       foreach (var infoValue in infoAndValues)
       {
-        var validators = infoValue.Info.GetCustomAttributes (typeof (IValidator), true).Cast<IValidator>();
+        var validators = infoValue.Info.GetCustomAttributes (typeof (ValidatorBase), true).Cast<ValidatorBase> ();
         var sortedValidators = Sort (validators);
         foreach (var validator in sortedValidators)
           validator.Validate (infoValue.Info.Name, infoValue.Value);
@@ -42,16 +57,18 @@ namespace ActiveAttributes.Common
       if (returnParameter == null || returnParameter.ParameterType == typeof (void))
         return;
 
-      var validators = returnParameter.GetCustomAttributes (typeof (IValidator), true).Cast<IValidator>();
+      var validators = returnParameter.GetCustomAttributes (typeof (ValidatorBase), true).Cast<ValidatorBase> ();
       var sortedValidators = Sort (validators);
       foreach (var validator in sortedValidators)
         validator.Validate ("return", context.ReturnValue);
     }
 
-    private IEnumerable<IValidator> Sort (IEnumerable<IValidator> validators)
+    private IEnumerable<ValidatorBase> Sort (IEnumerable<ValidatorBase> validators)
     {
       var list = validators.ToList();
-      return list.OfType<NotNullAttribute> ().Cast<IValidator>().Concat(list.Where(x => !typeof(NotNullAttribute).IsAssignableFrom(x.GetType())));
+      return list.OfType<NotNullAttribute>()
+          .Cast<ValidatorBase>()
+          .Concat (list.Where (x => !typeof (NotNullAttribute).IsAssignableFrom (x.GetType())));
     }
   }
 }

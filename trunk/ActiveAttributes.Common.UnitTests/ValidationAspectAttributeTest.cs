@@ -95,9 +95,9 @@ namespace ActiveAttributes.Common.UnitTests
     }
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = true)]
-    private class Validator : Attribute, IValidator
+    private class Validator : ValidatorBase
     {
-      public void Validate (string paramName, object obj)
+      public override void Validate (string paramName, object obj)
       {
         var type = obj.GetType();
         Invocations.Add (new Invocation { ParamName = paramName, Object = obj });

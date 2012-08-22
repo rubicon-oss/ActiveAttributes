@@ -24,8 +24,6 @@ namespace ActiveAttributes.Core.Extensions
 {
   public static class MemberInfoExtensions
   {
-    public MemberInfo GetBaseDefinition (this MemberInfo)
-
     public static bool EqualsBaseDefinition (this Type @this, Type other)
     {
       return EqualsBaseDefinition<Type> (@this, other);
