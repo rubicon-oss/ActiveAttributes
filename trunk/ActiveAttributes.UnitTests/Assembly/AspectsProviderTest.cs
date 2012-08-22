@@ -171,9 +171,9 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
     [Test]
-    public void GetParameterLevelAspectsFromInterfaces ()
+    public void GetParameterLevelAspectsOnlyOnce ()
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((DerviedParameterLevelAspectClass obj) => obj.Method ("sad"));
+      var method = MemberInfoFromExpressionUtility.GetMethod ((OnlyOnceParameterLevelAspectClass obj) => obj.Method ("sad", "sat"));
 
       var result = _provider.GetParameterLevelAspects (method).ToArray ();
 
@@ -181,20 +181,10 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AppliedAspectAttribute)));
     }
 
-    public class DerviedParameterLevelAspectClass
+    public class OnlyOnceParameterLevelAspectClass
     {
-      public void Method ([DerivedParameter] string arg) { }
+      public void Method ([ParameterAttribute] string arg1, [ParameterAttribute] string arg2) { }
     }
-
-    [ApplyAspect(typeof(AppliedAspectAttribute))]
-    public interface IParameterAttribute
-    {
-    }
-
-    public class DerivedParameterAttribute : Attribute, IParameterAttribute
-    {
-    }
-
 
 
     [Test]

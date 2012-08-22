@@ -28,6 +28,10 @@ namespace ActiveAttributes.Common
 {
   public class ValidationAspectAttribute : MethodInterceptionAspectAttribute
   {
+    public ValidationAspectAttribute ()
+    {
+    }
+
     public override void OnIntercept (IInvocation invocation)
     {
       ValidateArguments(invocation.Context);

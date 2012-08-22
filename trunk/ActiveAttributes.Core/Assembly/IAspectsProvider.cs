@@ -30,5 +30,6 @@ namespace ActiveAttributes.Core.Assembly
     IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo methodInfo);
     IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MethodInfo methodInfo);
     IEnumerable<IAspectDescriptor> GetEventLevelAspects (MethodInfo methodInfo);
+    IEnumerable<IAspectDescriptor> GetParameterLevelAspects (MethodInfo methodInfo);
   }
 }

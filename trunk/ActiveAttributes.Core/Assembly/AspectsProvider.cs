@@ -83,27 +83,25 @@ namespace ActiveAttributes.Core.Assembly
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != null;
 
       return GetAspects (methodInfo, getParent, whileCondition);
-
-
     }
 
     public IEnumerable<IAspectDescriptor> GetParameterLevelAspects (MethodInfo methodInfo)
     {
       var parameters = methodInfo.GetParameters();
-      var descriptors = parameters.Select (GetParameterLevelAspects).ToArray();
-      return descriptors.SelectMany (x => x);
+      var descriptors = parameters.Select (GetParameterLevelTypes).ToArray();
+      return descriptors
+          .SelectMany (x => x)
+          .Distinct()
+          .Select (x => new TypeAspectDescriptor (x, AspectScope.Static))
+          .Cast<IAspectDescriptor>();
     }
 
-    private IEnumerable<IAspectDescriptor> GetParameterLevelAspects (ParameterInfo parameterInfo)
+    private IEnumerable<Type> GetParameterLevelTypes (ParameterInfo parameterInfo)
     {
       var parameterAttributes = parameterInfo.GetCustomAttributes (true);
-      foreach (var parameterAttribute in parameterAttributes)
-      {
-        var typeAttributes = parameterAttribute.GetType().GetCustomAttributes (true);
-        var applyTypes = typeAttributes.OfType<ApplyAspectAttribute>().Select (x => x.AspectType);
-        foreach (var applyType in applyTypes)
-          yield return new TypeAspectDescriptor (applyType, AspectScope.Static);
-      }
+      return parameterAttributes
+          .Select (parameterAttribute => parameterAttribute.GetType().GetCustomAttributes (true))
+          .SelectMany (typeAttributes => typeAttributes.OfType<ApplyAspectAttribute>().Select (x => x.AspectType));
     }
 
     public IEnumerable<IAspectDescriptor> GetInterfaceLevelAspects (MethodInfo methodInfo)

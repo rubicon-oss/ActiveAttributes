@@ -21,6 +21,7 @@ using System.Text;
 using ActiveAttributes.Common.Validation;
 using ActiveAttributes.Core.Assembly;
 using NUnit.Framework;
+using Rhino.Mocks.Exceptions;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -39,18 +40,41 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    public void ThrowsForNullArgument ()
+    public void ArgumentNotNull ()
     {
-      Assert.That (() => _instance.Method1 (null), Throws.ArgumentException);
+      _instance.Method1 ("");
+    }
+
+    [Test]
+    public void ArgumentNullThrows ()
+    {
+      Assert.That (() => _instance.Method1 (null), Throws.TypeOf<ArgumentNullException> ());
+    }
+
+    [Test]
+    public void ReturnNotNull ()
+    {
+      _instance.Method3 ();
+    }
+
+    [Test]
+    public void ReturnNullThrows ()
+    {
+      _instance.Method2 ();
     }
 
     public class DomainType
     {
-      public void Method1 ([NotNull] string arg)
+      public virtual void Method1 ([NotNull] string arg) { }
+
+      [return: NotNull]
+      public virtual string Method2 ()
       {
+        return null;
       }
 
-      public string Method2 ()
+      [return: NotNull]
+      public virtual string Method3 ()
       {
         return null;
       }

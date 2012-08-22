@@ -107,9 +107,11 @@ namespace ActiveAttributes.Core.Assembly
         var methodLevelAspects = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
         var interfaceLevelAspects = _aspectProvider.GetInterfaceLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
         var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
+        var parameterLevelAspects = _aspectProvider.GetParameterLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
         var relatedMethodAspects = methodLevelAspects
             .Concat (interfaceLevelAspects)
             .Concat (propertyLevelAspects)
+            .Concat (parameterLevelAspects)
             .ConvertToCollection();
 
         // get field data
