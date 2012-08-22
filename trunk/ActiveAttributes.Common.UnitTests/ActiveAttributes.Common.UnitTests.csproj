@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{550D08D9-B5F7-4B9A-ADF4-429D54229243}</ProjectGuid>
+    <ProjectGuid>{491E0580-1440-4820-B5EE-6A1C54385C27}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActiveAttributes.IntegrationTests</RootNamespace>
-    <AssemblyName>ActiveAttributes.IntegrationTests</AssemblyName>
+    <RootNamespace>ActiveAttributes.Common.UnitTests</RootNamespace>
+    <AssemblyName>ActiveAttributes.Common.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\prereq\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\prereq\nunit.framework.dll</HintPath>
     </Reference>
@@ -43,9 +40,6 @@
     </Reference>
     <Reference Include="Remotion.Development">
       <HintPath>..\prereq\Remotion.Development.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.TypePipe">
-      <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\prereq\Rhino.Mocks.dll</HintPath>
@@ -58,20 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentManipulationTest.cs" />
-    <Compile Include="AspectScopeTest.cs" />
-    <Compile Include="CachingAspectTest.cs" />
-    <Compile Include="InterfaceAspectsTest.cs" />
-    <Compile Include="MethodBoundaryTest.cs" />
-    <Compile Include="ProceedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnManipulationTest.cs" />
-    <Compile Include="SetupFixture.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="TypedAspectTest.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeLevelAspectTest.cs" />
-    <Compile Include="ValidationTest.cs" />
+    <Compile Include="Validation\InRangeAttributeTest.cs" />
+    <Compile Include="Validation\NotEmptyAttributeTest.cs" />
+    <Compile Include="ValidationAspectAttributeTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ActiveAttributes.licenseheader">
+      <Link>ActiveAttributes.licenseheader</Link>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Common\ActiveAttributes.Common.csproj">
@@ -82,11 +71,6 @@
       <Project>{24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1}</Project>
       <Name>ActiveAttributes.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\ActiveAttributes.licenseheader">
-      <Link>ActiveAttributes.licenseheader</Link>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

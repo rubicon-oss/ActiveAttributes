@@ -156,5 +156,7 @@ namespace ActiveAttributes.UnitTests.Extensions
       public event EventHandler Event1;
       public event EventHandler Event2;
     }
+
+
   }
 }

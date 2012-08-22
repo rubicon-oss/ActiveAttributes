@@ -14,17 +14,14 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
-using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -61,10 +58,12 @@ namespace ActiveAttributes.Core.Assembly
     {
       get { return _customAttributeData.Constructor; }
     }
+
     public IList<CustomAttributeTypedArgument> ConstructorArguments
     {
       get { return _customAttributeData.ConstructorArguments; }
     }
+
     public IList<CustomAttributeNamedArgument> NamedArguments
     {
       get { return _customAttributeData.NamedArguments; }
@@ -86,7 +85,8 @@ namespace ActiveAttributes.Core.Assembly
       if (_customAttributeData.ConstructorArguments.Count > 0)
         stringBuilder.Append (", ");
 
-      stringBuilder.Append (string.Join (", ", _customAttributeData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
+      stringBuilder.Append (
+          string.Join (", ", _customAttributeData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
 
       if (_customAttributeData.NamedArguments.Count > 0)
         stringBuilder.Append (", ");

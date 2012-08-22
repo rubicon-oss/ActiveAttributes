@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
@@ -47,15 +46,6 @@ namespace ActiveAttributes.Core.Extensions
     public static bool IsIndexer (this PropertyInfo propertyInfo)
     {
       return propertyInfo.GetIndexParameters().Length == 1;
-    }
-
-
-    public static PropertyInfo GetProperty<TObject, TProperty> (Expression<Func<TObject, TProperty>> expression)
-    {
-      var memberExpression = expression.Body as MemberExpression;
-      var propertyInfos = typeof (TObject).GetProperties (BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
-      var enumerable = propertyInfos.Where (x => x.GetOverridenProperty() == memberExpression.Member);
-      return enumerable.SingleOrDefault ();
     }
   }
 }

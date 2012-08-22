@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{550D08D9-B5F7-4B9A-ADF4-429D54229243}</ProjectGuid>
+    <ProjectGuid>{6E268C4B-A875-4071-8108-44E2FDFF864C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActiveAttributes.IntegrationTests</RootNamespace>
-    <AssemblyName>ActiveAttributes.IntegrationTests</AssemblyName>
+    <RootNamespace>ActiveAttributes.Common</RootNamespace>
+    <AssemblyName>ActiveAttributes.Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,23 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog">
-      <HintPath>..\prereq\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\prereq\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="Remotion">
       <HintPath>..\prereq\Remotion.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Development">
       <HintPath>..\prereq\Remotion.Development.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.TypePipe">
-      <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
-    </Reference>
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\prereq\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,26 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentManipulationTest.cs" />
-    <Compile Include="AspectScopeTest.cs" />
-    <Compile Include="CachingAspectTest.cs" />
-    <Compile Include="InterfaceAspectsTest.cs" />
-    <Compile Include="MethodBoundaryTest.cs" />
-    <Compile Include="ProceedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnManipulationTest.cs" />
-    <Compile Include="SetupFixture.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="TypedAspectTest.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeLevelAspectTest.cs" />
-    <Compile Include="ValidationTest.cs" />
+    <Compile Include="Validation\InRangeAttribute.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\NotEmptyAttribute.cs" />
+    <Compile Include="Validation\NotNullAttribute.cs" />
+    <Compile Include="ValidationAspectAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActiveAttributes.Common\ActiveAttributes.Common.csproj">
-      <Project>{6E268C4B-A875-4071-8108-44E2FDFF864C}</Project>
-      <Name>ActiveAttributes.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">
       <Project>{24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1}</Project>
       <Name>ActiveAttributes.Core</Name>

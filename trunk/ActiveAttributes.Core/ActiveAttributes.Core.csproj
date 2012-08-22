@@ -60,6 +60,8 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="Assembly\IAspectsProvider.cs" />
+    <Compile Include="Assembly\TypeAspectDescriptor.cs" />
+    <Compile Include="Configuration\ApplyAspectAttribute.cs" />
     <Compile Include="Configuration\Configurator\AppConfigAspectConfigurator.cs" />
     <Compile Include="Configuration\AspectOrderingAttribute.cs" />
     <Compile Include="Configuration\AspectOrderingPresetAttribute.cs" />

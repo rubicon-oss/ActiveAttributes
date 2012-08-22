@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
@@ -96,6 +97,12 @@ namespace ActiveAttributes.Core.Extensions
     public static bool IsFunc (this MethodInfo methodInfo)
     {
       return methodInfo.ReturnType != typeof (void);
+    }
+
+    public static IEnumerable<CustomAttributeData> GetCustomAttributeData (this MemberInfo memberInfo, bool inherit)
+    {
+      var declaringType = memberInfo.DeclaringType;
+      yield break;
     }
   }
 }

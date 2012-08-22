@@ -83,6 +83,7 @@
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\AssemblerTest.Validation.cs" />
     <Compile Include="Assembly\TypeProviderTest.cs" />
+    <Compile Include="Configuration\ApplyAspectAttributeTest.cs" />
     <Compile Include="Configuration\AspectSchedulerTest.cs" />
     <Compile Include="Extensions\EnumerableExtensionsTest.cs" />
     <Compile Include="TypeExtensions.cs" />

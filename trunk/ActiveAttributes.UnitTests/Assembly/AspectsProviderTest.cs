@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
@@ -140,6 +141,60 @@ namespace ActiveAttributes.UnitTests.Assembly
       [Aspect]
       public void Method () { }
     }
+
+
+    [Test]
+    public void GetParameterLevelAspects ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((ParameterLevelAspectClass obj) => obj.Method ("sad"));
+
+      var result = _provider.GetParameterLevelAspects (method).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AppliedAspectAttribute)));
+    }
+
+    public class ParameterLevelAspectClass
+    {
+      public void Method ([Parameter] string arg) { }
+    }
+
+    [ApplyAspect(typeof(AppliedAspectAttribute))]
+    public class ParameterAttribute : Attribute
+    {
+    }
+
+    public class AppliedAspectAttribute : AspectAttribute
+    {
+    }
+
+
+
+    [Test]
+    public void GetParameterLevelAspectsFromInterfaces ()
+    {
+      var method = MemberInfoFromExpressionUtility.GetMethod ((DerviedParameterLevelAspectClass obj) => obj.Method ("sad"));
+
+      var result = _provider.GetParameterLevelAspects (method).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (1));
+      Assert.That (result, Has.All.Property ("AspectType").EqualTo (typeof (AppliedAspectAttribute)));
+    }
+
+    public class DerviedParameterLevelAspectClass
+    {
+      public void Method ([DerivedParameter] string arg) { }
+    }
+
+    [ApplyAspect(typeof(AppliedAspectAttribute))]
+    public interface IParameterAttribute
+    {
+    }
+
+    public class DerivedParameterAttribute : Attribute, IParameterAttribute
+    {
+    }
+
 
 
     [Test]
