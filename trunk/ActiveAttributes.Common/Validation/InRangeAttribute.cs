@@ -19,8 +19,7 @@ using System;
 
 namespace ActiveAttributes.Common.Validation
 {
-  [AttributeUsage (AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-  public class InRangeAttribute : Attribute, IValidator
+  public class InRangeAttribute : ValidatorBase
   {
     private readonly int _minimum;
     private readonly int _maximum;
@@ -31,7 +30,7 @@ namespace ActiveAttributes.Common.Validation
       _maximum = maximum;
     }
 
-    public void Validate (string paramName, object obj)
+    public override void Validate (string paramName, object obj)
     {
       var value = Convert.ToDouble (obj);
       if (value < _minimum || value > _maximum)

@@ -19,10 +19,9 @@ using System;
 
 namespace ActiveAttributes.Common.Validation
 {
-  [AttributeUsage (AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-  public class NotNullAttribute : Attribute, IValidator
+  public class NotNullAttribute : ValidatorBase
   {
-    public void Validate (string paramName, object obj)
+    public override void Validate (string paramName, object obj)
     {
       if (obj == null)
         throw new ArgumentNullException (paramName);

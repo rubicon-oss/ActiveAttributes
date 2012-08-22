@@ -20,9 +20,10 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Common.Validation
 {
-  [ApplyAspect(typeof(ValidationAspectAttribute))]
-  public interface IValidator
+  [AttributeUsage (AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
+  [ApplyAspect (typeof (ValidationAspectAttribute))]
+  public abstract class ValidatorBase : Attribute
   {
-    void Validate (string paramName, object obj);
+    public abstract void Validate (string paramName, object obj);
   }
 }

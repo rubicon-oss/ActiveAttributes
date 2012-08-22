@@ -20,10 +20,9 @@ using System.Collections;
 
 namespace ActiveAttributes.Common.Validation
 {
-  [AttributeUsage (AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
-  public class NotEmptyAttribute : Attribute, IValidator
+  public class NotEmptyAttribute : ValidatorBase
   {
-    public void Validate (string paramName, object obj)
+    public override void Validate (string paramName, object obj)
     {
       const string message = "Must not be empty";
       if ((obj is string && string.IsNullOrEmpty ((string) obj))
