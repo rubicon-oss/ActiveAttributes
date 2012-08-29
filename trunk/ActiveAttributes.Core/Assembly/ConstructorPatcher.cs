@@ -38,7 +38,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <remarks>
   /// For the matter of easy implementation (iteration + order of aspects), the instance aspects fields contains static aspects too. 
   /// </remarks>
-  public class ConstructorPatcher
+  public class ConstructorPatcher : IConstructorPatcher
   {
     public void AddReflectionAndDelegateInitialization (
         MutableMethodInfo mutableMethod,

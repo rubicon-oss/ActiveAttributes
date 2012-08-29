@@ -15,11 +15,9 @@
 // under the License.
 // 
 using System;
-using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
-using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -27,36 +25,29 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Introduces fields for storing <see cref="MethodInfo"/>, <see cref="Delegate"/>, static/instance <see cref="AspectAttribute"/>'s for a given <see cref="MutableType"/>, or <see cref="MutableMethodInfo"/>.
   /// </summary>
-  public class FieldIntroducer
+  public class FieldIntroducer : IFieldIntroducer
   {
     private int _counter = 1;
     private const string c_instancePrefix = "_m_";
     private const string c_staticPrefix = "_s_";
 
-    public Data IntroduceAssemblyLevelFields (MutableType mutableType)
-    {
-      var instanceAspectFieldName = c_instancePrefix + "AssemblyLevel_InstanceAspects";
-      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectFieldName);
-      
-      return new Data { InstanceAspectsField = instanceAspectsField };
-    }
-
-    public Data IntroduceTypeLevelFields (MutableType mutableType)
+    public Data IntroduceTypeAspectFields (MutableType mutableType)
     {
       var instanceAspectsFieldName = c_instancePrefix + "TypeLevel_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
 
       var staticAspectsFieldName = c_staticPrefix + "TypeLevel_StaticAspects";
-      var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
+      var staticAspectsField = mutableType.AddField (
+          typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
 
       return new Data
              {
-               StaticAspectsField = staticAspectsField,
-               InstanceAspectsField = instanceAspectsField
+                 StaticAspectsField = staticAspectsField,
+                 InstanceAspectsField = instanceAspectsField
              };
     }
 
-    public Data IntroduceMethodLevelFields (MutableMethodInfo mutableMethod)
+    public Data IntroduceMethodAspectFields (MutableMethodInfo mutableMethod)
     {
       var mutableType = (MutableType) mutableMethod.DeclaringType;
       var uniqueMethodName = mutableMethod.Name + _counter++;
@@ -76,7 +67,8 @@ namespace ActiveAttributes.Core.Assembly
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
       var staticAspectsFieldName = c_staticPrefix + uniqueMethodName + "_StaticAspects";
-      var staticAspectsField = mutableType.AddField (typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
+      var staticAspectsField = mutableType.AddField (
+          typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
 
       var instanceAspectsFieldName = instanceBaseName + "_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
@@ -89,6 +81,34 @@ namespace ActiveAttributes.Core.Assembly
         DelegateField = delegateField,
         StaticAspectsField = staticAspectsField,
         InstanceAspectsField = instanceAspectsField
+      };
+    }
+
+    public Data IntroduceMethodReflectionFields (MutableMethodInfo mutableMethod)
+    {
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
+      var uniqueMethodName = mutableMethod.Name + _counter++;
+      var instanceBaseName = c_instancePrefix + uniqueMethodName;
+
+      var propertyInfoFieldName = instanceBaseName + "_PropertyInfo";
+      var propertyInfoField = mutableType.AddField (typeof (PropertyInfo), propertyInfoFieldName);
+
+      var eventInfoFieldName = instanceBaseName + "_EventInfo";
+      var eventInfoField = mutableType.AddField (typeof (EventInfo), eventInfoFieldName);
+
+      var methodInfoFieldName = instanceBaseName + "_MethodInfo";
+      var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
+
+      var delegateType = mutableMethod.GetDelegateType ();
+      var delegateFieldName = instanceBaseName + "_Delegate";
+      var delegateField = mutableType.AddField (delegateType, delegateFieldName);
+
+      return new Data
+      {
+        PropertyInfoField = propertyInfoField,
+        EventInfoField = eventInfoField,
+        MethodInfoField = methodInfoField,
+        DelegateField = delegateField,
       };
     }
 

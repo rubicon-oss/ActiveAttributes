@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -16,13 +16,62 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using ActiveAttributes.Core.Assembly;
 using NUnit.Framework;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.UnitTests.MutableReflection;
 using Rhino.Mocks;
 
-public class DomainClass
+namespace ActiveAttributes.UnitTests.Assembly
 {
-  public DomainClass ()
+  [TestFixture]
+  public class AssemblerTest
   {
+    private IFieldIntroducer _introducer;
+    private IMethodPatcher _methodPatcher;
+    private IAspectScheduler _scheduler;
+    private IAspectsProvider _provider;
+    private IMethodCopier _copier;
+    private IConstructorPatcher _constructorPatcher;
+    private IFactory _factory;
+
+    private Assembler _assembler;
+
+    private MutableType _mutableType1;
+    private MutableType _mutableType2;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _introducer = MockRepository.GenerateMock<IFieldIntroducer>();
+      _methodPatcher = MockRepository.GenerateMock<IMethodPatcher>();
+      _scheduler = MockRepository.GenerateMock<IAspectScheduler>();
+      _provider = MockRepository.GenerateMock<IAspectsProvider>();
+      _copier = MockRepository.GenerateMock<IMethodCopier>();
+      _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
+      _factory = MockRepository.GenerateMock<IFactory>();
+
+      _assembler = new Assembler (_provider, _introducer, _constructorPatcher, _copier, _factory);
+
+      _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
+
+      var fakeAspects = new List<IAspectDescriptor> ();
+      _provider.Expect (x => x.GetTypeLevelAspects (_mutableType1.UnderlyingSystemType))
+          .Return (fakeAspects);
+    }
+
+    [Test]
+    public void GetsTypeLevelAspects ()
+    {
+      _assembler.ModifyType (_mutableType1);
+
+      _provider.VerifyAllExpectations ();
+    }
+
+
+
+    private class DomainType1
+    {
+    }
   }
 }

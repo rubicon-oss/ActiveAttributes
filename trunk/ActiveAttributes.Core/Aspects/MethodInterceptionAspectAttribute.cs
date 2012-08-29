@@ -24,7 +24,7 @@ namespace ActiveAttributes.Core.Aspects
   ///   Provides facilities to intercept a method.
   /// </summary>
   [Serializable]
-  [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)] // TODO ctor
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
   public abstract class MethodInterceptionAspectAttribute : AspectAttribute
   {
     protected MethodInterceptionAspectAttribute ()

@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using ActiveAttributes.Core.Assembly;
 
@@ -22,9 +21,10 @@ namespace ActiveAttributes.Core.Configuration.Rules
 {
   public class RoleOrderRule : IOrderRule
   {
+    private readonly IAspectConfiguration _configuration;
+
     private readonly string _role1;
     private readonly string _role2;
-    private readonly IAspectConfiguration _configuration;
 
     public RoleOrderRule (string role1, string role2, IAspectConfiguration configuration)
     {
@@ -49,7 +49,7 @@ namespace ActiveAttributes.Core.Configuration.Rules
       if (role2 == _role1 && role1 == _role2)
         return 1;
 
-      throw new Exception();
+      return 0;
     }
   }
 }

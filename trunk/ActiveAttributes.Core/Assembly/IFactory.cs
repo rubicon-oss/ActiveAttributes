@@ -15,17 +15,28 @@
 // under the License.
 // 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Configuration
+namespace ActiveAttributes.Core.Assembly
 {
-  [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
-  public class AspectOrderingAttribute : Attribute
+  public interface IFactory
   {
-    public AspectOrderingAttribute (OrderPosition position, params Type[] aspectTypes)
-    {
-    }
-    public AspectOrderingAttribute (OrderPosition position, params string[] aspectRoles)
-    {
-    }
+    ITypeProvider GetTypeProvider (MethodInfo methodInfo);
+
+    IArrayAccessor GetInstanceAccessor (FieldInfo fieldInfo);
+    IArrayAccessor GetStaticAccessor (FieldInfo fieldInfo);
+
+    MethodPatcher GetMethodPatcher (
+        MutableMethodInfo mutableMethod,
+        FieldInfo propertyInfoFieldInfo,
+        FieldInfo eventInfoFieldInfo,
+        FieldInfo methodInfoFieldInfo,
+        FieldInfo delegateFieldInfo,
+        IEnumerable<IAspectGenerator> aspects,
+        ITypeProvider typeProvider);
+
+    IAspectGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor descriptor);
   }
 }

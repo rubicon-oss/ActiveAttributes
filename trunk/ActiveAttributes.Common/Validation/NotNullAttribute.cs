@@ -21,6 +21,15 @@ namespace ActiveAttributes.Common.Validation
 {
   public class NotNullAttribute : ValidatorBase
   {
+    public Action<string, object> GetValidationExpression ()
+    {
+      return (paramName, obj) =>
+      {
+        if (obj == null)
+          throw new ArgumentNullException();
+      };
+    }
+
     public override void Validate (string paramName, object obj)
     {
       if (obj == null)

@@ -16,65 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using ActiveAttributes.Core.Assembly;
-using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Configuration
 {
   public interface IAspectConfiguration
   {
-    ReadOnlyCollection<IComparer<IAspectDescriptor>> Rules { get; }
+    IList<IOrderRule> Rules { get; }
 
-    void AddRule (IComparer<IAspectDescriptor> rule);
-    void RemoveRule (IComparer<IAspectDescriptor> rule);
-
-    ReadOnlyDictionary<Type, string> Roles { get; }
-
-    void SetRole (string name);
-    void UnsetRole (string name);
-  }
-
-  public interface IOrderRule : IComparer<IAspectDescriptor>
-  {
-  }
-
-  public class AspectConfiguration : IAspectConfiguration
-  {
-    private readonly IList<IComparer<IAspectDescriptor>> _rules;
-    private readonly IDictionary<Type, string> _roles;
-
-    public AspectConfiguration ()
-    {
-      _rules = new List<IComparer<IAspectDescriptor>>();
-      _roles = new Dictionary<Type, string>();
-    }
-
-    public ReadOnlyCollection<IComparer<IAspectDescriptor>> Rules
-    {
-      get { return new ReadOnlyCollection<IComparer<IAspectDescriptor>> (_rules); }
-    }
-
-    public void AddRule (IComparer<IAspectDescriptor> rule)
-    {
-    }
-
-    public void RemoveRule (IComparer<IAspectDescriptor> rule)
-    {
-    }
-
-    public ReadOnlyDictionary<Type, string> Roles
-    {
-      get { return new ReadOnlyDictionary<Type, string> (_roles); }
-    }
-
-    public void SetRole (string name)
-    {
-    }
-
-    public void UnsetRole (string name)
-    {
-    }
+    IDictionary<Type, string> Roles { get; }
   }
 }

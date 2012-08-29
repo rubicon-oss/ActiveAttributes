@@ -14,33 +14,27 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
-using ActiveAttributes.Core.Assembly;
+using System.Collections.Generic;
+using System.Reflection;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Configuration.Rules
+namespace ActiveAttributes.Core.Assembly
 {
-  public class TypeOrderRule : IOrderRule
+  public interface IConstructorPatcher
   {
-    private readonly Type _type1;
-    private readonly Type _type2;
+    void AddReflectionAndDelegateInitialization (
+        MutableMethodInfo mutableMethod,
+        FieldInfo propertyInfoFieldInfo,
+        FieldInfo eventInfoFieldInfo,
+        FieldInfo methodInfoFieldInfo,
+        FieldInfo delegateFieldInfo,
+        MutableMethodInfo copiedMethod);
 
-    public TypeOrderRule (Type type1, Type type2)
-    {
-      _type1 = type1;
-      _type2 = type2;
-    }
-
-    public int Compare (IAspectDescriptor x, IAspectDescriptor y)
-    {
-      var type1 = x.AspectType;
-      var type2 = y.AspectType;
-
-      if (_type1.IsAssignableFrom (type1) && _type2.IsAssignableFrom (type2))
-        return -1;
-      if (_type1.IsAssignableFrom (type2) && _type2.IsAssignableFrom (type1))
-        return 1;
-
-      return 0;
-    }
+    void AddAspectInitialization (
+        MutableType mutableType,
+        IArrayAccessor staticAspectsFieldInfo,
+        IArrayAccessor instanceAspectsFieldInfo,
+        IEnumerable<IAspectGenerator> staticAspects,
+        IEnumerable<IAspectGenerator> instanceAspects);
   }
 }

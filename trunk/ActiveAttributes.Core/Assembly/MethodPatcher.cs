@@ -41,7 +41,7 @@ namespace ActiveAttributes.Core.Assembly
   /// aspect[1].Intercept(invocation1);
   /// </code>
   /// </remarks>
-  public class MethodPatcher
+  public class MethodPatcher : IMethodPatcher
   {
     private readonly MutableMethodInfo _mutableMethod;
     private readonly FieldInfo _propertyInfoFieldInfo;
@@ -57,17 +57,6 @@ namespace ActiveAttributes.Core.Assembly
     private readonly MethodInfo _onInterceptSetMethodInfo;
 
     private readonly MethodInfo _createDelegateMethodInfo;
-
-    public MethodPatcher ()
-    {
-      _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
-      _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
-      _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
-
-      _createDelegateMethodInfo = typeof (Delegate).GetMethod (
-          "CreateDelegate",
-          new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-    }
 
     public MethodPatcher (
         MutableMethodInfo mutableMethod,

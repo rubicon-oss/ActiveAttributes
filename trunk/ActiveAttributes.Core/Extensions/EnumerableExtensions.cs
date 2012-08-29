@@ -17,13 +17,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Extensions
 {
   public static class EnumerableExtensions
   {
-    public static IEnumerable<T> TopologicalSort<T> (this IEnumerable<T> items, IEnumerable<Tuple<T, T>> dependencies) where T: class
+    public static IEnumerable<T> TopologicalSort<T> (
+        this IEnumerable<T> items, IEnumerable<Tuple<T, T>> dependencies, bool throwForUndefinedOrder = false) where T: class
     {
       var itemsAsList = items.ToList();
       var dependenciesAsList = dependencies.ToList();
@@ -32,8 +35,17 @@ namespace ActiveAttributes.Core.Extensions
 
       while (itemsAsList.Count > 0)
       {
-        var independent = itemsAsList.FirstOrDefault (x => dependenciesAsList.All (y => y.Item2 != x));
+        var independents = itemsAsList.Where (x => dependenciesAsList.All (y => y.Item2 != x)).ConvertToCollection();
+        if (throwForUndefinedOrder && independents.Count > 1)
+        {
+          var stringBuilder = new StringBuilder();
+          stringBuilder.Append ("Undefiend order of items:\r\n");
+          foreach (var item in independents)
+            stringBuilder.Append (item.ToString()).Append ("\r\n");
+          throw new InvalidOperationException (stringBuilder.ToString());
+        }
 
+        var independent = independents.FirstOrDefault();
         if (independent == default(T))
           throw new ArgumentException ("Circular dependencies defined");
 

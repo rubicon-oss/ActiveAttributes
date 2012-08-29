@@ -15,7 +15,6 @@
 // under the License.
 // 
 using System;
-using System.Reflection;
 using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
 using Remotion.Utilities;
@@ -25,11 +24,6 @@ namespace ActiveAttributes.UnitTests.Extensions
   [TestFixture]
   public class MemberInfoExtensionsTest
   {
-
-
-    private BindingFlags _bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public;
-
-
     [Test]
     public void EqualsBaseDefinition_DirectOverride ()
     {

@@ -15,32 +15,12 @@
 // under the License.
 // 
 using System;
+using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly;
 
-namespace ActiveAttributes.Core.Configuration.Rules
+namespace ActiveAttributes.Core.Configuration
 {
-  public class TypeOrderRule : IOrderRule
+  public interface IOrderRule : IComparer<IAspectDescriptor>
   {
-    private readonly Type _type1;
-    private readonly Type _type2;
-
-    public TypeOrderRule (Type type1, Type type2)
-    {
-      _type1 = type1;
-      _type2 = type2;
-    }
-
-    public int Compare (IAspectDescriptor x, IAspectDescriptor y)
-    {
-      var type1 = x.AspectType;
-      var type2 = y.AspectType;
-
-      if (_type1.IsAssignableFrom (type1) && _type2.IsAssignableFrom (type2))
-        return -1;
-      if (_type1.IsAssignableFrom (type2) && _type2.IsAssignableFrom (type1))
-        return 1;
-
-      return 0;
-    }
   }
 }

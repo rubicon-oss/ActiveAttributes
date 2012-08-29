@@ -13,7 +13,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Copies a method including signature and body.
   /// </summary>
-  public class MethodCopier
+  public class MethodCopier : IMethodCopier
   {
     public MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod)
     {

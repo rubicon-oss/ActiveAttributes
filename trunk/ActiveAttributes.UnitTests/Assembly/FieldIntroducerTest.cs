@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class FieldIntroducerTest
   {
-    private FieldIntroducer _introducer;
+    private IFieldIntroducer _introducer;
 
     [SetUp]
     public void SetUp ()
@@ -82,8 +82,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       var mutableMethod1 = mutableType.GetOrAddMutableMethod (methodInfo1);
       var mutableMethod2 = mutableType.GetOrAddMutableMethod (methodInfo2);
 
-      var result1 = _introducer.IntroduceMethodLevelFields (mutableMethod1);
-      var result2 = _introducer.IntroduceMethodLevelFields (mutableMethod2);
+      var result1 = _introducer.IntroduceMethodAspectFields (mutableMethod1);
+      var result2 = _introducer.IntroduceMethodAspectFields (mutableMethod2);
 
       Assert.That (result1.MethodInfoField, Is.Not.EqualTo (result2.MethodInfoField));
       Assert.That (result1.DelegateField, Is.Not.EqualTo (result2.DelegateField));
@@ -95,7 +95,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void IntroduceTypeLevelAspects_Instance ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var result = _introducer.IntroduceTypeLevelFields (mutableType);
+      var result = _introducer.IntroduceTypeAspectFields (mutableType);
 
       var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_TypeLevel_InstanceAspects");
 
@@ -109,7 +109,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void IntroduceTypeLevelAspects_Static ()
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var result = _introducer.IntroduceTypeLevelFields (mutableType);
+      var result = _introducer.IntroduceTypeAspectFields (mutableType);
 
       var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_s_TypeLevel_StaticAspects");
 
@@ -119,27 +119,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
     }
 
-    [Test]
-    public void IntroduceAssemblyLevelAspects_Instance ()
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var result = _introducer.IntroduceAssemblyLevelFields (mutableType);
-
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_AssemblyLevel_InstanceAspects");
-
-      Assert.That (fieldInfo, Is.Not.Null);
-      Assert.That (fieldInfo, Is.EqualTo (result.InstanceAspectsField));
-      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
-      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
-    }
-
     private void Test (string fieldEnding, Type fieldType, FieldAttributes fieldAttributes, Func<FieldIntroducer.Data, FieldInfo> dataField)
     {
       var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
       var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-      var result = _introducer.IntroduceMethodLevelFields (mutableMethod);
+      var result = _introducer.IntroduceMethodAspectFields (mutableMethod);
 
       var fieldInfo = mutableType.AddedFields.FirstOrDefault (x => x.Name.EndsWith (fieldEnding));
 

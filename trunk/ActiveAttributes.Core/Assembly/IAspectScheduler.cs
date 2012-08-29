@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,32 +15,14 @@
 // under the License.
 // 
 using System;
-using ActiveAttributes.Core.Assembly;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace ActiveAttributes.Core.Configuration.Rules
+namespace ActiveAttributes.Core.Assembly
 {
-  public class TypeOrderRule : IOrderRule
+  public interface IAspectScheduler
   {
-    private readonly Type _type1;
-    private readonly Type _type2;
-
-    public TypeOrderRule (Type type1, Type type2)
-    {
-      _type1 = type1;
-      _type2 = type2;
-    }
-
-    public int Compare (IAspectDescriptor x, IAspectDescriptor y)
-    {
-      var type1 = x.AspectType;
-      var type2 = y.AspectType;
-
-      if (_type1.IsAssignableFrom (type1) && _type2.IsAssignableFrom (type2))
-        return -1;
-      if (_type1.IsAssignableFrom (type2) && _type2.IsAssignableFrom (type1))
-        return 1;
-
-      return 0;
-    }
+    IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects);
   }
 }

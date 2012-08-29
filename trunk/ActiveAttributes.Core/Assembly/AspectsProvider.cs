@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +22,6 @@ using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
@@ -48,16 +45,8 @@ namespace ActiveAttributes.Core.Assembly
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => ((Type) memberInfo).BaseType;
       Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != typeof (object);
-      var fromType = GetAspects (type, getParent, whileCondition);
 
-      var assemblies = GetAssemblies();
-      var fromAssemblies = assemblies
-          .SelectMany (CustomAttributeData.GetCustomAttributes)
-          .Where (x => x.IsAspectAttribute())
-          .Select (x => new AspectDescriptor (x))
-          .Cast<IAspectDescriptor>();
-
-      return fromType.Concat (fromAssemblies);
+      return GetAspects (type, getParent, whileCondition);
     }
 
     public IEnumerable<IAspectDescriptor> GetPropertyLevelAspects (MethodInfo methodInfo)
@@ -147,14 +136,6 @@ namespace ActiveAttributes.Core.Assembly
       }
 
       return aspectsData.Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
-    }
-
-    private IEnumerable<System.Reflection.Assembly> GetAssemblies ()
-    {
-      var assemblyLoader = new FilteringAssemblyLoader(new LoadAllAssemblyLoaderFilter());
-      var assemblyFinder = new AssemblyFinder (SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true, assemblyLoader), assemblyLoader);
-      var assemblies = assemblyFinder.FindAssemblies ();
-      return assemblies;
     }
   }
 }

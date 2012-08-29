@@ -37,21 +37,12 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class ConstructorPatcherTest : TestBase
   {
-    private ConstructorPatcher _patcher;
-
-    private MethodInfo _methodInfo;
-    private MethodInfo _copiedMethodInfo;
-
     private ICollection<IAspectGenerator> _emptyAspects;
     private ICollection<IAspectGenerator> _instanceAspect;
-    private ICollection<IAspectGenerator> _staticAspect;
-    private ICollection<IAspectGenerator> _mixedAspects;
 
     [SetUp]
     public override void SetUp ()
     {
-      _patcher = new ConstructorPatcher();
-
       var generator1 = MockRepository.GenerateMock<IAspectGenerator>();
       var generator2 = MockRepository.GenerateMock<IAspectGenerator>();
 
@@ -69,8 +60,6 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _emptyAspects = new IAspectGenerator[0];
       _instanceAspect = new[] { generator1 };
-      _staticAspect = new[] { generator2 };
-      _mixedAspects = new[] { generator1, generator2 };
     }
 
     public class DomainClassBase
