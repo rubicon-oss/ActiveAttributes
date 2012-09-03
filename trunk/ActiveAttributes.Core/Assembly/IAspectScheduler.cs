@@ -23,6 +23,6 @@ namespace ActiveAttributes.Core.Assembly
 {
   public interface IAspectScheduler
   {
-    IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects);
+    IEnumerable<IAspectGenerator> GetOrdered (IEnumerable<IAspectGenerator> aspects);
   }
 }

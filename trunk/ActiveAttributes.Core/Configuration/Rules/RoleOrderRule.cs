@@ -33,10 +33,10 @@ namespace ActiveAttributes.Core.Configuration.Rules
       _configuration = configuration;
     }
 
-    public int Compare (IAspectDescriptor x, IAspectDescriptor y)
+    public int Compare (IAspectGenerator x, IAspectGenerator y)
     {
-      var type1 = x.AspectType;
-      var type2 = y.AspectType;
+      var type1 = x.Descriptor.AspectType;
+      var type2 = y.Descriptor.AspectType;
 
       if (!_configuration.Roles.ContainsKey (type1) || !_configuration.Roles.ContainsKey (type2))
         return 0;

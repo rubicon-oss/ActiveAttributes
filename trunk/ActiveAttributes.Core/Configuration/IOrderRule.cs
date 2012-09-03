@@ -20,7 +20,7 @@ using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.Core.Configuration
 {
-  public interface IOrderRule : IComparer<IAspectDescriptor>
+  public interface IOrderRule : IComparer<IAspectGenerator>
   {
   }
 }

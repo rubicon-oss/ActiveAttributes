@@ -33,6 +33,11 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IAspectScheduler _scheduler;
     private IAspectConfiguration _configuration;
 
+    private IAspectGenerator _generator1;
+    private IAspectGenerator _generator2;
+    private IAspectGenerator _generator3;
+    private IAspectGenerator _generator4;
+
     private IAspectDescriptor _descriptor1;
     private IAspectDescriptor _descriptor2;
     private IAspectDescriptor _descriptor3;
@@ -53,6 +58,16 @@ namespace ActiveAttributes.UnitTests.Assembly
       _descriptor2.Expect (x => x.AspectType).Return (typeof (Aspect2));
       _descriptor3.Expect (x => x.AspectType).Return (typeof (Aspect3));
       _descriptor4.Expect (x => x.AspectType).Return (typeof (Aspect4));
+
+      _generator1 = MockRepository.GenerateMock<IAspectGenerator>();
+      _generator2 = MockRepository.GenerateMock<IAspectGenerator>();
+      _generator3 = MockRepository.GenerateMock<IAspectGenerator>();
+      _generator4 = MockRepository.GenerateMock<IAspectGenerator>();
+
+      _generator1.Expect (x => x.Descriptor).Return (_descriptor1);
+      _generator2.Expect (x => x.Descriptor).Return (_descriptor2);
+      _generator3.Expect (x => x.Descriptor).Return (_descriptor3);
+      _generator4.Expect (x => x.Descriptor).Return (_descriptor4);
     }
 
     [Test]
@@ -64,10 +79,10 @@ namespace ActiveAttributes.UnitTests.Assembly
                     new TypeOrderRule(typeof(Aspect1), typeof(Aspect3))
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
-      var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
+      var aspects = new[] { _generator1, _generator2, _generator3 };
 
       var actual = _scheduler.GetOrdered (aspects);
-      var expected = new[] { _descriptor2, _descriptor1, _descriptor3 };
+      var expected = new[] { _generator2, _generator1, _generator3 };
       Assert.That (actual, Is.EqualTo (expected));
     }
 
@@ -80,7 +95,7 @@ namespace ActiveAttributes.UnitTests.Assembly
                     new TypeOrderRule(typeof(Aspect1), typeof(Aspect2))
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
-      var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
+      var aspects = new[] { _generator1, _generator2, _generator3 };
 
       Assert.That (() => _scheduler.GetOrdered (aspects), Throws.InvalidOperationException);
     }
@@ -93,7 +108,7 @@ namespace ActiveAttributes.UnitTests.Assembly
                     new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
                   };
       _configuration.Expect (x => x.Rules).Return (new ReadOnlyCollection<IOrderRule> (rules));
-      var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
+      var aspects = new[] { _generator1, _generator2, _generator3 };
 
       Assert.That (() => _scheduler.GetOrdered (aspects), Throws.InvalidOperationException);
     }
@@ -108,10 +123,10 @@ namespace ActiveAttributes.UnitTests.Assembly
                     new TypeOrderRule(typeof(Aspect1), typeof(Aspect3)),
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
-      var aspects = new[] { _descriptor1, _descriptor3, _descriptor2 };
+      var aspects = new[] { _generator1, _generator3, _generator2 };
 
       var actual = _scheduler.GetOrdered (aspects).ToArray();
-      var expected = new[] { _descriptor3, _descriptor2, _descriptor1 };
+      var expected = new[] { _generator3, _generator2, _generator1 };
       Assert.That (actual, Is.EqualTo (expected));
     }
 

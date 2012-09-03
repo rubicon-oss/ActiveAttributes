@@ -30,10 +30,10 @@ namespace ActiveAttributes.Core.Configuration.Rules
       _type2 = type2;
     }
 
-    public int Compare (IAspectDescriptor x, IAspectDescriptor y)
+    public int Compare (IAspectGenerator x, IAspectGenerator y)
     {
-      var type1 = x.AspectType;
-      var type2 = y.AspectType;
+      var type1 = x.Descriptor.AspectType;
+      var type2 = y.Descriptor.AspectType;
 
       if (_type1.IsAssignableFrom (type1) && _type2.IsAssignableFrom (type2))
         return -1;
