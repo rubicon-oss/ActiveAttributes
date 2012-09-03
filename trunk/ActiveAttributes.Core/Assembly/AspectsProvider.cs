@@ -82,7 +82,7 @@ namespace ActiveAttributes.Core.Assembly
       return descriptors
           .SelectMany (x => x)
           .Distinct()
-          .Select (x => new TypeArgumentsDescriptor (x, AspectScope.Static))
+          .Select (x => new TypeDescriptor (x, AspectScope.Static, 0))
           .Cast<IAspectDescriptor>();
     }
 

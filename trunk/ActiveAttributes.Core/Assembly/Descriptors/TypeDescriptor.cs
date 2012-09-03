@@ -23,47 +23,36 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
-  public class TypeArgumentsDescriptor : IAspectDescriptor
+  public class TypeDescriptor : IAspectDescriptor
   {
-    private readonly Type _type;
-    private readonly AspectScope _scope;
     private readonly object[] _arguments;
 
-    public TypeArgumentsDescriptor (Type type, AspectScope scope, params object[] arguments)
+    public TypeDescriptor (Type aspectType, AspectScope scope, int priority)
     {
-      _type = type;
-      _scope = scope;
-      _arguments = arguments;
+      AspectType = aspectType;
+      Scope = scope;
+      Priority = priority;
     }
 
-    public int Priority
-    {
-      get { return 0; }
-    }
+    public int Priority { get; private set; }
 
-    public AspectScope Scope
-    {
-      get { return _scope; }
-    }
+    public AspectScope Scope { get; private set; }
 
-    public Type AspectType
-    {
-      get { return _type; }
-    }
+    public Type AspectType { get; private set; }
 
     public ConstructorInfo ConstructorInfo
     {
-      get { return _type.GetConstructor (_arguments.Select (x => x.GetType ()).ToArray ()); }
+      get { return AspectType.GetConstructor (Type.EmptyTypes); }
     }
 
     public IList<CustomAttributeTypedArgument> ConstructorArguments
     {
-      get { return new List<CustomAttributeTypedArgument>(); }
+      get { return new CustomAttributeTypedArgument[0]; }
     }
 
     public IList<CustomAttributeNamedArgument> NamedArguments
     {
-      get { return new List<CustomAttributeNamedArgument>(); }
+      get { return new CustomAttributeNamedArgument[0]; }
     }
 
     public bool Matches (MethodInfo method)

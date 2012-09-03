@@ -69,7 +69,7 @@
     <Compile Include="Assembly\IFieldIntroducer.cs" />
     <Compile Include="Assembly\IMethodCopier.cs" />
     <Compile Include="Assembly\IMethodPatcher.cs" />
-    <Compile Include="Assembly\Descriptors\TypeArgumentsDescriptor.cs" />
+    <Compile Include="Assembly\Descriptors\TypeDescriptor.cs" />
     <Compile Include="Configuration\AppConfigElements\TypeRuleCollection.cs" />
     <Compile Include="Configuration\AppConfigElements\TypeRuleElement.cs" />
     <Compile Include="Configuration\ApplyAspectAttribute.cs" />
