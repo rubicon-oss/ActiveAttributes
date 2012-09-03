@@ -51,7 +51,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _factory = MockRepository.GenerateMock<IFactory>();
 
-      _assembler = new Assembler (_provider, _introducer, _constructorPatcher, _copier, _factory);
+      _assembler = new Assembler (_provider, _introducer, _constructorPatcher, _copier, _factory, _scheduler);
 
       _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
 

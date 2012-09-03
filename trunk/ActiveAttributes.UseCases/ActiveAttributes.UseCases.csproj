@@ -49,6 +49,8 @@
     <Compile Include="Aspects\CacheAspectAttribute.cs" />
     <Compile Include="Aspects\CatchExceptionAspectAttribute.cs" />
     <Compile Include="Aspects\InvokeAspectAttribute.cs" />
+    <Compile Include="Aspects\OrderedAspect1Attribute.cs" />
+    <Compile Include="Aspects\OrderedAspect2Attribute.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

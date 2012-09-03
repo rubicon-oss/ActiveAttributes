@@ -1,5 +1,4 @@
 ﻿//Sample license text.
-
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Aspects;
@@ -10,26 +9,19 @@ namespace ActiveAttributes.UseCases.Aspects
 
   public class CacheAspectAttribute : MethodInterceptionAspectAttribute
   {
-    private readonly IDictionary<DateTime, DateTime> _cache;
+    private DateTime _lastTime;
 
     public CacheAspectAttribute ()
     {
-      _cache = new Dictionary<DateTime, DateTime>();
     }
 
     public override void OnIntercept (IInvocation invocation)
     {
-      var key = (DateTime) invocation.Context.Arguments[0];
-      var value = default (DateTime);
+      var diff = DateTime.Now - _lastTime;
+      if (diff >= TimeSpan.FromSeconds (5))
+        _lastTime = DateTime.Now;
 
-      if (!_cache.TryGetValue (key, out value))
-      {
-        invocation.Proceed ();
-        value = (DateTime) invocation.Context.ReturnValue;
-        _cache.Add (key, value);
-      }
-      
-      invocation.Context.ReturnValue = value;
+      invocation.Context.ReturnValue = _lastTime;
     }
   }
 }

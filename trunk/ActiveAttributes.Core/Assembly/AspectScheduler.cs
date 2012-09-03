@@ -34,11 +34,11 @@ namespace ActiveAttributes.Core.Assembly
       _configuration = configuration;
     }
 
-    public IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects)
+    public IEnumerable<IAspectGenerator> GetOrdered (IEnumerable<IAspectGenerator> aspects)
     {
       var aspectsAsCollection = aspects.ConvertToCollection();
 
-      var dependenciesByPriority = new List<Tuple<IAspectDescriptor, IAspectDescriptor>>();
+      var dependenciesByPriority = new List<Tuple<IAspectGenerator, IAspectGenerator>> ();
       var aspectCombinations = (from aspect1 in aspectsAsCollection
                                 from aspect2 in aspectsAsCollection
                                 select new
@@ -49,14 +49,14 @@ namespace ActiveAttributes.Core.Assembly
 
       foreach (var item in aspectCombinations)
       {
-        var compared = item.Aspect1.Priority.CompareTo (item.Aspect2.Priority);
+        var compared = item.Aspect1.Descriptor.Priority.CompareTo (item.Aspect2.Descriptor.Priority);
         if (compared == 1)
           dependenciesByPriority.Add (Tuple.Create (item.Aspect1, item.Aspect2));
         else if (compared == -1)
           dependenciesByPriority.Add (Tuple.Create (item.Aspect2, item.Aspect1));
       }
 
-      var dependenciesByRole = new List<Tuple<IAspectDescriptor, IAspectDescriptor>>();
+      var dependenciesByRole = new List<Tuple<IAspectGenerator, IAspectGenerator>> ();
       var aspectsRuleCombination = from aspectCombination in aspectCombinations
                                    from rule in _configuration.Rules
                                    select new
@@ -81,9 +81,6 @@ namespace ActiveAttributes.Core.Assembly
           dependenciesByRole.Add (tuple2);
       }
 
-      foreach (var dependency in dependenciesByPriority.Concat (dependenciesByRole))
-        Console.WriteLine ("{0} -> {1}", dependency.Item1.AspectType.Name, dependency.Item2.AspectType.Name);
-
       try
       {
         return aspectsAsCollection.TopologicalSort (dependenciesByPriority.Concat (dependenciesByRole), throwForUndefinedOrder: true);
@@ -95,9 +92,9 @@ namespace ActiveAttributes.Core.Assembly
         foreach (var dependency in dependenciesByRole)
         {
           stringBuilder
-              .Append (dependency.Item1.AspectType)
+              .Append (dependency.Item1.Descriptor.AspectType)
               .Append (" -> ")
-              .Append (dependency.Item2.AspectType);
+              .Append (dependency.Item2.Descriptor.AspectType);
         }
         var message = stringBuilder.ToString();
         throw new InvalidOperationException (message, exception);

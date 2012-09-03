@@ -1,19 +1,19 @@
 ﻿//Sample license text.
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Windows.Forms;
+using ActiveAttributes.Core;
+using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Configuration.Rules;
 using ActiveAttributes.UseCases.Aspects;
 
 namespace ActiveAttributes.UseCases
 {
-  public partial class MainForm : Form, INotifyPropertyChanged
+  public partial class MainForm : Form
   {
     public MainForm ()
     {
-      InitializeComponent ();
-
-      PropertyChanged += (s, e) => AddLine ("Property " + e.PropertyName + " changed");
+      InitializeComponent();
     }
 
     [CatchExceptionAspect]
@@ -33,23 +33,15 @@ namespace ActiveAttributes.UseCases
     }
 
     [CacheAspect]
-    public virtual DateTime GetTime (DateTime dateTime5)
+    public virtual DateTime GetTimeCachedByFiveSeconds ()
     {
       return DateTime.Now;
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    //[NotifyPropertyChangedAspect]
-    public override string Text
-    {
-      get { return base.Text; }
-      set { base.Text = value; }
-    }
 
     private void button1_Click (object sender, EventArgs e)
     {
-      ThreadPool.QueueUserWorkItem (s => AddLine (DateTime.Now.ToString("HH:mm:ss.fff")));
+      ThreadPool.QueueUserWorkItem (s => AddLine (DateTime.Now.ToString ("HH:mm:ss.fff")));
     }
 
     private void button2_Click (object sender, EventArgs e)
@@ -59,16 +51,38 @@ namespace ActiveAttributes.UseCases
 
     private void button3_Click (object sender, EventArgs e)
     {
-      var today = DateTime.Today;
-      var now = DateTime.Now;
-      var todayHM = today.Add (new TimeSpan (now.Hour, now.Minute, now.Second / 5));
-      var cached = GetTime (todayHM);
+      var cached = GetTimeCachedByFiveSeconds();
       AddLine (cached.ToString());
     }
 
     private void button4_Click (object sender, EventArgs e)
     {
       Text = DateTime.Now.ToString();
+    }
+
+    private void button6_Click (object sender, EventArgs e)
+    {
+      AspectConfiguration.Singleton.Rules.Clear ();
+      AspectConfiguration.Singleton.Rules.Add (new TypeOrderRule (typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
+      var obj = ObjectFactory.Create<DomainClass> ();
+      obj.Method ();
+    }
+
+    private void button5_Click (object sender, EventArgs e)
+    {
+      AspectConfiguration.Singleton.Rules.Clear ();
+      AspectConfiguration.Singleton.Rules.Add (new TypeOrderRule (typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
+      var obj = ObjectFactory.Create<DomainClass> ();
+      obj.Method ();
+    }
+
+    public class DomainClass
+    {
+      [OrderedAspect1]
+      [OrderedAspect2]
+      public virtual void Method ()
+      {
+      }
     }
   }
 }

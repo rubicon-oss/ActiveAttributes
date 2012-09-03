@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
@@ -81,7 +82,7 @@ namespace ActiveAttributes.Core.Assembly
       return descriptors
           .SelectMany (x => x)
           .Distinct()
-          .Select (x => new TypeAspectDescriptor (x, AspectScope.Static))
+          .Select (x => new TypeArgumentsDescriptor (x, AspectScope.Static))
           .Cast<IAspectDescriptor>();
     }
 
@@ -106,7 +107,7 @@ namespace ActiveAttributes.Core.Assembly
         {
           return CustomAttributeData.GetCustomAttributes (item.InterfaceMember)
               .Where (x => x.IsAspectAttribute())
-              .Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
+              .Select (x => new CustomDataDescriptor (x)).Cast<IAspectDescriptor>();
         }
       }
       return Enumerable.Empty<IAspectDescriptor>();
@@ -135,7 +136,7 @@ namespace ActiveAttributes.Core.Assembly
         it = getParent (it);
       }
 
-      return aspectsData.Select (x => new AspectDescriptor (x)).Cast<IAspectDescriptor>();
+      return aspectsData.Select (x => new CustomDataDescriptor (x)).Cast<IAspectDescriptor>();
     }
   }
 }

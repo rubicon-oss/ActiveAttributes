@@ -21,7 +21,10 @@ using System.Text;
 
 namespace ActiveAttributes.Core.Configuration.Configurator
 {
-  class PresetAspectConfigurator
+  public class PresetAspectConfigurator : IAspectConfigurator
   {
+    public void Initialize (IAspectConfiguration configuration)
+    {
+    }
   }
 }

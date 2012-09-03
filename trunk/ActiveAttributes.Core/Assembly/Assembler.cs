@@ -39,7 +39,8 @@ namespace ActiveAttributes.Core.Assembly
       var constructorPatcher = new ConstructorPatcher();
       var fieldIntroducer = new FieldIntroducer();
       var factory = new Factory();
-      Singleton = new Assembler (aspectProvider, fieldIntroducer, constructorPatcher, methodCopier, factory);
+      var scheduler = new AspectScheduler (AspectConfiguration.Singleton);
+      Singleton = new Assembler (aspectProvider, fieldIntroducer, constructorPatcher, methodCopier, factory, scheduler);
     }
 
     public static Assembler Singleton { get; private set; }
@@ -49,19 +50,22 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IAspectsProvider _aspectProvider;
     private readonly IMethodCopier _methodCopier;
     private readonly IFactory _factory;
+    private readonly IAspectScheduler _scheduler;
 
     internal Assembler (
         IAspectsProvider aspectProvider,
         IFieldIntroducer fieldIntroducer,
         IConstructorPatcher constructorPatcher,
         IMethodCopier methodCopier,
-        IFactory factory)
+        IFactory factory,
+        IAspectScheduler scheduler)
     {
       _fieldIntroducer = fieldIntroducer;
       _constructorPatcher = constructorPatcher;
       _aspectProvider = aspectProvider;
       _methodCopier = methodCopier;
       _factory = factory;
+      _scheduler = scheduler;
     }
 
     public void ModifyType (MutableType mutableType)
@@ -90,8 +94,11 @@ namespace ActiveAttributes.Core.Assembly
                 .Concat (methodLevelAspectGenerators)
                 .ToList();
 
-        if (allMatchingAspectGenerators.Any())
-          AddAspectsToMethod (allMatchingAspectGenerators, mutableMethod);
+        if (allMatchingAspectGenerators.Any ())
+        {
+          var sortedAspects = _scheduler.GetOrdered (allMatchingAspectGenerators).ToList();
+          AddAspectsToMethod (sortedAspects, mutableMethod);
+        }
       }
     }
 

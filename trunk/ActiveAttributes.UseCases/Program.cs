@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
+using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Configuration.Configurator;
 
 namespace ActiveAttributes.UseCases
 {
@@ -14,6 +16,9 @@ namespace ActiveAttributes.UseCases
     [STAThread]
     static void Main ()
     {
+      var configurator = new AppConfigAspectConfigurator();
+      configurator.Initialize (new AspectConfiguration());
+
       Application.EnableVisualStyles ();
       Application.SetCompatibleTextRenderingDefault (false);
 
