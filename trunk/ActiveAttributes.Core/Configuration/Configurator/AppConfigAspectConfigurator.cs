@@ -16,6 +16,9 @@
 // 
 
 using System;
+using System.Configuration;
+using ActiveAttributes.Core.Configuration.AppConfigElements;
+using ActiveAttributes.Core.Configuration.Rules;
 
 namespace ActiveAttributes.Core.Configuration.Configurator
 {
@@ -23,8 +26,16 @@ namespace ActiveAttributes.Core.Configuration.Configurator
   {
     public void Initialize (IAspectConfiguration configuration)
     {
-    }
+      return;
+      var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
 
-    public bool OverwriteAll { get; private set; }
+      foreach (TypeRuleElement item in section.TypeRules)
+      {
+        var beforeType = Type.GetType (item.BeforeType, true);
+        var afterType = Type.GetType (item.AfterType, true);
+        var rule = new TypeOrderRule (beforeType, afterType);
+        configuration.Rules.Add (rule);
+      }
+    }
   }
 }
