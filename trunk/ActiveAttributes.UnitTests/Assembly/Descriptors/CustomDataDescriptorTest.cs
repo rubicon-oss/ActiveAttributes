@@ -18,18 +18,15 @@
 using System;
 using System.Linq;
 using System.Reflection;
-
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-using Assert = NUnit.Framework.Assert;
-
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Descriptors
 {
   [TestFixture]
-  public class AspectDescriptorTest
+  public class CustomDataDescriptorTest
   {
     [Test]
     public void Initialization ()
@@ -37,7 +34,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method1 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      var result = new AspectDescriptor (customData);
+      var result = new CustomDataDescriptor (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Static));
       Assert.That (result.Priority, Is.EqualTo (0));
@@ -50,7 +47,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method2 ()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
 
-      new AspectDescriptor (customData);
+      new CustomDataDescriptor (customData);
     }
 
     [Test]
@@ -59,7 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method5()));
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
 
-      var result = new AspectDescriptor (customData);
+      var result = new CustomDataDescriptor (customData);
 
       Assert.That (result.Scope, Is.EqualTo (AspectScope.Instance));
       Assert.That (result.Priority, Is.EqualTo (10));
@@ -74,7 +71,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method3 ());
       var customData = CustomAttributeData.GetCustomAttributes (method).Single ();
-      var descriptor = new AspectDescriptor (customData);
+      var descriptor = new CustomDataDescriptor (customData);
 
       var result = descriptor.Matches (method);
 
@@ -86,7 +83,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method4 ());
       var customData = CustomAttributeData.GetCustomAttributes (method).Single ();
-      var descriptor = new AspectDescriptor (customData);
+      var descriptor = new CustomDataDescriptor (customData);
 
       var result = descriptor.Matches (method);
 
@@ -98,7 +95,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method1 ());
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var descriptor = new AspectDescriptor (customData);
+      var descriptor = new CustomDataDescriptor (customData);
 
       var result = descriptor.ToString ();
 
@@ -110,7 +107,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method6 ());
       var customData = CustomAttributeData.GetCustomAttributes (methodInfo).Single ();
-      var descriptor = new AspectDescriptor (customData);
+      var descriptor = new CustomDataDescriptor (customData);
 
       var result = descriptor.ToString ();
 

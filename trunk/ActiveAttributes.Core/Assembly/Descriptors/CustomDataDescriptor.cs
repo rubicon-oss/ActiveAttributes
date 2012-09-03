@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +24,14 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Assembly.Descriptors
 {
-  public class AspectDescriptor : IAspectDescriptor
+  public class CustomDataDescriptor : IAspectDescriptor
   {
     private readonly AspectAttribute _aspectAttribute;
     private readonly CustomAttributeData _customAttributeData;
 
-    public AspectDescriptor (CustomAttributeData customAttributeData)
+    public CustomDataDescriptor (CustomAttributeData customAttributeData)
     {
       if (!typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new ArgumentException ("CustomAttributeData must be from an AspectAttribute");

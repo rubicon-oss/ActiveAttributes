@@ -14,21 +14,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Configuration;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Assembly.Descriptors
 {
-  public class TypeAspectDescriptor : IAspectDescriptor
+  public class TypeArgumentsDescriptor : IAspectDescriptor
   {
     private readonly Type _type;
     private readonly AspectScope _scope;
     private readonly object[] _arguments;
 
-    public TypeAspectDescriptor (Type type, AspectScope scope, params object[] arguments)
+    public TypeArgumentsDescriptor (Type type, AspectScope scope, params object[] arguments)
     {
       _type = type;
       _scope = scope;

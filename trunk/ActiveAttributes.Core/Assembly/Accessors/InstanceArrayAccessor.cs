@@ -14,24 +14,25 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Assembly.Accessors
 {
-  public class StaticArrayAccessor : IArrayAccessor
+  public class InstanceArrayAccessor : IArrayAccessor
   {
-    private readonly MemberExpression _accessExpression;
+    private readonly FieldInfo _fieldInfo;
 
-    public StaticArrayAccessor (FieldInfo fieldInfo)
+    public InstanceArrayAccessor (FieldInfo fieldInfo)
     {
-      _accessExpression = Expression.Field (null, fieldInfo);
+      _fieldInfo = fieldInfo;
     }
 
     public Expression GetAccessExpression (Expression thisExpression)
     {
-      return _accessExpression;
+      return Expression.Field (thisExpression, _fieldInfo);
     }
   }
 }
