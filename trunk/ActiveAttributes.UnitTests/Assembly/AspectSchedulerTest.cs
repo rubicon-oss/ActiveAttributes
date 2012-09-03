@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration;
@@ -100,16 +101,17 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void PriorityOverRules ()
     {
-      _descriptor1.Expect (x => x.Priority).Return (1);
+      _descriptor3.Expect (x => x.Priority).Return (1);
       var rules = new List<IOrderRule>
                   {
                     new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderRule(typeof(Aspect1), typeof(Aspect3)),
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
-      var aspects = new[] { _descriptor3, _descriptor2, _descriptor1 };
+      var aspects = new[] { _descriptor1, _descriptor3, _descriptor2 };
 
-      var actual = _scheduler.GetOrdered (aspects);
-      var expected = new[] { _descriptor2, _descriptor1, _descriptor3 };
+      var actual = _scheduler.GetOrdered (aspects).ToArray();
+      var expected = new[] { _descriptor3, _descriptor2, _descriptor1 };
       Assert.That (actual, Is.EqualTo (expected));
     }
 

@@ -36,39 +36,63 @@ namespace ActiveAttributes.Core.Assembly
 
     public IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects)
     {
-      var dependencies = new List<Tuple<IAspectDescriptor, IAspectDescriptor>>();
-
       var aspectsAsCollection = aspects.ConvertToCollection();
-      var aspectsRuleCombination = from aspect1 in aspectsAsCollection
-                                   from aspect2 in aspectsAsCollection
+
+      var dependenciesByPriority = new List<Tuple<IAspectDescriptor, IAspectDescriptor>>();
+      var aspectCombinations = (from aspect1 in aspectsAsCollection
+                                from aspect2 in aspectsAsCollection
+                                select new
+                                       {
+                                           Aspect1 = aspect1,
+                                           Aspect2 = aspect2
+                                       }).ToList();
+
+      foreach (var item in aspectCombinations)
+      {
+        var compared = item.Aspect1.Priority.CompareTo (item.Aspect2.Priority);
+        if (compared == 1)
+          dependenciesByPriority.Add (Tuple.Create (item.Aspect1, item.Aspect2));
+        else if (compared == -1)
+          dependenciesByPriority.Add (Tuple.Create (item.Aspect2, item.Aspect1));
+      }
+
+      var dependenciesByRole = new List<Tuple<IAspectDescriptor, IAspectDescriptor>>();
+      var aspectsRuleCombination = from aspectCombination in aspectCombinations
                                    from rule in _configuration.Rules
                                    select new
                                           {
-                                              Aspect1 = aspect1,
-                                              Aspect2 = aspect2,
+                                              aspectCombination.Aspect1,
+                                              aspectCombination.Aspect2,
                                               Rule = rule
                                           };
 
       foreach (var item in aspectsRuleCombination)
       {
         var compared = item.Rule.Compare (item.Aspect1, item.Aspect2);
-        if (compared == -1)
-          dependencies.Add (Tuple.Create (item.Aspect1, item.Aspect2));
-        else if (compared == 1)
-          dependencies.Add (Tuple.Create (item.Aspect2, item.Aspect1));
+        if (compared == 0)
+          continue;
+
+        var tuple1 = Tuple.Create (item.Aspect1, item.Aspect2);
+        var tuple2 = Tuple.Create (item.Aspect2, item.Aspect1);
+
+        if (compared == -1 && !dependenciesByPriority.Contains (tuple2))
+          dependenciesByRole.Add (tuple1);
+        else if (compared == 1 && !dependenciesByPriority.Contains (tuple1))
+          dependenciesByRole.Add (tuple2);
       }
+
+      foreach (var dependency in dependenciesByPriority.Concat (dependenciesByRole))
+        Console.WriteLine ("{0} -> {1}", dependency.Item1.AspectType.Name, dependency.Item2.AspectType.Name);
 
       try
       {
-        return aspectsAsCollection
-            .TopologicalSort (dependencies, throwForUndefinedOrder: true)
-            .OrderBy (x => x.Priority);
+        return aspectsAsCollection.TopologicalSort (dependenciesByPriority.Concat (dependenciesByRole), throwForUndefinedOrder: true);
       }
       catch (ArgumentException exception)
       {
         var stringBuilder = new StringBuilder();
         stringBuilder.Append ("Circular dependencies defined:\r\n");
-        foreach (var dependency in dependencies)
+        foreach (var dependency in dependenciesByRole)
         {
           stringBuilder
               .Append (dependency.Item1.AspectType)
