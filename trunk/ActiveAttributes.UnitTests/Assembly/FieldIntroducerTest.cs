@@ -21,6 +21,8 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using Remotion.Collections;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Remotion.Utilities;
 
@@ -29,113 +31,176 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class FieldIntroducerTest
   {
-    private IFieldIntroducer _introducer;
-
-    [SetUp]
-    public void SetUp ()
+    private static void TestField (FieldInfo returned, FieldInfo queried, Type type, FieldAttributes attributes)
     {
-      _introducer = new FieldIntroducer();
+      Assert.That (returned, Is.Not.Null);
+      Assert.That (returned, Is.EqualTo (queried));
+      Assert.That (returned.Attributes, Is.EqualTo (attributes));
+      Assert.That (returned.FieldType, Is.EqualTo (type));
     }
 
-    [Test]
-    public void IntroduceMethodLevelFields_PropertyInfoField ()
+    public class IntroduceTypeAspectFields
     {
-      Test ("PropertyInfo", typeof (PropertyInfo), FieldAttributes.Private, data => data.PropertyInfoField);
+      private IFieldIntroducer _introducer;
+
+      [SetUp]
+      public void SetUp ()
+      {
+        _introducer = new FieldIntroducer ();
+      }
+
+      [Test]
+      public void AddsInstanceAspectField ()
+      {
+        Test ("_m_TypeLevel_InstanceAspects", data => data.InstanceAspectsField, FieldAttributes.Private);
+      }
+
+      [Test]
+      public void AddsStaticAspectField ()
+      {
+        Test ("_s_TypeLevel_StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
+      }
+
+      private void Test (string fieldName, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
+      {
+        var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+
+        var data = _introducer.IntroduceTypeAspectFields (mutableType);
+
+        var returned = fieldSelector (data);
+        var queried = mutableType.AddedFields.First (x => x.Name == fieldName);
+
+        TestField (returned, queried, typeof (AspectAttribute[]), attributes);
+      }
     }
 
-    [Test]
-    public void IntroduceMethodLevelFields_EventInfoField ()
+    public class IntroduceMethodReflectionFields
     {
-      Test ("EventInfo", typeof (EventInfo), FieldAttributes.Private, data => data.EventInfoField);
+      private IFieldIntroducer _introducer;
+
+      [SetUp]
+      public void SetUp ()
+      {
+        _introducer = new FieldIntroducer ();
+      }
+
+      [Test]
+      public void AddsPropertyInfoField ()
+      {
+        Test ("PropertyInfo", data => data.PropertyInfoField, typeof (PropertyInfo));
+      }
+
+      [Test]
+      public void AddsEventInfoField ()
+      {
+        Test ("EventInfo", data => data.EventInfoField, typeof (EventInfo));
+      }
+
+      [Test]
+      public void AddsMethodInfoField ()
+      {
+        Test ("MethodInfo", data => data.MethodInfoField, typeof (MethodInfo));
+      }
+
+      [Test]
+      public void AddsDelegateField ()
+      {
+        Test ("Delegate", data => data.DelegateField, typeof (Action));
+      }
+
+      private void Test (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, Type type)
+      {
+        var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+
+        var fieldData = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo);
+
+        var returned = fieldSelector (fieldData);
+        var queried = mutableType.AddedFields.Single (x => x.Name.EndsWith (fieldNameEnd));
+
+        TestField (returned, queried, type, FieldAttributes.Private);
+      }
+
+      [Test]
+      public void CanHandleOverloads ()
+      {
+        var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+        var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+        var methodInfo2 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ("")));
+
+        var fieldData1 = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo1);
+        var fieldData2 = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo2);
+
+        Assert.That (fieldData1.PropertyInfoField, Is.Not.Null);
+        Assert.That (fieldData1.EventInfoField, Is.Not.Null);
+        Assert.That (fieldData1.MethodInfoField, Is.Not.Null);
+        Assert.That (fieldData1.DelegateField, Is.Not.Null);
+        Assert.That (fieldData2.PropertyInfoField, Is.Not.Null);
+        Assert.That (fieldData2.EventInfoField, Is.Not.Null);
+        Assert.That (fieldData2.MethodInfoField, Is.Not.Null);
+        Assert.That (fieldData2.DelegateField, Is.Not.Null);
+        Assert.That (fieldData1.PropertyInfoField, Is.Not.EqualTo (fieldData2.PropertyInfoField));
+        Assert.That (fieldData1.EventInfoField, Is.Not.EqualTo (fieldData2.EventInfoField));
+        Assert.That (fieldData1.MethodInfoField, Is.Not.EqualTo (fieldData2.MethodInfoField));
+        Assert.That (fieldData1.DelegateField, Is.Not.EqualTo (fieldData2.DelegateField));
+      }
     }
 
-    [Test]
-    public void IntroduceMethodLevelFields_MethodInfoField ()
+    public class IntroduceMethodAspectFields
     {
-      Test ("MethodInfo", typeof (MethodInfo), FieldAttributes.Private, data => data.MethodInfoField);
+      private IFieldIntroducer _introducer;
+
+      [SetUp]
+      public void SetUp ()
+      {
+        _introducer = new FieldIntroducer ();
+      }
+
+      [Test]
+      public void AddsInstanceAspectField ()
+      {
+        Test ("InstanceAspects", data => data.InstanceAspectsField, FieldAttributes.Private);
+      }
+
+      [Test]
+      public void AddsStaticAspectField ()
+      {
+        Test ("StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
+      }
+
+      private void Test (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
+      {
+        var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+
+        var fieldData = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo);
+
+        var returned = fieldSelector (fieldData);
+        var queried = mutableType.AddedFields.Single (x => x.Name.EndsWith (fieldNameEnd));
+
+        TestField (returned, queried, typeof (AspectAttribute[]), attributes);
+      }
+
+      [Test]
+      public void CanHandleOverloads ()
+      {
+        var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
+        var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+        var methodInfo2 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ("")));
+
+        var fieldData1 = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo1);
+        var fieldData2 = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo2);
+
+        Assert.That (fieldData1.InstanceAspectsField, Is.Not.Null);
+        Assert.That (fieldData1.StaticAspectsField, Is.Not.Null);
+        Assert.That (fieldData2.InstanceAspectsField, Is.Not.Null);
+        Assert.That (fieldData2.StaticAspectsField, Is.Not.Null);
+        Assert.That (fieldData1.InstanceAspectsField, Is.Not.EqualTo (fieldData2.InstanceAspectsField));
+        Assert.That (fieldData1.StaticAspectsField, Is.Not.EqualTo (fieldData2.StaticAspectsField));
+      }
     }
 
-    [Test]
-    public void IntroduceMethodLevelFields_DelegateField ()
-    {
-      Test ("Delegate", typeof (Action), FieldAttributes.Private, data => data.DelegateField);
-    }
-
-    [Test]
-    public void IntroduceMethodLevelFields_StaticAspectsField ()
-    {
-      Test ("StaticAspects", typeof (AspectAttribute[]), FieldAttributes.Static | FieldAttributes.Private, data => data.StaticAspectsField);
-    }
-
-    [Test]
-    public void IntroduceMethodLevelFields_InstanceAspectsField ()
-    {
-      Test ("InstanceAspects", typeof (AspectAttribute[]), FieldAttributes.Private, data => data.InstanceAspectsField);
-    }
-
-    [Test]
-    public void IntroduceMethodLevelFields_MethodOverloads ()
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
-      var methodInfo2 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ("a")));
-      var mutableMethod1 = mutableType.GetOrAddMutableMethod (methodInfo1);
-      var mutableMethod2 = mutableType.GetOrAddMutableMethod (methodInfo2);
-
-      var result1 = _introducer.IntroduceMethodAspectFields (mutableMethod1);
-      var result2 = _introducer.IntroduceMethodAspectFields (mutableMethod2);
-
-      Assert.That (result1.MethodInfoField, Is.Not.EqualTo (result2.MethodInfoField));
-      Assert.That (result1.DelegateField, Is.Not.EqualTo (result2.DelegateField));
-      Assert.That (result1.StaticAspectsField, Is.Not.EqualTo (result2.StaticAspectsField));
-      Assert.That (result1.InstanceAspectsField, Is.Not.EqualTo (result2.InstanceAspectsField));
-    }
-
-    [Test]
-    public void IntroduceTypeLevelAspects_Instance ()
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var result = _introducer.IntroduceTypeAspectFields (mutableType);
-
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_m_TypeLevel_InstanceAspects");
-
-      Assert.That (fieldInfo, Is.Not.Null);
-      Assert.That (fieldInfo, Is.EqualTo (result.InstanceAspectsField));
-      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Private));
-      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
-    }
-
-    [Test]
-    public void IntroduceTypeLevelAspects_Static ()
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var result = _introducer.IntroduceTypeAspectFields (mutableType);
-
-      var fieldInfo = mutableType.AddedFields.First (x => x.Name == "_s_TypeLevel_StaticAspects");
-
-      Assert.That (fieldInfo, Is.Not.Null);
-      Assert.That (fieldInfo, Is.EqualTo (result.StaticAspectsField));
-      Assert.That (fieldInfo.Attributes, Is.EqualTo (FieldAttributes.Static | FieldAttributes.Private));
-      Assert.That (fieldInfo.FieldType, Is.EqualTo (typeof (AspectAttribute[])));
-    }
-
-    private void Test (string fieldEnding, Type fieldType, FieldAttributes fieldAttributes, Func<FieldIntroducer.Data, FieldInfo> dataField)
-    {
-      var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
-      var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-
-      var result = _introducer.IntroduceMethodAspectFields (mutableMethod);
-
-      var fieldInfo = mutableType.AddedFields.FirstOrDefault (x => x.Name.EndsWith (fieldEnding));
-
-      Assert.That (fieldInfo, Is.Not.Null);
-      Assert.That (fieldInfo, Is.EqualTo (dataField(result)));
-      Assert.That (fieldInfo.Attributes, Is.EqualTo (fieldAttributes));
-      Assert.That (fieldInfo.FieldType, Is.EqualTo (fieldType));
-    }
-
-    public class DomainType
+    private class DomainType
     {
       public void Method () { }
       public void Method (string a) { }

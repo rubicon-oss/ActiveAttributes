@@ -14,6 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+using System.Reflection;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -21,7 +23,7 @@ namespace ActiveAttributes.Core.Assembly
   public interface IFieldIntroducer
   {
     FieldIntroducer.Data IntroduceTypeAspectFields (MutableType mutableType);
-    FieldIntroducer.Data IntroduceMethodAspectFields (MutableMethodInfo mutableMethod);
-    FieldIntroducer.Data IntroduceMethodReflectionFields (MutableMethodInfo mutableMethod);
+    FieldIntroducer.Data IntroduceMethodAspectFields (MutableType mutableType, MethodInfo methodInfo);
+    FieldIntroducer.Data IntroduceMethodReflectionFields (MutableType mutableType, MethodInfo methodInfo);
   }
 }
