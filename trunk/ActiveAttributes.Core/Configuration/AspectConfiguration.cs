@@ -16,18 +16,38 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Configuration
 {
   public class AspectConfiguration : IAspectConfiguration
   {
-    public AspectConfiguration ()
+    static AspectConfiguration ()
     {
-      Rules = new List<IOrderRule>();
-      Roles = new Dictionary<Type, string>();
+      Singleton = new AspectConfiguration();
     }
 
-    public IList<IOrderRule> Rules { get; private set; }
-    public IDictionary<Type, string> Roles { get; private set; }
+    private readonly IList<IOrderRule> _rules; 
+    private readonly IDictionary<Type, string> _roles;
+
+    public AspectConfiguration ()
+    {
+      _rules = new List<IOrderRule>();
+      _roles = new Dictionary<Type, string>();
+    }
+
+    public IList<IOrderRule> Rules
+    {
+      get { return !IsReadOnly ? _rules : new ReadOnlyCollection<IOrderRule> (_rules); }
+    }
+
+    public IDictionary<Type, string> Roles {
+      get { return !IsReadOnly ? _roles : new ReadOnlyDictionary<Type, string> (_roles); }
+    }
+
+    public bool IsReadOnly { get; set; }
+
+    public static IAspectConfiguration Singleton { get; private set; }
   }
 }
