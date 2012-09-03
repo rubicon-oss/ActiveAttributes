@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,17 +14,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ActiveAttributes.Core.Configuration.Configurator
+using System;
+
+namespace ActiveAttributes.Core.Configuration.Configurators
 {
-  public class PresetAspectConfigurator : IAspectConfigurator
+  public class AssemblyAspectConfigurator : IAspectConfigurator
   {
+    public AssemblyAspectConfigurator (params System.Reflection.Assembly[] assemblies)
+    {
+      
+    }
+
     public void Initialize (IAspectConfiguration configuration)
     {
+      throw new NotImplementedException();
     }
   }
 }

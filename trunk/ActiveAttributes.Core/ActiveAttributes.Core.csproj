@@ -75,10 +75,10 @@
     <Compile Include="Configuration\ApplyAspectAttribute.cs" />
     <Compile Include="Configuration\AspectConfiguration.cs" />
     <Compile Include="Configuration\AppConfigElements\AspectsConfigurationSection.cs" />
-    <Compile Include="Configuration\Configurator\AppConfigAspectConfigurator.cs" />
+    <Compile Include="Configuration\Configurators\AppConfigAspectConfigurator.cs" />
     <Compile Include="Configuration\AspectOrderingAttribute.cs" />
-    <Compile Include="Configuration\Configurator\AssemblyAspectConfigurator.cs" />
-    <Compile Include="Configuration\Configurator\PresetAspectConfigurator.cs" />
+    <Compile Include="Configuration\Configurators\AssemblyAspectConfigurator.cs" />
+    <Compile Include="Configuration\Configurators\PresetAspectConfigurator.cs" />
     <Compile Include="Configuration\IAspectConfiguration.cs" />
     <Compile Include="Configuration\IAspectConfigurator.cs" />
     <Compile Include="Configuration\IOrderRule.cs" />

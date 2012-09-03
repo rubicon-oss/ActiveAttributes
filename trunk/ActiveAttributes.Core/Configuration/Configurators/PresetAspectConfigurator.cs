@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -17,18 +17,12 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Configuration.Configurator
+namespace ActiveAttributes.Core.Configuration.Configurators
 {
-  public class AssemblyAspectConfigurator : IAspectConfigurator
+  public class PresetAspectConfigurator : IAspectConfigurator
   {
-    public AssemblyAspectConfigurator (params System.Reflection.Assembly[] assemblies)
-    {
-      
-    }
-
     public void Initialize (IAspectConfiguration configuration)
     {
-      throw new NotImplementedException();
     }
   }
 }

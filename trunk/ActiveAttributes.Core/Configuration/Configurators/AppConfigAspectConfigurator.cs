@@ -20,7 +20,7 @@ using System.Configuration;
 using ActiveAttributes.Core.Configuration.AppConfigElements;
 using ActiveAttributes.Core.Configuration.Rules;
 
-namespace ActiveAttributes.Core.Configuration.Configurator
+namespace ActiveAttributes.Core.Configuration.Configurators
 {
   public class AppConfigAspectConfigurator : IAspectConfigurator
   {
