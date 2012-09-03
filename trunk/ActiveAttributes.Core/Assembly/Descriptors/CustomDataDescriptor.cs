@@ -81,18 +81,23 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       stringBuilder.Append (_aspectAttribute.GetType().Name)
           .Append ("(");
 
-      stringBuilder.Append (string.Join (", ", _customAttributeData.ConstructorArguments.Select (x => "{" + x.Value + "}").ToArray()));
-
-      if (_customAttributeData.ConstructorArguments.Count > 0)
+      var arguments = _customAttributeData.ConstructorArguments;
+      var argumentsString = string.Join (", ", arguments.Select (x => "\"" + x.Value + "\"").ToArray());
+      stringBuilder.Append (argumentsString);
+      if (arguments.Count > 0)
         stringBuilder.Append (", ");
 
-      stringBuilder.Append (
-          string.Join (", ", _customAttributeData.NamedArguments.Select (x => x.MemberInfo.Name + " = {" + x.TypedValue.Value + "}").ToArray()));
-
-      if (_customAttributeData.NamedArguments.Count > 0)
+      var namedArguments = _customAttributeData.NamedArguments.Where (x => x.MemberInfo.Name != "Scope" && x.MemberInfo.Name != "Priority").ToList();
+      var namedArgumentsString = string.Join (", ", namedArguments.Select (x => x.MemberInfo.Name + " = \"" + x.TypedValue.Value + "\"").ToArray());
+      stringBuilder.Append (namedArgumentsString);
+      if (namedArguments.Count > 0)
         stringBuilder.Append (", ");
 
-      stringBuilder.Append ("Scope = ").Append (Scope);
+      stringBuilder
+          .Append ("Scope = ")
+          .Append (Scope).Append (", ")
+          .Append ("Priority = ")
+          .Append (Priority);
 
       stringBuilder.Append (")");
 
