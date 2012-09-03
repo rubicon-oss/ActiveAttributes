@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration.Configurator;
 using ActiveAttributes.Core.Configuration.Configurators;
 
 namespace ActiveAttributes.UseCases
