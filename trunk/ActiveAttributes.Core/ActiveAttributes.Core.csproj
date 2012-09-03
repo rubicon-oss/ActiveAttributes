@@ -61,6 +61,7 @@
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="Assembly\AspectScheduler.cs" />
     <Compile Include="Assembly\Factory.cs" />
+    <Compile Include="Assembly\IAspectGenerator.cs" />
     <Compile Include="Assembly\IAspectScheduler.cs" />
     <Compile Include="Assembly\IAspectsProvider.cs" />
     <Compile Include="Assembly\IConstructorPatcher.cs" />

@@ -25,13 +25,6 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface IAspectGenerator
-  {
-    IAspectDescriptor Descriptor { get; }
-    Expression GetStorageExpression (Expression thisExpression);
-    Expression GetInitExpression ();
-  }
-
   public class AspectGenerator : IAspectGenerator
   {
     private static Expression ConvertTypedArgumentToExpression (CustomAttributeTypedArgument typedArgument)
