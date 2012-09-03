@@ -41,7 +41,6 @@ namespace ActiveAttributes.Core.Assembly
 
     private static Expression CreateElement (Type type, object obj)
     {
-      // TODO: Adapt unit tests for this class - no ConvertExpression, but converted value within the constant expression
       if (type.IsEnum)
         obj = Enum.ToObject (type, obj);
 

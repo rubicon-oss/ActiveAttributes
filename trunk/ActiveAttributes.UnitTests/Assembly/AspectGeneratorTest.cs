@@ -21,6 +21,7 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -30,184 +31,208 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class AspectGeneratorTest
   {
-    private Expression _fieldExpression;
-    private IArrayAccessor _arrayAccessor;
-    private Expression _elementExpression;
-    private Expression _arrayExpression;
-
-    [SetUp]
-    public void SetUp ()
+    private static CustomAttributeData GetFromMethod<T> (MethodBase method)
     {
-      var field = MemberInfoFromExpressionUtility.GetField (() => DomainType.Dummy);
-      _fieldExpression = Expression.Field (null, field);
-
-      _arrayAccessor = MockRepository.GenerateMock<IArrayAccessor>();
-      _arrayAccessor.Stub (x => x.GetAccessExpression (null)).IgnoreArguments().Return (_fieldExpression);
-
-      _elementExpression = Expression.Constant ("a", typeof (string));
-      _arrayExpression = Expression.NewArrayInit (typeof (string), _elementExpression);
+      var customData = CustomAttributeData.GetCustomAttributes (method).Single (x => x.Constructor.DeclaringType == typeof (T));
+      return customData;
     }
 
-    [Test]
-    public void GetInitExpression_ConstructorElementArg ()
+    private static IAspectDescriptor GetDescriptorMock (CustomAttributeData customData)
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorElementArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-
-      var expected = Expression.MemberInit (
-          Expression.New (
-              customData.Constructor,
-              _elementExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetInitExpression_ConstructorArrayArg ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorArrayArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-
-      var expected = Expression.MemberInit (Expression.New (customData.Constructor, _arrayExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetInitExpression_PropertyElementArg ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyElementArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-      var member = MemberInfoFromExpressionUtility.GetProperty (((DomainAttribute obj) => obj.PropertyElementArg));
-
-      var expected = Expression.MemberInit (
-          Expression.New (customData.Constructor),
-          Expression.Bind (member, _elementExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetInitExpression_PropertyArrayArg ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyArrayArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-      var member = MemberInfoFromExpressionUtility.GetProperty (((DomainAttribute obj) => obj.PropertyArrayArg));
-
-      var expected = Expression.MemberInit (
-          Expression.New (customData.Constructor),
-          Expression.Bind (member, _arrayExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetInitExpression_FieldElementArg ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldElementArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-      var member = MemberInfoFromExpressionUtility.GetField (((DomainAttribute obj) => obj.FieldElementArg));
-
-      var expected = Expression.MemberInit (
-          Expression.New (customData.Constructor),
-          Expression.Bind (member, _elementExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetInitExpression_FieldArrayArg ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldArrayArg()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-      var member = MemberInfoFromExpressionUtility.GetField (((DomainAttribute obj) => obj.FieldArrayArg));
-
-      var expected = Expression.MemberInit (
-          Expression.New (customData.Constructor),
-          Expression.Bind (member, _arrayExpression));
-      var actual = generator.GetInitExpression();
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void GetStorageExpression ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldArrayArg ()));
-      var customData = CustomAttributeData.GetCustomAttributes (method).First ();
-      var descriptor = GetAspectAttributeDescriptorMock (customData);
-      var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
-
-      var expected = Expression.ArrayAccess (
-          _fieldExpression,
-          Expression.Constant (0));
-      var actual = generator.GetStorageExpression (null);
-
-      
-    }
-
-    private static IAspectDescriptor GetAspectAttributeDescriptorMock (CustomAttributeData customData)
-    {
-      var descriptor = MockRepository.GenerateMock<IAspectDescriptor>();
+      var descriptor = MockRepository.GenerateMock<IAspectDescriptor> ();
       descriptor.Expect (x => x.ConstructorInfo).Return (customData.Constructor);
       descriptor.Expect (x => x.ConstructorArguments).Return (customData.ConstructorArguments);
       descriptor.Expect (x => x.NamedArguments).Return (customData.NamedArguments);
       return descriptor;
     }
 
-    public class DomainType
+    public class GetInitExpression
     {
-      public static AspectAttribute[] Dummy;
+      private IArrayAccessor _arrayAccessor;
+      private Expression _elementExpression;
+      private Expression _arrayExpression;
+      
+      [SetUp]
+      public void SetUp ()
+      {
+        _arrayAccessor = MockRepository.GenerateMock<IArrayAccessor> ();
 
-      [Domain ("a")]
-      public void ConstructorElementArg () { }
+        _elementExpression = Expression.Constant ("a", typeof (string));
+        _arrayExpression = Expression.NewArrayInit (typeof (string), _elementExpression);
+      }
 
-      [Domain (new[] { "a" })]
-      public void ConstructorArrayArg () { }
+      [Test]
+      [Aspect ("a")]
+      public void ContainsConstructorElementArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
 
-      [Domain (PropertyElementArg = "a")]
-      public void PropertyElementArg () { }
+        var expected = Expression.MemberInit (
+            Expression.New (
+                customData.Constructor,
+                _elementExpression));
+        var actual = generator.GetInitExpression ();
 
-      [Domain (PropertyArrayArg = new[] { "a" })]
-      public void PropertyArrayArg () { }
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
 
-      [Domain (FieldElementArg = "a")]
-      public void FieldElementArg () { }
+      [Test]
+      [Aspect (new[] { "a" })]
+      public void ContainsConstructorArrayArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
 
-      [Domain (FieldArrayArg = new[] { "a" })]
-      public void FieldArrayArg () { }
+        var expected = Expression.MemberInit (Expression.New (customData.Constructor, _arrayExpression));
+        var actual = generator.GetInitExpression ();
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      [Test]
+      [Aspect (PropertyElementArg = "a")]
+      public void ContainsPropertyElementArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
+        var member = MemberInfoFromExpressionUtility.GetProperty (((AspectAttribute obj) => obj.PropertyElementArg));
+
+        var expected = Expression.MemberInit (
+            Expression.New (customData.Constructor),
+            Expression.Bind (member, _elementExpression));
+        var actual = generator.GetInitExpression ();
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      [Test]
+      [Aspect (PropertyArrayArg = new[] { "a" })]
+      public void ContainsPropertyArrayArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
+        var member = MemberInfoFromExpressionUtility.GetProperty (((AspectAttribute obj) => obj.PropertyArrayArg));
+
+        var expected = Expression.MemberInit (
+            Expression.New (customData.Constructor),
+            Expression.Bind (member, _arrayExpression));
+        var actual = generator.GetInitExpression ();
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      [Test]
+      [Aspect (FieldElementArg = "a")]
+      public void ContainsFieldElementArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
+        var member = MemberInfoFromExpressionUtility.GetField (((AspectAttribute obj) => obj.FieldElementArg));
+
+        var expected = Expression.MemberInit (
+            Expression.New (customData.Constructor),
+            Expression.Bind (member, _elementExpression));
+        var actual = generator.GetInitExpression ();
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      [Test]
+      [Aspect (FieldArrayArg = new[] { "a" })]
+      public void ContainsFieldArrayArg ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
+        var member = MemberInfoFromExpressionUtility.GetField (((AspectAttribute obj) => obj.FieldArrayArg));
+
+        var expected = Expression.MemberInit (
+            Expression.New (customData.Constructor),
+            Expression.Bind (member, _arrayExpression));
+        var actual = generator.GetInitExpression ();
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
     }
 
-    public class DomainAttribute : Attribute
+    public class GetStorageExpression
+    {
+      private static AspectAttribute[] StaticDummy;
+      private AspectAttribute[] InstanceDummy;
+      
+      [Test]
+      [Aspect]
+      public void StaticFieldExpression ()
+      {
+        var method = MethodInfo.GetCurrentMethod ();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var fieldInfo = MemberInfoFromExpressionUtility.GetField (() => StaticDummy);
+        var accessor = GetAccessor (fieldInfo, thisExpression: false);
+        var generator = new AspectGenerator (accessor, 0, descriptor);
+
+        var expected = Expression.ArrayAccess (
+            Expression.Field (null, fieldInfo),
+            Expression.Constant (0));
+        var actual = generator.GetStorageExpression (null);
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      [Test]
+      [Aspect]
+      public void InstanceFieldExpression ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var customData = GetFromMethod<AspectAttribute> (method);
+        var descriptor = GetDescriptorMock (customData);
+        var fieldInfo = MemberInfoFromExpressionUtility.GetField (() => InstanceDummy);
+        var accessor = GetAccessor (fieldInfo, thisExpression: true);
+        var generator = new AspectGenerator (accessor, 0, descriptor);
+        
+        var expected = Expression.ArrayAccess (
+            Expression.Field (new ThisExpression(GetType()), fieldInfo),
+            Expression.Constant (0));
+        var actual = generator.GetStorageExpression (new ThisExpression(GetType()));
+
+        ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      }
+
+      private IArrayAccessor GetAccessor (FieldInfo fieldInfo, bool thisExpression)
+      {
+        var mock = MockRepository.GenerateMock<IArrayAccessor> ();
+        var expression = Expression.Field (thisExpression ? new ThisExpression(GetType()) : null, fieldInfo);
+        mock.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (expression);
+        return mock;
+      }
+    }
+
+    private class AspectAttribute : Attribute
     {
       public string FieldElementArg;
       public string[] FieldArrayArg;
 
-      public DomainAttribute () { }
+      public AspectAttribute () { }
 
-      public DomainAttribute (string constructorElementArg)
+      public AspectAttribute (string constructorElementArg)
       {
         ConstructorElementArg = constructorElementArg;
       }
 
-      public DomainAttribute (string[] constructorArrayArg)
+      public AspectAttribute (string[] constructorArrayArg)
       {
         ConstructorArrayArg = constructorArrayArg;
       }
