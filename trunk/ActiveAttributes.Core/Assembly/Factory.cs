@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.Accessors;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
