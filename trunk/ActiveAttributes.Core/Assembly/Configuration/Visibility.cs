@@ -17,7 +17,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Configuration
+namespace ActiveAttributes.Core.Assembly.Configuration
 {
   [Flags]
   public enum Visibility

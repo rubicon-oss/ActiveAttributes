@@ -18,7 +18,7 @@
 using System;
 using ActiveAttributes.Core.Aspects;
 
-namespace ActiveAttributes.Core.Configuration
+namespace ActiveAttributes.Core.Assembly.Configuration
 {
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
   public class ApplyAspectAttribute : Attribute

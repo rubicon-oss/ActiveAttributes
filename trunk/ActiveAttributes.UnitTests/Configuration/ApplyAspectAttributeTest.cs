@@ -16,7 +16,7 @@
 // 
 using System;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Configuration

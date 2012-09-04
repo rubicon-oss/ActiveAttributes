@@ -18,7 +18,7 @@
 using System;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 using Remotion.Utilities;

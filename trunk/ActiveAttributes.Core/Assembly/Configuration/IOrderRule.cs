@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
 
-namespace ActiveAttributes.Core.Configuration
+namespace ActiveAttributes.Core.Assembly.Configuration
 {
   public interface IOrderRule : IComparer<IAspectGenerator>
   {

@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 
-namespace ActiveAttributes.Core.Configuration.AppConfigElements
+namespace ActiveAttributes.Core.Configuration
 {
   [ConfigurationCollection (typeof (TypeRuleElement))]
   public class TypeRuleCollection : ConfigurationElementCollection

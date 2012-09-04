@@ -19,8 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
-using ActiveAttributes.Core.Configuration;
 using NUnit.Framework;
 using Remotion.Utilities;
 

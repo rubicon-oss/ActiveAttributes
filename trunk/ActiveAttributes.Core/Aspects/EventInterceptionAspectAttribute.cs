@@ -20,11 +20,12 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
+using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Aspects
 {
   /// <summary>
-  ///   Provides facilities to intercept the add, and remove method of an event.
+  ///   Provides facilities to intercept the add, remove, and invoke method of an event.
   /// </summary>
   [Serializable]
   [AttributeUsage (AttributeTargets.Event)]
@@ -38,7 +39,7 @@ namespace ActiveAttributes.Core.Aspects
     }
 
     protected EventInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
-        : base (info, context)
+        : base(info, context)
     {
     }
 
@@ -61,32 +62,5 @@ namespace ActiveAttributes.Core.Aspects
     {
     }
   }
-
-  //public class EventInvocationContext<TInstance> : ActionInvocationContext<TInstance>, IEventInvocationContext
-  //{
-  //  public EventInfo EventInfo { get; private set; }
-
-  //  public EventInvocationContext (EventInfo eventInfo, MethodInfo methodInfo, TInstance instance)
-  //    : base (methodInfo, instance)
-  //  {
-  //    EventInfo = eventInfo;
-  //  }
-  //}
-
-  //public class EventInvocation<TInstance> : ActionInvocation<TInstance>, IEventInvocation
-  //{
-  //  public EventInvocation (EventInvocationContext<TInstance> context, Action action)
-  //    : base (context, action)
-  //  {
-  //    Context = context;
-  //  }
-
-  //  IInvocationContext IInvocation.Context
-  //  {
-  //    get { return Context; }
-  //  }
-
-  //  public new IEventInvocationContext Context { get; private set; }
-  //}
 }
   

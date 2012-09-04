@@ -21,7 +21,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;

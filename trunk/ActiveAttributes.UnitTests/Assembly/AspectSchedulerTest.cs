@@ -20,8 +20,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration.Rules;
+using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration.Rules;
 using NUnit.Framework;
 using Rhino.Mocks;
 

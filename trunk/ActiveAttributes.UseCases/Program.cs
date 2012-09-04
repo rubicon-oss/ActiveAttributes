@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration.Configurators;
+using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration.Configurators;
 
 namespace ActiveAttributes.UseCases
 {

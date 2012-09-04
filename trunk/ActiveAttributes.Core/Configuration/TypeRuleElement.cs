@@ -18,7 +18,7 @@
 using System;
 using System.Configuration;
 
-namespace ActiveAttributes.Core.Configuration.AppConfigElements
+namespace ActiveAttributes.Core.Configuration
 {
   public class TypeRuleElement : ConfigurationElement
   {

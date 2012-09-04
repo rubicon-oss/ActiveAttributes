@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {

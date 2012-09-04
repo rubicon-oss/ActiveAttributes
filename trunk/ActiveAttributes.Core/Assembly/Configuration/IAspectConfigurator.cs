@@ -16,9 +16,8 @@
 // 
 
 using System;
-using System.Configuration;
 
-namespace ActiveAttributes.Core.Configuration
+namespace ActiveAttributes.Core.Assembly.Configuration
 {
   public interface IAspectConfigurator
   {

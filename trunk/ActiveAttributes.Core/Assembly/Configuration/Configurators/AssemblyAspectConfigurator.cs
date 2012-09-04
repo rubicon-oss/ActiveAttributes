@@ -17,7 +17,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Configuration.Configurators
+namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 {
   public class AssemblyAspectConfigurator : IAspectConfigurator
   {

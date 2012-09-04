@@ -18,7 +18,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.UnitTests.Assembly;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;

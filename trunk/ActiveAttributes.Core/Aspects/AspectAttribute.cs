@@ -22,7 +22,6 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 

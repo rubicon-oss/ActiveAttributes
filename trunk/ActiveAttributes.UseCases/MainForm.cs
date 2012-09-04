@@ -3,8 +3,8 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration.Rules;
+using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration.Rules;
 using ActiveAttributes.UseCases.Aspects;
 
 namespace ActiveAttributes.UseCases

@@ -16,7 +16,7 @@
 // 
 
 using System;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 
 namespace ActiveAttributes.Common.Validation
 {

@@ -17,10 +17,10 @@
 
 using System;
 using System.Configuration;
-using ActiveAttributes.Core.Configuration.AppConfigElements;
-using ActiveAttributes.Core.Configuration.Rules;
+using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using ActiveAttributes.Core.Configuration;
 
-namespace ActiveAttributes.Core.Configuration.Configurators
+namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 {
   public class AppConfigAspectConfigurator : IAspectConfigurator
   {

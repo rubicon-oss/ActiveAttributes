@@ -14,10 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
-using ActiveAttributes.Core.Assembly;
 
-namespace ActiveAttributes.Core.Configuration.Rules
+using System;
+
+namespace ActiveAttributes.Core.Assembly.Configuration.Rules
 {
   public class TypeOrderRule : IOrderRule
   {

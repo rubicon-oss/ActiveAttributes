@@ -22,7 +22,6 @@ using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 
 using Microsoft.Scripting.Ast;

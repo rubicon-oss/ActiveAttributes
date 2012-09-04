@@ -21,7 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors

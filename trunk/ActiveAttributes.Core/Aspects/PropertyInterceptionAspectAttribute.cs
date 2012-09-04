@@ -22,7 +22,7 @@ using ActiveAttributes.Core.Invocations;
 namespace ActiveAttributes.Core.Aspects
 {
   /// <summary>
-  ///   Provides facilities to intercept the get, and set method of a property.
+  ///   Provides facilities to intercept the get and set method of a property.
   /// </summary>
   [Serializable]
   [AttributeUsage (AttributeTargets.Property)]
