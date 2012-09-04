@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +21,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
@@ -29,16 +29,16 @@ using Remotion.FunctionalProgramming;
 namespace ActiveAttributes.Core.Aspects
 {
   /// <summary>
-  ///   Provides base functionality of an aspect.
+  ///   Provides base functionality (i.e., Scope, Priority, Filter, Matching, etc.) for derived aspects.
   /// </summary>
   [AttributeUsage (AttributeTargets.All, AllowMultiple = true)]
   public abstract class AspectAttribute : Attribute, ISerializable
   {
+    #region Standard + serialization constructors
+
     protected AspectAttribute ()
     {
     }
-
-    #region Serialization
 
     protected AspectAttribute (SerializationInfo info, StreamingContext context)
     {
@@ -55,25 +55,54 @@ namespace ActiveAttributes.Core.Aspects
 
     #endregion
 
+    /// <summary>
+    ///   Scope of an aspect. It can be either <see cref = "AspectScope.Static" /> or <see cref = "AspectScope.Instance" />.
+    /// </summary>
     public AspectScope Scope { get; set; }
 
+    /// <summary>
+    ///   Gets or sets the priority of an aspect. Priorities can define the order of aspects applied to a target element. 
+    ///   Priorities are superior to <see cref = "IOrderRule" />.
+    /// </summary>
     public int Priority { get; set; }
 
+    /// <summary>
+    ///   Gets or sets the member name as filter for selected targets. Wildcards are supported.
+    /// </summary>
+    public string MemberNameFilter { get; set; }
 
-    public virtual bool Validate (MethodInfo method)
-    {
-      return true;
-    }
+    /// <summary>
+    ///   Gets or sets the member visibility as filter for selected targets.
+    /// </summary>
+    public Visibility MemberVisibilityFilter { get; set; }
 
-    public object Clone ()
-    {
-      return MemberwiseClone();
-    }
+    /// <summary>
+    ///   Gets or sets the member custom attributes as filter for selected targets. Base types do match.
+    /// </summary>
+    public Type[] MemberCustomAttributeFilter { get; set; }
 
-    /// <summary>Use only for assembly-level attributes.</summary>
+    /// <summary>
+    ///   Gets or sets the member flags as filter for selected targets.
+    /// </summary>
+    public MemberFlags MemberFlagsFilter { get; set; }
+
+    /// <summary>
+    ///   Gets or sets the member return type as filter for selected targets. Base types do match.
+    /// </summary>
+    public Type MemberReturnTypeFilter { get; set; }
+
+    /// <summary>
+    ///   Gets or sets the member arguments as filter for selected targets. Base types do match.
+    /// </summary>
+    public Type[] MemberArgumentsFilter { get; set; }
+
+
+    /// <summary>
+    ///   Use only for assembly-level attributes.
+    /// </summary>
     /// <remarks>
-    /// Type = Interface: target type must implement interface
-    /// Type = Class: (a) target type must be equal to the class, or (b) target type inherits from class and aspect inheritance is set to true
+    ///   Type = Interface: target type must implement interface
+    ///   Type = Class: (a) target type must be equal to the class, or (b) target type inherits from class and aspect inheritance is set to true
     /// </remarks>
     public Type ApplyToType { get; set; }
     public Type[] ApplyToTypes { get; set; }
@@ -81,12 +110,28 @@ namespace ActiveAttributes.Core.Aspects
     public string ApplyToTypeNamePattern { get; set; }
     public string[] ApplyToTypeNamePatterns { get; set; }
 
-    public string MemberNameFilter { get; set; }
-    public Visibility MemberVisibilityFilter { get; set; }
-    public Type[] MemberCustomAttributeFilter { get; set; }
-    public MemberFlags MemberFlagsFilter { get; set; }
-    public Type MemberReturnTypeFilter { get; set; }
-    public Type[] MemberArgumentsFilter { get; set; }
+    /// <summary>
+    ///   Returns true if the <see cref="MethodInfo"/> is applicable for the aspect, otherwise false.
+    /// </summary>
+    /// <param name="methodInfo">The method on which a aspect should be applied.</param>
+    public virtual bool Matches (MethodInfo methodInfo)
+    {
+      var declaringType = methodInfo.DeclaringType;
+      var applyToTypes = GetApplyToTypes();
+      var applyToTypeNamePatterns = GetApplyToTypeNamePatterns();
+
+      return
+          //applyToTypes.All (x => MatchesType (x, declaringType)) &&
+          //applyToTypeNamePatterns.All (x => MatchesNamespace (x, declaringType.Namespace)) &&
+          MatchesMemberName (methodInfo.Name) &&
+          MatchesMemberVisibility (methodInfo) &&
+          MatchesMemberFlags (methodInfo) &&
+          MatchesCustomAttributes (methodInfo) &&
+          MatchesType (MemberReturnTypeFilter, methodInfo.ReturnType) &&
+          MatchesArguments (methodInfo);
+    }
+
+    #region Match methods
 
     private IEnumerable<Type> GetApplyToTypes ()
     {
@@ -110,23 +155,6 @@ namespace ActiveAttributes.Core.Aspects
       }
     }
 
-    public virtual bool Matches (MethodInfo methodInfo)
-    {
-      var declaringType = methodInfo.DeclaringType;
-      var applyToTypes = GetApplyToTypes();
-      var applyToTypeNamePatterns = GetApplyToTypeNamePatterns();
-
-      return applyToTypes.All (x => MatchesType (x, declaringType)) &&
-             applyToTypeNamePatterns.All(x => MatchesNamespace(x, declaringType.Namespace)) &&
-             MatchesMemberName (methodInfo.Name) &&
-             MatchesMemberVisibility (methodInfo.Attributes) &&
-             MatchesMarkers (methodInfo) &&
-             MatchesType (MemberReturnTypeFilter, methodInfo.ReturnType) &&
-             MatchesArguments (methodInfo);
-    }
-
-    #region Match methods
-
     private bool MatchesType (Type expected, Type actual)
     {
       return expected == null || expected.IsAssignableFrom (actual);
@@ -139,28 +167,34 @@ namespace ActiveAttributes.Core.Aspects
 
     private bool MatchesMemberName (string methodName)
     {
-      return MemberNameFilter == null || Regex.IsMatch (methodName, GetRegexPattern(MemberNameFilter));
+      return MemberNameFilter == null || Regex.IsMatch (methodName, GetRegexPattern (MemberNameFilter));
     }
 
-    private bool MatchesMemberVisibility (MethodAttributes attributes)
+    private bool MatchesMemberVisibility (MethodInfo methodInfo)
     {
-      if (MemberVisibilityFilter == Visibility.None)
-        return true;
-
-      var flags = Visibility.None;
-
-      if (attributes.HasFlags (MethodAttributes.Assembly)) flags |= Visibility.Assembly;
-      if (attributes.HasFlags (MethodAttributes.Public)) flags |= Visibility.Public;
-      if (attributes.HasFlags (MethodAttributes.Family)) flags |= Visibility.Family;
-      if (attributes.HasFlags (MethodAttributes.Private)) flags |= Visibility.Private;
-      if (attributes.HasFlags (MethodAttributes.FamANDAssem)) flags |= Visibility.FamilyAndAssembly;
-      if (attributes.HasFlags (MethodAttributes.FamORAssem)) flags |= Visibility.FamilyOrAssembly;
-      // TODO: ?
-      
-      return (MemberVisibilityFilter & flags) == MemberVisibilityFilter;
+      return !(
+                  (MemberVisibilityFilter.HasFlags (Visibility.Assembly) && !methodInfo.IsAssembly) ||
+                  (MemberVisibilityFilter.HasFlags (Visibility.Public) && !methodInfo.IsPublic) ||
+                  (MemberVisibilityFilter.HasFlags (Visibility.Family) && !methodInfo.IsFamily) ||
+                  (MemberVisibilityFilter.HasFlags (Visibility.Private) && !methodInfo.IsPrivate) ||
+                  (MemberVisibilityFilter.HasFlags (Visibility.FamilyAndAssembly) && !methodInfo.IsFamilyAndAssembly) ||
+                  (MemberVisibilityFilter.HasFlags (Visibility.FamilyOrAssembly) && !methodInfo.IsFamilyOrAssembly));
     }
 
-    private bool MatchesMarkers (MethodInfo methodInfo)
+    private bool MatchesMemberFlags (MethodInfo methodInfo)
+    {
+      return !(
+                  (MemberFlagsFilter.HasFlags (MemberFlags.Final) && !methodInfo.IsFinal) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.NonFinal) && methodInfo.IsFinal) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.Static) && !methodInfo.IsStatic) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.NonStatic) && methodInfo.IsStatic) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.Virtual) && !methodInfo.IsVirtual) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.NonVirtual) && methodInfo.IsVirtual) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.NewSlot) && !methodInfo.Attributes.HasFlags (MethodAttributes.NewSlot)) ||
+                  (MemberFlagsFilter.HasFlags (MemberFlags.NonNewSlot) && methodInfo.Attributes.HasFlags (MethodAttributes.NewSlot)));
+    }
+
+    private bool MatchesCustomAttributes (MethodInfo methodInfo)
     {
       if (MemberCustomAttributeFilter == null)
         return true;
@@ -176,7 +210,7 @@ namespace ActiveAttributes.Core.Aspects
 
       var arguments = methodInfo.GetParameters();
       var zipped = MemberArgumentsFilter.Zip (arguments, (expected, actual) => new { Expected = expected, Actual = actual.ParameterType });
-      return zipped.All (zip => zip.Actual == zip.Expected);
+      return zipped.All (zip => zip.Expected.IsAssignableFrom (zip.Actual));
     }
 
     private string GetRegexPattern (string wildcardPattern)
