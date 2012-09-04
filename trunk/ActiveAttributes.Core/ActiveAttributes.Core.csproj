@@ -70,21 +70,21 @@
     <Compile Include="Assembly\IMethodCopier.cs" />
     <Compile Include="Assembly\IMethodPatcher.cs" />
     <Compile Include="Assembly\Descriptors\TypeDescriptor.cs" />
-    <Compile Include="Configuration\AppConfigElements\TypeRuleCollection.cs" />
-    <Compile Include="Configuration\AppConfigElements\TypeRuleElement.cs" />
-    <Compile Include="Configuration\ApplyAspectAttribute.cs" />
-    <Compile Include="Configuration\AspectConfiguration.cs" />
-    <Compile Include="Configuration\AppConfigElements\AspectsConfigurationSection.cs" />
-    <Compile Include="Configuration\Configurators\AppConfigAspectConfigurator.cs" />
-    <Compile Include="Configuration\AspectOrderingAttribute.cs" />
-    <Compile Include="Configuration\Configurators\AssemblyAspectConfigurator.cs" />
-    <Compile Include="Configuration\Configurators\PresetAspectConfigurator.cs" />
-    <Compile Include="Configuration\IAspectConfiguration.cs" />
-    <Compile Include="Configuration\IAspectConfigurator.cs" />
-    <Compile Include="Configuration\IOrderRule.cs" />
-    <Compile Include="Configuration\OrderPosition.cs" />
-    <Compile Include="Configuration\Rules\RoleOrderRule.cs" />
-    <Compile Include="Configuration\Rules\TypeOrderRule.cs" />
+    <Compile Include="Configuration\TypeRuleCollection.cs" />
+    <Compile Include="Configuration\TypeRuleElement.cs" />
+    <Compile Include="Assembly\Configuration\ApplyAspectAttribute.cs" />
+    <Compile Include="Assembly\Configuration\AspectConfiguration.cs" />
+    <Compile Include="Configuration\AspectsConfigurationSection.cs" />
+    <Compile Include="Assembly\Configuration\Configurators\AppConfigAspectConfigurator.cs" />
+    <Compile Include="Assembly\Configuration\AspectOrderingAttribute.cs" />
+    <Compile Include="Assembly\Configuration\Configurators\AssemblyAspectConfigurator.cs" />
+    <Compile Include="Assembly\Configuration\Configurators\PresetAspectConfigurator.cs" />
+    <Compile Include="Assembly\Configuration\IAspectConfiguration.cs" />
+    <Compile Include="Assembly\Configuration\IAspectConfigurator.cs" />
+    <Compile Include="Assembly\Configuration\IOrderRule.cs" />
+    <Compile Include="Assembly\Configuration\OrderPosition.cs" />
+    <Compile Include="Assembly\Configuration\Rules\RoleOrderRule.cs" />
+    <Compile Include="Assembly\Configuration\Rules\TypeOrderRule.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
@@ -115,8 +115,8 @@
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\Accessors\StaticArrayAccessor.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
-    <Compile Include="Configuration\TargetAttributes.cs" />
-    <Compile Include="Configuration\Visibility.cs" />
+    <Compile Include="Assembly\Configuration\TargetAttributes.cs" />
+    <Compile Include="Assembly\Configuration\Visibility.cs" />
     <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Contexts\ActionInvocationContext.template.cs" />
     <Compile Include="Contexts\ActionInvocationContextBase.cs" />
@@ -140,7 +140,7 @@
     <Compile Include="Invocations\IInvocation.cs" />
     <Compile Include="Invocations\Invocation.cs" />
     <Compile Include="Aspects\MethodInterceptionAspectAttribute.cs" />
-    <Compile Include="Configuration\AspectScope.cs" />
+    <Compile Include="Assembly\Configuration\AspectScope.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Invocations\IReadOnlyInvocation.cs" />
     <Compile Include="Invocations\OuterInvocation.cs" />
@@ -154,13 +154,11 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
-    <None Include="Configuration\AppConfigElements\Schema.xsd">
+    <None Include="Configuration\Schema.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Aspects\Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /D /Y "$(SolutionDir)\..\..\Remotion2\Remotion\TypePipe\UnitTests\bin\Release\*" "$(SolutionDir)\prereq\"
