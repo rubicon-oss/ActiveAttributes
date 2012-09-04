@@ -25,12 +25,12 @@ namespace ActiveAttributes.Core.Configuration
   public enum AspectScope
   {
     /// <summary>
-    ///   Created once per attribute.
+    ///   Aspect is created once per attribute.
     /// </summary>
     Static,
 
     /// <summary>
-    ///   Created for each new object.
+    ///   Aspect is created for each new target object.
     /// </summary>
     Instance
   }
