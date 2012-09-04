@@ -115,7 +115,7 @@
     <Compile Include="Assembly\MethodPatcher.cs" />
     <Compile Include="Assembly\Accessors\StaticArrayAccessor.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
-    <Compile Include="Assembly\Configuration\TargetAttributes.cs" />
+    <Compile Include="Assembly\Configuration\MemberFlags.cs" />
     <Compile Include="Assembly\Configuration\Visibility.cs" />
     <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Contexts\ActionInvocationContext.template.cs" />
