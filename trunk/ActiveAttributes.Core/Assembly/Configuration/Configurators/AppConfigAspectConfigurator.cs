@@ -26,7 +26,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
   {
     public void Initialize (IAspectConfiguration configuration)
     {
-      var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
+      var section = (AspectsConfiguration) ConfigurationManager.GetSection ("aspects");
 
       foreach (TypeRuleElement item in section.TypeRules)
       {

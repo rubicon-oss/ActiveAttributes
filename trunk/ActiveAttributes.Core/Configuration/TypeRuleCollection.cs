@@ -14,13 +14,14 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Configuration;
+using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Configuration
 {
   [ConfigurationCollection (typeof (TypeRuleElement))]
+  [UsedImplicitly]
   public class TypeRuleCollection : ConfigurationElementCollection
   {
     protected override ConfigurationElement CreateNewElement ()

@@ -74,7 +74,7 @@
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Assembly\Configuration\ApplyAspectAttribute.cs" />
     <Compile Include="Assembly\Configuration\AspectConfiguration.cs" />
-    <Compile Include="Configuration\AspectsConfigurationSection.cs" />
+    <Compile Include="Configuration\AspectsConfiguration.cs" />
     <Compile Include="Assembly\Configuration\Configurators\AppConfigAspectConfigurator.cs" />
     <Compile Include="Assembly\Configuration\AspectOrderingAttribute.cs" />
     <Compile Include="Assembly\Configuration\Configurators\AssemblyAspectConfigurator.cs" />
