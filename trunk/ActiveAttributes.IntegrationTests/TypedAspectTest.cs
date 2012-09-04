@@ -55,9 +55,9 @@ namespace ActiveAttributes.IntegrationTests
 
     public class DomainAspectAttribute : MethodInterceptionAspectAttribute
     {
-      public override bool Validate (MethodInfo method)
+      public override bool Matches (MethodInfo methodInfo)
       {
-        var parameters = method.GetParameters();
+        var parameters = methodInfo.GetParameters ();
 
         if (parameters.Length != 1)
           return false;
@@ -65,7 +65,7 @@ namespace ActiveAttributes.IntegrationTests
         if (parameters[0].ParameterType != typeof (DomainType.NestedDomainType))
           return false;
 
-        if (method.ReturnType != typeof (string))
+        if (methodInfo.ReturnType != typeof (string))
           return false;
 
         return true;
