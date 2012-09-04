@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Linq;
 using System.Reflection;
@@ -25,27 +24,51 @@ namespace ActiveAttributes.Core.Extensions
 {
   public static class PropertyInfoExtensions
   {
+    /// <summary>
+    /// Returns the directly overriden property, or null if no overriden property exists.
+    /// </summary>
+    /// <param name="propertyInfo">A property info.</param>
     public static PropertyInfo GetOverridenProperty (this PropertyInfo propertyInfo)
     {
       var typeSequence = propertyInfo.DeclaringType.BaseType.CreateSequence (x => x.BaseType);
-
-      var getMethodInfo = propertyInfo.GetGetMethod (true);
-      var setMethodInfo = propertyInfo.GetSetMethod (true);
-
-
-      var getMethodBase = getMethodInfo.GetBaseDefinition();
-      var setMethodBase = setMethodInfo.GetBaseDefinition();
+      var getMethod = propertyInfo.GetGetMethod (true);
+      var setMethod = propertyInfo.GetSetMethod (true);
+      var getMethodBase = getMethod != null ? getMethod.GetBaseDefinition () : null;
+      var setMethodBase = setMethod != null ? setMethod.GetBaseDefinition() : null;
 
       var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
       return typeSequence
           .SelectMany (x => x.GetProperties (bindingFlags))
-          .Where (x => x.GetGetMethod (true).GetBaseDefinition() == getMethodBase || x.GetSetMethod (true).GetBaseDefinition() == setMethodBase)
+          .Where (
+              x => SafeCompareBaseDefinition (x.GetGetMethod (true), getMethodBase) ||
+                   SafeCompareBaseDefinition (x.GetSetMethod (true), setMethodBase))
           .FirstOrDefault();
+    }
+
+    private static bool SafeCompareBaseDefinition (MethodInfo accessorMethod, MethodInfo accessorBaseMethod)
+    {
+      return accessorMethod != null && accessorBaseMethod != null && accessorMethod.GetBaseDefinition() == accessorBaseMethod;
     }
 
     public static bool IsIndexer (this PropertyInfo propertyInfo)
     {
       return propertyInfo.GetIndexParameters().Length == 1;
     }
+
+    public static bool HasSetter (this PropertyInfo propertyInfo)
+    {
+      return propertyInfo.GetSetMethod (true) != null;
+    }
+
+    public static bool HasGetter (this PropertyInfo propertyInfo)
+    {
+      return propertyInfo.GetGetMethod (true) != null;
+    }
+
+    public static bool HasGetterAndSetter (this PropertyInfo propertyInfo)
+    {
+      return propertyInfo.HasGetter() && propertyInfo.HasSetter();
+    }
+
   }
 }

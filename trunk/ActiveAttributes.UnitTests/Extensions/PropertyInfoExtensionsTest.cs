@@ -14,118 +14,66 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Extensions
 {
   [TestFixture]
   public class PropertyInfoExtensionsTest
   {
-    [Test]
-    public void GetBaseDefinition ()
+    public class GetOverridenProperty
     {
-      var expected = typeof (B).GetProperties ().Where (x => x.Name == "PropertyA").Single ();
-      var input = typeof (C).GetProperties ().Where (x => x.Name == "PropertyA").Single ();
-      var actual = input.GetOverridenProperty ();
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-
-    [Test]
-    public void GetBaseDefinition2 ()
-    {
-      var expected = typeof (A).GetProperties ().Where (x => x.Name == "PropertyB").Single ();
-      var input = typeof (C).GetProperties ().Where (x => x.Name == "PropertyB").Single ();
-      var actual = input.GetOverridenProperty ();
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-    [Test]
-    public void GetBaseDefinition3 ()
-    {
-      var expected = default (PropertyInfo);
-      var input = typeof (A).GetProperties ().Where (x => x.Name == "PropertyA").Single ();
-      var actual = input.GetOverridenProperty ();
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-    //[Test]
-    public void GetBaseDefinition4 ()
-    {
-      var expected = typeof (A).GetProperties ().Where (x => x.Name == "PropertyC").Single ();
-      var input = typeof (C).GetProperties ().Where (x => x.Name == "PropertyC").Single ();
-      var actual = input.GetOverridenProperty ();
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-    //[Test]
-    public void GetBaseDefinition5 ()
-    {
-      var expected = typeof (A).GetProperties ().Where (x => x.Name == "PropertyD").Single ();
-      var input = typeof (C).GetProperties ().Where (x => x.Name == "PropertyD").Single ();
-      var actual = input.GetOverridenProperty ();
-
-      Assert.That (actual, Is.EqualTo (expected));
-    }
-
-
-
-    public class A
-    {
-      public virtual string PropertyA { get; set; }
-      public virtual string PropertyB { get; set; }
-
-      public virtual string PropertyC { get { return ""; } }
-      public virtual string PropertyD { set { } }
-
-      public virtual string GetString ()
+      private class BaseType
       {
-        return "";
-      }
-    }
-
-    public class B : A
-    {
-      public override string PropertyA
-      {
-        get { return base.PropertyA; }
-        set { base.PropertyA = value; }
-      }
-    }
-
-    public class C : B
-    {
-      public override string PropertyA
-      {
-        get { return base.PropertyA; }
-        set { base.PropertyA = value; }
+        public virtual string VirtualProperty { get; protected set; }
+        public string NewProperty { get; protected set; }
+        public virtual string PartialProperty { set { } }
       }
 
-      public override string PropertyB
+      private class DerivedType : BaseType
       {
-        get { return base.PropertyB; }
-        set { base.PropertyB = value; }
+        public override string VirtualProperty { get; protected set; }
+        public new string NewProperty { get; protected set; }
+        public string DeclaredProperty { get; protected set; }
+        public override string PartialProperty { set { } }
       }
 
-      public override string PropertyC
+      [Test]
+      public void Normal ()
       {
-        get { return base.PropertyC; }
+        var propertyInfo = typeof (DerivedType).GetProperties().Single (x => x.Name == "VirtualProperty");
+        var expected = typeof (BaseType).GetProperties().Single (x => x.Name == "VirtualProperty");
+
+        Assert.That (expected, Is.Not.Null);
+        Assert.That (propertyInfo.GetOverridenProperty(), Is.EqualTo (expected));
       }
 
-      public override string PropertyD
+      [Test]
+      public void ReturnsNullForBaseProperty ()
       {
-        set { base.PropertyD = value; }
+        var propertyInfo = typeof (DerivedType).GetProperties ().Single (x => x.Name == "DeclaredProperty");
+
+        Assert.That (propertyInfo.GetOverridenProperty(), Is.Null);
+      }
+
+      [Test]
+      public void PartialAccessors ()
+      {
+        var propertyInfo = typeof (DerivedType).GetProperties().Single (x => x.Name == "PartialProperty");
+        var expected = typeof (BaseType).GetProperties().Single (x => x.Name == "PartialProperty");
+
+        Assert.That (propertyInfo.GetOverridenProperty(), Is.EqualTo (expected));
+      }
+
+      [Test]
+      public void RespectsNewAttribute ()
+      {
+        var propertyInfo = typeof (DerivedType).GetProperties ().Single (x => x.Name == "NewProperty");
+
+        Assert.That (propertyInfo.GetOverridenProperty (), Is.Null);
       }
     }
   }

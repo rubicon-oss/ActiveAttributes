@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Linq;
 using System.Reflection;
@@ -36,9 +35,12 @@ namespace ActiveAttributes.Core.Extensions
 
     private static bool EqualsBaseDefinition<T> (this MemberInfo @this, MemberInfo other)
     {
+      if (@this == null || other == null)
+        return false;
+
       if (typeof (T) == typeof (Type))
       {
-        var thisBase = ((Type) @this).CreateSequence (x => x.BaseType).Last (x => x != typeof(object));
+        var thisBase = ((Type) @this).CreateSequence (x => x.BaseType).Last (x => x != typeof (object));
         var otherBase = ((Type) other).CreateSequence (x => x.BaseType).Last (x => x != typeof (object));
 
         return thisBase == otherBase;
