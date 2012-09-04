@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Sample license text.
+-->
+<xs:schema id="aspects"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="http://tempuri.org/aspects.xsd"
+    targetNamespace="http://tempuri.org/aspects.xsd"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+  <xs:element name="aspects">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="typeRules" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="add" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="beforeType" type="c:DotNetType" use="required"/>
+                  <xs:attribute name="afterType" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:simpleType name="DotNetType">
+    <xs:restriction base="c:RequiredStringType">
+      <!--  Class, Assembly; Namespace.Class, Assembly; Namespace.Namespace.Class, Assembly; 
+            Class+Class, Assembly; Namespace.Class+Class, Assembly; Namespace.Namespace.Class+Class, Assembly
+            Class,Assembly; Namespace.Class,Assembly; Namespace.Namespace.Class,Assembly; 
+            Class+Class,Assembly; Namespace.Class+Class,Assembly; Namespace.Namespace.Class+Class,Assembly -->
+      <xs:pattern value="(\p{L}[\p{L}\d]*\.)*(\p{L}[\p{L}\d]*\+)*(\p{L}[\p{L}\d]*),\s?([\p{L}\d]+\.)*([\p{L}\d]+)" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RequiredStringType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:whiteSpace value="collapse" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
