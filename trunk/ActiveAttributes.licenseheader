@@ -1,4 +1,4 @@
-extensions: designer.cs
+extensions: designer.cs generated.cs
 extensions: .cs
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
