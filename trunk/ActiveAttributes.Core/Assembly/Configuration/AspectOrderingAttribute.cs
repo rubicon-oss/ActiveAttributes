@@ -24,9 +24,19 @@ namespace ActiveAttributes.Core.Assembly.Configuration
   {
     public AspectOrderingAttribute (OrderPosition position, params Type[] aspectTypes)
     {
+      Position = position;
+      AspectTypes = aspectTypes;
     }
+
     public AspectOrderingAttribute (OrderPosition position, params string[] aspectRoles)
     {
+      Position = position;
+      AspectRoles = aspectRoles;
     }
+
+    public OrderPosition Position { get; private set; }
+
+    public Type[] AspectTypes { get; private set; }
+    public string[] AspectRoles { get; private set; }
   }
 }
