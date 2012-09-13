@@ -75,8 +75,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var rules = new List<IOrderRule>
                   {
-                    new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule(typeof(Aspect1), typeof(Aspect3))
+                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect3))
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
       var aspects = new[] { _generator1, _generator2, _generator3 };
@@ -91,8 +91,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var rules = new List<IOrderRule>
                   {
-                    new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule(typeof(Aspect1), typeof(Aspect2))
+                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect2))
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
       var aspects = new[] { _generator1, _generator2, _generator3 };
@@ -105,7 +105,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var rules = new List<IOrderRule>
                   {
-                    new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
                   };
       _configuration.Expect (x => x.Rules).Return (new ReadOnlyCollection<IOrderRule> (rules));
       var aspects = new[] { _generator1, _generator2, _generator3 };
@@ -119,8 +119,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       _descriptor3.Expect (x => x.Priority).Return (1);
       var rules = new List<IOrderRule>
                   {
-                    new TypeOrderRule(typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule(typeof(Aspect1), typeof(Aspect3)),
+                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect3)),
                   };
       _configuration.Expect (x => x.Rules).Return (rules);
       var aspects = new[] { _generator1, _generator3, _generator2 };

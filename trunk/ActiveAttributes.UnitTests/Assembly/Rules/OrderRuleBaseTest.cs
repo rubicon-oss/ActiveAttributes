@@ -14,14 +14,36 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
-using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Assembly.Configuration
+namespace ActiveAttributes.UnitTests.Assembly.Rules
 {
-  public interface IOrderRule : IComparer<IAspectGenerator>
+  [TestFixture]
+  public class OrderRuleBaseTest
   {
-    string Source { get; }
+    [Test]
+    public void SetsSource ()
+    {
+      var source = "my source";
+      var rule = new TestableOrderRule (source);
+
+      Assert.That (rule.Source, Is.EqualTo (source));
+    }
+
+    private class TestableOrderRule : OrderRuleBase
+    {
+      public TestableOrderRule (string source)
+        : base(source)
+      {
+      }
+
+      public override int Compare (IAspectGenerator x, IAspectGenerator y)
+      {
+        throw new NotImplementedException();
+      }
+    }
   }
 }

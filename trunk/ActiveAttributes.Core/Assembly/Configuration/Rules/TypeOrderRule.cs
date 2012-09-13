@@ -19,18 +19,19 @@ using System;
 
 namespace ActiveAttributes.Core.Assembly.Configuration.Rules
 {
-  public class TypeOrderRule : IOrderRule
+  public class TypeOrderRule : OrderRuleBase
   {
     private readonly Type _type1;
     private readonly Type _type2;
 
-    public TypeOrderRule (Type type1, Type type2)
+    public TypeOrderRule (string source, Type type1, Type type2)
+      : base (source)
     {
       _type1 = type1;
       _type2 = type2;
     }
 
-    public int Compare (IAspectGenerator x, IAspectGenerator y)
+    public override int Compare (IAspectGenerator x, IAspectGenerator y)
     {
       var type1 = x.Descriptor.AspectType;
       var type2 = y.Descriptor.AspectType;
