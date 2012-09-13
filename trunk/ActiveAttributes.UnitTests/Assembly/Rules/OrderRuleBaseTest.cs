@@ -25,12 +25,13 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
   public class OrderRuleBaseTest
   {
     [Test]
-    public void SetsSource ()
+    public void Source ()
     {
       var source = "my source";
       var rule = new TestableOrderRule (source);
 
       Assert.That (rule.Source, Is.EqualTo (source));
+      Assert.That (rule.ToString (), Is.EqualTo ("TestableOrderRule [my source]"));
     }
 
     private class TestableOrderRule : OrderRuleBase

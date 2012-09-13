@@ -79,6 +79,19 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
       Assert.That (resultEqual, Is.EqualTo (0));
     }
 
+    [Test]
+    public void ToString_ ()
+    {
+      var mySource = "my source";
+      var role1 = "role1";
+      var role2 = "role2";
+      var rule = new RoleOrderRule (mySource, role1, role2, _configuration);
+
+      var result = rule.ToString();
+
+      Assert.That (result, Is.EqualTo ("RoleOrderRule [" + mySource + "]: " + role1 + " -> " + role2));
+    }
+
     private class Aspect1Attribute : AspectAttribute { }
     private class Aspect2Attribute : AspectAttribute { }
     private class Aspect3Attribute : Aspect1Attribute { }
