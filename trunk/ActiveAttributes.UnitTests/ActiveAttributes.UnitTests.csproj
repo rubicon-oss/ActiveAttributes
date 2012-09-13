@@ -76,6 +76,7 @@
     <Compile Include="Assembly\AspectGeneratorTest.cs" />
     <Compile Include="Assembly\AspectSchedulerTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
+    <Compile Include="Assembly\Configurators\PresetAspectConfiguratorTest.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptorTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />

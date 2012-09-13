@@ -16,13 +16,70 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly.Configuration.Rules;
 
 namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 {
   public class PresetAspectConfigurator : IAspectConfigurator
   {
+    private readonly System.Reflection.Assembly[] _assemblies;
+
+    public PresetAspectConfigurator (params System.Reflection.Assembly[] assemblies)
+    {
+      _assemblies = assemblies;
+    }
+
     public void Initialize (IAspectConfiguration configuration)
     {
+      var aspectTypes = from assembly in _assemblies
+                        from type in assembly.GetTypes()
+                        where typeof (AspectAttribute).IsAssignableFrom (type)
+                        select type;
+
+      foreach (var aspectType in aspectTypes)
+      {
+        var roleAttribute = aspectType.GetCustomAttributes (typeof (AspectRoleAttribute), true).Cast<AspectRoleAttribute>().SingleOrDefault();
+        if (roleAttribute != null)
+          configuration.Roles.Add (aspectType, roleAttribute.RoleName);
+
+        var presets = aspectType.GetCustomAttributes (typeof (AspectOrderingAttribute), true).Cast<AspectOrderingAttribute>();
+
+        foreach (var orderRule in presets.SelectMany (x => GetOrderRules (aspectType, x, configuration)))
+          configuration.Rules.Add (orderRule);
+      }
+    }
+
+    private IEnumerable<IOrderRule> GetOrderRules (Type aspectType, AspectOrderingAttribute preset, IAspectConfiguration configuration)
+    {
+      if (preset.AspectTypes != null)
+        return GetTypeOrderRules (aspectType, preset);
+      else if (preset.AspectRoles != null)
+        return GetRoleOrderRules (aspectType, preset, configuration);
+      else
+        throw new Exception ("should not reach"); // TODO
+    }
+
+    private IEnumerable<IOrderRule> GetTypeOrderRules (Type aspectType, AspectOrderingAttribute preset)
+    {
+      return (from otherType in preset.AspectTypes
+              let beforeType = preset.Position == OrderPosition.Before ? aspectType : otherType
+              let afterType = preset.Position == OrderPosition.Before ? otherType : aspectType
+              select new TypeOrderRule (aspectType.Name, beforeType, afterType)).Cast<IOrderRule>();
+    }
+
+    private IEnumerable<IOrderRule> GetRoleOrderRules (Type aspectType, AspectOrderingAttribute preset, IAspectConfiguration configuration)
+    {
+      string aspectRole = null;
+      if (!configuration.Roles.TryGetValue (aspectType, out aspectRole))
+        throw new Exception ("role not set on " + aspectType.Name); // TODO
+
+      return (from otherRole in preset.AspectRoles
+              let beforeRole = preset.Position == OrderPosition.Before ? aspectRole : otherRole
+              let afterRole = preset.Position == OrderPosition.Before ? otherRole : aspectRole
+              select new RoleOrderRule (aspectType.Name, beforeRole, afterRole, configuration)).Cast<IOrderRule>();
     }
   }
 }
