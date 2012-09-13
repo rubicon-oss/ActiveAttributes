@@ -53,6 +53,34 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
       return 0;
     }
 
+    public bool Equals (RoleOrderRule other)
+    {
+      if (ReferenceEquals (null, other))
+        return false;
+      if (ReferenceEquals (this, other))
+        return true;
+      return Equals (other._role2, _role2) && Equals (other._role1, _role1);
+    }
+
+    public override bool Equals (object obj)
+    {
+      if (ReferenceEquals (null, obj))
+        return false;
+      if (ReferenceEquals (this, obj))
+        return true;
+      if (obj.GetType() != typeof (RoleOrderRule))
+        return false;
+      return Equals ((RoleOrderRule) obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      unchecked
+      {
+        return ((_role2 != null ? _role2.GetHashCode() : 0) * 397) ^ (_role1 != null ? _role1.GetHashCode() : 0);
+      }
+    }
+
     public override string ToString ()
     {
       return base.ToString() + ": " + _role1 + " -> " + _role2;

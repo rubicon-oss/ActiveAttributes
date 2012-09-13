@@ -44,6 +44,34 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
       return 0;
     }
 
+    public bool Equals (TypeOrderRule other)
+    {
+      if (ReferenceEquals (null, other))
+        return false;
+      if (ReferenceEquals (this, other))
+        return true;
+      return Equals (other._type1, _type1) && Equals (other._type2, _type2);
+    }
+
+    public override bool Equals (object obj)
+    {
+      if (ReferenceEquals (null, obj))
+        return false;
+      if (ReferenceEquals (this, obj))
+        return true;
+      if (obj.GetType() != typeof (TypeOrderRule))
+        return false;
+      return Equals ((TypeOrderRule) obj);
+    }
+
+    public override int GetHashCode ()
+    {
+      unchecked
+      {
+        return ((_type1 != null ? _type1.GetHashCode() : 0) * 397) ^ (_type2 != null ? _type2.GetHashCode() : 0);
+      }
+    }
+
     public override string ToString ()
     {
       return base.ToString() + ": " + _type1.Name + " -> " + _type2.Name;

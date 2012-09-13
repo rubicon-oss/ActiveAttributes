@@ -97,6 +97,24 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
       Assert.That (result, Is.EqualTo ("TypeOrderRule [" + mySource + "]: " + type1.Name + " -> " + type2.Name));
     }
 
+    [Test]
+    public void Equals_ ()
+    {
+      var mySource = "my source";
+      var type1 = typeof (Aspect1Attribute);
+      var type2 = typeof (Aspect2Attribute);
+      var type3 = typeof (Aspect3Attribute);
+
+      var rule1 = new TypeOrderRule (mySource, type1, type2);
+      var rule2 = new TypeOrderRule (mySource, type1, type2);
+      var rule3 = new TypeOrderRule (mySource, type2, type3);
+
+      Assert.That (rule1, Is.EqualTo (rule2));
+      Assert.That (rule1, Is.Not.EqualTo (rule3));
+      Assert.That (rule1.GetHashCode(), Is.EqualTo (rule2.GetHashCode()));
+      Assert.That (rule1.GetHashCode(), Is.Not.EqualTo (rule3.GetHashCode()));
+    }
+
     private class Aspect1Attribute : AspectAttribute { }
     private class Aspect2Attribute : AspectAttribute { }
     private class Aspect3Attribute : AspectAttribute { }
