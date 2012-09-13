@@ -43,5 +43,10 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
 
       return 0;
     }
+
+    public override string ToString ()
+    {
+      return base.ToString() + ": " + _type1.Name + " -> " + _type2.Name;
+    }
   }
 }
