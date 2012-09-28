@@ -72,7 +72,7 @@ namespace ActiveAttributes.Core.Aspects
       }
       catch (Exception exception)
       {
-        throw new AspectInvocationException ("TODO", exception); // TODO
+        throw new AspectInvocationException (exception);
       }
     }
   }

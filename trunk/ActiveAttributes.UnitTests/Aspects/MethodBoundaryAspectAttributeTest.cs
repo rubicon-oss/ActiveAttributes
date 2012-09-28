@@ -65,7 +65,6 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
       catch (Exception ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnEntry"));
         throw;
       }
@@ -107,7 +106,6 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
       catch (Exception ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnExit"));
         throw;
       }
@@ -149,7 +147,6 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
       catch (Exception ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnSuccess"));
         throw;
       }
@@ -187,7 +184,6 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
       catch (Exception ex)
       {
-        Assert.That (ex.Message, Is.EqualTo ("TODO"));
         Assert.That (ex.InnerException.Message, Is.EqualTo ("OnException"));
         throw;
       }

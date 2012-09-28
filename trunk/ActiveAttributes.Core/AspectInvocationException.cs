@@ -20,25 +20,15 @@ using System.Runtime.Serialization;
 namespace ActiveAttributes.Core
 {
   /// <summary>
-  /// Exception that is thrown when an aspect invocation throws an exception.
+  /// Exception that is thrown when an aspect invocation has thrown an exception.
   /// </summary>
   [Serializable]
   public class AspectInvocationException : Exception
   {
-    //
-    // For guidelines regarding the creation of new exception types, see
-    //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-    // and
-    //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-    //
+    private const string c_exceptionMessage = "Invocation of an aspect has thrown an exception.";
 
-    public AspectInvocationException () {}
-
-    public AspectInvocationException (string message)
-        : base (message) {}
-
-    public AspectInvocationException (string message, Exception inner)
-        : base (message, inner) {}
+    public AspectInvocationException (Exception inner)
+        : base (c_exceptionMessage, inner) {}
 
     protected AspectInvocationException (
         SerializationInfo info,
