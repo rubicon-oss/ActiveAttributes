@@ -17,19 +17,53 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Provides information describing an <see cref="AspectAttribute"/>.
+  /// </summary>
   public interface IAspectDescriptor
   {
-    int Priority { get; }
-    AspectScope Scope { get; }
+    /// <summary>
+    /// The <see cref="Type"/> of the <see cref="AspectAttribute"/>.
+    /// </summary>
     Type AspectType { get; }
+
+    /// <summary>
+    /// A numeric value describing the priority over other <see cref="AspectAttribute"/>s. A higher priority means
+    /// that the aspect is invoked earlier. The priority also overrides the <see cref="IAspectConfiguration"/>.
+    /// </summary>
+    int Priority { get; }
+
+    /// <summary>
+    /// The <see cref="AspectScope"/> (or lifetime) of the <see cref="AspectAttribute"/>.
+    /// </summary>
+    AspectScope Scope { get; }
+
+    /// <summary>
+    /// The <see cref="ConstructorInfo"/> used to create the <see cref="AspectAttribute"/>.
+    /// </summary>
     ConstructorInfo ConstructorInfo { get; }
+
+    /// <summary>
+    /// The list of <see cref="CustomAttributeTypedArgument"/>s passed to the constructor.
+    /// </summary>
     IList<CustomAttributeTypedArgument> ConstructorArguments { get; }
+
+    /// <summary>
+    /// The list of <see cref="CustomAttributeNamedArgument"/>s.
+    /// </summary>
     IList<CustomAttributeNamedArgument> NamedArguments { get; }
 
+    /// <summary>
+    /// Returns <value>true</value> if the method matches the requirements of the <see cref="AspectAttribute"/>,
+    /// otherwise false.
+    /// </summary>
+    /// <param name="method">The method.</param>
+    /// <returns><value>True</value> or <value>false</value>.</returns>
     bool Matches (MethodInfo method);
   }
 }

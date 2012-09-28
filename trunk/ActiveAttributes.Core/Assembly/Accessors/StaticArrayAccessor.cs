@@ -21,6 +21,9 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly.Accessors
 {
+  /// <summary>
+  /// Generates an expression that provides access to a static field.
+  /// </summary>
   public class StaticArrayAccessor : IArrayAccessor
   {
     private readonly MemberExpression _accessExpression;

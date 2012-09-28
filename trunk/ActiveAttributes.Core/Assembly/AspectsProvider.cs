@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Extensions;
@@ -28,9 +29,6 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  /// <summary>
-  ///   Provides all aspects (including inherited) applied to a method.
-  /// </summary>
   public class AspectsProvider : IAspectsProvider
   {
     private readonly IRelatedMethodFinder _relatedMethodFinder;

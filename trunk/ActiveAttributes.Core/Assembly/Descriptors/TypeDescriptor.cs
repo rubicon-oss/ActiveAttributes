@@ -17,12 +17,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
+  /// <summary>
+  /// An <see cref="IAspectDescriptor"/> that is based on the <see cref="Type"/> of an aspect.
+  /// </summary>
   public class TypeDescriptor : IAspectDescriptor
   {
     private readonly object[] _arguments;

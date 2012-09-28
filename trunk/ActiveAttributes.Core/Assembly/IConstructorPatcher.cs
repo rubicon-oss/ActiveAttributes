@@ -14,12 +14,20 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Patches the constructors of a <see cref="MutableType"/> so that they initialize fields for
+  /// the <see cref="MethodInfo"/>, and the <see cref="Delegate"/> of the original method,
+  /// as well as instance, and static <see cref="AspectAttribute"/>s.
+  /// </summary>
   public interface IConstructorPatcher
   {
     void AddReflectionAndDelegateInitialization (

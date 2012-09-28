@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
@@ -25,18 +24,11 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Extensions;
 
 using Microsoft.Scripting.Ast;
-using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  /// <summary>
-  /// Patches the constructors of a <see cref="MutableType"/> so that they initialize fields for the <see cref="MethodInfo"/>, and the <see cref="Delegate"/> of the original method, as well as instance, and static <see cref="AspectAttribute"/>.
-  /// </summary>
-  /// <remarks>
-  /// For the matter of easy implementation (iteration + order of aspects), the instance aspects fields contains static aspects too. 
-  /// </remarks>
   public class ConstructorPatcher : IConstructorPatcher
   {
     public void AddReflectionAndDelegateInitialization (

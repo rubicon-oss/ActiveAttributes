@@ -22,9 +22,6 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  /// <summary>
-  /// Introduces fields for storing <see cref="MethodInfo"/>, <see cref="Delegate"/>, static/instance <see cref="AspectAttribute"/>'s for a given <see cref="MutableType"/>, or <see cref="MutableMethodInfo"/>.
-  /// </summary>
   public class FieldIntroducer : IFieldIntroducer
   {
     private int _counter = 1;

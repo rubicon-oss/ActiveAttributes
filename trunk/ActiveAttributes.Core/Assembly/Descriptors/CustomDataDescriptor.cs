@@ -26,6 +26,9 @@ using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
+  /// <summary>
+  /// An <see cref="IAspectDescriptor"/> that is based on <see cref="CustomAttributeData"/>.
+  /// </summary>
   public class CustomDataDescriptor : IAspectDescriptor
   {
     private readonly AspectAttribute _aspectAttribute;

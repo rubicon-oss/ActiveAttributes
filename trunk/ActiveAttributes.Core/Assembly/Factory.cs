@@ -53,6 +53,14 @@ namespace ActiveAttributes.Core.Assembly
         IEnumerable<IAspectGenerator> aspects,
         ITypeProvider typeProvider)
     {
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      ArgumentUtility.CheckNotNull ("propertyInfoFieldInfo", propertyInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("eventInfoFieldInfo", eventInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("methodInfoFieldInfo", methodInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("delegateFieldInfo", delegateFieldInfo);
+      ArgumentUtility.CheckNotNullOrEmpty ("aspects", aspects);
+      ArgumentUtility.CheckNotNull ("typeProvider", typeProvider);
+
       return new MethodPatcher (
           mutableMethod, propertyInfoFieldInfo, eventInfoFieldInfo, methodInfoFieldInfo, delegateFieldInfo, aspects, typeProvider);
     }

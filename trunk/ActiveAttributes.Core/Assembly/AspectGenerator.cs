@@ -59,6 +59,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       ArgumentUtility.CheckNotNull ("arrayAccessor", arrayAccessor);
       ArgumentUtility.CheckNotNull ("descriptor", descriptor);
+      Assertion.IsTrue (index >= 0);
 
       _arrayAccessor = arrayAccessor;
       _index = index;
@@ -69,8 +70,11 @@ namespace ActiveAttributes.Core.Assembly
 
     public Expression GetStorageExpression (Expression thisExpression)
     {
+      // thisExpression can be null
+
       var array = _arrayAccessor.GetAccessExpression (thisExpression);
       var index = Expression.Constant (_index);
+
       return Expression.ArrayAccess (array, index);
     }
 

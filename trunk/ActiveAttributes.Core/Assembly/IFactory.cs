@@ -17,17 +17,48 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.Accessors;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Acts as a factory for various types.
+  /// </summary>
   public interface IFactory
   {
+    /// <summary>
+    /// Creates a <see cref="ITypeProvider"/> for a given methd.
+    /// </summary>
+    /// <param name="methodInfo">The method.</param>
+    /// <returns>An <see cref="ITypeProvider"/></returns>
     ITypeProvider GetTypeProvider (MethodInfo methodInfo);
 
+    /// <summary>
+    /// Creates an <see cref="InstanceArrayAccessor"/> for a given instance field.
+    /// </summary>
+    /// <param name="fieldInfo">The instance field.</param>
+    /// <returns>An <see cref="IArrayAccessor"/></returns>
     IArrayAccessor GetInstanceAccessor (FieldInfo fieldInfo);
+
+    /// <summary>
+    /// Creates an <see cref="StaticArrayAccessor"/> for a given static field.
+    /// </summary>
+    /// <param name="fieldInfo">The static field.</param>
+    /// <returns>An <see cref="IArrayAccessor"/></returns>
     IArrayAccessor GetStaticAccessor (FieldInfo fieldInfo);
 
+    /// <summary>
+    /// Create a <see cref="MethodPatcher"/>.
+    /// </summary>
+    /// <param name="mutableMethod">The mutable method.</param>
+    /// <param name="propertyInfoFieldInfo">The field containing the <see cref="PropertyInfo"/></param>
+    /// <param name="eventInfoFieldInfo">The field containing the <see cref="EventInfo"/></param>
+    /// <param name="methodInfoFieldInfo">The field containing the <see cref="MethodInfo"/></param>
+    /// <param name="delegateFieldInfo">The field containing the <see cref="Delegate"/></param>
+    /// <param name="aspects">The collection of <see cref="IAspectGenerator"/>s that should be applied to the method.</param>
+    /// <param name="typeProvider">A type provider for the mutable method.</param>
+    /// <returns></returns>
     MethodPatcher GetMethodPatcher (
         MutableMethodInfo mutableMethod,
         FieldInfo propertyInfoFieldInfo,
@@ -37,6 +68,13 @@ namespace ActiveAttributes.Core.Assembly
         IEnumerable<IAspectGenerator> aspects,
         ITypeProvider typeProvider);
 
+    /// <summary>
+    /// Creates a <see cref="AspectGenerator"/> for a given <see cref="IArrayAccessor"/> and <see cref="IAspectDescriptor"/>.
+    /// </summary>
+    /// <param name="arrayAccessor">The array containg the aspects.</param>
+    /// <param name="index">The array index of the aspect.</param>
+    /// <param name="descriptor">The descriptor of the aspect.</param>
+    /// <returns></returns>
     IAspectGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor descriptor);
   }
 }

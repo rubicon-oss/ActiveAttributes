@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ActiveAttributes.Core.Assembly.Configuration;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Sorts a collection of <see cref="IAspectGenerator"/>s according to the <see cref="IAspectConfiguration"/>.
+  /// </summary>
   public interface IAspectScheduler
   {
     IEnumerable<IAspectGenerator> GetOrdered (IEnumerable<IAspectGenerator> aspects);

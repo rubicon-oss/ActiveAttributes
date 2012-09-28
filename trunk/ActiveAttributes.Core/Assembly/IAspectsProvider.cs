@@ -18,10 +18,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
-{
+{ 
+  /// <summary>
+  /// Provides <see cref="IAspectDescriptor"/>s for applied <see cref="AspectAttribute"/>s (including inherited).
+  /// </summary>
   public interface IAspectsProvider
   {
     IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type);

@@ -21,6 +21,9 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly.Accessors
 {
+  /// <summary>
+  /// Generates an expression that provides access to an instance field.
+  /// </summary>
   public class InstanceArrayAccessor : IArrayAccessor
   {
     private readonly FieldInfo _fieldInfo;

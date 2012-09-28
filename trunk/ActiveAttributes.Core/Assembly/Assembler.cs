@@ -17,16 +17,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Responsible for the assembly of types applied with aspects.
+  /// Implementation of an <see cref="ITypeAssemblyParticipant"/> that modifies types according to
+  /// applied <see cref="AspectAttribute"/>.
   /// </summary>
   public class Assembler : ITypeAssemblyParticipant
   {
@@ -70,7 +73,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyType (MutableType mutableType)
     {
-      s_log.InfoFormat ("Modifying type '{0}'", mutableType);
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
       var typeLevelAspectGenerators = HandleTypeLevelGenerators (mutableType).ToList();
 
@@ -86,13 +89,13 @@ namespace ActiveAttributes.Core.Assembly
       var mutableMethodInfos = mutableType.AllMutableMethods.ToList();
       foreach (var mutableMethod in mutableMethodInfos)
       {
-        var methodLevelAspectGenerators = HandleMethodLevelAspects(mutableType, mutableMethod);
+        var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableType, mutableMethod);
 
-        // method level aspects + matching type level aspects
-        var allMatchingAspectGenerators =
-            typeLevelAspectGenerators.Where (x => x.Descriptor.Matches (mutableMethod.UnderlyingSystemMethodInfo))
-                .Concat (methodLevelAspectGenerators)
-                .ToList();
+        // matching type level aspects + method level aspects
+        var allMatchingAspectGenerators = typeLevelAspectGenerators
+            .Where (x => x.Descriptor.Matches (mutableMethod.UnderlyingSystemMethodInfo))
+            .Concat (methodLevelAspectGenerators)
+            .ToList();
 
         if (allMatchingAspectGenerators.Any ())
         {

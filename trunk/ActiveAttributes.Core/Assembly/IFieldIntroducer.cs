@@ -15,15 +15,40 @@
 // under the License.
 // 
 
+using System;
 using System.Reflection;
+using ActiveAttributes.Core.Aspects;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Introduces fields for storing reflection information (e.g., <see cref="MethodInfo"/> and <see cref="Delegate"/>)
+  /// and <see cref="AspectAttribute"/>s.
+  /// </summary>
   public interface IFieldIntroducer
   {
+    /// <summary>
+    /// Introduces fields for storing instance and static <see cref="AspectAttribute"/>s on type-level (shared across targets).
+    /// </summary>
+    /// <param name="mutableType">The mutable type.</param>
+    /// <returns>References to the introduced fields.</returns>
     FieldIntroducer.Data IntroduceTypeAspectFields (MutableType mutableType);
+
+    /// <summary>
+    /// Introduces fields for storing instance and static <see cref="AspectAttribute"/>s on method-level.
+    /// </summary>
+    /// <param name="mutableType">The mutable type.</param>
+    /// <param name="methodInfo">The method.</param>
+    /// <returns>References to the introduced fields.</returns>
     FieldIntroducer.Data IntroduceMethodAspectFields (MutableType mutableType, MethodInfo methodInfo);
+
+    /// <summary>
+    /// Introduces fields for storing the <see cref="MethodInfo"/> and the <see cref="Delegate"/> to a certain method.
+    /// </summary>
+    /// <param name="mutableType">The mutable type.</param>
+    /// <param name="methodInfo">The method.</param>
+    /// <returns>References to the introduced fields.</returns>
     FieldIntroducer.Data IntroduceMethodReflectionFields (MutableType mutableType, MethodInfo methodInfo);
   }
 }

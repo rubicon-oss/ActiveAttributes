@@ -15,14 +15,34 @@
 // under the License.
 // 
 using System;
+using ActiveAttributes.Core.Aspects;
 using Microsoft.Scripting.Ast;
+using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Creates <see cref="Expression"/> for accessing and creating <see cref="AspectAttribute"/>s.
+  /// </summary>
   public interface IAspectGenerator
   {
+    /// <summary>
+    /// The underlying <see cref="IAspectDescriptor"/>.
+    /// </summary>
     IAspectDescriptor Descriptor { get; }
+
+    /// <summary>
+    /// Creates an <see cref="Expression"/> that can be used to access the <see cref="AspectAttribute"/>.
+    /// </summary>
+    /// <param name="thisExpression">The <see cref="ThisExpression"/></param>
+    /// <returns>An <see cref="Expression"/> accessing the <see cref="AspectAttribute"/>.</returns>
     Expression GetStorageExpression (Expression thisExpression);
+
+    /// <summary>
+    /// Creates an <see cref="Expression"/> that generates an exact copy of the <see cref="AspectAttribute"/>
+    /// described by the <see cref="IAspectDescriptor"/>.
+    /// </summary>
+    /// <returns>An <see cref="Expression"/> creating the <see cref="AspectAttribute"/>.</returns>
     Expression GetInitExpression ();
   }
 }

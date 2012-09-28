@@ -19,6 +19,9 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Generates an expression that provides access to a field.
+  /// </summary>
   public interface IArrayAccessor
   {
     Expression GetAccessExpression (Expression thisExpression);
