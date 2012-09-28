@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
-using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
@@ -30,6 +30,9 @@ namespace ActiveAttributes.Core.Extensions
     /// <param name="propertyInfo">A property info.</param>
     public static PropertyInfo GetOverridenProperty (this PropertyInfo propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      Assertion.IsTrue (propertyInfo.DeclaringType != null);
+
       var typeSequence = propertyInfo.DeclaringType.BaseType.CreateSequence (x => x.BaseType);
       var getMethod = propertyInfo.GetGetMethod (true);
       var setMethod = propertyInfo.GetSetMethod (true);
@@ -39,10 +42,9 @@ namespace ActiveAttributes.Core.Extensions
       var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
       return typeSequence
           .SelectMany (x => x.GetProperties (bindingFlags))
-          .Where (
+          .FirstOrDefault (
               x => SafeCompareBaseDefinition (x.GetGetMethod (true), getMethodBase) ||
-                   SafeCompareBaseDefinition (x.GetSetMethod (true), setMethodBase))
-          .FirstOrDefault();
+                   SafeCompareBaseDefinition (x.GetSetMethod (true), setMethodBase));
     }
 
     private static bool SafeCompareBaseDefinition (MethodInfo accessorMethod, MethodInfo accessorBaseMethod)

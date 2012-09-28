@@ -2,10 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Logging;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  public abstract class ActionInvocationContextBase<TInstance> : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
+  public abstract class InvocationContextBase
+  {
+    protected static readonly ILog Log = LogManager.GetLogger (typeof (IInvocationContext));
+  }
+
+  public abstract class ActionInvocationContextBase<TInstance> : InvocationContextBase, IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
   {
     protected ActionInvocationContextBase (MethodInfo methodInfo, TInstance instance)
     {

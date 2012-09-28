@@ -17,6 +17,7 @@
 
 using System;
 using ActiveAttributes.Core.Invocations;
+using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Aspects
 {
@@ -64,7 +65,7 @@ namespace ActiveAttributes.Core.Aspects
     {
     }
 
-    private void WrapIfThrowing (Action action)
+    private void WrapIfThrowing ([InstantHandle] Action action)
     {
       try
       {

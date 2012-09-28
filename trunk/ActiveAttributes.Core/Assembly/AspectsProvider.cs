@@ -18,12 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
@@ -43,7 +41,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("type", type);
 
       Func<MemberInfo, MemberInfo> getParent = memberInfo => ((Type) memberInfo).BaseType;
-      Func<MemberInfo, bool> whileCondition = memberInfo => memberInfo != typeof (object);
+      Func<MemberInfo, bool> whileCondition = memberInfo => !memberInfo.Equals(typeof (object));
 
       return GetAspects (type, getParent, whileCondition);
     }
@@ -96,11 +94,16 @@ namespace ActiveAttributes.Core.Assembly
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      var ifaces = methodInfo.DeclaringType.GetInterfaces ();
+      var declaringType = methodInfo.DeclaringType;
+      Assertion.IsTrue (declaringType != null);
+
+      var ifaces = declaringType.GetInterfaces ();
       foreach (var iface in ifaces)
       {
-        var map = methodInfo.DeclaringType.GetInterfaceMap (iface);
-        var zipped = map.TargetMethods.Zip (map.InterfaceMethods, (TargetMember, InterfaceMember) => new { TargetMember, InterfaceMember });
+        var map = declaringType.GetInterfaceMap (iface);
+        var zipped = map.TargetMethods.Zip (map.InterfaceMethods,
+          (targetMember, interfaceMember) => new { TargetMember = targetMember, InterfaceMember = interfaceMember });
+
         foreach (var item in zipped.Where (item => item.TargetMember == methodInfo))
         {
           return CustomAttributeData.GetCustomAttributes (item.InterfaceMember)

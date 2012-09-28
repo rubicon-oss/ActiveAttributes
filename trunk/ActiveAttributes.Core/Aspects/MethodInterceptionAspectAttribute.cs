@@ -15,7 +15,6 @@
 // under the License.
 // 
 using System;
-using System.Runtime.Serialization;
 using ActiveAttributes.Core.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
@@ -27,15 +26,6 @@ namespace ActiveAttributes.Core.Aspects
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = true)]
   public abstract class MethodInterceptionAspectAttribute : AspectAttribute
   {
-    protected MethodInterceptionAspectAttribute ()
-    {
-    }
-
-    protected MethodInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
-
     public abstract void OnIntercept (IInvocation invocation);
   }
 }

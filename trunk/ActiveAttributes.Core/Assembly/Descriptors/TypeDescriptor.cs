@@ -27,8 +27,6 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
   /// </summary>
   public class TypeDescriptor : IAspectDescriptor
   {
-    private readonly object[] _arguments;
-
     public TypeDescriptor (Type aspectType, AspectScope scope, int priority)
     {
       AspectType = aspectType;

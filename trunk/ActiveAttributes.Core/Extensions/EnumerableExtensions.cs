@@ -38,15 +38,17 @@ namespace ActiveAttributes.Core.Extensions
         var independents = itemsAsList.Where (x => dependenciesAsList.All (y => y.Item2 != x)).ConvertToCollection();
         if (throwForUndefinedOrder && independents.Count > 1)
         {
+          // TODO: exception class
           var stringBuilder = new StringBuilder();
           stringBuilder.Append ("Undefiend order of items:\r\n");
           foreach (var item in independents)
-            stringBuilder.Append (item.ToString()).Append ("\r\n");
+            stringBuilder.Append (item).Append ("\r\n");
           throw new InvalidOperationException (stringBuilder.ToString());
         }
 
         var independent = independents.FirstOrDefault();
         if (independent == default(T))
+          // TODO: exception class
           throw new ArgumentException ("Circular dependencies defined");
 
         itemsAsList.Remove (independent);

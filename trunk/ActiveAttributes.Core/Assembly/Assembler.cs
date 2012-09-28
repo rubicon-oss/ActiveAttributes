@@ -92,8 +92,9 @@ namespace ActiveAttributes.Core.Assembly
         var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableType, mutableMethod);
 
         // matching type level aspects + method level aspects
+        var method = mutableMethod;
         var allMatchingAspectGenerators = typeLevelAspectGenerators
-            .Where (x => x.Descriptor.Matches (mutableMethod.UnderlyingSystemMethodInfo))
+            .Where (x => x.Descriptor.Matches (method.UnderlyingSystemMethodInfo))
             .Concat (methodLevelAspectGenerators)
             .ToList();
 

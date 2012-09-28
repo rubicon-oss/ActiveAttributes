@@ -16,7 +16,9 @@
 // 
 using System;
 using ActiveAttributes.Core.Contexts;
+// ReSharper disable RedundantUsingDirective
 using Remotion;
+// ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Core.Invocations
 {

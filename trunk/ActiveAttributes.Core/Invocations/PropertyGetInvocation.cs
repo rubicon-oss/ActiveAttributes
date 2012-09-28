@@ -33,6 +33,6 @@ namespace ActiveAttributes.Core.Invocations
       get { return Context; }
     }
 
-    public IPropertyInvocationContext Context { get; private set; }
+    public new IPropertyInvocationContext Context { get; private set; }
   }
 }

@@ -28,15 +28,6 @@ namespace ActiveAttributes.Core.Aspects
   [AttributeUsage (AttributeTargets.Property)]
   public abstract class PropertyInterceptionAspectAttribute : AspectAttribute
   {
-    protected PropertyInterceptionAspectAttribute ()
-    {
-    }
-
-    protected PropertyInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-
     public abstract void OnInterceptGet (IPropertyInvocation invocation);
     public abstract void OnInterceptSet (IPropertyInvocation invocation);
   }

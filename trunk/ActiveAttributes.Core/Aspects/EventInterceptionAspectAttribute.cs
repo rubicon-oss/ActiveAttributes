@@ -16,11 +16,8 @@
 // 
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
-using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
-using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Aspects
 {
@@ -33,15 +30,6 @@ namespace ActiveAttributes.Core.Aspects
   {
     private Delegate _eventHandlers;
     private bool _registered;
-
-    protected EventInterceptionAspectAttribute ()
-    {
-    }
-
-    protected EventInterceptionAspectAttribute (SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-    }
 
     protected virtual void OnInterceptAdd (IEventInvocation invocation)
     {

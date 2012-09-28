@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
@@ -33,6 +34,9 @@ namespace ActiveAttributes.Core.Extensions
     /// <returns></returns>
     public static Attribute CreateAttribute (this CustomAttributeData data)
     {
+      ArgumentUtility.CheckNotNull ("data", data);
+      Assertion.IsTrue (data.NamedArguments != null);
+
       Func<CustomAttributeTypedArgument, object> argumentConverter = ConvertTypedArgumentToObject;
 
       var arguments = data.ConstructorArguments.Select (argumentConverter);
@@ -45,10 +49,13 @@ namespace ActiveAttributes.Core.Extensions
 
         var memberInfo = namedArgument.MemberInfo;
 
-        if (memberInfo is PropertyInfo)
-          (((PropertyInfo) memberInfo)).SetValue (attribute, argument, null);
-        if (memberInfo is FieldInfo)
-          (((FieldInfo) memberInfo)).SetValue (attribute, argument);
+        var propertyInfo = memberInfo as PropertyInfo;
+        if (propertyInfo != null)
+          propertyInfo.SetValue (attribute, argument, null);
+
+        var fieldInfo = memberInfo as FieldInfo;
+        if (fieldInfo != null)
+          fieldInfo.SetValue (attribute, argument);
       }
 
       return attribute;
@@ -59,6 +66,9 @@ namespace ActiveAttributes.Core.Extensions
     /// </summary>
     public static bool IsInheriting (this CustomAttributeData customAttributeData)
     {
+      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
+      Assertion.IsTrue (customAttributeData.Constructor.DeclaringType != null);
+
       var attributeType = customAttributeData.Constructor.DeclaringType;
       var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute> ().Single ();
       return attributeUsageAttr.Inherited;

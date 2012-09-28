@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
@@ -37,7 +36,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <code>
   /// var ctx = new InvocationContext(methodInfo, this, arg0, arg1, ...);
   /// var invocation0 = new Invocation(ctx, _originalMethodDelegate);
-  /// var invocation1 = new OuterInvocation(ctx, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[1], method), invocation0);
+  /// var invocation1 = new OuterInvocation(ctx, Delegate.CreateDelegate (typeof (Action&lt;IInvocation&gt;), _aspects[1], method), invocation0);
   /// aspect[1].Intercept(invocation1);
   /// </code>
   /// </remarks>

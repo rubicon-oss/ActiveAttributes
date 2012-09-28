@@ -16,13 +16,12 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
-using Castle.DynamicProxy.Generators;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -78,12 +77,15 @@ namespace ActiveAttributes.Core.Assembly
 
     public TypeProvider (MethodInfo methodInfo)
     {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      Assertion.IsTrue (methodInfo.DeclaringType != null);
+
       var instanceType = new[] { methodInfo.DeclaringType.UnderlyingSystemType };
       var parameterTypes = methodInfo.GetParameters().Select (x => x.ParameterType).ToArray();
       var returnType = new[] { methodInfo.ReturnType };
 
-      var invocationOpenType = default (Type);
-      var invocationContextOpenType = default (Type);
+      Type invocationOpenType;
+      Type invocationContextOpenType;
 
       var genericTypes = methodInfo.IsAction()
         ? instanceType.Concat (parameterTypes).ToArray ()
@@ -139,11 +141,6 @@ namespace ActiveAttributes.Core.Assembly
 
       InvocationType = invocationOpenType.MakeGenericType (genericTypes);
       InvocationContextType = invocationContextOpenType.MakeGenericType (genericTypes);
-    }
-
-    private Type GetType (Type openType, Type[] genericTypes)
-    {
-      return openType.MakeGenericType (genericTypes);
     }
 
     public Type InvocationType { get; private set; }

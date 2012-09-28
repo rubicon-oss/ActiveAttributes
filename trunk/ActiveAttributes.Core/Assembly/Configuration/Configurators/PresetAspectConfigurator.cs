@@ -47,7 +47,8 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 
         var presets = aspectType.GetCustomAttributes (typeof (AspectOrderingAttribute), true).Cast<AspectOrderingAttribute>();
 
-        foreach (var orderRule in presets.SelectMany (x => GetOrderRules (aspectType, x, configuration)))
+        var type = aspectType;
+        foreach (var orderRule in presets.SelectMany (x => GetOrderRules (type, x, configuration)))
           configuration.Rules.Add (orderRule);
       }
     }
@@ -72,7 +73,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 
     private IEnumerable<IOrderRule> GetRoleOrderRules (Type aspectType, AspectOrderingAttribute preset, IAspectConfiguration configuration)
     {
-      string aspectRole = null;
+      string aspectRole;
       if (!configuration.Roles.TryGetValue (aspectType, out aspectRole))
         throw new Exception ("role not set on " + aspectType.Name); // TODO
 

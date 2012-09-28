@@ -15,11 +15,8 @@
 // under the License.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
@@ -31,29 +28,8 @@ namespace ActiveAttributes.Core.Aspects
   ///   Provides base functionality (i.e., Scope, Priority, Filter, Matching, etc.) for derived aspects.
   /// </summary>
   [AttributeUsage (AttributeTargets.All, AllowMultiple = true)]
-  public abstract class AspectAttribute : Attribute, ISerializable
+  public abstract class AspectAttribute : Attribute
   {
-    #region Standard + serialization constructors
-
-    protected AspectAttribute ()
-    {
-    }
-
-    protected AspectAttribute (SerializationInfo info, StreamingContext context)
-    {
-      Scope = (AspectScope) info.GetInt32 ("scope");
-      Priority = info.GetInt32 ("priority");
-    }
-
-    [SecurityPermission (SecurityAction.Demand, SerializationFormatter = true)]
-    public void GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      info.AddValue ("scope", (int) Scope);
-      info.AddValue ("priority", Priority);
-    }
-
-    #endregion
-
     /// <summary>
     ///   Scope of an aspect. It can be either <see cref = "AspectScope.Static" /> or <see cref = "AspectScope.Instance" />.
     /// </summary>
@@ -103,11 +79,11 @@ namespace ActiveAttributes.Core.Aspects
     ///   Type = Interface: target type must implement interface
     ///   Type = Class: (a) target type must be equal to the class, or (b) target type inherits from class and aspect inheritance is set to true
     /// </remarks>
-    public Type ApplyToType { get; set; }
-    public Type[] ApplyToTypes { get; set; }
+    //public Type ApplyToType { get; set; }
+    //public Type[] ApplyToTypes { get; set; }
 
-    public string ApplyToTypeNamePattern { get; set; }
-    public string[] ApplyToTypeNamePatterns { get; set; }
+    //public string ApplyToTypeNamePattern { get; set; }
+    //public string[] ApplyToTypeNamePatterns { get; set; }
 
     /// <summary>
     ///   Returns true if the <see cref="MethodInfo"/> is applicable for the aspect, otherwise false.
@@ -115,9 +91,9 @@ namespace ActiveAttributes.Core.Aspects
     /// <param name="methodInfo">The method on which a aspect should be applied.</param>
     public virtual bool Matches (MethodInfo methodInfo)
     {
-      var declaringType = methodInfo.DeclaringType;
-      var applyToTypes = GetApplyToTypes();
-      var applyToTypeNamePatterns = GetApplyToTypeNamePatterns();
+      //var declaringType = methodInfo.DeclaringType;
+      //var applyToTypes = GetApplyToTypes();
+      //var applyToTypeNamePatterns = GetApplyToTypeNamePatterns();
 
       return
           //applyToTypes.All (x => MatchesType (x, declaringType)) &&
@@ -132,44 +108,44 @@ namespace ActiveAttributes.Core.Aspects
 
     #region Match methods
 
-    private IEnumerable<Type> GetApplyToTypes ()
-    {
-      yield return ApplyToType;
+    //private IEnumerable<Type> GetApplyToTypes ()
+    //{
+    //  yield return ApplyToType;
 
-      if (ApplyToTypes != null)
-      {
-        foreach (var type in ApplyToTypes)
-          yield return type;
-      }
-    }
+    //  if (ApplyToTypes != null)
+    //  {
+    //    foreach (var type in ApplyToTypes)
+    //      yield return type;
+    //  }
+    //}
 
-    private IEnumerable<string> GetApplyToTypeNamePatterns ()
-    {
-      yield return ApplyToTypeNamePattern;
+    //private IEnumerable<string> GetApplyToTypeNamePatterns ()
+    //{
+    //  yield return ApplyToTypeNamePattern;
 
-      if (ApplyToTypeNamePatterns != null)
-      {
-        foreach (var pattern in ApplyToTypeNamePatterns)
-          yield return pattern;
-      }
-    }
+    //  if (ApplyToTypeNamePatterns != null)
+    //  {
+    //    foreach (var pattern in ApplyToTypeNamePatterns)
+    //      yield return pattern;
+    //  }
+    //}
 
     private bool MatchesType (Type expected, Type actual)
     {
       return expected == null || expected.IsAssignableFrom (actual);
     }
 
-    private bool MatchesNamespace (string expected, string actual)
-    {
-      return expected == null || Regex.IsMatch (actual, GetRegexPattern (expected));
-    }
+    //private bool MatchesNamespace (string expected, string actual)
+    //{
+    //  return expected == null || Regex.IsMatch (actual, GetRegexPattern (expected));
+    //}
 
     private bool MatchesMemberName (string methodName)
     {
       return MemberNameFilter == null || Regex.IsMatch (methodName, GetRegexPattern (MemberNameFilter));
     }
 
-    private bool MatchesMemberVisibility (MethodInfo methodInfo)
+    private bool MatchesMemberVisibility (MethodBase methodInfo)
     {
       return !(
                   (MemberVisibilityFilter.HasFlags (Visibility.Assembly) && !methodInfo.IsAssembly) ||
@@ -180,7 +156,7 @@ namespace ActiveAttributes.Core.Aspects
                   (MemberVisibilityFilter.HasFlags (Visibility.FamilyOrAssembly) && !methodInfo.IsFamilyOrAssembly));
     }
 
-    private bool MatchesMemberFlags (MethodInfo methodInfo)
+    private bool MatchesMemberFlags (MethodBase methodInfo)
     {
       return !(
                   (MemberFlagsFilter.HasFlags (MemberFlags.Final) && !methodInfo.IsFinal) ||
@@ -199,7 +175,7 @@ namespace ActiveAttributes.Core.Aspects
         return true;
 
       var customAttributes = methodInfo.GetCustomAttributes (true);
-      return MemberCustomAttributeFilter.All (marker => customAttributes.Any (x => marker.IsAssignableFrom (x.GetType())));
+      return MemberCustomAttributeFilter.All (marker => customAttributes.Any (marker.IsInstanceOfType));
     }
 
     private bool MatchesArguments (MethodInfo methodInfo)

@@ -18,8 +18,8 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -30,9 +30,11 @@ namespace ActiveAttributes.Core.Assembly
   {
     public MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod)
     {
-      var mutableType = (MutableType) mutableMethod.DeclaringType;
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      Assertion.IsTrue (mutableMethod.DeclaringType != null);
 
-      var copiedMethod = mutableType.AddMethod (
+      var declaringType = (MutableType) mutableMethod.DeclaringType;
+      var copiedMethod = declaringType.AddMethod (
           "_m_" + mutableMethod.Name + "_Copy",
           MethodAttributes.Private,
           mutableMethod.ReturnType,

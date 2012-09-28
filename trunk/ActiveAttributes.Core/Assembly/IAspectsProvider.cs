@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 { 

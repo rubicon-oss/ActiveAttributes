@@ -18,16 +18,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Logging;
 
 namespace ActiveAttributes.Core.Contexts
 {
-  public abstract class FuncInvocationContextBase<TInstance, TR> : IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
+  public abstract class FuncInvocationContextBase<TInstance, TR> : InvocationContextBase, IInvocationContext, IReadOnlyInvocationContext, IArgumentCollection, IReadOnlyArgumentCollection
   {
-    // ReSharper disable StaticFieldInGenericType
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocationContext));
-    // ReSharper restore StaticFieldInGenericType
-
     protected FuncInvocationContextBase (MethodInfo methodInfo, TInstance instance)
     {
       MethodInfo = methodInfo;
@@ -47,7 +42,9 @@ namespace ActiveAttributes.Core.Contexts
       set
       {
         ReturnValue = (TR) value;
-        s_log.DebugFormat ("Set 'ReturnValue' of method '{0}' to '{1}'.", MethodInfo, value);
+#if DEBUG
+        Log.DebugFormat ("Set 'ReturnValue' of method '{0}' to '{1}'.", MethodInfo, value);
+#endif
       }
     }
 
