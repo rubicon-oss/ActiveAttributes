@@ -18,8 +18,16 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Copies a method.
+  /// </summary>
   public interface IMethodCopier
   {
+    /// <summary>
+    /// Copies the original body of a method to another method.
+    /// </summary>
+    /// <param name="mutableMethod">The original method.</param>
+    /// <returns>A copy of the original method.</returns>
     MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod);
   }
 }

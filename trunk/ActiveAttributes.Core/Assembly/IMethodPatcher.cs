@@ -14,8 +14,14 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+using ActiveAttributes.Core.Aspects;
+
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Patches a method for invoking applied <see cref="AspectAttribute"/>s.
+  /// </summary>
   public interface IMethodPatcher
   {
     void AddMethodInterception ();

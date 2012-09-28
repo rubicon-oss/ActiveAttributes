@@ -24,10 +24,11 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.Core.Assembly
 { 
   /// <summary>
-  /// Provides <see cref="IAspectDescriptor"/>s for applied <see cref="AspectAttribute"/>s (including inherited).
+  /// Provides <see cref="IAspectDescriptor"/>s for <see cref="AspectAttribute"/>s applied to a target (including inherited).
   /// </summary>
   public interface IAspectsProvider
   {
+    // TODO doc
     IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type);
 
     IEnumerable<IAspectDescriptor> GetMethodLevelAspects (MethodInfo methodInfo);

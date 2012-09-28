@@ -24,12 +24,21 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Patches the constructors of a <see cref="MutableType"/> so that they initialize fields for
-  /// the <see cref="MethodInfo"/>, and the <see cref="Delegate"/> of the original method,
-  /// as well as instance, and static <see cref="AspectAttribute"/>s.
+  /// Patches all constructors of a <see cref="MutableType"/> for initialization of aspect related fields
+  /// (e.g., reflection information, method delegate, and instance/static aspect arrays).
   /// </summary>
   public interface IConstructorPatcher
   {
+    /// <summary>
+    /// Adds initialization for reflection information (i.e., <see cref="PropertyInfo"/>, <see cref="EventInfo"/>, or
+    /// <see cref="MethodInfo"/>) and original method delegate fields.
+    /// </summary>
+    /// <param name="mutableMethod">The mutable method.</param>
+    /// <param name="propertyInfoFieldInfo">The field containing the <see cref="PropertyInfo"/>.</param>
+    /// <param name="eventInfoFieldInfo">The field containing the <see cref="EventInfo"/>.</param>
+    /// <param name="methodInfoFieldInfo">The field containing the <see cref="MethodInfo"/>.</param>
+    /// <param name="delegateFieldInfo">The field containing the original method <see cref="Delegate"/>.</param>
+    /// <param name="copiedMethod">The copied method.</param>
     void AddReflectionAndDelegateInitialization (
         MutableMethodInfo mutableMethod,
         FieldInfo propertyInfoFieldInfo,
@@ -38,6 +47,14 @@ namespace ActiveAttributes.Core.Assembly
         FieldInfo delegateFieldInfo,
         MutableMethodInfo copiedMethod);
 
+    /// <summary>
+    /// Adds initialization for instance and static <see cref="AspectAttribute"/> arrays.
+    /// </summary>
+    /// <param name="mutableType">The mutable type.</param>
+    /// <param name="staticAspectsFieldInfo">The field containing the static <see cref="AspectAttribute"/> array.</param>
+    /// <param name="instanceAspectsFieldInfo">The field containing the instance <see cref="AspectAttribute"/> array.</param>
+    /// <param name="staticAspects">The static <see cref="AspectAttribute"/>s.</param>
+    /// <param name="instanceAspects">The instance <see cref="AspectAttribute"/>s.</param>
     void AddAspectInitialization (
         MutableType mutableType,
         IArrayAccessor staticAspectsFieldInfo,
