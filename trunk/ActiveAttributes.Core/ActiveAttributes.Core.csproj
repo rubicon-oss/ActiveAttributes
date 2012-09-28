@@ -103,7 +103,6 @@
     <Compile Include="Invocations\IEventInvocation.cs" />
     <Compile Include="Invocations\EventInvocation.template.cs" />
     <Compile Include="Contexts\EventInvocationContext.template.cs" />
-    <Compile Include="AssemblyAspectManager.cs" />
     <Compile Include="Assembly\AspectGenerator.cs" />
     <Compile Include="Assembly\AspectsProvider.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptor.cs" />
