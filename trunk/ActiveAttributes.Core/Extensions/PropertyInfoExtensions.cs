@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class PropertyInfoExtensions
+  internal static class PropertyInfoExtensions
   {
     /// <summary>
     /// Returns the directly overriden property, or null if no overriden property exists.

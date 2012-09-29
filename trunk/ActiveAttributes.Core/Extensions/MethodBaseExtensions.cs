@@ -21,7 +21,7 @@ using System.Runtime.CompilerServices;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class MethodBaseExtensions
+  internal static class MethodBaseExtensions
   {
     public static bool IsCompilerGenerated (this MethodBase methodInfo)
     {

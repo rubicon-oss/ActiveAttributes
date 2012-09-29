@@ -25,7 +25,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class CustomAttributeDataExtensions
+  internal static class CustomAttributeDataExtensions
   {
     /// <summary>
     /// Creates the actual <see cref="Attribute"/> described by a <see cref="CustomAttributeData"/> object.

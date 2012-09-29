@@ -25,7 +25,7 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class MethodInfoExtensions
+  internal static class MethodInfoExtensions
   {
     private static readonly IRelatedMethodFinder _relatedMethodFinder;
 

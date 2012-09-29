@@ -19,7 +19,7 @@ using System;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class EnumExtensions
+  internal static class EnumExtensions
   {
     public static bool HasFlags<T> (this Enum flags1, T flags2)
     {

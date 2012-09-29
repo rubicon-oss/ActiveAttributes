@@ -21,7 +21,7 @@ using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class MemberInfoExtensions
+  internal static class MemberInfoExtensions
   {
     public static bool EqualsBaseDefinition (this Type @this, Type other)
     {

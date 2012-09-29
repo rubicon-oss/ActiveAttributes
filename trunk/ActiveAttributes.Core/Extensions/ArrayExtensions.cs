@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class ArrayExtensions
+  internal static class ArrayExtensions
   {
     public static void StableSort<T> (this T[] values, Comparison<T> comparison)
     {

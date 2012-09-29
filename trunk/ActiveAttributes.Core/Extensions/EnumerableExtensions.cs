@@ -23,7 +23,7 @@ using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  public static class EnumerableExtensions
+  internal static class EnumerableExtensions
   {
     public static IEnumerable<T> TopologicalSort<T> (
         this IEnumerable<T> items, IEnumerable<Tuple<T, T>> dependencies, bool throwForUndefinedOrder = false) where T: class
