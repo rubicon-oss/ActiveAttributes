@@ -20,8 +20,8 @@ using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Configuration
 {
-  [ConfigurationCollection (typeof (TypeRuleElement))]
   [UsedImplicitly]
+  [ConfigurationCollection (typeof (TypeRuleElement))]
   public class TypeRuleCollection : ConfigurationElementCollection
   {
     protected override ConfigurationElement CreateNewElement ()

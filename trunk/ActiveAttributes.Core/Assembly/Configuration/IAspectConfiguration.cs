@@ -25,5 +25,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration
     IList<IOrderRule> Rules { get; }
 
     IDictionary<Type, string> Roles { get; }
+
+    bool IsReadOnly { get; set; }
   }
 }

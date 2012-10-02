@@ -25,14 +25,14 @@ namespace ActiveAttributes.Core.Configuration
     [ConfigurationProperty ("beforeType", IsRequired = true)]
     public string BeforeType
     {
-      get { return ((string) (base["beforeType"])); }
+      get { return (string) base["beforeType"]; }
       set { base["beforeType"] = value; }
     }
 
     [ConfigurationProperty ("afterType", IsRequired = true)]
     public string AfterType
     {
-      get { return ((string) (base["afterType"])); }
+      get { return (string) base["afterType"]; }
       set { base["afterType"] = value; }
     }
 

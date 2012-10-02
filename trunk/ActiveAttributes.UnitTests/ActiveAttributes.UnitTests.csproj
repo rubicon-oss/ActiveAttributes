@@ -76,7 +76,7 @@
     <Compile Include="Assembly\AspectGeneratorTest.cs" />
     <Compile Include="Assembly\AspectSchedulerTest.cs" />
     <Compile Include="Assembly\AspectsProviderTest.cs" />
-    <Compile Include="Assembly\Configurators\PresetAspectConfiguratorTest.cs" />
+    <Compile Include="Assembly\Configurators\CustomAttributesConfiguratorTest.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptorTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Assembly\Rules\RoleOrderRuleTest.cs" />
     <Compile Include="Assembly\Rules\TypeOrderRuleTest.cs" />
     <Compile Include="Assembly\TypeProviderTest.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Configuration\ApplyAspectAttributeTest.cs" />
     <Compile Include="Extensions\EnumerableExtensionsTest.cs" />
     <Compile Include="TypeExtensions.cs" />
@@ -114,7 +115,11 @@
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\..\..\..\Documents\Magic Briefcase\Resharper\Layout.xml">
+      <Link>Layout.xml</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

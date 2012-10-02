@@ -16,7 +16,7 @@ namespace ActiveAttributes.UseCases
     [STAThread]
     static void Main ()
     {
-      var configurator = new AppConfigAspectConfigurator();
+      var configurator = new ApplicationConfigurationConfigurator();
       configurator.Initialize (new AspectConfiguration());
 
       Application.EnableVisualStyles ();

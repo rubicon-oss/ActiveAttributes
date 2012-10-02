@@ -77,11 +77,10 @@
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Assembly\Configuration\ApplyAspectAttribute.cs" />
     <Compile Include="Assembly\Configuration\AspectConfiguration.cs" />
-    <Compile Include="Configuration\AspectsConfiguration.cs" />
-    <Compile Include="Assembly\Configuration\Configurators\AppConfigAspectConfigurator.cs" />
+    <Compile Include="Configuration\AspectsConfigurationSection.cs" />
+    <Compile Include="Assembly\Configuration\Configurators\ApplicationConfigurationConfigurator.cs" />
     <Compile Include="Assembly\Configuration\AspectOrderingAttribute.cs" />
-    <Compile Include="Assembly\Configuration\Configurators\AssemblyAspectConfigurator.cs" />
-    <Compile Include="Assembly\Configuration\Configurators\PresetAspectConfigurator.cs" />
+    <Compile Include="Assembly\Configuration\Configurators\CustomAttributesConfigurator.cs" />
     <Compile Include="Assembly\Configuration\IAspectConfiguration.cs" />
     <Compile Include="Assembly\Configuration\IAspectConfigurator.cs" />
     <Compile Include="Assembly\Configuration\IOrderRule.cs" />

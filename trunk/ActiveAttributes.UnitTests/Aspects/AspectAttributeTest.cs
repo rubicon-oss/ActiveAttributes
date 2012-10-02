@@ -14,17 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+#region
+
 using System;
-using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 using Remotion.Utilities;
+
+#endregion
 
 namespace ActiveAttributes.UnitTests.Aspects
 {
@@ -92,132 +91,13 @@ namespace ActiveAttributes.UnitTests.Aspects
     {
     }
 
-    public class Matches_MemberNameFilter
-    {
-      [Test]
-      public void Matches ()
-      {
-        var method = MethodInfo.GetCurrentMethod ();
-        var aspect = new AspectAttribute { MemberNameFilter = "Matches" };
-
-        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
-      }
-      [Test]
-      public void MatchesNot ()
-      {
-        var method = MethodInfo.GetCurrentMethod ();
-        var aspect = new AspectAttribute { MemberNameFilter = "AnyMethod" };
-
-        Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
-      }
-      [Test]
-      public void MatchesWildcard ()
-      {
-        var method = MethodInfo.GetCurrentMethod ();
-        var aspect = new AspectAttribute { MemberNameFilter = "Matches*card" };
-
-        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
-      }
-    }
-
-    public class Matches_MemberVisibilityFilter
-    {
-      private void PrivateMethod () { }
-      internal void InternalMethod () { }
-      protected void ProtectedMethod () { }
-
-      [Test]
-      public void MatchesPublic ()
-      {
-        var method = MethodInfo.GetCurrentMethod ();
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Public };
-
-        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
-      }
-
-      [Test]
-      public void DoesntMatchPublic ()
-      {
-        var method = MethodInfo.GetCurrentMethod ();
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Public };
-
-        Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
-      }
-
-      [Test]
-      public void MatchesPrivate ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Private };
-
-        Assert.That (aspect.Matches (method), Is.True);
-      }
-
-      [Test]
-      public void DoesntMatchPrivate ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Private };
-
-        Assert.That (aspect.Matches (method), Is.False);
-      }
-
-      [Test]
-      public void REVIEW ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Public };
-
-        Assert.That (aspect.Matches (method), Is.False);
-      }
-
-      [Test]
-      public void MatchesInternal ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => InternalMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Assembly };
-
-        Assert.That (aspect.Matches (method), Is.True);
-      }
-
-      [Test]
-      public void DoesntMatchInternal ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => InternalMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Assembly };
-
-        Assert.That (aspect.Matches (method), Is.False);
-      }
-
-      [Test]
-      public void MatchesProtected ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => ProtectedMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Family };
-
-        Assert.That (aspect.Matches (method), Is.True);
-      }
-
-      [Test]
-      public void DoesntMatchProtected ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => ProtectedMethod ());
-        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Family };
-
-        Assert.That (aspect.Matches (method), Is.False);
-      }
-    }
-
     public class Matches_CustomAttributeFilter
     {
-      private class Domain1Attribute : Attribute { }
-      private class Domain2Attribute : Attribute { }
-
       [Test]
       [Domain1]
       public void Matches ()
       {
-        var method = MethodInfo.GetCurrentMethod ();
+        var method = MethodInfo.GetCurrentMethod();
         var aspect = new AspectAttribute { MemberCustomAttributeFilter = new[] { typeof (Domain1Attribute) } };
 
         Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
@@ -227,17 +107,18 @@ namespace ActiveAttributes.UnitTests.Aspects
       [Domain1]
       public void DoesntMatch ()
       {
-        var method = MethodInfo.GetCurrentMethod ();
+        var method = MethodInfo.GetCurrentMethod();
         var aspect = new AspectAttribute { MemberCustomAttributeFilter = new[] { typeof (Domain2Attribute) } };
 
         Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
       }
 
       [Test]
-      [Domain1, Domain2]
+      [Domain1]
+      [Domain2]
       public void MatchesMultiple ()
       {
-        var method = MethodInfo.GetCurrentMethod ();
+        var method = MethodInfo.GetCurrentMethod();
         var aspect = new AspectAttribute { MemberCustomAttributeFilter = new[] { typeof (Domain1Attribute), typeof (Domain2Attribute) } };
 
         Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
@@ -247,71 +128,26 @@ namespace ActiveAttributes.UnitTests.Aspects
       [Domain1]
       public void DoesntMatchMultiple ()
       {
-        var method = MethodInfo.GetCurrentMethod ();
+        var method = MethodInfo.GetCurrentMethod();
         var aspect = new AspectAttribute { MemberCustomAttributeFilter = new[] { typeof (Domain1Attribute), typeof (Domain2Attribute) } };
 
         Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
       }
-    }
 
-    public class Matches_ReturnTypeFilter
-    {
-      private string StringMethod () { return ""; }
-
-      [Test]
-      public void Matches ()
+      private class Domain1Attribute : Attribute
       {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
-        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (string) };
-
-        Assert.That (aspect.Matches (method), Is.True);
       }
 
-      [Test]
-      public void DoesntMatch ()
+      private class Domain2Attribute : Attribute
       {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
-        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (int) };
-
-        Assert.That (aspect.Matches (method), Is.False);
-      }
-
-      [Test]
-      public void MatchesBaseType ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
-        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (object) };
-
-        Assert.That (aspect.Matches (method), Is.True);
-      }
-    }
-
-    public class Matches_MemberAttributeFilter
-    {
-      private static void StaticMethod () { }
-
-      [Test]
-      public void MatchesOverridable ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => ToString ());
-        var aspect = new AspectAttribute { MemberFlagsFilter = MemberFlags.Overridable };
-
-        Assert.That (aspect.Matches (method), Is.True);
-      }
-
-      [Test]
-      public void DoesntMatchOverridable ()
-      {
-        var method = MemberInfoFromExpressionUtility.GetMethod (() => StaticMethod ());
-        var aspect = new AspectAttribute { MemberFlagsFilter = MemberFlags.Overridable };
-
-        Assert.That (aspect.Matches (method), Is.False);
       }
     }
 
     public class Matches_MemberArgumentsFilter
     {
-      private void MethodWithArgs1 (int arg0, string arg1) { }
+      private void MethodWithArgs1 (int arg0, string arg1)
+      {
+      }
 
       [Test]
       public void Matches ()
@@ -336,6 +172,192 @@ namespace ActiveAttributes.UnitTests.Aspects
       {
         var method = MemberInfoFromExpressionUtility.GetMethod (() => MethodWithArgs1 (1, ""));
         var aspect = new AspectAttribute { MemberArgumentsFilter = new[] { typeof (object), typeof (string) } };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+    }
+
+    public class Matches_MemberAttributeFilter
+    {
+      private static void StaticMethod ()
+      {
+      }
+
+      [Test]
+      public void MatchesOverridable ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => ToString());
+        var aspect = new AspectAttribute { MemberFlagsFilter = MemberFlags.Overridable };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatchOverridable ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => StaticMethod());
+        var aspect = new AspectAttribute { MemberFlagsFilter = MemberFlags.Overridable };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+    }
+
+    public class Matches_MemberNameFilter
+    {
+      [Test]
+      public void Matches ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var aspect = new AspectAttribute { MemberNameFilter = "Matches" };
+
+        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
+      }
+
+      [Test]
+      public void MatchesNot ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var aspect = new AspectAttribute { MemberNameFilter = "AnyMethod" };
+
+        Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
+      }
+
+      [Test]
+      public void MatchesWildcard ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var aspect = new AspectAttribute { MemberNameFilter = "Matches*card" };
+
+        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
+      }
+    }
+
+    public class Matches_MemberVisibilityFilter
+    {
+      private void PrivateMethod ()
+      {
+      }
+
+      internal void InternalMethod ()
+      {
+      }
+
+      protected void ProtectedMethod ()
+      {
+      }
+
+      [Test]
+      public void MatchesPublic ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Public };
+
+        Assert.That (aspect.Matches ((MethodInfo) method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatchPublic ()
+      {
+        var method = MethodInfo.GetCurrentMethod();
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Public };
+
+        Assert.That (aspect.Matches ((MethodInfo) method), Is.False);
+      }
+
+      [Test]
+      public void MatchesPrivate ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Private };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatchPrivate ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Private };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+
+      [Test]
+      public void REVIEW ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => PrivateMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Public };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+
+      [Test]
+      public void MatchesInternal ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => InternalMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Assembly };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatchInternal ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => InternalMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Assembly };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+
+      [Test]
+      public void MatchesProtected ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => ProtectedMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.Family };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatchProtected ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => ProtectedMethod());
+        var aspect = new AspectAttribute { MemberVisibilityFilter = Visibility.All & ~Visibility.Family };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+    }
+
+    public class Matches_ReturnTypeFilter
+    {
+      private string StringMethod ()
+      {
+        return "";
+      }
+
+      [Test]
+      public void Matches ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
+        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (string) };
+
+        Assert.That (aspect.Matches (method), Is.True);
+      }
+
+      [Test]
+      public void DoesntMatch ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
+        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (int) };
+
+        Assert.That (aspect.Matches (method), Is.False);
+      }
+
+      [Test]
+      public void MatchesBaseType ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod (() => StringMethod());
+        var aspect = new AspectAttribute { MemberReturnTypeFilter = typeof (object) };
 
         Assert.That (aspect.Matches (method), Is.True);
       }

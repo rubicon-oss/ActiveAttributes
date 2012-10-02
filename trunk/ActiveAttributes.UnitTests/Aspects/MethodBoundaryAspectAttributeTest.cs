@@ -14,12 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
+#region
+
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
+
+#endregion
 
 namespace ActiveAttributes.UnitTests.Aspects
 {
@@ -87,7 +92,9 @@ namespace ActiveAttributes.UnitTests.Aspects
       {
         _obj.OnIntercept (_throwingInvocation);
       }
-      catch {}
+      catch
+      {
+      }
 
       Assert.That (_obj.OnExitCalled, Is.True);
       Assert.That (_obj.Exception, Is.TypeOf<Exception>());
@@ -118,7 +125,9 @@ namespace ActiveAttributes.UnitTests.Aspects
       {
         _obj.OnIntercept (_throwingInvocation);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       Assert.That (_obj.OnSuccessCalled, Is.False);
     }
@@ -136,7 +145,7 @@ namespace ActiveAttributes.UnitTests.Aspects
 
 
     [Test]
-    [ExpectedException(typeof(AspectInvocationException))]
+    [ExpectedException (typeof (AspectInvocationException))]
     public void OnSuccess_WrapException ()
     {
       var instance = new OnSuccessThrowingMethodBoundaryAspectAttribute();
@@ -159,7 +168,9 @@ namespace ActiveAttributes.UnitTests.Aspects
       {
         _obj.OnIntercept (_throwingInvocation);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       Assert.That (_obj.OnExceptionCalled, Is.True);
     }
@@ -189,18 +200,40 @@ namespace ActiveAttributes.UnitTests.Aspects
       }
     }
 
+    private class OnEntryThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
+    {
+      protected override void OnEntry (IReadOnlyInvocation invocationInfo)
+      {
+        throw new Exception ("OnEntry");
+      }
+    }
+
+    private class OnExceptionThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
+    {
+      protected override void OnException (IReadOnlyInvocation invocationInfo, Exception exception)
+      {
+        throw new Exception ("OnException");
+      }
+    }
+
+    private class OnExitThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
+    {
+      protected override void OnExit (IReadOnlyInvocation invocationInfo)
+      {
+        throw new Exception ("OnExit");
+      }
+    }
+
+    private class OnSuccessThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
+    {
+      protected override void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue)
+      {
+        throw new Exception ("OnSuccess");
+      }
+    }
+
     private class TestableMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
     {
-      public bool OnEntryCalled { get; private set; }
-
-      public bool OnExitCalled { get; private set; }
-
-      public bool OnExceptionCalled { get; private set; }
-      public Exception Exception { get; private set; }
-
-      public bool OnSuccessCalled { get; private set; }
-      public object ReturnValue { get; private set; }
-
       protected override void OnEntry (IReadOnlyInvocation invocationInfo)
       {
         OnEntryCalled = true;
@@ -222,38 +255,16 @@ namespace ActiveAttributes.UnitTests.Aspects
         OnSuccessCalled = true;
         ReturnValue = returnValue;
       }
-    }
 
-    private class OnEntryThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnEntry (IReadOnlyInvocation invocationInfo)
-      {
-        throw new Exception ("OnEntry");
-      }
-    }
+      public bool OnEntryCalled { get; private set; }
 
-    private class OnExitThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnExit (IReadOnlyInvocation invocationInfo)
-      {
-        throw new Exception ("OnExit");
-      }
-    }
+      public bool OnExitCalled { get; private set; }
 
-    private class OnExceptionThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnException (IReadOnlyInvocation invocationInfo, Exception exception)
-      {
-        throw new Exception ("OnException");
-      }
-    }
+      public bool OnExceptionCalled { get; private set; }
+      public Exception Exception { get; private set; }
 
-    private class OnSuccessThrowingMethodBoundaryAspectAttribute : MethodBoundaryAspectAttribute
-    {
-      protected override void OnSuccess (IReadOnlyInvocation invocationInfo, object returnValue)
-      {
-        throw new Exception ("OnSuccess");
-      }
+      public bool OnSuccessCalled { get; private set; }
+      public object ReturnValue { get; private set; }
     }
   }
 }

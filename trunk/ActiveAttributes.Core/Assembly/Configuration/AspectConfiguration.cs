@@ -29,6 +29,8 @@ namespace ActiveAttributes.Core.Assembly.Configuration
       Singleton = new AspectConfiguration();
     }
 
+    private bool _isReadOnly;
+
     private readonly IList<IOrderRule> _rules; 
     private readonly IDictionary<Type, string> _roles;
 
@@ -43,11 +45,16 @@ namespace ActiveAttributes.Core.Assembly.Configuration
       get { return !IsReadOnly ? _rules : new ReadOnlyCollection<IOrderRule> (_rules); }
     }
 
-    public IDictionary<Type, string> Roles {
+    public IDictionary<Type, string> Roles
+    {
       get { return !IsReadOnly ? _roles : new ReadOnlyDictionary<Type, string> (_roles); }
     }
 
-    public bool IsReadOnly { get; set; }
+    public bool IsReadOnly
+    {
+      get { return _isReadOnly; }
+      set { _isReadOnly = _isReadOnly || value; }
+    }
 
     public static IAspectConfiguration Singleton { get; private set; }
   }

@@ -33,11 +33,6 @@ namespace ActiveAttributes.Core.Aspects
 
     protected virtual void OnInterceptAdd (IEventInvocation invocation)
     {
-      if (!_registered)
-      {
-        //invocation.Context.Delegate.
-        _registered = true;
-      }
       _eventHandlers = Delegate.Combine (_eventHandlers, (Delegate) invocation.Context.Arguments[0]);
     }
 
@@ -49,6 +44,7 @@ namespace ActiveAttributes.Core.Aspects
     protected virtual void OnInterceptInvoke (IEventInvocation invocation)
     {
     }
+
   }
 }
   
