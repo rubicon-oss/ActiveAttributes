@@ -103,6 +103,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestBase.cs" />
+    <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
+    <Compile Include="Utilities\StronglyConnectedComponentTest.cs" />
+    <Compile Include="Utilities\TopologicalSorterTest.cs" />
+    <Compile Include="Utilities\UndefinedOrderException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">
@@ -114,11 +118,6 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\..\..\Documents\Magic Briefcase\Resharper\Layout.xml">
-      <Link>Layout.xml</Link>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

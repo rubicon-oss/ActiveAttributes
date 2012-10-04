@@ -276,33 +276,36 @@ namespace ActiveAttributes.UnitTests.Assembly
       var patcher = new ConstructorPatcher();
       AssembleType (
           declaringType,
-          mutableType =>
+          new Action<MutableType>[]
           {
-            var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
-            var mutableCopy = mutableType.GetOrAddMutableMethod (copyInfo);
-            var propertyInfoField = declaringType.GetFields().Single (x => x.Name == "PropertyInfo");
-            var eventInfoField = declaringType.GetFields().Single (x => x.Name == "EventInfo");
-            var methodInfoField = declaringType.GetFields().Single (x => x.Name == "MethodInfo");
-            var delegateField = declaringType.GetFields().Single (x => x.Name == "Delegate");
+              mutableType =>
+              {
+                var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
+                var mutableCopy = mutableType.GetOrAddMutableMethod (copyInfo);
+                var propertyInfoField = declaringType.GetFields().Single (x => x.Name == "PropertyInfo");
+                var eventInfoField = declaringType.GetFields().Single (x => x.Name == "EventInfo");
+                var methodInfoField = declaringType.GetFields().Single (x => x.Name == "MethodInfo");
+                var delegateField = declaringType.GetFields().Single (x => x.Name == "Delegate");
 
-            patcher.AddReflectionAndDelegateInitialization (
-                mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, mutableCopy);
+                patcher.AddReflectionAndDelegateInitialization (
+                    mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, mutableCopy);
 
-            var instanceField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-                .Single (x => x.Name == "InstanceAspects");
-            var staticField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-                .Single (x => x.Name == "StaticAspects");
-            var instanceAccessor = MockRepository.GenerateMock<IArrayAccessor>();
-            var staticAccessor = MockRepository.GenerateMock<IArrayAccessor>();
-            instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
-            staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
+                var instanceField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+                    .Single (x => x.Name == "InstanceAspects");
+                var staticField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+                    .Single (x => x.Name == "StaticAspects");
+                var instanceAccessor = MockRepository.GenerateMock<IArrayAccessor>();
+                var staticAccessor = MockRepository.GenerateMock<IArrayAccessor>();
+                instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
+                staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
 
-            var instanceAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Instance);
-            var staticAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Static);
+                var instanceAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Instance);
+                var staticAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Static);
 
-            patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects, instanceAspects);
+                patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects, instanceAspects);
 
-            test (mutableType.AllMutableConstructors);
+                test (mutableType.AllMutableConstructors);
+              }
           });
     }
   }

@@ -150,6 +150,13 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Aspects\PropertyInterceptionAspectAttribute.cs" />
+    <Compile Include="Utilities\CircularDependencyException.cs" />
+    <Compile Include="Utilities\StronglyConnectedComponent.cs" />
+    <Compile Include="Utilities\StronglyConnectedComponentFinder.cs" />
+    <Compile Include="Utilities\StronglyConnectedComponentList.cs" />
+    <Compile Include="Utilities\TopologicalSorter.cs" />
+    <Compile Include="Utilities\UndefinedOrderException.cs" />
+    <Compile Include="Utilities\Vertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ActiveAttributes.licenseheader">
@@ -158,6 +165,7 @@
     <None Include="Configuration\Schema.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Compile Include="Extensions\EnumerableToString.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

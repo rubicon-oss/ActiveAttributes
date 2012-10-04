@@ -28,10 +28,10 @@ namespace ActiveAttributes.Core.Extensions
   internal static class CustomAttributeDataExtensions
   {
     /// <summary>
-    /// Creates the actual <see cref="Attribute"/> described by a <see cref="CustomAttributeData"/> object.
+    /// Creates the actual <see cref="Attribute"/> described by an instance of <see cref="CustomAttributeData"/>.
     /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
+    /// <param name="data">The data describing the attribute.</param>
+    /// <returns>The attribute.</returns>
     public static Attribute CreateAttribute (this CustomAttributeData data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
