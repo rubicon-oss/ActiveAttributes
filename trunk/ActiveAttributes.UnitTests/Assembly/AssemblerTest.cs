@@ -30,7 +30,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IFieldIntroducer _introducer;
     private IMethodPatcher _methodPatcher;
     private IAspectScheduler _scheduler;
-    private IAspectsProvider _provider;
+    private IAspectProvider _provider;
     private IMethodCopier _copier;
     private IConstructorPatcher _constructorPatcher;
     private IFactory _factory;
@@ -46,7 +46,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _introducer = MockRepository.GenerateMock<IFieldIntroducer>();
       _methodPatcher = MockRepository.GenerateMock<IMethodPatcher>();
       _scheduler = MockRepository.GenerateMock<IAspectScheduler>();
-      _provider = MockRepository.GenerateMock<IAspectsProvider>();
+      _provider = MockRepository.GenerateMock<IAspectProvider>();
       _copier = MockRepository.GenerateMock<IMethodCopier>();
       _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _factory = MockRepository.GenerateMock<IFactory>();

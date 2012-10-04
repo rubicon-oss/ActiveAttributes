@@ -29,12 +29,12 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class AspectsProviderTest
   {
-    private AspectsProvider _provider;
+    private AspectProvider _provider;
 
     [SetUp]
     public void SetUp ()
     {
-      _provider = new AspectsProvider();
+      _provider = new AspectProvider();
     }
 
     public class AspectAttribute : Core.Aspects.AspectAttribute { }

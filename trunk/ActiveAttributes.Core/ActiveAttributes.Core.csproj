@@ -66,7 +66,7 @@
     <Compile Include="Assembly\Factory.cs" />
     <Compile Include="Assembly\IAspectGenerator.cs" />
     <Compile Include="Assembly\IAspectScheduler.cs" />
-    <Compile Include="Assembly\IAspectsProvider.cs" />
+    <Compile Include="Assembly\IAspectProvider.cs" />
     <Compile Include="Assembly\IConstructorPatcher.cs" />
     <Compile Include="Assembly\IFactory.cs" />
     <Compile Include="Assembly\IFieldIntroducer.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Invocations\EventInvocation.template.cs" />
     <Compile Include="Contexts\EventInvocationContext.template.cs" />
     <Compile Include="Assembly\AspectGenerator.cs" />
-    <Compile Include="Assembly\AspectsProvider.cs" />
+    <Compile Include="Assembly\AspectProvider.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptor.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />

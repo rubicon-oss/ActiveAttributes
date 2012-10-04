@@ -25,7 +25,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Provides <see cref="IAspectDescriptor"/>s for <see cref="AspectAttribute"/>s applied to a target (including inherited).
   /// </summary>
-  public interface IAspectsProvider
+  public interface IAspectProvider
   {
     // TODO doc
     IEnumerable<IAspectDescriptor> GetTypeLevelAspects (Type type);

@@ -27,11 +27,11 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class AspectsProvider : IAspectsProvider
+  public class AspectProvider : IAspectProvider
   {
     private readonly IRelatedMethodFinder _relatedMethodFinder;
 
-    public AspectsProvider ()
+    public AspectProvider ()
     {
       _relatedMethodFinder = new RelatedMethodFinder();
     }
