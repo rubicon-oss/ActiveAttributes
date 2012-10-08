@@ -45,7 +45,7 @@ namespace ActiveAttributes.IntegrationTests
       _instance.Method1 ("");
     }
 
-    [Test]
+    [Test, Ignore]
     public void ArgumentNullThrows ()
     {
       Assert.That (() => _instance.Method1 (null), Throws.TypeOf<ArgumentNullException> ());

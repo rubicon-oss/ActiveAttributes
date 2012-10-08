@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Providers;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.MutableReflection;
@@ -51,7 +52,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _factory = MockRepository.GenerateMock<IFactory>();
 
-      _assembler = new Assembler (_provider, _introducer, _constructorPatcher, _copier, _factory, _scheduler);
+      _assembler = new Assembler (null, _introducer, _constructorPatcher, _copier, _factory, _scheduler);
 
       _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
 

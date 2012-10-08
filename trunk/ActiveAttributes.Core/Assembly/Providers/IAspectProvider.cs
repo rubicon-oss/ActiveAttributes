@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 
-namespace ActiveAttributes.Core.Assembly
-{ 
+namespace ActiveAttributes.Core.Assembly.Providers
+{
   /// <summary>
   /// Provides <see cref="IAspectDescriptor"/>s for <see cref="AspectAttribute"/>s applied to a target (including inherited).
   /// </summary>

@@ -13,12 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-// 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Assembly.Providers;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
@@ -38,25 +39,32 @@ namespace ActiveAttributes.Core.Assembly
     static Assembler ()
     {
       var methodCopier = new MethodCopier();
-      var aspectProvider = new AspectProvider();
+      var aspectProviders = new IAspectProvider2[]
+                            {
+                                new TypeLevelAspectProvider(),
+                                new MethodLevelAspectProvider(),
+                                new InterfaceMethodAspectProvider(),
+                                new MethodParameterAspectProvider(),
+                                new PropertyAspectProvider()
+                            };
       var constructorPatcher = new ConstructorPatcher();
       var fieldIntroducer = new FieldIntroducer();
       var factory = new Factory();
       var scheduler = new AspectScheduler (AspectConfiguration.Singleton);
-      Singleton = new Assembler (aspectProvider, fieldIntroducer, constructorPatcher, methodCopier, factory, scheduler);
+      Singleton = new Assembler (aspectProviders, fieldIntroducer, constructorPatcher, methodCopier, factory, scheduler);
     }
 
     public static Assembler Singleton { get; private set; }
 
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IConstructorPatcher _constructorPatcher;
-    private readonly IAspectProvider _aspectProvider;
+    private readonly IAspectProvider2[] _aspectProviders;
     private readonly IMethodCopier _methodCopier;
     private readonly IFactory _factory;
     private readonly IAspectScheduler _scheduler;
 
     internal Assembler (
-        IAspectProvider aspectProvider,
+        IAspectProvider2[] aspectProviders,
         IFieldIntroducer fieldIntroducer,
         IConstructorPatcher constructorPatcher,
         IMethodCopier methodCopier,
@@ -65,7 +73,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       _fieldIntroducer = fieldIntroducer;
       _constructorPatcher = constructorPatcher;
-      _aspectProvider = aspectProvider;
+      _aspectProviders = aspectProviders;
       _methodCopier = methodCopier;
       _factory = factory;
       _scheduler = scheduler;
@@ -139,7 +147,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private IEnumerable<IAspectGenerator> HandleTypeLevelGenerators (MutableType mutableType)
     {
-      var aspectDescriptors = _aspectProvider.GetTypeLevelAspects (mutableType.UnderlyingSystemType).ToList();
+      var aspectDescriptors = _aspectProviders.OfType<ITypeLevelAspectProvider>().SelectMany (x => x.GetAspects (mutableType.UnderlyingSystemType));
       var fieldData = _fieldIntroducer.IntroduceTypeAspectFields (mutableType);
 
       return HandleAspects (mutableType, aspectDescriptors, fieldData);
@@ -147,7 +155,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private IEnumerable<IAspectGenerator> HandleMethodLevelAspects (MutableType mutableType, MutableMethodInfo mutableMethod)
     {
-      var aspectDescriptors = GetMethodLevelAspectDescriptors (mutableMethod);
+      var aspectDescriptors = _aspectProviders.OfType<IMethodLevelAspectProvider>().SelectMany (x => x.GetAspects (mutableMethod.UnderlyingSystemMethodInfo));
       var fieldData = _fieldIntroducer.IntroduceMethodAspectFields (mutableType, mutableMethod);
 
       return HandleAspects (mutableType, aspectDescriptors, fieldData);
@@ -172,20 +180,6 @@ namespace ActiveAttributes.Core.Assembly
           instanceAspectGenerators);
 
       return instanceAspectGenerators.Concat (staticAspectGenerators);
-    }
-
-    private IEnumerable<IAspectDescriptor> GetMethodLevelAspectDescriptors (MutableMethodInfo mutableMethod)
-    {
-      var methodLevelAspects = _aspectProvider.GetMethodLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
-      var interfaceLevelAspects = _aspectProvider.GetInterfaceLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
-      var propertyLevelAspects = _aspectProvider.GetPropertyLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
-      var parameterLevelAspects = _aspectProvider.GetParameterLevelAspects (mutableMethod.UnderlyingSystemMethodInfo);
-      var relatedMethodAspects = methodLevelAspects
-          .Concat (interfaceLevelAspects)
-          .Concat (propertyLevelAspects)
-          .Concat (parameterLevelAspects)
-          .ConvertToCollection();
-      return relatedMethodAspects;
     }
 
     private IEnumerable<IAspectGenerator> GetGenerators (

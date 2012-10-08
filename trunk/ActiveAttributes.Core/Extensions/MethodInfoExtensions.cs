@@ -63,7 +63,7 @@ namespace ActiveAttributes.Core.Extensions
 
     private static bool IsRootEqualTo (this MethodInfo method1, MethodInfo method2)
     {
-      return method1.GetBaseDefinition() == method2.GetBaseDefinition();
+      return method1 != null && method2 != null && method1.GetBaseDefinition() == method2.GetBaseDefinition();
     }
 
     public static EventInfo GetRelatedEventInfo (this MethodInfo methodInfo)
