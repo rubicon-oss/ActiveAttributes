@@ -61,7 +61,6 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
     <Compile Include="Assembly\Providers\AspectProvider.cs" />
-    <Compile Include="Assembly\Providers\AspectProvider2.cs" />
     <Compile Include="Assembly\Providers\IAspectProvider.cs" />
     <Compile Include="Assembly\AspectScheduler.cs" />
     <Compile Include="Assembly\Configuration\AspectRoleAttribute.cs" />
