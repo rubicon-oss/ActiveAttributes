@@ -78,7 +78,7 @@ namespace ActiveAttributes.UnitTests
           File.Delete (Path.ChangeExtension (assemblyPath, "pdb"));
         }
       }
-      catch
+      catch (Exception e)
       {
         if (TestContext.CurrentContext.Result.Status != TestStatus.Failed)
           throw;

@@ -31,7 +31,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IFieldIntroducer _introducer;
     private IMethodPatcher _methodPatcher;
     private IAspectScheduler _scheduler;
-    private IAspectProvider _provider;
     private IMethodCopier _copier;
     private IConstructorPatcher _constructorPatcher;
     private IFactory _factory;
@@ -47,7 +46,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       _introducer = MockRepository.GenerateMock<IFieldIntroducer>();
       _methodPatcher = MockRepository.GenerateMock<IMethodPatcher>();
       _scheduler = MockRepository.GenerateMock<IAspectScheduler>();
-      _provider = MockRepository.GenerateMock<IAspectProvider>();
       _copier = MockRepository.GenerateMock<IMethodCopier>();
       _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _factory = MockRepository.GenerateMock<IFactory>();
@@ -56,9 +54,6 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
 
-      var fakeAspects = new List<IAspectDescriptor> ();
-      _provider.Expect (x => x.GetTypeLevelAspects (_mutableType1.UnderlyingSystemType))
-          .Return (fakeAspects);
     }
 
     [Test]
@@ -66,7 +61,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       _assembler.ModifyType (_mutableType1);
 
-      _provider.VerifyAllExpectations ();
     }
 
 
