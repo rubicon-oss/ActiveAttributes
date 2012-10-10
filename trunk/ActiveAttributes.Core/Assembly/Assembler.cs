@@ -39,7 +39,7 @@ namespace ActiveAttributes.Core.Assembly
     static Assembler ()
     {
       var methodCopier = new MethodCopier();
-      var aspectProviders = new IAspectProvider2[]
+      var aspectProviders = new IAspectProvider[]
                             {
                                 new TypeLevelAspectProvider(),
                                 new MethodLevelAspectProvider(),
@@ -58,13 +58,13 @@ namespace ActiveAttributes.Core.Assembly
 
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IConstructorPatcher _constructorPatcher;
-    private readonly IAspectProvider2[] _aspectProviders;
+    private readonly IAspectProvider[] _aspectProviders;
     private readonly IMethodCopier _methodCopier;
     private readonly IFactory _factory;
     private readonly IAspectScheduler _scheduler;
 
     internal Assembler (
-        IAspectProvider2[] aspectProviders,
+        IAspectProvider[] aspectProviders,
         IFieldIntroducer fieldIntroducer,
         IConstructorPatcher constructorPatcher,
         IMethodCopier methodCopier,

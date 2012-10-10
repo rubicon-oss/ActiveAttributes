@@ -7,7 +7,10 @@ using System.Reflection;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  public interface IAspectProvider2
+  /// <summary>
+  /// Provides aspects applied to a given target.
+  /// </summary>
+  public interface IAspectProvider
   {
     IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member);
   }

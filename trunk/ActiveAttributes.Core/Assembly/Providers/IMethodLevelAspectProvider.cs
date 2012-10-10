@@ -17,5 +17,5 @@ using System;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  public interface IMethodLevelAspectProvider : IAspectProvider2 { }
+  public interface IMethodLevelAspectProvider : IAspectProvider { }
 }

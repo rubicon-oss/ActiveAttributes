@@ -73,7 +73,7 @@
     <Compile Include="Assembly\IMethodCopier.cs" />
     <Compile Include="Assembly\IMethodPatcher.cs" />
     <Compile Include="Assembly\Descriptors\TypeDescriptor.cs" />
-    <Compile Include="Assembly\Providers\IAspectProvider2.cs" />
+    <Compile Include="Assembly\Providers\IAspectProvider.cs" />
     <Compile Include="Assembly\Providers\IMethodLevelAspectProvider.cs" />
     <Compile Include="Assembly\Providers\InterfaceMethodAspectProvider.cs" />
     <Compile Include="Assembly\Providers\ITypeLevelAspectProvider.cs" />
