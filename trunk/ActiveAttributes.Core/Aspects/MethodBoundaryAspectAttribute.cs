@@ -22,7 +22,7 @@ using JetBrains.Annotations;
 namespace ActiveAttributes.Core.Aspects
 {
   /// <summary>
-  ///   Provides common pointcuts for the execution of methods. This aspect provides observing functionality only.
+  ///   Provides common point-cuts for the execution of methods. This aspect provides observing functionality only.
   /// </summary>
   [Serializable]
   [AttributeUsage (AttributeTargets.Method)]

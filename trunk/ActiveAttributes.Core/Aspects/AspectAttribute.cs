@@ -71,7 +71,7 @@ namespace ActiveAttributes.Core.Aspects
     /// </summary>
     public Type[] MemberArgumentsFilter { get; set; }
 
-
+    // TODO ApplyToType
     /// <summary>
     ///   Use only for assembly-level attributes.
     /// </summary>
@@ -82,6 +82,7 @@ namespace ActiveAttributes.Core.Aspects
     //public Type ApplyToType { get; set; }
     //public Type[] ApplyToTypes { get; set; }
 
+    // TODO ApplyToTypeNamePattern
     //public string ApplyToTypeNamePattern { get; set; }
     //public string[] ApplyToTypeNamePatterns { get; set; }
 
