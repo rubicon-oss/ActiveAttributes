@@ -16,63 +16,31 @@
 // 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using ActiveAttributes.Common.Validation;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Invocations;
-using Remotion.FunctionalProgramming;
+using XValidation;
 
 namespace ActiveAttributes.Common
 {
+  /// <summary>
+  /// Validates arguments and return value of a method call based on <see cref="IValidationAttribute"/>s.
+  /// </summary>
   public class ValidationAspectAttribute : MethodInterceptionAspectAttribute
   {
-    public ValidationAspectAttribute ()
-    {
-    }
+    private static readonly ValidationInfoProvider s_infoProvider = new ValidationInfoProvider();
+
+    private InterceptionValidator _validator;
 
     public override void OnIntercept (IInvocation invocation)
     {
-      ValidateArguments(invocation.Context);
+      if (_validator == null)
+        _validator = new InterceptionValidator (s_infoProvider, invocation.Context.MethodInfo);
 
+      var context = new ValidationContext (invocation.Context);
+
+      _validator.ValidateArguments (context);
       invocation.Proceed();
-
-      ValidateReturnValue(invocation.Context);
-    }
-
-    private void ValidateArguments (IInvocationContext context)
-    {
-      var parameterInfos = context.MethodInfo.GetParameters ();
-      var infoAndValues = parameterInfos.Zip (context.Arguments, (x, y) => new { Info = x, Value = y });
-      foreach (var infoValue in infoAndValues)
-      {
-        var validators = infoValue.Info.GetCustomAttributes (typeof (ValidatorBase), true).Cast<ValidatorBase> ();
-        var sortedValidators = Sort (validators);
-        foreach (var validator in sortedValidators)
-          validator.Validate (infoValue.Info.Name, infoValue.Value);
-      }
-    }
-
-    private void ValidateReturnValue (IInvocationContext context)
-    {
-      var returnParameter = context.MethodInfo.ReturnParameter;
-
-      if (returnParameter == null || returnParameter.ParameterType == typeof (void))
-        return;
-
-      var validators = returnParameter.GetCustomAttributes (typeof (ValidatorBase), true).Cast<ValidatorBase> ();
-      var sortedValidators = Sort (validators);
-      foreach (var validator in sortedValidators)
-        validator.Validate ("return", context.ReturnValue);
-    }
-
-    private IEnumerable<ValidatorBase> Sort (IEnumerable<ValidatorBase> validators)
-    {
-      var list = validators.ToList();
-      return list.OfType<NotNullAttribute>()
-          .Cast<ValidatorBase>()
-          .Concat (list.Where (x => !typeof (NotNullAttribute).IsAssignableFrom (x.GetType())));
+      _validator.ValidateReturnValue (context);
     }
   }
 }
