@@ -19,7 +19,7 @@ namespace ActiveAttributes.Common.UnitTests
             Assertion.IsTrue (Application.OpenForms.Count == 1);
             var form = Application.OpenForms[0];
 
-            form.Invoke (new Action (control.Method));
+            form.BeginInvoke (new Action (control.Method));
           };
 
       var result = WasInvokeRequired (operation);
