@@ -1,0 +1,6 @@
+syntax: glob
+syntax: regexp
+_NCrunch
+_ReSharper
+bin
+obj
