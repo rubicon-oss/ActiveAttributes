@@ -13,7 +13,7 @@ namespace ActiveAttributes.Common.UnitTests
     [Test]
     public void ProceedsIfSameThread ()
     {
-      Action<DomainControl> operation =
+      Action<DomainControl> threadOperation =
           control =>
           {
             Assertion.IsTrue (Application.OpenForms.Count == 1);
@@ -22,7 +22,7 @@ namespace ActiveAttributes.Common.UnitTests
             form.BeginInvoke (new Action (control.Method));
           };
 
-      var result = WasInvokeRequired (operation);
+      var result = WasInvokeRequired (threadOperation);
 
       Assert.That (result, Is.False);
     }
@@ -30,19 +30,19 @@ namespace ActiveAttributes.Common.UnitTests
     [Test]
     public void ProceedsIfOtherThread ()
     {
-      Action<DomainControl> operation = control => control.Method();
+      Action<DomainControl> threadOperation = control => control.Method ();
 
-      var result = WasInvokeRequired (operation);
+      var result = WasInvokeRequired (threadOperation);
 
       Assert.That (result, Is.False);
     }
 
-    private bool WasInvokeRequired (Action<DomainControl> otherThreadOperation)
+    private bool WasInvokeRequired (Action<DomainControl> threadOperation)
     {
       var control = ObjectFactory.Create<DomainControl> ();
       var form = new Form ();
       form.Controls.Add (control);
-      var thread = new Thread (() => otherThreadOperation (control));
+      var thread = new Thread (() => threadOperation (control));
       form.Shown += (s, e) => thread.Start ();
       Application.Run (form);
 

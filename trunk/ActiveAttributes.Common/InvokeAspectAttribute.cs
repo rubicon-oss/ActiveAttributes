@@ -6,7 +6,7 @@ using ActiveAttributes.Core.Invocations;
 namespace ActiveAttributes.Common
 {
   /// <summary>
-  /// Executes a method on the UI-thread.
+  /// Invokes a method call if required.
   /// </summary>
   public sealed class InvokeAspectAttribute : MethodInterceptionAspectAttribute
   {
