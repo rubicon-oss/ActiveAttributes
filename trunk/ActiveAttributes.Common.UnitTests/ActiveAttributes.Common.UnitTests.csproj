@@ -61,6 +61,7 @@
     <Compile Include="InvokeAspectAttributeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidationAspectAttributeTest.cs" />
+    <Compile Include="ValidationContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ActiveAttributes.licenseheader">
