@@ -35,6 +35,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
         var beforeType = Type.GetType (item.BeforeType, true);
         var afterType = Type.GetType (item.AfterType, true);
         var rule = new TypeOrderRule (_ruleSource, beforeType, afterType);
+
         configuration.Rules.Add (rule);
       }
     }

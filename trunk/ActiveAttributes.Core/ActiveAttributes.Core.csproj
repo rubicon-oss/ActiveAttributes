@@ -96,7 +96,6 @@
     <Compile Include="Assembly\Configuration\Rules\RoleOrderRule.cs" />
     <Compile Include="Assembly\Configuration\Rules\TypeOrderRule.cs" />
     <Compile Include="Extensions\ArrayExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
     <Compile Include="Invocations\IndexerSetInvocation.cs" />
     <Compile Include="Invocations\PropertySetInvocation.cs" />

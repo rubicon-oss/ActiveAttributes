@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 
@@ -83,7 +84,8 @@ namespace ActiveAttributes.Core.Assembly
 
       try
       {
-        return aspectsAsCollection.TopologicalSort (dependenciesByPriority.Concat (dependenciesByRole), throwForUndefinedOrder: true);
+        var dependencies = dependenciesByPriority.Concat (dependenciesByRole);
+        return aspectsAsCollection.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
       }
       catch (ArgumentException exception)
       {
