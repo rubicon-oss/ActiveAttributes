@@ -148,11 +148,10 @@ namespace ActiveAttributes.UnitTests
 
       var moduleBuilder = _assemblyBuilder.DefineDynamicModule (_generatedFileName, true);
       var moduleBuilderAdapter = new ModuleBuilderAdapter (moduleBuilder);
-      var guidBasedSubclassProxyNameProvider = new GuidBasedSubclassProxyNameProvider();
-      var expressionPreparer = new ExpandingExpressionPreparer();
-      var debugInfoGenerator = DebugInfoGenerator.CreatePdbGenerator();
-      var handlerFactory = new SubclassProxyBuilderFactory (
-          moduleBuilderAdapter, guidBasedSubclassProxyNameProvider, expressionPreparer, debugInfoGenerator);
+      var decoratedModuleBuilderAdapter = new UniqueNamingModuleBuilderDecorator (moduleBuilderAdapter);
+      var expressionPreparer = new ExpandingExpressionPreparer ();
+      var debugInfoGenerator = DebugInfoGenerator.CreatePdbGenerator ();
+      var handlerFactory = new SubclassProxyBuilderFactory (decoratedModuleBuilderAdapter, expressionPreparer, debugInfoGenerator);
 
       return new TypeModifier (handlerFactory);
     }

@@ -20,7 +20,7 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
-using Remotion.Utilities;
+using TypePipe.IntegrationTests;
 
 namespace ActiveAttributes.IntegrationTests
 {

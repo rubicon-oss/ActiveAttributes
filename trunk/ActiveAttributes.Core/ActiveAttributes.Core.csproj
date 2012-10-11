@@ -44,6 +44,12 @@
     <Reference Include="Remotion">
       <HintPath>..\prereq\Remotion.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Development">
+      <HintPath>..\prereq\Remotion.Development.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Mixins">
+      <HintPath>..\prereq\Remotion.Mixins.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.TypePipe">
       <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
     </Reference>

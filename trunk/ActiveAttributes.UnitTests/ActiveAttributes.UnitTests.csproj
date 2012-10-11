@@ -51,11 +51,13 @@
     <Reference Include="Remotion.Development">
       <HintPath>..\prereq\Remotion.Development.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Mixins">
+      <HintPath>..\prereq\Remotion.Mixins.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.TypePipe">
       <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.TypePipe.UnitTests, Version=1.13.129.2, Culture=neutral, PublicKeyToken=ca3b2e402f46683c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Remotion.TypePipe.UnitTests">
       <HintPath>..\prereq\Remotion.TypePipe.UnitTests.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">

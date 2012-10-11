@@ -47,6 +47,9 @@
     <Reference Include="Remotion.TypePipe">
       <HintPath>..\prereq\Remotion.TypePipe.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.TypePipe.UnitTests">
+      <HintPath>..\prereq\Remotion.TypePipe.UnitTests.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\prereq\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -56,6 +59,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TypePipe.IntegrationTests">
+      <HintPath>..\prereq\TypePipe.IntegrationTests.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentManipulationTest.cs" />
