@@ -24,7 +24,7 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ReturnManipulationTest : TestBase
+  public class ReturnValueManipulationTest : TestBase
   {
     private DomainType _instance;
 
@@ -34,15 +34,19 @@ namespace ActiveAttributes.IntegrationTests
       base.SetUp();
 
       var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      _instance = (DomainType) Activator.CreateInstance (type);
+      _instance = type.CreateInstance<DomainType>();
     }
 
     [Test]
     public void ReturnNullReferenceType ()
     {
-      var result = _instance.Method1 ();
+      Assert.That (_instance.StringMethod (), Is.Null);
+    }
 
-      Assert.That (result, Is.Null);
+    [Test]
+    public void ReturnTenReferenceType ()
+    {
+      Assert.That (_instance.IntMethod (), Is.EqualTo (10));
     }
 
     [Test]
@@ -50,38 +54,28 @@ namespace ActiveAttributes.IntegrationTests
     public void ReturnNullValueType ()
     {
       // TODO: is this behavior really expected?
-      _instance.Method2 ();
-    }
-
-    [Test]
-    public void ReturnTenReferenceType ()
-    {
-      var result = _instance.Method3 ();
-
-      Assert.That (result, Is.EqualTo (10));
+      _instance.IntMethod22 ();
     }
 
     public class DomainType
     {
       [ReturnNullAspect]
-      public virtual string Method1 ()
+      public virtual string StringMethod ()
       {
         return "abc";
       }
 
-      [ReturnNullAspect]
-      public virtual int Method2 ()
-      {
-        return 1;
-      }
-
       [ReturnTenAspect]
-      public virtual int Method3 ()
+      public virtual int IntMethod ()
       {
         return 1;
       }
 
-
+      [ReturnNullAspect]
+      public virtual int IntMethod22 ()
+      {
+        return 1;
+      }
     }
 
     public class ReturnNullAspectAttribute : MethodInterceptionAspectAttribute

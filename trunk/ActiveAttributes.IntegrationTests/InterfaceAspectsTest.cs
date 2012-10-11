@@ -26,29 +26,20 @@ namespace ActiveAttributes.IntegrationTests
   [TestFixture]
   public class InterfaceAspectsTest : TestBase
   {
-    private IDomainInterface _instance;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
-      _instance = type.CreateInstance<IDomainInterface>();
-    }
-
     [Test]
     public void InterfaceAspect ()
     {
-      var result = _instance.Method();
+      var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<IDomainInterface> ();
+
+      var result = instance.Method();
 
       Assert.That (result, Is.EqualTo ("interface_aspect"));
     }
 
     public class DomainClass : IDomainInterface
     {
-      public virtual string Method ()
-      {
-        return "method";
-      }
+      public virtual string Method () { return "method"; }
     }
 
     public interface IDomainInterface
@@ -57,6 +48,7 @@ namespace ActiveAttributes.IntegrationTests
       string Method ();
     }
 
+    [AttributeUsage(AttributeTargets.All, Inherited = true)]
     public class DomainAspectAttribute : MethodInterceptionAspectAttribute
     {
       public override void OnIntercept (IInvocation invocation)

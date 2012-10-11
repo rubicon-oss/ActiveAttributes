@@ -28,35 +28,25 @@ namespace ActiveAttributes.IntegrationTests
   [TestFixture]
   public class AspectScopeTest : TestBase
   {
-    private DomainType _instance1;
-    private DomainType _instance2;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      _instance1 = (DomainType) Activator.CreateInstance (type);
-      _instance2 = (DomainType) Activator.CreateInstance (type);
-    }
-
     [Test]
     public void InstanceScope ()
     {
-      var guid1 = _instance1.InstanceMethod ();
-      var guid2 = _instance2.InstanceMethod ();
+      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var instance1 = type.CreateInstance<DomainType>();
+      var instance2 = type.CreateInstance<DomainType>();
 
-      Assert.That (guid1, Is.Not.EqualTo (guid2));
+      Assert.That (instance1.InstanceMethod(), Is.Not.EqualTo (instance2.InstanceMethod()));
     }
 
     [Test]
     public void StaticScope ()
     {
-      var guid1 = _instance1.StaticMethod ();
-      var guid2 = _instance2.StaticMethod ();
+      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var instance1 = type.CreateInstance<DomainType> ();
+      var instance2 = type.CreateInstance<DomainType>();
 
-      Assert.That (guid1, Is.EqualTo (guid2));
+      Assert.That (instance1.StaticMethod(), Is.Not.EqualTo (Guid.Empty));
+      Assert.That (instance1.StaticMethod(), Is.EqualTo (instance2.StaticMethod()));
     }
 
     public class DomainType

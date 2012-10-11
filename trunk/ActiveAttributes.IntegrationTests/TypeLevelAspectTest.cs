@@ -16,8 +16,8 @@
 // 
 
 using System;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
@@ -25,38 +25,25 @@ namespace ActiveAttributes.IntegrationTests
   [TestFixture]
   public class TypeLevelAspectTest : TestBase
   {
-    private DomainClass _instance1;
-    private DomainClass _instance2;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-      var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
-      _instance1 = type.CreateInstance<DomainClass> ();
-      _instance2 = type.CreateInstance<DomainClass> ();
-    }
-
     [Test]
     public void InterfaceAspect ()
     {
-      var result1 = _instance1.Method1();
-      var result2 = _instance1.Method2();
+      var instance = ObjectFactory.Create<DomainType> ();
+
+      var result1 = instance.Method1();
+      var result2 = instance.Method2();
+      var result3 = instance.Method3();
 
       Assert.That (result1, Is.EqualTo (result2));
+      Assert.That (result3, Is.Not.EqualTo (result1));
     }
 
     [DomainAspect]
-    public class DomainClass
+    public class DomainType
     {
-      public virtual Guid Method1 ()
-      {
-        return Guid.NewGuid();
-      }
-      public virtual Guid Method2 ()
-      {
-        return Guid.NewGuid();
-      }
+      public virtual Guid Method1 () { return Guid.NewGuid(); }
+      public virtual Guid Method2 () { return Guid.NewGuid(); }
+      public virtual Guid Method3 () { return Guid.NewGuid(); }
     }
 
     [AttributeUsage(AttributeTargets.Class)]
@@ -67,6 +54,11 @@ namespace ActiveAttributes.IntegrationTests
       public override void OnIntercept (IInvocation invocation)
       {
         invocation.Context.ReturnValue = _guid;
+      }
+
+      public override bool Matches (System.Reflection.MethodInfo methodInfo)
+      {
+        return methodInfo.Name != "Method3";
       }
     } 
   }

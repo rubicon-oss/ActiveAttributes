@@ -16,7 +16,6 @@
 // 
 
 using System;
-using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
@@ -27,23 +26,14 @@ namespace ActiveAttributes.IntegrationTests
   [TestFixture]
   public class ArgumentManipulationTest : TestBase
   {
-    private DomainType _instance;
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      _instance = (DomainType) Activator.CreateInstance (type);
-    }
-
     [Test]
     public void IncrementArguments ()
     {
+      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var instance = type.CreateInstance<DomainType>();
       var a = 10;
       var b = 20;
-      var actual = _instance.Multiply (a, b);
+      var actual = instance.Multiply (a, b);
       var expected = (a + 1) * (b + 1);
 
       Assert.That (actual, Is.EqualTo (expected));

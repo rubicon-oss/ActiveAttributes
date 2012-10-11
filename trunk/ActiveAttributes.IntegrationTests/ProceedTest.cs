@@ -16,15 +16,10 @@
 // 
 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
-using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Invocations;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using ActiveAttributes.Core.Assembly;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.IntegrationTests
 {
