@@ -25,5 +25,7 @@ namespace ActiveAttributes.Core.Assembly
   public interface IArrayAccessor
   {
     Expression GetAccessExpression (Expression thisExpression);
+
+    bool IsStatic { get; }
   }
 }

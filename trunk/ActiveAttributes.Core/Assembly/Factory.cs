@@ -30,18 +30,11 @@ namespace ActiveAttributes.Core.Assembly
       return new TypeProvider (methodInfo);
     }
 
-    public IArrayAccessor GetInstanceAccessor (FieldInfo fieldInfo)
+    public IArrayAccessor GetAccessor (FieldInfo fieldInfo)
     {
-      Assertion.IsFalse (fieldInfo.IsStatic);
-
-      return new InstanceArrayAccessor (fieldInfo);
-    }
-
-    public IArrayAccessor GetStaticAccessor (FieldInfo fieldInfo)
-    {
-      Assertion.IsTrue (fieldInfo.IsStatic);
-
-      return new StaticArrayAccessor (fieldInfo);
+      return fieldInfo.IsStatic
+                 ? (IArrayAccessor) new StaticArrayAccessor (fieldInfo)
+                 : new InstanceArrayAccessor (fieldInfo);
     }
 
     public MethodPatcher GetMethodPatcher (

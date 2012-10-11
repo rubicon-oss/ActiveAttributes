@@ -123,7 +123,7 @@ namespace ActiveAttributes.Core.Assembly
       }
       else if (methodInfo.IsEventAccessor ())
       {
-        throw new NotImplementedException();
+        throw new NotImplementedException("TODO");
       }
       else
       {

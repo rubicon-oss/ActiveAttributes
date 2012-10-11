@@ -19,10 +19,8 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using JetBrains.Annotations;
 using NUnit.Framework;
-using Remotion.Collections;
-using Remotion.TypePipe.MutableReflection;
+using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Remotion.Utilities;
 
@@ -52,16 +50,16 @@ namespace ActiveAttributes.UnitTests.Assembly
       [Test]
       public void AddsInstanceAspectField ()
       {
-        Test ("_m_TypeLevel_InstanceAspects", data => data.InstanceAspectsField, FieldAttributes.Private);
+        TestIntroduction ("_m_TypeLevel_InstanceAspects", data => data.InstanceAspectsField, FieldAttributes.Private);
       }
 
       [Test]
       public void AddsStaticAspectField ()
       {
-        Test ("_s_TypeLevel_StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
+        TestIntroduction ("_s_TypeLevel_StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
       }
 
-      private void Test (string fieldName, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
+      private void TestIntroduction (string fieldName, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
       {
         var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
 
@@ -87,28 +85,28 @@ namespace ActiveAttributes.UnitTests.Assembly
       [Test]
       public void AddsPropertyInfoField ()
       {
-        Test ("PropertyInfo", data => data.PropertyInfoField, typeof (PropertyInfo));
+        TestIntroduction ("PropertyInfo", data => data.PropertyInfoField, typeof (PropertyInfo));
       }
 
       [Test]
       public void AddsEventInfoField ()
       {
-        Test ("EventInfo", data => data.EventInfoField, typeof (EventInfo));
+        TestIntroduction ("EventInfo", data => data.EventInfoField, typeof (EventInfo));
       }
 
       [Test]
       public void AddsMethodInfoField ()
       {
-        Test ("MethodInfo", data => data.MethodInfoField, typeof (MethodInfo));
+        TestIntroduction ("MethodInfo", data => data.MethodInfoField, typeof (MethodInfo));
       }
 
       [Test]
       public void AddsDelegateField ()
       {
-        Test ("Delegate", data => data.DelegateField, typeof (Action));
+        TestIntroduction ("Delegate", data => data.DelegateField, typeof (Action));
       }
 
-      private void Test (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, Type type)
+      private void TestIntroduction (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, Type type)
       {
         var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
         var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
@@ -203,7 +201,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private class DomainType
     {
       public void Method () { }
-      public void Method (string a) { }
+      public void Method (string a) { Dev.Null = a; }
     }
   }
 }

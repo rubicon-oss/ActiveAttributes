@@ -28,6 +28,64 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  public class Assembler2 : ITypeAssemblyParticipant
+  {
+    private readonly IFieldIntroducer _fieldIntroducer;
+    private readonly IConstructorPatcher _constructorPatcher;
+    private readonly IAspectProvider[] _aspectProviders;
+    private readonly IMethodCopier _methodCopier;
+    private readonly IFactory _factory;
+    private readonly IAspectScheduler _scheduler;
+
+    public Assembler2 (
+        IAspectProvider[] aspectProviders,
+        IFieldIntroducer fieldIntroducer,
+        IConstructorPatcher constructorPatcher,
+        IMethodCopier methodCopier,
+        IFactory factory,
+        IAspectScheduler scheduler)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("aspectProviders", aspectProviders);
+      ArgumentUtility.CheckNotNull ("fieldIntroducer", fieldIntroducer);
+      ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
+      ArgumentUtility.CheckNotNull ("methodCopier", methodCopier);
+      ArgumentUtility.CheckNotNull ("factory", factory);
+      ArgumentUtility.CheckNotNull ("scheduler", scheduler);
+
+      _fieldIntroducer = fieldIntroducer;
+      _constructorPatcher = constructorPatcher;
+      _aspectProviders = aspectProviders;
+      _methodCopier = methodCopier;
+      _factory = factory;
+      _scheduler = scheduler;
+    }
+
+    public void ModifyType (MutableType mutableType)
+    {
+      var typeLevelAspects =
+          _aspectProviders.OfType<ITypeLevelAspectProvider>().SelectMany (x => x.GetAspects (mutableType.UnderlyingSystemType)).ToArray();
+
+      foreach (var method in mutableType.GetMethods ())
+      {
+        var method_ = method;
+
+        var matchingTypeLevelAspects = typeLevelAspects.Where (x => x.Matches (method_));
+        var methodLevelAspects = _aspectProviders.OfType<IMethodLevelAspectProvider>().SelectMany (x => x.GetAspects (method));
+
+        if (!matchingTypeLevelAspects.Any() && !methodLevelAspects.Any())
+          continue;
+
+        var mutableMethod = mutableType.GetOrAddMutableMethod (method);
+        if (!mutableMethod.CanSetBody)
+          throw new Exception("TODO");
+
+
+
+      }
+
+    }
+  }
+
   /// <summary>
   /// Implementation of an <see cref="ITypeAssemblyParticipant"/> that modifies types according to
   /// applied <see cref="AspectAttribute"/>.
@@ -173,18 +231,17 @@ namespace ActiveAttributes.Core.Assembly
     {
       var descriptorsAsCollection = aspectDescriptors.ConvertToCollection();
 
-      var instanceArrayAccessors = _factory.GetInstanceAccessor (fieldData.InstanceAspectsField);
-      var staticArrayAccessors = _factory.GetStaticAccessor (fieldData.StaticAspectsField);
+      var instanceArrayAccessor = _factory.GetAccessor (fieldData.InstanceAspectsField);
+      var staticArrayAccessor = _factory.GetAccessor (fieldData.StaticAspectsField);
 
-      var instanceAspectGenerators = GetGenerators (instanceArrayAccessors, descriptorsAsCollection, AspectScope.Instance).ToList();
-      var staticAspectGenerators = GetGenerators (staticArrayAccessors, descriptorsAsCollection, AspectScope.Static).ToList();
+      var instanceAspectGenerators = GetGenerators (instanceArrayAccessor, descriptorsAsCollection, AspectScope.Instance).ToList();
+      var staticAspectGenerators = GetGenerators (staticArrayAccessor, descriptorsAsCollection, AspectScope.Static).ToList();
 
       _constructorPatcher.AddAspectInitialization (
           mutableType,
-          staticArrayAccessors,
-          instanceArrayAccessors,
-          staticAspectGenerators,
-          instanceAspectGenerators);
+          staticArrayAccessor,
+          instanceArrayAccessor,
+          staticAspectGenerators.Concat(instanceAspectGenerators));
 
       return instanceAspectGenerators.Concat (staticAspectGenerators);
     }
@@ -196,6 +253,26 @@ namespace ActiveAttributes.Core.Assembly
           .Where (x => x.Scope == scope)
           .Select ((x, i) => _factory.GetGenerator (arrayAccessor, i, x))
           .ToList();
+    }
+  }
+
+  public class AssemblerBase
+  {
+    private IFactory _factory;
+
+    protected IEnumerable<IAspectGenerator> GetGenerators (
+        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IAspectDescriptor> aspects)
+    {
+      var aspectsAsCollection = aspects.ConvertToCollection();
+      var instanceGenerators = GetGenerators (instanceAccessor, aspectsAsCollection, AspectScope.Instance);
+      var staticGenerators = GetGenerators (staticAccessor, aspectsAsCollection, AspectScope.Static);
+
+      return instanceGenerators.Concat (staticGenerators);
+    }
+
+    private IEnumerable<IAspectGenerator> GetGenerators (IArrayAccessor accessor, IEnumerable<IAspectDescriptor> aspects, AspectScope aspectScope)
+    {
+      return aspects.Where (x => x.Scope == aspectScope).Select ((x, i) => _factory.GetGenerator (accessor, i, x));
     }
   }
 }

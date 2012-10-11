@@ -21,11 +21,14 @@ using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
 
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -39,6 +42,13 @@ namespace ActiveAttributes.Core.Assembly
         FieldInfo delegateFieldInfo,
         MutableMethodInfo copiedMethod)
     {
+      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
+      ArgumentUtility.CheckNotNull ("propertyInfoFieldInfo", propertyInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("eventInfoFieldInfo", eventInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("methodInfoFieldInfo", methodInfoFieldInfo);
+      ArgumentUtility.CheckNotNull ("delegateFieldInfo", delegateFieldInfo);
+      ArgumentUtility.CheckNotNull ("copiedMethod", copiedMethod);
+
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
               GetPropertyInfoAssignExpression (propertyInfoFieldInfo, ctx, mutableMethod),
@@ -112,37 +122,38 @@ namespace ActiveAttributes.Core.Assembly
 
     public void AddAspectInitialization (
         MutableType mutableType,
-        IArrayAccessor staticAspectsFieldInfo,
-        IArrayAccessor instanceAspectsFieldInfo,
-        IEnumerable<IAspectGenerator> staticAspects,
-        IEnumerable<IAspectGenerator> instanceAspects)
+        IArrayAccessor staticAccessor,
+        IArrayAccessor instanceAccessor,
+        IEnumerable<IAspectGenerator> aspects)
     {
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+      ArgumentUtility.CheckNotNull ("staticAccessor", staticAccessor);
+      ArgumentUtility.CheckNotNull ("instanceAccessor", instanceAccessor);
+      ArgumentUtility.CheckNotNull ("aspects", aspects);
+
+      var aspectsAsCollection = aspects.ConvertToCollection();
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
-              GetInstanceAspectsArrayAssignExpression (instanceAspectsFieldInfo, ctx, instanceAspects),
-              GetStaticAspectsArrayAssignExpression (staticAspectsFieldInfo, staticAspects));
+              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == AspectScope.Instance)),
+              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == AspectScope.Static)));
 
       AddMutation (mutableType, mutation);
     }
 
-    private Expression GetInstanceAspectsArrayAssignExpression (IArrayAccessor fieldInfo, BodyContextBase ctx, IEnumerable<IAspectGenerator> aspects)
+    private Expression GeAspectsArrayAssignExpression (IArrayAccessor accessor, BodyContextBase ctx, IEnumerable<IAspectGenerator> aspects)
     {
-      var instanceAspectsField = fieldInfo.GetAccessExpression (ctx.This);
-      var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
-      var instanceAspectsAssign = Expression.Assign (instanceAspectsField, instanceAspectsArray);
-      return instanceAspectsAssign;
-    }
+      var instanceAspectsField = accessor.GetAccessExpression (accessor.IsStatic ? null : ctx.This);
+      var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
+      Expression instanceAspectsAssign = Expression.Assign (instanceAspectsField, instanceAspectsArray);
 
-    private Expression GetStaticAspectsArrayAssignExpression (IArrayAccessor fieldInfo, IEnumerable<IAspectGenerator> aspects)
-    {
-      var staticAspectsField = fieldInfo.GetAccessExpression (null);
-      var staticAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression()));
-      var staticAspectsAssign = Expression.Assign (staticAspectsField, staticAspectsArray);
-      var staticAspectsIfNull = Expression.IfThen(
-        Expression.Equal(staticAspectsField, Expression.Constant(null)),
-        staticAspectsAssign);
-      
-      return staticAspectsIfNull;
+      if (accessor.IsStatic)
+      {
+        instanceAspectsAssign = Expression.IfThen (
+            Expression.Equal (instanceAspectsField, Expression.Constant (null)),
+            instanceAspectsAssign);
+      }
+
+      return instanceAspectsAssign;
     }
 
     private void AddMutation (MutableType mutableType, Func<BodyContextBase, Expression> expression)

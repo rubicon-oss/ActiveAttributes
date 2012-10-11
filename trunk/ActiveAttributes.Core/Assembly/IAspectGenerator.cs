@@ -21,6 +21,7 @@ using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  // TODO rename to expressionGenerator
   /// <summary>
   /// Creates <see cref="Expression"/> for accessing and creating <see cref="AspectAttribute"/>s.
   /// </summary>

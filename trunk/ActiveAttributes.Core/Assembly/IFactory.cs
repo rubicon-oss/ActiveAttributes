@@ -33,20 +33,13 @@ namespace ActiveAttributes.Core.Assembly
     /// <param name="methodInfo">The method.</param>
     /// <returns>An <see cref="ITypeProvider"/></returns>
     ITypeProvider GetTypeProvider (MethodInfo methodInfo);
-
-    /// <summary>
-    /// Creates an <see cref="InstanceArrayAccessor"/> for a given instance field.
-    /// </summary>
-    /// <param name="fieldInfo">The instance field.</param>
-    /// <returns>An <see cref="IArrayAccessor"/></returns>
-    IArrayAccessor GetInstanceAccessor (FieldInfo fieldInfo);
-
+    
     /// <summary>
     /// Creates an <see cref="StaticArrayAccessor"/> for a given static field.
     /// </summary>
     /// <param name="fieldInfo">The static field.</param>
     /// <returns>An <see cref="IArrayAccessor"/></returns>
-    IArrayAccessor GetStaticAccessor (FieldInfo fieldInfo);
+    IArrayAccessor GetAccessor (FieldInfo fieldInfo);
 
     /// <summary>
     /// Create a <see cref="MethodPatcher"/>.
@@ -71,7 +64,7 @@ namespace ActiveAttributes.Core.Assembly
     /// <summary>
     /// Creates a <see cref="AspectGenerator"/> for a given <see cref="IArrayAccessor"/> and <see cref="IAspectDescriptor"/>.
     /// </summary>
-    /// <param name="arrayAccessor">The array containg the aspects.</param>
+    /// <param name="arrayAccessor">The array containing the aspects.</param>
     /// <param name="index">The array index of the aspect.</param>
     /// <param name="descriptor">The descriptor of the aspect.</param>
     /// <returns></returns>

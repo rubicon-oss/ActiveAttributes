@@ -37,5 +37,10 @@ namespace ActiveAttributes.Core.Assembly.Accessors
     {
       return Expression.Field (thisExpression, _fieldInfo);
     }
+
+    public bool IsStatic
+    {
+      get { return false; }
+    }
   }
 }

@@ -16,9 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Providers;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Rhino.Mocks;
@@ -26,48 +28,93 @@ using Rhino.Mocks;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
+  [Ignore]
   public class AssemblerTest
   {
-    private IFieldIntroducer _introducer;
+    private ITypeLevelAspectProvider _typeLevelAspectProvider;
+    private IMethodLevelAspectProvider _methodLevelAspectProvider;
+    private IFieldIntroducer _fieldIntroducer;
     private IMethodPatcher _methodPatcher;
     private IAspectScheduler _scheduler;
     private IMethodCopier _copier;
     private IConstructorPatcher _constructorPatcher;
     private IFactory _factory;
 
-    private Assembler _assembler;
+    private Assembler2 _assembler;
 
     private MutableType _mutableType1;
-    private MutableType _mutableType2;
 
     [SetUp]
     public void SetUp ()
     {
-      _introducer = MockRepository.GenerateMock<IFieldIntroducer>();
+      _typeLevelAspectProvider = MockRepository.GenerateMock<ITypeLevelAspectProvider>();
+      _methodLevelAspectProvider = MockRepository.GenerateMock<IMethodLevelAspectProvider>();
+      _fieldIntroducer = MockRepository.GenerateMock<IFieldIntroducer>();
+      _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _methodPatcher = MockRepository.GenerateMock<IMethodPatcher>();
       _scheduler = MockRepository.GenerateMock<IAspectScheduler>();
       _copier = MockRepository.GenerateMock<IMethodCopier>();
-      _constructorPatcher = MockRepository.GenerateMock<IConstructorPatcher>();
       _factory = MockRepository.GenerateMock<IFactory>();
 
-      _assembler = new Assembler (null, _introducer, _constructorPatcher, _copier, _factory, _scheduler);
+      _assembler = new Assembler2 (
+          new IAspectProvider[] { _typeLevelAspectProvider, _methodLevelAspectProvider },
+          _fieldIntroducer,
+          _constructorPatcher,
+          _copier,
+          _factory,
+          _scheduler);
 
-      _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType1));
-
+      _mutableType1 = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
     }
 
-    [Ignore]
     [Test]
     public void GetsTypeLevelAspects ()
     {
+      var mockRepository = new MockRepository ();
+
+      var typeLevelAspectProvider = mockRepository.StrictMock<ITypeLevelAspectProvider>();
+      var methodLevelAspectProvider = mockRepository.StrictMock<IMethodLevelAspectProvider>();
+
+      var typeLevelAspectsFake = mockRepository.DynamicMock<IAspectDescriptor>();
+      var methodLevelAspectFake = mockRepository.DynamicMock<IAspectDescriptor>();
+
+      using (mockRepository.Ordered())
+      {
+        typeLevelAspectProvider
+            .Expect (x => x.GetAspects (_mutableType1.UnderlyingSystemType))
+            .Return (new[] { typeLevelAspectsFake });
+
+        var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+        methodLevelAspectProvider
+            .Expect (x => x.GetAspects (null))
+            .IgnoreArguments()
+            .Return (new[] { methodLevelAspectFake })
+            .Repeat.AtLeastOnce();
+        typeLevelAspectsFake
+            .Expect (x => x.Matches (method))
+            .Return (true);
+      }
+
+
+      _assembler = new Assembler2 (
+          new IAspectProvider[] { typeLevelAspectProvider, methodLevelAspectProvider },
+          _fieldIntroducer,
+          _constructorPatcher,
+          _copier,
+          _factory,
+          _scheduler);
+      mockRepository.ReplayAll();
+
       _assembler.ModifyType (_mutableType1);
 
+      mockRepository.VerifyAll();
     }
 
 
 
-    private class DomainType1
+    class DomainType
     {
+      public virtual void Method () { }
     }
   }
 }

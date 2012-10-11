@@ -24,20 +24,12 @@ namespace ActiveAttributes.UnitTests.Assembly.Providers
   [TestFixture]
   public class TypeLevelAspectProviderTest
   {
-    private TypeLevelAspectProvider _provider;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _provider = new TypeLevelAspectProvider();
-    }
-
     [Test]
     public void Normal ()
     {
       var type = typeof (DerivedType);
 
-      var result = _provider.GetAspects (type).ToArray();
+      var result = new TypeLevelAspectProvider().GetAspects (type).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
       Assert.That (result, Has.All.Matches<IAspectDescriptor> (x => x.AspectType == typeof (InheritingAspectAttribute)));

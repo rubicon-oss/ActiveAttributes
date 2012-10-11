@@ -303,7 +303,7 @@ namespace ActiveAttributes.UnitTests.Assembly
                 var instanceAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Instance);
                 var staticAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Static);
 
-                patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects, instanceAspects);
+                patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects.Concat (instanceAspects));
 
                 test (mutableType.AllMutableConstructors);
               }

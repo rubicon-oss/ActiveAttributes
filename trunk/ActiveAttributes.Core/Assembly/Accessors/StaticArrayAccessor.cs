@@ -37,5 +37,10 @@ namespace ActiveAttributes.Core.Assembly.Accessors
     {
       return _accessExpression;
     }
+
+    public bool IsStatic
+    {
+      get { return true; }
+    }
   }
 }

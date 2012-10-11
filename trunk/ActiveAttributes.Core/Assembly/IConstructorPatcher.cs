@@ -51,15 +51,13 @@ namespace ActiveAttributes.Core.Assembly
     /// Adds initialization for instance and static <see cref="AspectAttribute"/> arrays.
     /// </summary>
     /// <param name="mutableType">The mutable type.</param>
-    /// <param name="staticAspectsFieldInfo">The field containing the static <see cref="AspectAttribute"/> array.</param>
-    /// <param name="instanceAspectsFieldInfo">The field containing the instance <see cref="AspectAttribute"/> array.</param>
-    /// <param name="staticAspects">The static <see cref="AspectAttribute"/>s.</param>
-    /// <param name="instanceAspects">The instance <see cref="AspectAttribute"/>s.</param>
+    /// <param name="staticAccessor">The field containing the static <see cref="AspectAttribute"/> array.</param>
+    /// <param name="instanceAccessor">The field containing the instance <see cref="AspectAttribute"/> array.</param>
+    /// <param name="aspects">The static <see cref="AspectAttribute"/>s.</param>
     void AddAspectInitialization (
         MutableType mutableType,
-        IArrayAccessor staticAspectsFieldInfo,
-        IArrayAccessor instanceAspectsFieldInfo,
-        IEnumerable<IAspectGenerator> staticAspects,
-        IEnumerable<IAspectGenerator> instanceAspects);
+        IArrayAccessor staticAccessor,
+        IArrayAccessor instanceAccessor,
+        IEnumerable<IAspectGenerator> aspects);
   }
 }

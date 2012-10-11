@@ -17,5 +17,6 @@ using System;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
+  // TODO rename Method to Member
   public interface IMethodLevelAspectProvider : IAspectProvider { }
 }
