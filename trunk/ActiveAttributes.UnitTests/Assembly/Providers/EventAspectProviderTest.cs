@@ -23,13 +23,13 @@ using NUnit.Framework;
 namespace ActiveAttributes.UnitTests.Assembly.Providers
 {
   [TestFixture]
-  public class PropertyAspectProviderTest
+  public class EventAspectProviderTest
   {
     [Test]
     public void GetAspects ()
     {
-      var method = typeof (DomainType).GetMethod ("set_Property");
-      var provider = new PropertyAspectProvider();
+      var method = typeof (DomainType).GetMethod ("add_Event");
+      var provider = new EventAspectProvider();
 
       var result = provider.GetAspects (method).ToArray();
 
@@ -41,15 +41,12 @@ namespace ActiveAttributes.UnitTests.Assembly.Providers
     {
       [InheritingAspect]
       [NotInheritingAspect]
-      public virtual string Property { get; set; }
+      public virtual event EventHandler Event;
     }
 
     private class DomainType : BaseType
     {
-      public override string Property
-      {
-        set { }
-      }
+      public override event EventHandler Event;
     }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]

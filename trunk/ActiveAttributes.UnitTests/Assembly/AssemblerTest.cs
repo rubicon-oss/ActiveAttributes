@@ -14,23 +14,12 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Remotion.FunctionalProgramming;
-using Remotion.Utilities;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Assembly.Providers
+namespace ActiveAttributes.UnitTests.Assembly
 {
-  public class TypeLevelAspectProvider : ITypeLevelAspectProvider
+  [TestFixture]
+  public class AssemblerTest
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      var typeSequence = type.CreateSequence (x => x.BaseType).Cast<MemberInfo>();
-
-      return AspectProvider.GetAspects (type, typeSequence);
-    }
   }
 }

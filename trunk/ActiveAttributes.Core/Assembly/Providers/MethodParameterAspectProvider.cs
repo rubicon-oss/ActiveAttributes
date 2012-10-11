@@ -26,16 +26,14 @@ namespace ActiveAttributes.Core.Assembly.Providers
 {
   public class MethodParameterAspectProvider : IMethodLevelAspectProvider
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member)
+    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method)
     {
-      ArgumentUtility.CheckNotNull ("member", member);
-      Assertion.IsTrue (member is MethodBase);
+      ArgumentUtility.CheckNotNull ("method", method);
 
-      var method = (MethodBase) member;
       var parameters = method.GetParameters();
       var parameterAspects = parameters.SelectMany (x => x.GetCustomAttributes (true)).OfType<AspectAttribute>();
-      var appliedAspects = parameterAspects.SelectMany (x => x.GetType ().GetCustomAttributes (true)).OfType<ApplyAspectAttribute> ();
-      var distinctAspects = appliedAspects.Select (x => x.AspectType).Distinct ();
+      var appliedAspects = parameterAspects.SelectMany (x => x.GetType().GetCustomAttributes (true)).OfType<ApplyAspectAttribute>();
+      var distinctAspects = appliedAspects.Select (x => x.AspectType).Distinct();
       return distinctAspects.Select (x => new TypeDescriptor (x, AspectScope.Static, 0)).Cast<IAspectDescriptor>();
     }
   }

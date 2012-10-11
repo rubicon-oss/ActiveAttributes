@@ -24,12 +24,12 @@ namespace ActiveAttributes.Core.Assembly.Providers
 {
   public class InterfaceMethodAspectProvider : IMethodLevelAspectProvider
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member)
+    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method)
     {
-      ArgumentUtility.CheckNotNull ("member", member);
-      Assertion.IsTrue (member.DeclaringType != null);
+      ArgumentUtility.CheckNotNull ("method", method);
+      Assertion.IsNotNull (method.DeclaringType);
 
-      var declaringType = member.DeclaringType;
+      var declaringType = method.DeclaringType;
       var interfaces = declaringType.GetInterfaces();
       var interfaceMappings = interfaces.Select (declaringType.GetInterfaceMap);
       var targetInterfaceZip = interfaceMappings.SelectMany (
@@ -37,7 +37,7 @@ namespace ActiveAttributes.Core.Assembly.Providers
           x.TargetMethods.Zip (
               x.InterfaceMethods, (targetMember, interfaceMember) => new { TargetMember = targetMember, InterfaceMember = interfaceMember }));
 
-      var interfaceMembers = targetInterfaceZip.Where (x => x.TargetMember == member).Select (x => x.InterfaceMember).Cast<MemberInfo>();
+      var interfaceMembers = targetInterfaceZip.Where (x => x.TargetMember == method).Select (x => x.InterfaceMember).Cast<MemberInfo>();
       // TODO remove dummy
       var interfaceMembersWithDummmy = new[] { MethodInfo.GetCurrentMethod() }.Concat (interfaceMembers);
       return AspectProvider.GetAspects (null, interfaceMembersWithDummmy);

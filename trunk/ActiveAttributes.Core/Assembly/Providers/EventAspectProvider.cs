@@ -17,20 +17,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  public class TypeLevelAspectProvider : ITypeLevelAspectProvider
+  public class EventAspectProvider : IMethodLevelAspectProvider
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (Type type)
+    private readonly RelatedEventFinder _eventFinder;
+
+    public EventAspectProvider ()
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      _eventFinder = new RelatedEventFinder(); // TODO inject
+    }
 
-      var typeSequence = type.CreateSequence (x => x.BaseType).Cast<MemberInfo>();
+    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method)
+    {
+      ArgumentUtility.CheckNotNull ("method", method);
 
-      return AspectProvider.GetAspects (type, typeSequence);
+      var event_ = method.GetRelatedEventInfo();
+      if (event_ == null)
+        return new IAspectDescriptor[0];
+
+      var eventSequence = event_.CreateSequence (x => _eventFinder.GetBaseEvent (x)).Cast<MemberInfo>();
+
+      return AspectProvider.GetAspects (event_, eventSequence);
     }
   }
 }

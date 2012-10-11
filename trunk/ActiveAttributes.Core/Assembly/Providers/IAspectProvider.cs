@@ -13,18 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
-using System.Collections.Generic;
-using System.Reflection;
+using System;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  /// <summary>
-  /// Provides aspects applied to a given target.
-  /// </summary>
   public interface IAspectProvider
   {
-    // TODO: Move to IMethodLevel/ITypeLevelAspectProvider, make parameter strongly typed (MethodInfo/Type)
-    IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member);
   }
 }

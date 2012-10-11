@@ -15,22 +15,11 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Remotion.FunctionalProgramming;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  public class TypeLevelAspectProvider : ITypeLevelAspectProvider
+  public interface IAssemblyLevelAspectProvider : IAspectProvider
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      var typeSequence = type.CreateSequence (x => x.BaseType).Cast<MemberInfo>();
-
-      return AspectProvider.GetAspects (type, typeSequence);
-    }
+    IEnumerable<IAspectDescriptor> GetAspects (System.Reflection.Assembly assembly);
   }
 }

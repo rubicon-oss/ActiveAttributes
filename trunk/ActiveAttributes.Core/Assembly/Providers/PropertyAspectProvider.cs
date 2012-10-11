@@ -19,28 +19,31 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
   public class PropertyAspectProvider : IMethodLevelAspectProvider
   {
-    public IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member)
+    private readonly RelatedPropertyFinder _propertyFinder;
+
+    public PropertyAspectProvider ()
     {
-      ArgumentUtility.CheckNotNull ("member", member);
-      Assertion.IsTrue (member is MethodInfo || member is PropertyInfo);
-
-      var property = member as PropertyInfo;
-      if (property == null)
-        property = ((MethodInfo) member).GetRelatedPropertyInfo();
-
-      return property != null ? GetAspects (property) : new IAspectDescriptor[0];
+      _propertyFinder = new RelatedPropertyFinder(); // TODO inject
     }
 
-    private IEnumerable<IAspectDescriptor> GetAspects (PropertyInfo propertyInfo)
+    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method)
     {
-      var propertySequence = propertyInfo.CreateSequence (x => PropertyInfoExtensions.GetBaseProperty (x)).Cast<MemberInfo>();
-      return AspectProvider.GetAspects (propertyInfo, propertySequence);
+      ArgumentUtility.CheckNotNull ("method", method);
+
+      var property = method.GetRelatedPropertyInfo();
+      if (property == null)
+        return new IAspectDescriptor[0];
+
+      var propertySequence = property.CreateSequence (x => _propertyFinder.GetBaseProperty (x)).Cast<MemberInfo>();
+
+      return AspectProvider.GetAspects (property, propertySequence);
     }
   }
 }

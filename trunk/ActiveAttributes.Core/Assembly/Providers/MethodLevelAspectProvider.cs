@@ -32,12 +32,10 @@ namespace ActiveAttributes.Core.Assembly.Providers
       _methodFinder = new RelatedMethodFinder(); // TODO inject
     }
 
-    public IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member)
+    public IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method)
     {
-      ArgumentUtility.CheckNotNull ("member", member);
-      Assertion.IsTrue (member is MethodInfo);
+      ArgumentUtility.CheckNotNull ("method", method);
 
-      var method = (MethodInfo) member;
       var methodSequence = method.CreateSequence (x => _methodFinder.GetBaseMethod (x)).Cast<MemberInfo>();
 
       return AspectProvider.GetAspects (method, methodSequence);

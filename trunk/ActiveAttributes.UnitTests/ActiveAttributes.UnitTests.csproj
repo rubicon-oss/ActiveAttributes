@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectGeneratorTest.cs" />
+    <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\Providers\AspectProviderTest.cs" />
     <Compile Include="Assembly\AspectSchedulerTest.cs" />
     <Compile Include="Assembly\Configurators\CustomAttributesConfiguratorTest.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
     <Compile Include="Assembly\MethodCopierTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
+    <Compile Include="Assembly\Providers\EventAspectProviderTest.cs" />
     <Compile Include="Assembly\Providers\PropertyAspectProviderTest.cs" />
     <Compile Include="Assembly\Providers\InterfaceMethodAspectProviderTest.cs" />
     <Compile Include="Assembly\Providers\MethodLevelAspectProviderTest.cs" />

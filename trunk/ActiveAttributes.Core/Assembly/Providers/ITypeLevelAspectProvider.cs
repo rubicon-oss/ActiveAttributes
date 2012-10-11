@@ -14,8 +14,12 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  public interface ITypeLevelAspectProvider : IAspectProvider { }
+  public interface ITypeLevelAspectProvider : IAspectProvider
+  {
+    IEnumerable<IAspectDescriptor> GetAspects (Type type);
+  }
 }

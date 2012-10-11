@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
@@ -56,10 +55,10 @@ namespace ActiveAttributes.Core.Assembly
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
 
       return new Data
-      {
-        StaticAspectsField = staticAspectsField,
-        InstanceAspectsField = instanceAspectsField
-      };
+             {
+                 StaticAspectsField = staticAspectsField,
+                 InstanceAspectsField = instanceAspectsField
+             };
     }
 
     public Data IntroduceMethodReflectionFields (MutableType mutableType, MethodInfo methodInfo)
@@ -76,17 +75,17 @@ namespace ActiveAttributes.Core.Assembly
       var methodInfoFieldName = instanceBaseName + "_MethodInfo";
       var methodInfoField = mutableType.AddField (typeof (MethodInfo), methodInfoFieldName);
 
-      var delegateType = methodInfo.GetDelegateType ();
+      var delegateType = methodInfo.GetDelegateType();
       var delegateFieldName = instanceBaseName + "_Delegate";
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
       return new Data
-      {
-        PropertyInfoField = propertyInfoField,
-        EventInfoField = eventInfoField,
-        MethodInfoField = methodInfoField,
-        DelegateField = delegateField,
-      };
+             {
+                 PropertyInfoField = propertyInfoField,
+                 EventInfoField = eventInfoField,
+                 MethodInfoField = methodInfoField,
+                 DelegateField = delegateField,
+             };
     }
 
     public struct Data

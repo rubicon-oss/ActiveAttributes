@@ -14,9 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ActiveAttributes.Core.Assembly.Providers
 {
-  // TODO rename Method to Member
-  public interface IMethodLevelAspectProvider : IAspectProvider { }
+  public interface IMethodLevelAspectProvider : IAspectProvider
+  {
+    IEnumerable<IAspectDescriptor> GetAspects (MethodInfo method);
+  }
 }

@@ -58,12 +58,12 @@ namespace ActiveAttributes.Core.Assembly
     private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByPriority2 (ICollection<IAspectDescriptor> aspects)
     {
       var combinations = (from aspect1 in aspects
-                                from aspect2 in aspects
-                                select new
-                                {
-                                  Aspect1 = aspect1,
-                                  Aspect2 = aspect2
-                                }).ToList ();
+                          from aspect2 in aspects
+                          select new
+                                 {
+                                     Aspect1 = aspect1,
+                                     Aspect2 = aspect2
+                                 }).ToList();
 
       foreach (var item in combinations)
       {
@@ -79,14 +79,14 @@ namespace ActiveAttributes.Core.Assembly
     private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByRule (ICollection<IAspectDescriptor> aspects)
     {
       var combinations = (from aspect1 in aspects
-                                    from aspect2 in aspects
-                                    from rule in _configuration.Rules
-                                    select new
-                                           {
-                                               Aspect1 = aspect1,
-                                               Aspect2 = aspect2,
-                                               Rule = rule
-                                           }).ToList();
+                          from aspect2 in aspects
+                          from rule in _configuration.Rules
+                          select new
+                                 {
+                                     Aspect1 = aspect1,
+                                     Aspect2 = aspect2,
+                                     Rule = rule
+                                 }).ToList();
 
       foreach (var item in combinations)
       {
