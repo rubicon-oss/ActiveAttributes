@@ -60,6 +60,7 @@
     <Compile Include="Aspects\AspectAttribute.cs" />
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
+    <Compile Include="Assembly\AspectExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\Providers\AspectProvider.cs" />
     <Compile Include="Assembly\AspectScheduler.cs" />
     <Compile Include="Assembly\Configuration\AspectRoleAttribute.cs" />

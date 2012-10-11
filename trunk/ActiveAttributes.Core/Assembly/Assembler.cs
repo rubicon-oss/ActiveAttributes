@@ -114,6 +114,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public static Assembler Singleton { get; private set; }
 
+    private readonly AspectExpressionGeneratorFactory _generatorFactory = new AspectExpressionGeneratorFactory();
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IConstructorPatcher _constructorPatcher;
     private readonly IAspectProvider[] _aspectProviders;
@@ -229,50 +230,12 @@ namespace ActiveAttributes.Core.Assembly
     private IEnumerable<IAspectGenerator> HandleAspects (
         MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors, FieldIntroducer.Data fieldData)
     {
-      var descriptorsAsCollection = aspectDescriptors.ConvertToCollection();
-
       var instanceArrayAccessor = _factory.GetAccessor (fieldData.InstanceAspectsField);
       var staticArrayAccessor = _factory.GetAccessor (fieldData.StaticAspectsField);
+      var aspectGenerators = _generatorFactory.GetGenerators (instanceArrayAccessor, staticArrayAccessor, aspectDescriptors).ConvertToCollection();
+      _constructorPatcher.AddAspectInitialization (mutableType, staticArrayAccessor, instanceArrayAccessor, aspectGenerators);
 
-      var instanceAspectGenerators = GetGenerators (instanceArrayAccessor, descriptorsAsCollection, AspectScope.Instance).ToList();
-      var staticAspectGenerators = GetGenerators (staticArrayAccessor, descriptorsAsCollection, AspectScope.Static).ToList();
-
-      _constructorPatcher.AddAspectInitialization (
-          mutableType,
-          staticArrayAccessor,
-          instanceArrayAccessor,
-          staticAspectGenerators.Concat(instanceAspectGenerators));
-
-      return instanceAspectGenerators.Concat (staticAspectGenerators);
-    }
-
-    private IEnumerable<IAspectGenerator> GetGenerators (
-        IArrayAccessor arrayAccessor, IEnumerable<IAspectDescriptor> descriptors, AspectScope scope)
-    {
-      return descriptors
-          .Where (x => x.Scope == scope)
-          .Select ((x, i) => _factory.GetGenerator (arrayAccessor, i, x))
-          .ToList();
-    }
-  }
-
-  public class AssemblerBase
-  {
-    private IFactory _factory;
-
-    protected IEnumerable<IAspectGenerator> GetGenerators (
-        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IAspectDescriptor> aspects)
-    {
-      var aspectsAsCollection = aspects.ConvertToCollection();
-      var instanceGenerators = GetGenerators (instanceAccessor, aspectsAsCollection, AspectScope.Instance);
-      var staticGenerators = GetGenerators (staticAccessor, aspectsAsCollection, AspectScope.Static);
-
-      return instanceGenerators.Concat (staticGenerators);
-    }
-
-    private IEnumerable<IAspectGenerator> GetGenerators (IArrayAccessor accessor, IEnumerable<IAspectDescriptor> aspects, AspectScope aspectScope)
-    {
-      return aspects.Where (x => x.Scope == aspectScope).Select ((x, i) => _factory.GetGenerator (accessor, i, x));
+      return aspectGenerators;
     }
   }
 }
