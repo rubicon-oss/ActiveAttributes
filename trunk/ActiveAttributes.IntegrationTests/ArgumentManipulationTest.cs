@@ -16,8 +16,8 @@
 // 
 
 using System;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 
@@ -29,8 +29,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void IncrementArguments ()
     {
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType>();
+      var instance = ObjectFactory.Create<DomainType>();
       var a = 10;
       var b = 20;
       var actual = instance.Multiply (a, b);

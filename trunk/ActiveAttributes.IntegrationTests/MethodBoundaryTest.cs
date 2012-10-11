@@ -49,8 +49,7 @@ namespace ActiveAttributes.IntegrationTests
       LogManager.Configuration.Reload ();
       LogManager.ReconfigExistingLoggers ();
 
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      _instance = (DomainType) Activator.CreateInstance (type);
+      _instance = ObjectFactory.Create<DomainType>();
     }
 
     [Test]

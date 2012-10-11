@@ -16,6 +16,7 @@
 // 
 
 using System;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Invocations;
@@ -29,15 +30,14 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void InterfaceAspect ()
     {
-      var type = AssembleType<DomainClass> (Assembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<IDomainInterface> ();
+      var instance = ObjectFactory.Create<DomainType>();
 
       var result = instance.Method();
 
       Assert.That (result, Is.EqualTo ("interface_aspect"));
     }
 
-    public class DomainClass : IDomainInterface
+    public class DomainType : IDomainInterface
     {
       public virtual string Method () { return "method"; }
     }
