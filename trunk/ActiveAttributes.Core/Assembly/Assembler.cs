@@ -28,64 +28,6 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class Assembler2 : ITypeAssemblyParticipant
-  {
-    private readonly IFieldIntroducer _fieldIntroducer;
-    private readonly IConstructorPatcher _constructorPatcher;
-    private readonly IAspectProvider[] _aspectProviders;
-    private readonly IMethodCopier _methodCopier;
-    private readonly IFactory _factory;
-    private readonly IAspectScheduler _scheduler;
-
-    public Assembler2 (
-        IAspectProvider[] aspectProviders,
-        IFieldIntroducer fieldIntroducer,
-        IConstructorPatcher constructorPatcher,
-        IMethodCopier methodCopier,
-        IFactory factory,
-        IAspectScheduler scheduler)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("aspectProviders", aspectProviders);
-      ArgumentUtility.CheckNotNull ("fieldIntroducer", fieldIntroducer);
-      ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
-      ArgumentUtility.CheckNotNull ("methodCopier", methodCopier);
-      ArgumentUtility.CheckNotNull ("factory", factory);
-      ArgumentUtility.CheckNotNull ("scheduler", scheduler);
-
-      _fieldIntroducer = fieldIntroducer;
-      _constructorPatcher = constructorPatcher;
-      _aspectProviders = aspectProviders;
-      _methodCopier = methodCopier;
-      _factory = factory;
-      _scheduler = scheduler;
-    }
-
-    public void ModifyType (MutableType mutableType)
-    {
-      var typeLevelAspects =
-          _aspectProviders.OfType<ITypeLevelAspectProvider>().SelectMany (x => x.GetAspects (mutableType.UnderlyingSystemType)).ToArray();
-
-      foreach (var method in mutableType.GetMethods ())
-      {
-        var method_ = method;
-
-        var matchingTypeLevelAspects = typeLevelAspects.Where (x => x.Matches (method_));
-        var methodLevelAspects = _aspectProviders.OfType<IMethodLevelAspectProvider>().SelectMany (x => x.GetAspects (method));
-
-        if (!matchingTypeLevelAspects.Any() && !methodLevelAspects.Any())
-          continue;
-
-        var mutableMethod = mutableType.GetOrAddMutableMethod (method);
-        if (!mutableMethod.CanSetBody)
-          throw new Exception("TODO");
-
-
-
-      }
-
-    }
-  }
-
   /// <summary>
   /// Implementation of an <see cref="ITypeAssemblyParticipant"/> that modifies types according to
   /// applied <see cref="AspectAttribute"/>.
@@ -144,22 +86,23 @@ namespace ActiveAttributes.Core.Assembly
 
       var typeLevelAspectGenerators = HandleTypeLevelGenerators (mutableType).ToList();
 
-      // TODO: Use GetMethods instead of AllMutableMethods. Use the MethodInfo (not MutableMethodInfo) to detect aspects on the methods. If there are aspects,
-      // TODO: use GetMutableMethod to get the mutable method. If this throws an exception, wrap with a sensible ActiveAttributes configuration exception.
-      // TODO: Then check MutableMethodInfo.CanSetBody, also throw a configuration exception if it is false.
-
       //foreach (var method in mutableType.GetMethods ())
       //{
-      //  var allMatching = typeLevelAspectGenerators
-      //    .Where (x => x.Descriptor.Matches (method))
-      //      .Concat (aspectDescriptors)
-      //      .ToList();
+      //  var method_ = method;
 
+      //  var matchingTypeLevelAspects = typeLevelAspectGenerators.Where (x => x.Descriptor.Matches (method_));
+      //  var methodLevelAspects = _aspectProviders.OfType<IMethodLevelAspectProvider> ().SelectMany (x => x.GetAspects (method_));
+
+      //  if (!matchingTypeLevelAspects.Any () && !methodLevelAspects.Any ())
+      //    continue;
+
+      //  var mutableMethod = mutableType.GetOrAddMutableMethod (method);
+      //  if (!mutableMethod.CanSetBody)
+      //    throw new Exception ("TODO");
       //}
 
 
-
-      var mutableMethodInfos = mutableType.AllMutableMethods.ToList();
+      var mutableMethodInfos = mutableType.AllMutableMethods.ToList ();
       foreach (var mutableMethod in mutableMethodInfos)
       {
         var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableMethod);
@@ -169,11 +112,11 @@ namespace ActiveAttributes.Core.Assembly
         var allMatchingAspectGenerators = typeLevelAspectGenerators
             .Where (x => x.Descriptor.Matches (method.UnderlyingSystemMethodInfo))
             .Concat (methodLevelAspectGenerators)
-            .ToList();
+            .ToList ();
 
         if (allMatchingAspectGenerators.Any ())
         {
-          var sortedAspects = _scheduler.GetOrdered (allMatchingAspectGenerators).ToList();
+          var sortedAspects = _scheduler.GetOrdered (allMatchingAspectGenerators).ToList ();
           AddAspectsToMethod (sortedAspects, mutableMethod);
         }
       }
