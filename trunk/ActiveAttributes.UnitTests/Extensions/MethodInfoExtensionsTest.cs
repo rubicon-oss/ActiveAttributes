@@ -15,10 +15,10 @@
 // under the License.
 // 
 using System;
-using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Extensions
@@ -26,137 +26,204 @@ namespace ActiveAttributes.UnitTests.Extensions
   [TestFixture]
   public class MethodInfoExtensionsTest
   {
-    [Test]
-    public void GetDelegateType_SimpleMethod ()
+    public class GetDelegateType
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SimpleMethod ()));
-      var result = methodInfo.GetDelegateType ();
+      [Test]
+      public void Action ()
+      {
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.SimpleMethod ()));
 
-      Assert.That (result, Is.EqualTo (typeof (Action)));
+        var result = methodInfo.GetDelegateType ();
+
+        Assert.That (result, Is.EqualTo (typeof (Action)));
+      }
+
+      [Test]
+      public void ActionWithArgs ()
+      {
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ArgMethod ("a")));
+
+        var result = methodInfo.GetDelegateType ();
+
+        Assert.That (result, Is.EqualTo (typeof (Action<string>)));
+      }
+
+      [Test]
+      public void Func ()
+      {
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ReturnMethod ()));
+
+        var result = methodInfo.GetDelegateType ();
+
+        Assert.That (result, Is.EqualTo (typeof (Func<string>)));
+      }
+
+      [Test]
+      public void FuncWithArgs ()
+      {
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.MixedMethod ("a", 1)));
+
+        var result = methodInfo.GetDelegateType ();
+
+        Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
+      }
+
+      class DomainType
+      {
+        public void SimpleMethod () { }
+        public void ArgMethod (string a) { }
+        public string ReturnMethod () { return default (string); }
+        public object MixedMethod (string a, int b) { return default (object); }
+      }
     }
 
-    [Test]
-    public void GetDelegateType_ArgMethod ()
+    public class IsPropertyAccessor
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ArgMethod ("a")));
-      var result = methodInfo.GetDelegateType ();
+      [Test]
+      public void AccessorMethod_ReturnsTrue ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("get_Property", BindingFlags.Instance | BindingFlags.Public);
 
-      Assert.That (result, Is.EqualTo (typeof (Action<string>)));
+        var result = accessorMethod.IsPropertyAccessor ();
+
+        Assert.That (result, Is.True);
+      }
+
+      [Test]
+      public void EventAccessor_ReturnsFalse ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("add_Event", BindingFlags.Instance | BindingFlags.Public);
+
+        var result = accessorMethod.IsPropertyAccessor ();
+
+        Assert.That (result, Is.False);
+      }
+
+      class DomainType
+      {
+        public string Property { get; set; }
+
+        public event EventHandler Event;
+      }
     }
 
-    [Test]
-    public void GetDelegateType_ReturnMethod ()
+    public class IsEventAccessor
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ReturnMethod ()));
-      var result = methodInfo.GetDelegateType ();
+      [Test]
+      public void AccessorMethod_ReturnsTrue ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("add_Event", BindingFlags.Instance | BindingFlags.Public);
 
-      Assert.That (result, Is.EqualTo (typeof (Func<string>)));
+        var result = accessorMethod.IsEventAccessor();
+
+        Assert.That (result, Is.True);
+      }
+
+      [Test]
+      public void PropertyAccessor_ReturnsFalse ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("get_Property", BindingFlags.Instance | BindingFlags.Public);
+
+        var result = accessorMethod.IsEventAccessor();
+
+        Assert.That (result, Is.False);
+      }
+
+      class DomainType
+      {
+        public string Property { get; set; }
+
+        public event EventHandler Event;
+      }
     }
 
-    [Test]
-    public void GetDelegateType_MixedMethod ()
+    public class GetRelatedPropertyInfo
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.MixedMethod ("a", 1)));
-      var result = methodInfo.GetDelegateType ();
+      [Test]
+      public void AccessorMethod_ReturnsPropertyInfo ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("get_Property", BindingFlags.Instance | BindingFlags.Public);
+        var propertyInfo = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property);
 
-      Assert.That (result, Is.EqualTo (typeof (Func<string, int, object>)));
+        var result = accessorMethod.GetRelatedPropertyInfo();
+
+        Assert.That (result, Is.EqualTo (propertyInfo));
+      }
+
+      [Test]
+      public void NormalMethod_ReturnsNull ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+        var result = method.GetRelatedPropertyInfo();
+
+        Assert.That (result, Is.Null);
+      }
+
+      class DomainType
+      {
+        public string Property { get; set; }
+
+        public string Method () { return ""; }
+      }
     }
 
-    [Test]
-    public void GetRelatedPropertyInfo_Match ()
+    public class GetRelatedEventInfo
     {
-      var propertyInfo = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property2);
-      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
+      [Test]
+      public void AccessorMethod_ReturnsPropertyInfo ()
+      {
+        var accessorMethod = typeof (DomainType).GetMethod ("add_Event", BindingFlags.Instance | BindingFlags.Public);
+        var eventInfo = typeof (DomainType).GetEvent ("Event", BindingFlags.Instance | BindingFlags.Public);
 
-      var result = accessorMethod.GetRelatedPropertyInfo ();
+        var result = accessorMethod.GetRelatedEventInfo ();
 
-      Assert.That (result, Is.EqualTo (propertyInfo));
+        Assert.That (result, Is.EqualTo (eventInfo));
+      }
+
+      [Test]
+      public void NormalMethod_ReturnsNull ()
+      {
+        var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method ());
+        var result = method.GetRelatedEventInfo ();
+
+        Assert.That (result, Is.Null);
+      }
+
+      class DomainType
+      {
+        public event EventHandler Event;
+
+        public string Method () { return ""; }
+      }
     }
 
-    [Test]
-    public void GetRelatedPropertyInfo_NoMatch ()
+    public class IsAction_IsFunc
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.SimpleMethod ());
-      var result = method.GetRelatedPropertyInfo ();
+      [Test]
+      public void IsAction ()
+      {
+        var action = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Action());
+        var func = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Func());
 
-      Assert.That (result, Is.Null);
+        Assert.That (action.IsAction(), Is.True);
+        Assert.That (func.IsAction(), Is.False);
+      }
+
+      [Test]
+      public void IsFunc ()
+      {
+        var func = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Func());
+        var action = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Action());
+
+        Assert.That (func.IsFunc (), Is.True);
+        Assert.That (action.IsFunc (), Is.False);
+      }
+
+      class DomainType
+      {
+        public void Action () { }
+        public int Func () { return 1; }
+      }
     }
-
-    [Test]
-    public void GetRelatedEventInfo_Match ()
-    {
-      var eventInfo = typeof (DomainType).GetEvent ("Event2", BindingFlags.Instance | BindingFlags.Public);
-      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
-
-      var result = accessorMethod.GetRelatedEventInfo ();
-
-      Assert.That (result, Is.EqualTo (eventInfo));
-    }
-
-    [Test]
-    public void GetRelatedEventInfo_NoMatch ()
-    {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.SimpleMethod ());
-      var result = method.GetRelatedEventInfo ();
-
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void IsPropertyAccessor_True ()
-    {
-      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
-
-      var result = accessorMethod.IsPropertyAccessor ();
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void IsPropertyAccessor_False ()
-    {
-      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
-
-      var result = accessorMethod.IsPropertyAccessor ();
-
-      Assert.That (result, Is.False);
-    }
-
-
-    [Test]
-    public void IsEventAccessor_True ()
-    {
-      var accessorMethod = typeof (DomainType).GetMethod ("add_Event2", BindingFlags.Instance | BindingFlags.Public);
-
-      var result = accessorMethod.IsEventAccessor ();
-
-      Assert.That (result, Is.True);
-    }
-
-    [Test]
-    public void IsEventAccessor_False ()
-    {
-      var accessorMethod = typeof (DomainType).GetMethod ("get_Property2", BindingFlags.Instance | BindingFlags.Public);
-
-      var result = accessorMethod.IsEventAccessor ();
-
-      Assert.That (result, Is.False);
-    }
-
-    public class DomainType
-    {
-      public void SimpleMethod () { }
-      public void ArgMethod (string a) { }
-      public string ReturnMethod () { return default (string); }
-      public object MixedMethod (string a, int b) { return default (object); }
-
-      public string Property { get; set; }
-      public string Property2 { get; set; }
-
-      public event EventHandler Event1;
-      public event EventHandler Event2;
-    }
-
-
   }
 }

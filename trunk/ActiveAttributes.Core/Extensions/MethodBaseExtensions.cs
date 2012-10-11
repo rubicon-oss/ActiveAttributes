@@ -23,6 +23,11 @@ namespace ActiveAttributes.Core.Extensions
 {
   internal static class MethodBaseExtensions
   {
+    /// <summary>
+    /// Determines whether a <see cref="MethodInfo"/> is compiler-generated.
+    /// </summary>
+    /// <param name="methodInfo">The method info.</param>
+    /// <returns><c>true</c> if the <see cref="MethodInfo"/> is compiler-generated; otherwise, <c>false</c>.</returns>
     public static bool IsCompilerGenerated (this MethodBase methodInfo)
     {
       var customAttributes = methodInfo.GetCustomAttributes (typeof (CompilerGeneratedAttribute), true);

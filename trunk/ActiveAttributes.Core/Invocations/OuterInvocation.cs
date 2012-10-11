@@ -25,13 +25,13 @@ namespace ActiveAttributes.Core.Invocations
     private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocation));
 
     private readonly IInvocationContext _context;
-    private readonly Action<IInvocation> _innerIntercepting;
+    private readonly Action<IInvocation> _innerInterception;
     private readonly IInvocation _innerInvocation;
 
-    public OuterInvocation (IInvocationContext context, Action<IInvocation> innerIntercepting, IInvocation innerInvocation)
+    public OuterInvocation (IInvocationContext context, Action<IInvocation> innerInterception, IInvocation innerInvocation)
     {
       _context = context;
-      _innerIntercepting = innerIntercepting;
+      _innerInterception = innerInterception;
       _innerInvocation = innerInvocation;
     }
 
@@ -42,8 +42,8 @@ namespace ActiveAttributes.Core.Invocations
 
     public override void Proceed ()
     {
-      s_log.DebugFormat ("Proceeding with '{0}'", _innerIntercepting);
-      _innerIntercepting (_innerInvocation);
+      s_log.DebugFormat ("Proceeding with '{0}'", _innerInterception);
+      _innerInterception (_innerInvocation);
     }
   }
 }

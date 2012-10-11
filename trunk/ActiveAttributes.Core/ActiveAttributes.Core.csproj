@@ -134,7 +134,6 @@
     <Compile Include="Contexts\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Extensions\CustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
-    <Compile Include="Extensions\MemberInfoExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />

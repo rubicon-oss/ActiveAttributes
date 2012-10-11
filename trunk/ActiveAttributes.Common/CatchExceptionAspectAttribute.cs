@@ -5,7 +5,7 @@ using ActiveAttributes.Core.Invocations;
 namespace ActiveAttributes.Common
 {
   /// <summary>
-  /// Catches exceptions of a certain type (e.g. <see cref="Exception"/> unless otherwise stated).
+  /// Catches exceptions of a certain type; namely <see cref="Exception"/> unless otherwise stated in the constructor.
   /// </summary>
   public class CatchExceptionAspectAttribute : MethodInterceptionAspectAttribute
   {

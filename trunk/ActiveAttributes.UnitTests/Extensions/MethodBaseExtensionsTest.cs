@@ -15,8 +15,6 @@
 // under the License.
 // 
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using Remotion.Utilities;
 using ActiveAttributes.Core.Extensions;
@@ -26,32 +24,35 @@ namespace ActiveAttributes.UnitTests.Extensions
   [TestFixture]
   public class MethodBaseExtensionsTest
   {
-    [Test]
-    public void IsCompilerGenerated_ReturnsTrue ()
+    public class IsCompilerGenerated
     {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.CompilerGeneratedMethod()));
+      [Test]
+      public void GeneratedPropertyAccessorMethod ()
+      {
+        var methodInfo = typeof (DomainType).GetMethod ("get_Property");
 
-      var result = methodInfo.IsCompilerGenerated();
+        var result = methodInfo.IsCompilerGenerated ();
 
-      Assert.That (result, Is.True);
+        Assert.That (result, Is.True);
+      }
+
+      [Test]
+      public void UserDefinedMethod ()
+      {
+        var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
+
+        var result = methodInfo.IsCompilerGenerated ();
+
+        Assert.That (result, Is.False);
+      }
+
+      class DomainType
+      {
+        public bool Property { get; private set; }
+
+        public void Method () { }
+      }
     }
 
-    [Test]
-    public void IsCompilerGenerated_ReturnsFalse ()
-    {
-      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.NotCompilerGeneratedMethod()));
-
-      var result = methodInfo.IsCompilerGenerated();
-
-      Assert.That (result, Is.False);
-    }
-
-    private class DomainType
-    {
-      [CompilerGenerated]
-      public void CompilerGeneratedMethod () { }
-
-      public void NotCompilerGeneratedMethod () { }
-    }
   }
 }

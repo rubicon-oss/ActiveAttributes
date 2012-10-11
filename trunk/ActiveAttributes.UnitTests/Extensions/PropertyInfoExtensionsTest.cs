@@ -26,21 +26,6 @@ namespace ActiveAttributes.UnitTests.Extensions
   {
     public class GetOverridenProperty
     {
-      private class BaseType
-      {
-        public virtual string VirtualProperty { get; protected set; }
-        public string NewProperty { get; protected set; }
-        public virtual string PartialProperty { set { } }
-      }
-
-      private class DerivedType : BaseType
-      {
-        public override string VirtualProperty { get; protected set; }
-        public new string NewProperty { get; protected set; }
-        public string DeclaredProperty { get; protected set; }
-        public override string PartialProperty { set { } }
-      }
-
       [Test]
       public void Normal ()
       {
@@ -74,6 +59,47 @@ namespace ActiveAttributes.UnitTests.Extensions
         var propertyInfo = typeof (DerivedType).GetProperties ().Single (x => x.Name == "NewProperty");
 
         Assert.That (propertyInfo.GetBaseProperty (), Is.Null);
+      }
+
+      class BaseType
+      {
+        public virtual string VirtualProperty { get; protected set; }
+        public string NewProperty { get; protected set; }
+        public virtual string PartialProperty { set { } }
+      }
+
+      class DerivedType : BaseType
+      {
+        public override string VirtualProperty { get; protected set; }
+        public new string NewProperty { get; protected set; }
+        public string DeclaredProperty { get; protected set; }
+        public override string PartialProperty { set { } }
+      }
+    }
+
+    public class IsIndexer
+    {
+      [Test]
+      public void IndexerPropertyInfo_ReturnsTrue ()
+      {
+        var property = typeof (DomainType).GetProperty ("Item");
+
+        Assert.That (property.IsIndexer(), Is.True);
+      }
+
+      [Test]
+      public void PropertyInfo_ReturnsFalse ()
+      {
+        var property = typeof (DomainType).GetProperty ("Property");
+
+        Assert.That (property.IsIndexer (), Is.False);
+      }
+
+      class DomainType
+      {
+        public int this [int index] { set { } }
+
+        public int Property { get; set; }
       }
     }
   }

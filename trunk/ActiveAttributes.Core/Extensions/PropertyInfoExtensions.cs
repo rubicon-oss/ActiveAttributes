@@ -25,9 +25,9 @@ namespace ActiveAttributes.Core.Extensions
   internal static class PropertyInfoExtensions
   {
     /// <summary>
-    /// Returns the base property, or null if no base property exists.
+    /// Returns the base <see cref="PropertyInfo"/>.
     /// </summary>
-    /// <param name="propertyInfo">A property info.</param>
+    /// <returns>The base <see cref="PropertyInfo"/>; can be null.</returns>
     public static PropertyInfo GetBaseProperty (this PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -36,41 +36,27 @@ namespace ActiveAttributes.Core.Extensions
       var typeSequence = propertyInfo.DeclaringType.BaseType.CreateSequence (x => x.BaseType);
       var getMethod = propertyInfo.GetGetMethod (true);
       var setMethod = propertyInfo.GetSetMethod (true);
-      var getMethodBase = getMethod != null ? getMethod.GetBaseDefinition () : null;
+      var getMethodBase = getMethod != null ? getMethod.GetBaseDefinition() : null;
       var setMethodBase = setMethod != null ? setMethod.GetBaseDefinition() : null;
 
       var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
       return typeSequence
           .SelectMany (x => x.GetProperties (bindingFlags))
           .FirstOrDefault (
-              x => SafeCompareBaseDefinition (x.GetGetMethod (true), getMethodBase) ||
-                   SafeCompareBaseDefinition (x.GetSetMethod (true), setMethodBase));
+              x => x.GetGetMethod (true).IsRootEqualTo (getMethodBase) ||
+                   x.GetSetMethod (true).IsRootEqualTo (setMethodBase));
     }
 
-    private static bool SafeCompareBaseDefinition (MethodInfo accessorMethod, MethodInfo accessorBaseMethod)
-    {
-      return accessorMethod != null && accessorBaseMethod != null && accessorMethod.GetBaseDefinition() == accessorBaseMethod;
-    }
-
+    /// <summary>
+    /// Determines whether the specified <see cref="PropertyInfo"/> is an indexer.
+    /// </summary>
+    /// <param name="propertyInfo">The <see cref="PropertyInfo"/>.</param>
+    /// <returns><c>true</c> if the specified <see cref="PropertyInfo"/> is an indexer; otherwise, <c>false</c>.</returns>
     public static bool IsIndexer (this PropertyInfo propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
       return propertyInfo.GetIndexParameters().Length == 1;
     }
-
-    public static bool HasSetter (this PropertyInfo propertyInfo)
-    {
-      return propertyInfo.GetSetMethod (true) != null;
-    }
-
-    public static bool HasGetter (this PropertyInfo propertyInfo)
-    {
-      return propertyInfo.GetGetMethod (true) != null;
-    }
-
-    public static bool HasGetterAndSetter (this PropertyInfo propertyInfo)
-    {
-      return propertyInfo.HasGetter() && propertyInfo.HasSetter();
-    }
-
   }
 }

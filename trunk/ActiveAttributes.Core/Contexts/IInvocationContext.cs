@@ -26,6 +26,7 @@ namespace ActiveAttributes.Core.Contexts
   /// </summary>
   public interface IInvocationContext
   {
+    // TODO change to MemberInfo
     /// <summary>
     ///   The <see cref = "MethodInfo" /> of the intercepted action (i.e., constructor, method, property).
     /// </summary>
