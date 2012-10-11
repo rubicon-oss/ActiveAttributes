@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration.Rules;
@@ -80,7 +81,10 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
     {
       string aspectRole;
       if (!configuration.Roles.TryGetValue (aspectType, out aspectRole))
-        throw new Exception ("role not set on " + aspectType.Name); // TODO exception
+      {
+        var message = string.Format ("Role for type '{0}' not set.", aspectType.Name);
+        throw new ConfigurationErrorsException (message);
+      }
 
       return (from otherRole in preset.AspectRoles
               let beforeRole = preset.Position == OrderPosition.Before ? aspectRole : otherRole

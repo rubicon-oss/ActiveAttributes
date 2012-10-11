@@ -91,13 +91,19 @@ namespace ActiveAttributes.Core.Assembly
 
       //foreach (var method in mutableType.GetMethods ())
       //{
-      //  var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableType, method);
+      //  var allMatching = typeLevelAspectGenerators
+      //    .Where (x => x.Descriptor.Matches (method))
+      //      .Concat (aspectDescriptors)
+      //      .ToList();
+
       //}
+
+
 
       var mutableMethodInfos = mutableType.AllMutableMethods.ToList();
       foreach (var mutableMethod in mutableMethodInfos)
       {
-        var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableType, mutableMethod);
+        var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableMethod);
 
         // matching type level aspects + method level aspects
         var method = mutableMethod;
@@ -153,8 +159,9 @@ namespace ActiveAttributes.Core.Assembly
       return HandleAspects (mutableType, aspectDescriptors, fieldData);
     }
 
-    private IEnumerable<IAspectGenerator> HandleMethodLevelAspects (MutableType mutableType, MutableMethodInfo mutableMethod)
+    private IEnumerable<IAspectGenerator> HandleMethodLevelAspects (MutableMethodInfo mutableMethod)
     {
+      var mutableType = (MutableType) mutableMethod.DeclaringType;
       var aspectDescriptors = _aspectProviders.OfType<IMethodLevelAspectProvider>().SelectMany (x => x.GetAspects (mutableMethod.UnderlyingSystemMethodInfo));
       var fieldData = _fieldIntroducer.IntroduceMethodAspectFields (mutableType, mutableMethod);
 

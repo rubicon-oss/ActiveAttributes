@@ -56,6 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     }
 
+    [Ignore]
     [Test]
     public void GetsTypeLevelAspects ()
     {
