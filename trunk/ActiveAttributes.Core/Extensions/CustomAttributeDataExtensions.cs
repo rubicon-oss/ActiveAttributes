@@ -82,6 +82,15 @@ namespace ActiveAttributes.Core.Extensions
       return typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
     }
 
+    /// <summary>
+    /// Converts a <see cref="CustomAttributeTypedArgument"/> using an <paramref name="arrayConstructor"/> for array values and a
+    /// <paramref name="elementConstructor"/> for element values.
+    /// </summary>
+    /// <typeparam name="T">The destination type.</typeparam>
+    /// <param name="argument">The <see cref="CustomAttributeTypedArgument"/></param>
+    /// <param name="elementConstructor">A delegate creating a new value based on the value and its type.</param>
+    /// <param name="arrayConstructor">A delegate creating a new array based on its type and values.</param>
+    /// <returns>``0.</returns>
     public static T ConvertTo<T> (
         this CustomAttributeTypedArgument argument, Func<Type, object, T> elementConstructor, Func<Type, IEnumerable<T>, T> arrayConstructor)
     {
