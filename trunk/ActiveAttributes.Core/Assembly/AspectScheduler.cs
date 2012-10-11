@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -39,7 +37,16 @@ namespace ActiveAttributes.Core.Assembly
     {
       var aspectsAsCollection = aspects.ConvertToCollection();
 
-      var dependenciesByPriority = new List<Tuple<IAspectGenerator, IAspectGenerator>> ();
+      var dependenciesByPriority = GetDependenciesByPriority(aspectsAsCollection);
+      var dependenciesByRole = GetDependenciesByRole (aspectsAsCollection, dependenciesByPriority);
+
+      var dependencies = dependenciesByPriority.Concat (dependenciesByRole);
+      return aspectsAsCollection.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
+    }
+
+    private static List<Tuple<IAspectGenerator, IAspectGenerator>> GetDependenciesByPriority (ICollection<IAspectGenerator> aspectsAsCollection)
+    {
+      var dependenciesByPriority = new List<Tuple<IAspectGenerator, IAspectGenerator>>();
       var aspectCombinations = (from aspect1 in aspectsAsCollection
                                 from aspect2 in aspectsAsCollection
                                 select new
@@ -56,8 +63,20 @@ namespace ActiveAttributes.Core.Assembly
         else if (compared == -1)
           dependenciesByPriority.Add (Tuple.Create (item.Aspect2, item.Aspect1));
       }
+      return dependenciesByPriority;
+    }
 
-      var dependenciesByRole = new List<Tuple<IAspectGenerator, IAspectGenerator>> ();
+    private List<Tuple<IAspectGenerator, IAspectGenerator>> GetDependenciesByRole (
+        ICollection<IAspectGenerator> aspectsAsCollection, ICollection<Tuple<IAspectGenerator, IAspectGenerator>> dependenciesByPriority)
+    {
+      var aspectCombinations = (from aspect1 in aspectsAsCollection
+                                from aspect2 in aspectsAsCollection
+                                select new
+                                       {
+                                           Aspect1 = aspect1,
+                                           Aspect2 = aspect2
+                                       }).ToList();
+      var dependenciesByRole = new List<Tuple<IAspectGenerator, IAspectGenerator>>();
       var aspectsRuleCombination = from aspectCombination in aspectCombinations
                                    from rule in _configuration.Rules
                                    select new
@@ -81,26 +100,7 @@ namespace ActiveAttributes.Core.Assembly
         else if (compared == 1 && !dependenciesByPriority.Contains (tuple1))
           dependenciesByRole.Add (tuple2);
       }
-
-      try
-      {
-        var dependencies = dependenciesByPriority.Concat (dependenciesByRole);
-        return aspectsAsCollection.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
-      }
-      catch (ArgumentException exception)
-      {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.Append ("Circular dependencies defined:\r\n");
-        foreach (var dependency in dependenciesByRole)
-        {
-          stringBuilder
-              .Append (dependency.Item1.Descriptor.AspectType)
-              .Append (" -> ")
-              .Append (dependency.Item2.Descriptor.AspectType);
-        }
-        var message = stringBuilder.ToString();
-        throw new InvalidOperationException (message, exception);
-      }
+      return dependenciesByRole;
     }
   }
 }
