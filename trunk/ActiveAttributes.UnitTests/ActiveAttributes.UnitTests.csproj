@@ -113,7 +113,7 @@
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentTest.cs" />
     <Compile Include="Utilities\TopologicalSorterTest.cs" />
-    <Compile Include="Utilities\UndefinedOrderException.cs" />
+    <Compile Include="Utilities\UndefinedOrderExceptionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">

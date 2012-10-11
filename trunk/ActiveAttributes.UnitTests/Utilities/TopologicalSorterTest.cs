@@ -80,7 +80,7 @@ namespace ActiveAttributes.UnitTests.Utilities
     {
       Assert.That (
           () => _enumerable.TopologicalSort (new Tuple<object, object>[0], throwIfOrderIsUndefined: true),
-          Throws.Exception.Matches<UndefinedOrderException<object>> (
+          Throws.Exception.Matches<UndefinedOrderException> (
               expection =>
               {
                 Assert.That (expection.Items, Is.EquivalentTo (_enumerable));

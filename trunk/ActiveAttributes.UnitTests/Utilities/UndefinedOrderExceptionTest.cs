@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+using System.Linq;
 using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;
 
@@ -27,7 +28,7 @@ namespace ActiveAttributes.UnitTests.Utilities
     {
       var items = new[] { 1, 2, 3 };
 
-      var exception = new UndefinedOrderException<int> (items);
+      var exception = new UndefinedOrderException (items.Cast<object>());
 
       var expected = "Undefined order for items:\r\n" +
                      "1, 2, 3";

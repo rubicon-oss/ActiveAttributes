@@ -47,7 +47,7 @@ namespace ActiveAttributes.Core.Utilities
             .Where (x => !result.Contains (x) && !graphAsList.Any (y => y.Dependencies.Contains (x)))
             .ToList();
         if (throwIfOrderIsUndefined && independents.Count > 1)
-          throw new UndefinedOrderException<T> (independents.Select (x => x.Value));
+          throw new UndefinedOrderException (independents.Select (x => x.Value).Cast<object>());
 
         var independent = independents.FirstOrDefault();
         if (independent == null)

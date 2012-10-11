@@ -19,11 +19,11 @@ using System.Runtime.Serialization;
 
 namespace ActiveAttributes.Core.Utilities
 {
-  public class UndefinedOrderException<T> : Exception
+  public class UndefinedOrderException : Exception
   {
     private const string c_message = "Undefined order for items:\r\n";
 
-    public UndefinedOrderException (IEnumerable<T> items)
+    public UndefinedOrderException (IEnumerable<object> items)
     {
       Items = items;
     }
@@ -33,11 +33,11 @@ namespace ActiveAttributes.Core.Utilities
     {
     }
 
-    public IEnumerable<T> Items { get; private set; }
+    public IEnumerable<object> Items { get; private set; }
 
     public override string Message
     {
-      get { return c_message + Items.ToString<T> (); }
+      get { return c_message + Items.ToString<object> (); }
     }
   }
 }
