@@ -22,6 +22,7 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -97,7 +98,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _configuration.Expect (x => x.Rules).Return (rules);
       var aspects = new[] { _generator1, _generator2, _generator3 };
 
-      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.InvalidOperationException);
+      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<CircularDependencyException<IAspectGenerator>>());
     }
 
     [Test]
@@ -110,7 +111,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _configuration.Expect (x => x.Rules).Return (new ReadOnlyCollection<IOrderRule> (rules));
       var aspects = new[] { _generator1, _generator2, _generator3 };
 
-      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.InvalidOperationException);
+      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<UndefinedOrderException<IAspectGenerator>>());
     }
 
     [Test]

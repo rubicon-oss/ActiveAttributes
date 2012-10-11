@@ -174,6 +174,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       PatchAndTest (methodInfo, methodInfo, _emptyAspects, test);
     }
 
+    [Ignore]
     [Test]
     public void AssignInstanceAspects ()
     {

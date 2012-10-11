@@ -21,10 +21,10 @@ namespace ActiveAttributes.Core.Extensions
 {
   internal static class EnumExtensions
   {
-    public static bool HasFlags<T> (this Enum flags1, T flags2)
+    public static bool HasFlags<T> (this Enum actual, T expected)
     {
-      var f1 = (int) (object) flags1;
-      var f2 = (int) (object) flags2;
+      var f1 = (int) (object) actual;
+      var f2 = (int) (object) expected;
       return (f1 & f2) == f2;
     }
 

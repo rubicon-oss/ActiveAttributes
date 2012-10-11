@@ -39,7 +39,7 @@ namespace ActiveAttributes.Core.Assembly.Providers
 
     private IEnumerable<IAspectDescriptor> GetAspects (PropertyInfo propertyInfo)
     {
-      var propertySequence = propertyInfo.CreateSequence (x => PropertyInfoExtensions.GetOverridenProperty (x)).Cast<MemberInfo>();
+      var propertySequence = propertyInfo.CreateSequence (x => PropertyInfoExtensions.GetBaseProperty (x)).Cast<MemberInfo>();
       return AspectProvider.GetAspects (propertyInfo, propertySequence);
     }
   }

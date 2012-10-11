@@ -48,7 +48,7 @@ namespace ActiveAttributes.UnitTests.Extensions
         var expected = typeof (BaseType).GetProperties().Single (x => x.Name == "VirtualProperty");
 
         Assert.That (expected, Is.Not.Null);
-        Assert.That (propertyInfo.GetOverridenProperty(), Is.EqualTo (expected));
+        Assert.That (propertyInfo.GetBaseProperty(), Is.EqualTo (expected));
       }
 
       [Test]
@@ -56,7 +56,7 @@ namespace ActiveAttributes.UnitTests.Extensions
       {
         var propertyInfo = typeof (DerivedType).GetProperties ().Single (x => x.Name == "DeclaredProperty");
 
-        Assert.That (propertyInfo.GetOverridenProperty(), Is.Null);
+        Assert.That (propertyInfo.GetBaseProperty(), Is.Null);
       }
 
       [Test]
@@ -65,7 +65,7 @@ namespace ActiveAttributes.UnitTests.Extensions
         var propertyInfo = typeof (DerivedType).GetProperties().Single (x => x.Name == "PartialProperty");
         var expected = typeof (BaseType).GetProperties().Single (x => x.Name == "PartialProperty");
 
-        Assert.That (propertyInfo.GetOverridenProperty(), Is.EqualTo (expected));
+        Assert.That (propertyInfo.GetBaseProperty(), Is.EqualTo (expected));
       }
 
       [Test]
@@ -73,7 +73,7 @@ namespace ActiveAttributes.UnitTests.Extensions
       {
         var propertyInfo = typeof (DerivedType).GetProperties ().Single (x => x.Name == "NewProperty");
 
-        Assert.That (propertyInfo.GetOverridenProperty (), Is.Null);
+        Assert.That (propertyInfo.GetBaseProperty (), Is.Null);
       }
     }
   }

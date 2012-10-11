@@ -25,10 +25,10 @@ namespace ActiveAttributes.Core.Extensions
   internal static class PropertyInfoExtensions
   {
     /// <summary>
-    /// Returns the directly overriden property, or null if no overriden property exists.
+    /// Returns the base property, or null if no base property exists.
     /// </summary>
     /// <param name="propertyInfo">A property info.</param>
-    public static PropertyInfo GetOverridenProperty (this PropertyInfo propertyInfo)
+    public static PropertyInfo GetBaseProperty (this PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       Assertion.IsTrue (propertyInfo.DeclaringType != null);
