@@ -25,7 +25,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
   public class OrderRuleBaseTest
   {
     [Test]
-    public void Source ()
+    public void Initialization ()
     {
       var source = "my source";
       var rule = new TestableOrderRule (source);
@@ -41,7 +41,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
       {
       }
 
-      public override int Compare (IAspectGenerator x, IAspectGenerator y)
+      public override int Compare (IAspectDescriptor x, IAspectDescriptor y)
       {
         throw new NotImplementedException();
       }

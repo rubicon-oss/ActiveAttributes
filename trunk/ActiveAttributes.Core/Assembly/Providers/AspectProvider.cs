@@ -49,6 +49,8 @@ namespace ActiveAttributes.Core.Assembly.Providers
         var customAttributeDatas = CustomAttributeData.GetCustomAttributes (member)
             .Where (x => x.IsAspectAttribute())
             .Where (x => isBase || x.IsInheriting());
+        // TODO add AllowMultiple
+        // TODO TypePipeCustomAttributeData: add parameter for including interfaces
 
         aspectsData.AddRange (customAttributeDatas);
       }

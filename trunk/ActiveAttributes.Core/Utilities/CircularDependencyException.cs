@@ -19,10 +19,13 @@ using System.Runtime.Serialization;
 
 namespace ActiveAttributes.Core.Utilities
 {
+  // TODO remove generic parameter
+  // TODO docs
   public class CircularDependencyException<T> : Exception
   {
     private const string c_message = "Circular dependencies detected:\r\n";
 
+    // TODO change to IEnumerable
     public CircularDependencyException (IEnumerable<IEnumerable<T>> cycles)
     {
       Cycles = cycles;

@@ -25,9 +25,9 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
       Source = source;
     }
 
-    public abstract int Compare (IAspectGenerator x, IAspectGenerator y);
-
     public string Source { get; private set; }
+
+    public abstract int Compare (IAspectDescriptor x, IAspectDescriptor y);
 
     public override string ToString ()
     {

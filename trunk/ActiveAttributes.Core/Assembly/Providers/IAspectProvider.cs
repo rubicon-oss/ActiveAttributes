@@ -24,6 +24,7 @@ namespace ActiveAttributes.Core.Assembly.Providers
   /// </summary>
   public interface IAspectProvider
   {
+    // TODO: Move to IMethodLevel/ITypeLevelAspectProvider, make parameter strongly typed (MethodInfo/Type)
     IEnumerable<IAspectDescriptor> GetAspects (MemberInfo member);
   }
 }

@@ -24,6 +24,7 @@ namespace ActiveAttributes.Core.Extensions
 {
   internal static class PropertyInfoExtensions
   {
+    // TODO maybe use TypePipe's RelatedPropertyFinder class instead
     /// <summary>
     /// Returns the base <see cref="PropertyInfo"/>.
     /// </summary>

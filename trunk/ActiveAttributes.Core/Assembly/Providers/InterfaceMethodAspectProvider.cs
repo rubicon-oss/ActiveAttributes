@@ -38,6 +38,7 @@ namespace ActiveAttributes.Core.Assembly.Providers
               x.InterfaceMethods, (targetMember, interfaceMember) => new { TargetMember = targetMember, InterfaceMember = interfaceMember }));
 
       var interfaceMembers = targetInterfaceZip.Where (x => x.TargetMember == member).Select (x => x.InterfaceMember).Cast<MemberInfo>();
+      // TODO remove dummy
       var interfaceMembersWithDummmy = new[] { MethodInfo.GetCurrentMethod() }.Concat (interfaceMembers);
       return AspectProvider.GetAspects (null, interfaceMembersWithDummmy);
     }

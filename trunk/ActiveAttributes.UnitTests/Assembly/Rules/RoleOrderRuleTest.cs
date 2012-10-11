@@ -30,30 +30,22 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
   {
     private IAspectConfiguration _configuration;
 
-    private IAspectGenerator _generator1;
-    private IAspectGenerator _generator2;
-    private IAspectGenerator _generator3;
+    private IAspectDescriptor _descriptor1;
+    private IAspectDescriptor _descriptor2;
+    private IAspectDescriptor _descriptor3;
 
     [SetUp]
     public void SetUp ()
     {
       _configuration = MockRepository.GenerateMock<IAspectConfiguration>();
 
-      var descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
-      var descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
-      var descriptor3 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor3 = MockRepository.GenerateMock<IAspectDescriptor>();
 
-      descriptor1.Expect (x => x.AspectType).Return(typeof(Aspect1Attribute));
-      descriptor2.Expect (x => x.AspectType).Return(typeof(Aspect2Attribute));
-      descriptor3.Expect (x => x.AspectType).Return(typeof(Aspect3Attribute));
-
-      _generator1 = MockRepository.GenerateMock<IAspectGenerator> ();
-      _generator2 = MockRepository.GenerateMock<IAspectGenerator> ();
-      _generator3 = MockRepository.GenerateMock<IAspectGenerator> ();
-
-      _generator1.Expect (x => x.Descriptor).Return(descriptor1);
-      _generator2.Expect (x => x.Descriptor).Return(descriptor2);
-      _generator3.Expect (x => x.Descriptor).Return(descriptor3);
+      _descriptor1.Expect (x => x.AspectType).Return(typeof(Aspect1Attribute));
+      _descriptor2.Expect (x => x.AspectType).Return(typeof(Aspect2Attribute));
+      _descriptor3.Expect (x => x.AspectType).Return(typeof(Aspect3Attribute));
     }
 
     [Test]
@@ -70,9 +62,9 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
 
       var rule = new RoleOrderRule ("", role2, role1, _configuration);
 
-      var resultGreater = rule.Compare (_generator1, _generator2);
-      var resultLess = rule.Compare (_generator2, _generator1);
-      var resultEqual = rule.Compare (_generator1, _generator3);
+      var resultGreater = rule.Compare (_descriptor1, _descriptor2);
+      var resultLess = rule.Compare (_descriptor2, _descriptor1);
+      var resultEqual = rule.Compare (_descriptor1, _descriptor3);
 
       Assert.That (resultGreater, Is.EqualTo (1));
       Assert.That (resultLess, Is.EqualTo (-1));

@@ -90,6 +90,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GetPatchedBody (MethodBodyModificationContext ctx)
     {
+      // TODO unnecessary ToList?
       var generatorsAsList = _aspects.ToList();
 
       var methodInfoField = Expression.Field (ctx.This, _methodInfoFieldInfo);

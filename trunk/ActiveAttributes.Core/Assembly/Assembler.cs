@@ -20,6 +20,7 @@ using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Providers;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
@@ -64,6 +65,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IFactory _factory;
     private readonly IAspectScheduler _scheduler;
 
+    // TODO: Maybe add an AspectProviderContainer with .MethodLevelAspectProviders and .TypeLevelAspectProviders property (and more in the future), then you don't need IAspectProvider any more
     internal Assembler (
         IAspectProvider[] aspectProviders,
         IFieldIntroducer fieldIntroducer,
@@ -84,6 +86,8 @@ namespace ActiveAttributes.Core.Assembly
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
+      // var typeLevelDescriptors = ...;
+      // Dictionary<IAttributeDescriptor, IAttributeGenerator> typeLevelGenerators = CreateTypeLevelGenerators (typeLevelDescriptors);
       var typeLevelAspectGenerators = HandleTypeLevelGenerators (mutableType).ToList();
 
       //foreach (var method in mutableType.GetMethods ())
@@ -105,6 +109,11 @@ namespace ActiveAttributes.Core.Assembly
       var mutableMethodInfos = mutableType.AllMutableMethods.ToList ();
       foreach (var mutableMethod in mutableMethodInfos)
       {
+        // var methodLevelDescriptors = ...;
+        // var allDescriptors = typeLevelDescriptors.Where (d => d.Matches (...)).Concat (methodLevelDescriptors);
+        // var sortedDescriptors = _scheduler.Sort (allDescriptors);
+        // Dictionary<IAttributeDescriptor, IAttributeGenerator> methodLevelGenerators = CreateMethodLevelGenerators (methodLevelDescriptors);
+        // var generators = sortedDescriptors.Select (d => typeLevelGenerators.GetValueOrDefault (d) ?? methodLevelGenerators.GetValueOrDefault (d));
         var methodLevelAspectGenerators = HandleMethodLevelAspects (mutableMethod);
 
         // matching type level aspects + method level aspects
@@ -116,7 +125,8 @@ namespace ActiveAttributes.Core.Assembly
 
         if (allMatchingAspectGenerators.Any ())
         {
-          var sortedAspects = _scheduler.GetOrdered (allMatchingAspectGenerators).ToList ();
+          var tuples = allMatchingAspectGenerators.Select (x => Tuple.Create (x.Descriptor, x));
+          var sortedAspects = _scheduler.GetOrdered (tuples).ToList ();
           AddAspectsToMethod (sortedAspects, mutableMethod);
         }
       }

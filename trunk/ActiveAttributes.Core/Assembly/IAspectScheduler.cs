@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Configuration;
+using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -25,6 +26,7 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   public interface IAspectScheduler
   {
-    IEnumerable<IAspectGenerator> GetOrdered (IEnumerable<IAspectGenerator> aspects);
+    IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects);
+    IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects);
   }
 }

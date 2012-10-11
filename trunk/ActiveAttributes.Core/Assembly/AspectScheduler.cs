@@ -33,74 +33,76 @@ namespace ActiveAttributes.Core.Assembly
       _configuration = configuration;
     }
 
-    public IEnumerable<IAspectGenerator> GetOrdered (IEnumerable<IAspectGenerator> aspects)
+    public IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects)
+    {
+      var aspectsAsCollection = aspects.ConvertToCollection();
+      var descriptors = aspectsAsCollection.Select (x => x.Item1);
+      var sortedDescriptors = GetOrdered (descriptors);
+      var sortedValues = sortedDescriptors.Select (x => aspectsAsCollection.Single (y => y.Item1 == x)).Select (x => x.Item2);
+      return sortedValues;
+    }
+
+    public IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects)
     {
       var aspectsAsCollection = aspects.ConvertToCollection();
 
-      var dependenciesByPriority = GetDependenciesByPriority(aspectsAsCollection);
-      var dependenciesByRole = GetDependenciesByRole (aspectsAsCollection, dependenciesByPriority);
+      var dependenciesByPriority = GetDependenciesByPriority2 (aspectsAsCollection).ToList();
+      var dependenciesByRule = GetDependenciesByRule (aspectsAsCollection);
+      var dependenciesByRuleCleaned = CleanConflicts (dependenciesByRule, dependenciesByPriority);
+      var allDependencies = dependenciesByPriority.Concat (dependenciesByRuleCleaned);
 
-      var dependencies = dependenciesByPriority.Concat (dependenciesByRole);
-      return aspectsAsCollection.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
+      return aspectsAsCollection.TopologicalSort (allDependencies, throwIfOrderIsUndefined: true);
     }
 
-    private static List<Tuple<IAspectGenerator, IAspectGenerator>> GetDependenciesByPriority (ICollection<IAspectGenerator> aspectsAsCollection)
+    // TODO extract IAspectDependencyProvider ?
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByPriority2 (ICollection<IAspectDescriptor> aspects)
     {
-      var dependenciesByPriority = new List<Tuple<IAspectGenerator, IAspectGenerator>>();
-      var aspectCombinations = (from aspect1 in aspectsAsCollection
-                                from aspect2 in aspectsAsCollection
+      var combinations = (from aspect1 in aspects
+                                from aspect2 in aspects
                                 select new
-                                       {
-                                           Aspect1 = aspect1,
-                                           Aspect2 = aspect2
-                                       }).ToList();
+                                {
+                                  Aspect1 = aspect1,
+                                  Aspect2 = aspect2
+                                }).ToList ();
 
-      foreach (var item in aspectCombinations)
+      foreach (var item in combinations)
       {
-        var compared = item.Aspect1.Descriptor.Priority.CompareTo (item.Aspect2.Descriptor.Priority);
+        var compared = item.Aspect1.Priority.CompareTo (item.Aspect2.Priority);
         if (compared == 1)
-          dependenciesByPriority.Add (Tuple.Create (item.Aspect1, item.Aspect2));
+          yield return Tuple.Create (item.Aspect1, item.Aspect2);
         else if (compared == -1)
-          dependenciesByPriority.Add (Tuple.Create (item.Aspect2, item.Aspect1));
+          yield return Tuple.Create (item.Aspect2, item.Aspect1);
       }
-      return dependenciesByPriority;
     }
 
-    private List<Tuple<IAspectGenerator, IAspectGenerator>> GetDependenciesByRole (
-        ICollection<IAspectGenerator> aspectsAsCollection, ICollection<Tuple<IAspectGenerator, IAspectGenerator>> dependenciesByPriority)
-    {
-      var aspectCombinations = (from aspect1 in aspectsAsCollection
-                                from aspect2 in aspectsAsCollection
-                                select new
-                                       {
-                                           Aspect1 = aspect1,
-                                           Aspect2 = aspect2
-                                       }).ToList();
-      var dependenciesByRole = new List<Tuple<IAspectGenerator, IAspectGenerator>>();
-      var aspectsRuleCombination = from aspectCombination in aspectCombinations
-                                   from rule in _configuration.Rules
-                                   select new
-                                          {
-                                              aspectCombination.Aspect1,
-                                              aspectCombination.Aspect2,
-                                              Rule = rule
-                                          };
 
-      foreach (var item in aspectsRuleCombination)
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByRule (ICollection<IAspectDescriptor> aspects)
+    {
+      var combinations = (from aspect1 in aspects
+                                    from aspect2 in aspects
+                                    from rule in _configuration.Rules
+                                    select new
+                                           {
+                                               Aspect1 = aspect1,
+                                               Aspect2 = aspect2,
+                                               Rule = rule
+                                           }).ToList();
+
+      foreach (var item in combinations)
       {
         var compared = item.Rule.Compare (item.Aspect1, item.Aspect2);
-        if (compared == 0)
-          continue;
-
-        var tuple1 = Tuple.Create (item.Aspect1, item.Aspect2);
-        var tuple2 = Tuple.Create (item.Aspect2, item.Aspect1);
-
-        if (compared == -1 && !dependenciesByPriority.Contains (tuple2))
-          dependenciesByRole.Add (tuple1);
-        else if (compared == 1 && !dependenciesByPriority.Contains (tuple1))
-          dependenciesByRole.Add (tuple2);
+        if (compared == -1)
+          yield return Tuple.Create (item.Aspect1, item.Aspect2);
+        else if (compared == 1)
+          yield return Tuple.Create (item.Aspect2, item.Aspect1);
       }
-      return dependenciesByRole;
+    }
+
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> CleanConflicts (
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> rules, params IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>>[] rulesAlreadyDefined)
+    {
+      var conflictRules = rulesAlreadyDefined.SelectMany(x => x.Select(y => Tuple.Create (y.Item2, y.Item1)));
+      return rules.Where (x => !conflictRules.Contains (x));
     }
   }
 }

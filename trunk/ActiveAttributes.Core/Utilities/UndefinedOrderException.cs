@@ -19,10 +19,14 @@ using System.Runtime.Serialization;
 
 namespace ActiveAttributes.Core.Utilities
 {
+  /// <summary>
+  /// Exception that is thrown when ordering a set of items where the order is not totally defined.
+  /// </summary>
   public class UndefinedOrderException : Exception
   {
     private const string c_message = "Undefined order for items:\r\n";
 
+    // TODO change to IEnumerable
     public UndefinedOrderException (IEnumerable<object> items)
     {
       Items = items;
