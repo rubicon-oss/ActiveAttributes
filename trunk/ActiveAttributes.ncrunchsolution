@@ -8,5 +8,10 @@
   <FrameworkUtilisationTypeForMSTest>UseStaticAnalysis</FrameworkUtilisationTypeForMSTest>
   <EngineModes>Run all tests automatically:BFRydWU=;Run all tests manually:BUZhbHNl;Run impacted tests automatically, others manually (experimental!):CklzSW1wYWN0ZWQ=;Run pinned tests automatically, others manually:CElzUGlubmVk</EngineModes>
   <MetricsExclusionList>
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Annotations.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\ActionInvocationContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\FuncInvocationContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Contexts
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Invocations
 </MetricsExclusionList>
 </SolutionConfiguration>

@@ -65,7 +65,7 @@ namespace ActiveAttributes.Core.Aspects
     {
     }
 
-    private void WrapIfThrowing ([InstantHandle] Action action)
+    private void WrapIfThrowing (Action action)
     {
       try
       {
