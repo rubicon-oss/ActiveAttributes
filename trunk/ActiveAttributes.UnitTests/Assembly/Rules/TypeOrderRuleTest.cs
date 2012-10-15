@@ -27,22 +27,22 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
   [TestFixture]
   public class TypeOrderRuleTest
   {
-    private IAspectConfiguration _configuration;
+    private IConfiguration _configuration;
 
-    private IAspectDescriptor _descriptor1;
-    private IAspectDescriptor _descriptor2;
-    private IAspectDescriptor _descriptor3;
-    private IAspectDescriptor _descriptor4;
+    private IDescriptor _descriptor1;
+    private IDescriptor _descriptor2;
+    private IDescriptor _descriptor3;
+    private IDescriptor _descriptor4;
 
     [SetUp]
     public void SetUp ()
     {
-      _configuration = MockRepository.GenerateMock<IAspectConfiguration> ();
+      _configuration = MockRepository.GenerateMock<IConfiguration> ();
 
-      _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
-      _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
-      _descriptor3 = MockRepository.GenerateMock<IAspectDescriptor> ();
-      _descriptor4 = MockRepository.GenerateMock<IAspectDescriptor> ();
+      _descriptor1 = MockRepository.GenerateMock<IDescriptor> ();
+      _descriptor2 = MockRepository.GenerateMock<IDescriptor> ();
+      _descriptor3 = MockRepository.GenerateMock<IDescriptor> ();
+      _descriptor4 = MockRepository.GenerateMock<IDescriptor> ();
 
       _descriptor1.Expect (x => x.AspectType).Return (typeof (Aspect1Attribute));
       _descriptor2.Expect (x => x.AspectType).Return (typeof (Aspect2Attribute));

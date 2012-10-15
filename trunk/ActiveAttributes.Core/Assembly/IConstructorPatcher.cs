@@ -33,17 +33,11 @@ namespace ActiveAttributes.Core.Assembly
     /// <see cref="MethodInfo"/>) and original method delegate fields.
     /// </summary>
     /// <param name="mutableMethod">The mutable method.</param>
-    /// <param name="propertyInfoFieldInfo">The field containing the <see cref="PropertyInfo"/>.</param>
-    /// <param name="eventInfoFieldInfo">The field containing the <see cref="EventInfo"/>.</param>
-    /// <param name="methodInfoFieldInfo">The field containing the <see cref="MethodInfo"/>.</param>
-    /// <param name="delegateFieldInfo">The field containing the original method <see cref="Delegate"/>.</param>
+    /// <param name="fieldInfoContainer">The field data container.</param>
     /// <param name="copiedMethod">The copied method.</param>
     void AddReflectionAndDelegateInitialization (
         MutableMethodInfo mutableMethod,
-        FieldInfo propertyInfoFieldInfo,
-        FieldInfo eventInfoFieldInfo,
-        FieldInfo methodInfoFieldInfo,
-        FieldInfo delegateFieldInfo,
+        FieldInfoContainer fieldInfoContainer,
         MutableMethodInfo copiedMethod);
 
     /// <summary>
@@ -57,6 +51,6 @@ namespace ActiveAttributes.Core.Assembly
         MutableType mutableType,
         IArrayAccessor staticAccessor,
         IArrayAccessor instanceAccessor,
-        IEnumerable<IAspectGenerator> aspects);
+        IEnumerable<IExpressionGenerator> aspects);
   }
 }

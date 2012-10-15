@@ -32,7 +32,7 @@ namespace ActiveAttributes.UseCases
     static void Main ()
     {
       var configurator = new ApplicationConfigurationConfigurator();
-      configurator.Initialize (new AspectConfiguration());
+      configurator.Initialize (new Configuration());
 
       Application.EnableVisualStyles ();
       Application.SetCompatibleTextRenderingDefault (false);

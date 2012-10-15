@@ -77,16 +77,16 @@ namespace ActiveAttributes.UseCases
 
     private void button6_Click (object sender, EventArgs e)
     {
-      AspectConfiguration.Singleton.Rules.Clear ();
-      AspectConfiguration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
+      Configuration.Singleton.Rules.Clear ();
+      Configuration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
       var obj = ObjectFactory.Create<DomainClass> ();
       obj.Method ();
     }
 
     private void button5_Click (object sender, EventArgs e)
     {
-      AspectConfiguration.Singleton.Rules.Clear ();
-      AspectConfiguration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
+      Configuration.Singleton.Rules.Clear ();
+      Configuration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
       var obj = ObjectFactory.Create<DomainClass> ();
       obj.Method ();
     }

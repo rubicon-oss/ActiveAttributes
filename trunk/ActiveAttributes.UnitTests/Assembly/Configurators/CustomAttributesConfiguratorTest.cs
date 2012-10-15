@@ -27,7 +27,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Configurators
   [TestFixture]
   public class CustomAttributesConfiguratorTest
   {
-    private IAspectConfiguration _configuration;
+    private IConfiguration _configuration;
     private IList<IOrderRule> _orderRules;
     private IDictionary<Type, string> _roles;
     private IEnumerable<System.Reflection.Assembly> _assemblies;
@@ -36,7 +36,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Configurators
     public void SetUp ()
     {
       _assemblies = new[] { System.Reflection.Assembly.GetExecutingAssembly() };
-      _configuration = MockRepository.GenerateMock<IAspectConfiguration>();
+      _configuration = MockRepository.GenerateMock<IConfiguration>();
       _orderRules = MockRepository.GenerateMock<IList<IOrderRule>>();
       _roles = MockRepository.GenerateMock<IDictionary<Type, string>>();
 
@@ -77,11 +77,11 @@ namespace ActiveAttributes.UnitTests.Assembly.Configurators
       _orderRules.AssertWasCalled (x => x.Add (orderRule2));
     }
 
-    [AspectRole ("TestRole")]
-    [AspectOrdering (OrderPosition.Before, typeof (DomainAspect2Attribute))]
-    [AspectOrdering (OrderPosition.After, typeof (DomainAspect3Attribute))]
-    [AspectOrdering (OrderPosition.Before, "Role2")]
-    [AspectOrdering (OrderPosition.After, "Role3")]
+    [Role ("TestRole")]
+    [Ordering (OrderPosition.Before, typeof (DomainAspect2Attribute))]
+    [Ordering (OrderPosition.After, typeof (DomainAspect3Attribute))]
+    [Ordering (OrderPosition.Before, "Role2")]
+    [Ordering (OrderPosition.After, "Role3")]
     private class DomainAspect1Attribute : AspectAttribute { }
 
     private class DomainAspect2Attribute : AspectAttribute { }

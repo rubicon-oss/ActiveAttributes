@@ -35,14 +35,14 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class MethodPatcherTest : TestBase
   {
-    private IAspectGenerator _generator1;
-    private IAspectGenerator _generator2;
+    private IExpressionGenerator _generator1;
+    private IExpressionGenerator _generator2;
 
-    private IAspectDescriptor _descriptor1;
-    private IAspectDescriptor _descriptor2;
+    private IDescriptor _descriptor1;
+    private IDescriptor _descriptor2;
 
-    private IEnumerable<IAspectGenerator> _oneGenerator;
-    private IEnumerable<IAspectGenerator> _twoGenerators;
+    private IEnumerable<IExpressionGenerator> _oneGenerator;
+    private IEnumerable<IExpressionGenerator> _twoGenerators;
 
     private MethodInfo _createDelegate;
     private MethodInfo _onInterceptMethod;
@@ -52,14 +52,14 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       base.SetUp ();
 
-      _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
-      _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
+      _descriptor1 = MockRepository.GenerateMock<IDescriptor> ();
+      _descriptor2 = MockRepository.GenerateMock<IDescriptor> ();
 
       _descriptor1.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
       _descriptor2.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
 
-      _generator1 = MockRepository.GenerateMock<IAspectGenerator> ();
-      _generator2 = MockRepository.GenerateMock<IAspectGenerator>();
+      _generator1 = MockRepository.GenerateMock<IExpressionGenerator> ();
+      _generator2 = MockRepository.GenerateMock<IExpressionGenerator>();
 
       _generator1.Stub (x => x.Descriptor).Return (_descriptor1);
       _generator2.Stub (x => x.Descriptor).Return (_descriptor2);
@@ -77,7 +77,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _twoGenerators = new[] { _generator1, _generator2 };
 
       _createDelegate = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-      _onInterceptMethod = typeof (MethodInterceptionAspectAttribute).GetMethods().Where (x => x.Name == "OnIntercept").Single();
+      _onInterceptMethod = typeof (MethodInterceptionAspectAttribute).GetMethods().Single(x => x.Name == "OnIntercept");
     }
 
     public class DomainTypeBase
@@ -385,7 +385,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
 
 
-    private Expression OutermostAspectCall (IAspectGenerator generator, Expression invocation)
+    private Expression OutermostAspectCall (IExpressionGenerator generator, Expression invocation)
     {
       var convertedAspect = Expression.Convert (generator.GetStorageExpression (null), generator.Descriptor.AspectType);
       var call = Expression.Call (convertedAspect, _onInterceptMethod, new[] { invocation });
@@ -477,17 +477,17 @@ namespace ActiveAttributes.UnitTests.Assembly
       return new ThisExpression (type);
     }
 
-    private void PatchAndTest<T> (MethodInfo methodInfo, IEnumerable<IAspectGenerator> aspects, Action<MutableMethodInfo> test)
+    private void PatchAndTest<T> (MethodInfo methodInfo, IEnumerable<IExpressionGenerator> aspects, Action<MutableMethodInfo> test)
     {
       AssembleType<T> (
           mutableType =>
           {
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-            var propertyInfoField = typeof (T).GetFields().Where (x => x.Name == "PropertyInfo").Single();
-            var eventInfoField = typeof (T).GetFields().Where (x => x.Name == "EventInfo").Single();
-            var methodInfoField = typeof (T).GetFields().Where (x => x.Name == "MethodInfo").Single();
-            var delegateField = typeof (T).GetFields().Where (x => x.Name == "Delegate").Single();
+            var propertyInfoField = typeof (T).GetFields().Single(x => x.Name == "PropertyInfo");
+            var eventInfoField = typeof (T).GetFields().Single(x => x.Name == "EventInfo");
+            var methodInfoField = typeof (T).GetFields().Single(x => x.Name == "MethodInfo");
+            var delegateField = typeof (T).GetFields().Single(x => x.Name == "Delegate");
 
             var typeProvider = new TypeProvider (mutableMethod.UnderlyingSystemMethodInfo);
             var patcher = new MethodPatcher (mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, aspects, typeProvider);

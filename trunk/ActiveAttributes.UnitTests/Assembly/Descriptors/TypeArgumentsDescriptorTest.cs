@@ -30,7 +30,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
       public void SetsInformation ()
       {
         var aspectType = typeof (AspectAttribute);
-        var scope = AspectScope.Instance;
+        var scope = Scope.Instance;
         var priority = 5;
         var descriptor = new TypeDescriptor (aspectType, scope, priority);
 

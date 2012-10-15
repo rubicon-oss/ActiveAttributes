@@ -35,39 +35,33 @@ namespace ActiveAttributes.Core.Assembly
   {
     public void AddReflectionAndDelegateInitialization (
         MutableMethodInfo mutableMethod,
-        FieldInfo propertyInfoFieldInfo,
-        FieldInfo eventInfoFieldInfo,
-        FieldInfo methodInfoFieldInfo,
-        FieldInfo delegateFieldInfo,
+        FieldInfoContainer fieldInfoContainer,
         MutableMethodInfo copiedMethod)
     {
       ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
-      ArgumentUtility.CheckNotNull ("propertyInfoFieldInfo", propertyInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("eventInfoFieldInfo", eventInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("methodInfoFieldInfo", methodInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("delegateFieldInfo", delegateFieldInfo);
       ArgumentUtility.CheckNotNull ("copiedMethod", copiedMethod);
 
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
-              GetPropertyInfoAssignExpression (propertyInfoFieldInfo, ctx, mutableMethod),
-              GetEventInfoAssignExpression (eventInfoFieldInfo, ctx, mutableMethod),
-              GetMethodInfoAssignExpression (methodInfoFieldInfo, ctx, mutableMethod),
-              GetDelegateAssignExpression (delegateFieldInfo, ctx, copiedMethod));
+              GetPropertyInfoAssignExpression (fieldInfoContainer.PropertyInfoField, ctx, mutableMethod),
+              GetEventInfoAssignExpression (fieldInfoContainer.EventInfoField, ctx, mutableMethod),
+              GetMethodInfoAssignExpression (fieldInfoContainer.MethodInfoField, ctx, mutableMethod),
+              GetDelegateAssignExpression (fieldInfoContainer.DelegateField, ctx, mutableMethod, copiedMethod));
 
       var mutableType = (MutableType) mutableMethod.DeclaringType;
       AddMutation (mutableType, mutation);
     }
 
-    private Expression GetDelegateAssignExpression (FieldInfo delegateFieldInfo, BodyContextBase ctx, MutableMethodInfo copiedMethodInfo)
+    private Expression GetDelegateAssignExpression (FieldInfo delegateFieldInfo, BodyContextBase ctx, MutableMethodInfo mutableMethod, MutableMethodInfo copiedMethodInfo)
     {
       var delegateField = Expression.Field (ctx.This, delegateFieldInfo);
 
-      var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-      var delegateType = Expression.Constant (copiedMethodInfo.GetDelegateType());
-      var copiedMethod = Expression.Constant (copiedMethodInfo.UnderlyingSystemMethodInfo, typeof(MethodInfo));
-      var createDelegate = Expression.Call (null, createDelegateMethodInfo, delegateType, ctx.This, copiedMethod);
-      var convertedDelegate = Expression.Convert (createDelegate, (Type) delegateType.Value);
+      var delegateType = Expression.Constant (mutableMethod.GetDelegateType ());
+      var convertedDelegate = Expression.NewDelegate (mutableMethod.GetDelegateType (), ctx.This, copiedMethodInfo);
+      //var createDelegateMethodInfo = typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
+      //var copiedMethod = Expression.Constant (copiedMethodInfo.UnderlyingSystemMethodInfo, typeof (MethodInfo));
+      //var createDelegate = Expression.Call (null, createDelegateMethodInfo, delegateType, ctx.This, copiedMethod);
+      //var convertedDelegate = Expression.Convert (createDelegate, (Type) delegateType.Value);
 
       var delegateAssignExpression = Expression.Assign (delegateField, convertedDelegate);
       return delegateAssignExpression;
@@ -123,7 +117,7 @@ namespace ActiveAttributes.Core.Assembly
         MutableType mutableType,
         IArrayAccessor staticAccessor,
         IArrayAccessor instanceAccessor,
-        IEnumerable<IAspectGenerator> aspects)
+        IEnumerable<IExpressionGenerator> aspects)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
       ArgumentUtility.CheckNotNull ("staticAccessor", staticAccessor);
@@ -133,13 +127,13 @@ namespace ActiveAttributes.Core.Assembly
       var aspectsAsCollection = aspects.ConvertToCollection();
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
-              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == AspectScope.Instance)),
-              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == AspectScope.Static)));
+              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == Scope.Instance)),
+              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == Scope.Static)));
 
       AddMutation (mutableType, mutation);
     }
 
-    private Expression GeAspectsArrayAssignExpression (IArrayAccessor accessor, BodyContextBase ctx, IEnumerable<IAspectGenerator> aspects)
+    private Expression GeAspectsArrayAssignExpression (IArrayAccessor accessor, BodyContextBase ctx, IEnumerable<IExpressionGenerator> aspects)
     {
       var instanceAspectsField = accessor.GetAccessExpression (accessor.IsStatic ? null : ctx.This);
       var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
@@ -160,156 +154,5 @@ namespace ActiveAttributes.Core.Assembly
       foreach (var constructor in mutableType.AllMutableConstructors)
         constructor.SetBody (ctx => Expression.Block (ctx.PreviousBody, expression (ctx)));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //public void Patch (MutableMethodInfo mutableMethod, IEnumerable<IAspectDescriptor> aspects, FieldIntroducer.Data fieldData, MutableMethodInfo copiedMethod)
-    //{
-    //  var mutableType = ((MutableType) mutableMethod.DeclaringType);
-
-    //  //var initMethod = mutableType.AddMethod ("_InitializeAspects", MethodAttributes.Private, typeof (void), new ParameterDeclaration[0],
-    //  //                                        ctx => Expression.Block (
-    //  //                                            GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
-    //  //                                            GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
-    //  //                                            GetAspectsInitExpression (fieldData.StaticAspectsField, fieldData.InstanceAspectsField,
-    //  //                                                                      aspects, ctx)));
-
-    //  foreach (var mutableConstructor in mutableType.AllMutableConstructors)
-    //  {
-    //    mutableConstructor.SetBody (
-    //        ctx =>
-    //        Expression.Block (
-    //            ctx.PreviousBody,
-    //            GetMethodInfoAssignExpression (fieldData.MethodInfoField, mutableMethod, ctx),
-    //            GetDelegateAssignExpression (fieldData.DelegateField, mutableMethod, ctx, copiedMethod),
-    //            GetAspectsInitExpression (
-    //                fieldData.StaticAspectsField,
-    //                fieldData.InstanceAspectsField,
-    //                aspects,
-    //                ctx)));
-    //  }
-    //}
-
-    //private Expression GetAspectsInitExpression (FieldInfo staticAspectsField,
-    //    FieldInfo instanceAspectsField, IEnumerable<IAspectDescriptor> compileTimeAspects, BodyContextBase ctx)
-    //{
-    //  var compileTimeAspectsAsCollection = compileTimeAspects.ConvertToCollection();
-
-    //  var staticAspectsFieldExpression = Expression.Field (null, staticAspectsField);
-    //  var staticAspectsInitExpression = Expression.NewArrayInit (
-    //      typeof (AspectAttribute),
-    //      compileTimeAspectsAsCollection.Select (GetAspectInitExpression));
-    //  var staticAspectsAssignExpression = Expression.Assign (staticAspectsFieldExpression, staticAspectsInitExpression);
-    //  var staticAspectsIfNullExpression = Expression.Equal (staticAspectsFieldExpression, Expression.Constant (null));
-    //  var staticAspectsAssignIfNullExpression = Expression.IfThen (staticAspectsIfNullExpression, staticAspectsAssignExpression);
-
-    //  var instanceAspectsFieldExpression = Expression.Field (ctx.This, instanceAspectsField);
-    //  var instanceAspectToStaticAspectIndex = 0;
-    //  var instanceAspectsElementInitExpressions = compileTimeAspectsAsCollection
-    //      .Select (
-    //          x =>
-    //          x.Scope == AspectScope.Static
-    //              ? GetStaticAspectsArrayAccess(staticAspectsFieldExpression, ref instanceAspectToStaticAspectIndex)
-    //              : GetAspectInitExpression (x));
-    //  var instanceAspectsInitExpression = Expression.NewArrayInit (
-    //      typeof (AspectAttribute),
-    //      instanceAspectsElementInitExpressions);
-    //  var instanceAspectsAssignExpression = Expression.Assign (instanceAspectsFieldExpression, instanceAspectsInitExpression);
-
-    //  return Expression.Block (staticAspectsAssignIfNullExpression, instanceAspectsAssignExpression);
-    //}
-
-    //private Expression GetAspectInitExpression (IAspectDescriptor customDataAspectDescriptor)
-    //{
-    //  var ctorArgumentExpressions = customDataAspectDescriptor.ConstructorArguments.Select (GetConstantExpressionForTypedArgument);
-    //  var newExpression = Expression.New (customDataAspectDescriptor.ConstructorInfo, ctorArgumentExpressions);
-    //  var memberBindingExpressions = customDataAspectDescriptor.NamedArguments.Select (GetMemberBindingExpression);
-    //  var initExpression = Expression.MemberInit (newExpression, memberBindingExpressions.Cast<MemberBinding>());
-    //  return initExpression;
-    //}
-
-    //private MemberAssignment GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
-    //{
-    //  var argumentType = namedArgument.TypedValue.ArgumentType;
-    //  var constantExpression = GetConstantExpressionForTypedArgument (namedArgument.TypedValue);
-    //  var bindingExpression = Expression.Bind (namedArgument.MemberInfo, Expression.Convert (constantExpression, argumentType));
-    //  return bindingExpression;
-    //}
-
-    //private Expression GetConstantExpressionForTypedArgument (CustomAttributeTypedArgument typedArgument)
-    //{
-    //  if (!typedArgument.ArgumentType.IsArray)
-    //    return Expression.Convert (Expression.Constant (typedArgument.Value), typedArgument.ArgumentType);
-    //  else
-    //  {
-    //    var elementCollection = (ReadOnlyCollection<CustomAttributeTypedArgument>) typedArgument.Value;
-    //    var elementInitExpressions = elementCollection.Select (GetConstantExpressionForTypedArgument);
-    //    return Expression.NewArrayInit (typedArgument.ArgumentType.GetElementType (), elementInitExpressions);
-    //  }
-    //}
-
-    //private Expression GetStaticAspectsArrayAccess (MemberExpression staticAspectsFieldExpression, ref int instanceAspectToStaticAspectIndex)
-    //{
-    //  return Expression.ArrayAccess (staticAspectsFieldExpression, Expression.Constant (instanceAspectToStaticAspectIndex++));
-    //}
-
-
-    //private Expression GetMethodInfoAssignExpression (FieldInfo methodInfoField, MutableMethodInfo mutableMethod, BodyContextBase ctx)
-    //{
-    //  var methodInfoFieldExpression = Expression.Field (ctx.This, methodInfoField);
-    //  var methodInfoConstantExpression = Expression.Constant (mutableMethod.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
-    //  var methodInfoAssignExpression = Expression.Assign (methodInfoFieldExpression, methodInfoConstantExpression);
-
-    //  return methodInfoAssignExpression;
-    //}
-
-    //private Expression GetDelegateAssignExpression (FieldInfo delegateField, MutableMethodInfo mutableMethod, BodyContextBase ctx, MutableMethodInfo copiedMethod)
-    //{
-    //  var delegateFieldExpression = Expression.Field (ctx.This, delegateField);
-    //  var delegateType = mutableMethod.GetDelegateType ();
-    //  var createDelegateMethodInfo = typeof (Delegate).GetMethod (
-    //      "CreateDelegate",
-    //      new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
-    //  var delegateCreateExpression = Expression.Call (
-    //      null,
-    //      createDelegateMethodInfo,
-    //      Expression.Constant (delegateType),
-    //      ctx.This,
-    //      Expression.Constant (copiedMethod, typeof (MethodInfo)));
-    //  var delegateConvertExpression = Expression.Convert (delegateCreateExpression, delegateField.FieldType);
-    //  var delegateAssignExpression = Expression.Assign (delegateFieldExpression, delegateConvertExpression);
-
-    //  return delegateAssignExpression;
-    //}
-
   }
 }

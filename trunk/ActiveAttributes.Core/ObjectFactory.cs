@@ -18,11 +18,10 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Core.Assembly;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
-using Remotion.TypePipe.TypeAssembly;
+using TypeAssembler = Remotion.TypePipe.TypeAssembly.TypeAssembler;
 
 namespace ActiveAttributes.Core
 {
@@ -30,7 +29,7 @@ namespace ActiveAttributes.Core
   {
     public static T Create<T> ()
     {
-      var typeAssembler = new TypeAssembler (new[] { Assembler.Singleton }, CreateReflectionEmitTypeModifier ("AA.generated"));
+      var typeAssembler = new TypeAssembler (new[] { Assembly.TypeAssembler.Singleton }, CreateReflectionEmitTypeModifier ("AA.generated"));
       var assembledType = typeAssembler.AssembleType (typeof (T));
 
       return (T) Activator.CreateInstance (assembledType);

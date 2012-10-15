@@ -59,11 +59,11 @@ namespace ActiveAttributes.UnitTests.Assembly
         TestIntroduction ("_s_TypeLevel_StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
       }
 
-      private void TestIntroduction (string fieldName, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
+      private void TestIntroduction (string fieldName, Func<FieldInfoContainer, FieldInfo> fieldSelector, FieldAttributes attributes)
       {
         var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
 
-        var data = _introducer.IntroduceTypeAspectFields (mutableType);
+        var data = _introducer.IntroduceTypeFields (mutableType);
 
         var returned = fieldSelector (data);
         var queried = mutableType.AddedFields.First (x => x.Name == fieldName);
@@ -106,14 +106,14 @@ namespace ActiveAttributes.UnitTests.Assembly
         TestIntroduction ("Delegate", data => data.DelegateField, typeof (Action));
       }
 
-      private void TestIntroduction (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, Type type)
+      private void TestIntroduction (string fieldNameEnd, Func<FieldInfoContainer, FieldInfo> fieldSelector, Type type)
       {
         var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
         var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
 
-        var fieldData = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo);
+        var fields = _introducer.IntroduceMethodFields (mutableType, methodInfo);
 
-        var returned = fieldSelector (fieldData);
+        var returned = fieldSelector (fields);
         var queried = mutableType.AddedFields.Single (x => x.Name.EndsWith (fieldNameEnd));
 
         TestField (returned, queried, type, FieldAttributes.Private);
@@ -126,21 +126,21 @@ namespace ActiveAttributes.UnitTests.Assembly
         var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
         var methodInfo2 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ("")));
 
-        var fieldData1 = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo1);
-        var fieldData2 = _introducer.IntroduceMethodReflectionFields (mutableType, methodInfo2);
+        var fields1 = _introducer.IntroduceMethodFields (mutableType, methodInfo1);
+        var fields2 = _introducer.IntroduceMethodFields (mutableType, methodInfo2);
 
-        Assert.That (fieldData1.PropertyInfoField, Is.Not.Null);
-        Assert.That (fieldData1.EventInfoField, Is.Not.Null);
-        Assert.That (fieldData1.MethodInfoField, Is.Not.Null);
-        Assert.That (fieldData1.DelegateField, Is.Not.Null);
-        Assert.That (fieldData2.PropertyInfoField, Is.Not.Null);
-        Assert.That (fieldData2.EventInfoField, Is.Not.Null);
-        Assert.That (fieldData2.MethodInfoField, Is.Not.Null);
-        Assert.That (fieldData2.DelegateField, Is.Not.Null);
-        Assert.That (fieldData1.PropertyInfoField, Is.Not.EqualTo (fieldData2.PropertyInfoField));
-        Assert.That (fieldData1.EventInfoField, Is.Not.EqualTo (fieldData2.EventInfoField));
-        Assert.That (fieldData1.MethodInfoField, Is.Not.EqualTo (fieldData2.MethodInfoField));
-        Assert.That (fieldData1.DelegateField, Is.Not.EqualTo (fieldData2.DelegateField));
+        Assert.That (fields1.PropertyInfoField, Is.Not.Null);
+        Assert.That (fields1.EventInfoField, Is.Not.Null);
+        Assert.That (fields1.MethodInfoField, Is.Not.Null);
+        Assert.That (fields1.DelegateField, Is.Not.Null);
+        Assert.That (fields2.PropertyInfoField, Is.Not.Null);
+        Assert.That (fields2.EventInfoField, Is.Not.Null);
+        Assert.That (fields2.MethodInfoField, Is.Not.Null);
+        Assert.That (fields2.DelegateField, Is.Not.Null);
+        Assert.That (fields1.PropertyInfoField, Is.Not.EqualTo (fields2.PropertyInfoField));
+        Assert.That (fields1.EventInfoField, Is.Not.EqualTo (fields2.EventInfoField));
+        Assert.That (fields1.MethodInfoField, Is.Not.EqualTo (fields2.MethodInfoField));
+        Assert.That (fields1.DelegateField, Is.Not.EqualTo (fields2.DelegateField));
       }
     }
 
@@ -166,14 +166,14 @@ namespace ActiveAttributes.UnitTests.Assembly
         Test ("StaticAspects", data => data.StaticAspectsField, FieldAttributes.Static | FieldAttributes.Private);
       }
 
-      private void Test (string fieldNameEnd, Func<FieldIntroducer.Data, FieldInfo> fieldSelector, FieldAttributes attributes)
+      private void Test (string fieldNameEnd, Func<FieldInfoContainer, FieldInfo> fieldSelector, FieldAttributes attributes)
       {
         var mutableType = MutableTypeObjectMother.CreateForExistingType (typeof (DomainType));
         var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
 
-        var fieldData = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo);
+        var fields = _introducer.IntroduceMethodFields (mutableType, methodInfo);
 
-        var returned = fieldSelector (fieldData);
+        var returned = fieldSelector (fields);
         var queried = mutableType.AddedFields.Single (x => x.Name.EndsWith (fieldNameEnd));
 
         TestField (returned, queried, typeof (AspectAttribute[]), attributes);
@@ -186,15 +186,15 @@ namespace ActiveAttributes.UnitTests.Assembly
         var methodInfo1 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ()));
         var methodInfo2 = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.Method ("")));
 
-        var fieldData1 = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo1);
-        var fieldData2 = _introducer.IntroduceMethodAspectFields (mutableType, methodInfo2);
+        var fields1 = _introducer.IntroduceMethodFields (mutableType, methodInfo1);
+        var fields2 = _introducer.IntroduceMethodFields (mutableType, methodInfo2);
 
-        Assert.That (fieldData1.InstanceAspectsField, Is.Not.Null);
-        Assert.That (fieldData1.StaticAspectsField, Is.Not.Null);
-        Assert.That (fieldData2.InstanceAspectsField, Is.Not.Null);
-        Assert.That (fieldData2.StaticAspectsField, Is.Not.Null);
-        Assert.That (fieldData1.InstanceAspectsField, Is.Not.EqualTo (fieldData2.InstanceAspectsField));
-        Assert.That (fieldData1.StaticAspectsField, Is.Not.EqualTo (fieldData2.StaticAspectsField));
+        Assert.That (fields1.InstanceAspectsField, Is.Not.Null);
+        Assert.That (fields1.StaticAspectsField, Is.Not.Null);
+        Assert.That (fields2.InstanceAspectsField, Is.Not.Null);
+        Assert.That (fields2.StaticAspectsField, Is.Not.Null);
+        Assert.That (fields1.InstanceAspectsField, Is.Not.EqualTo (fields2.InstanceAspectsField));
+        Assert.That (fields1.StaticAspectsField, Is.Not.EqualTo (fields2.StaticAspectsField));
       }
     }
 

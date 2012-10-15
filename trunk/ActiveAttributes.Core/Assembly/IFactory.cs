@@ -22,6 +22,7 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  // TODO review all docs
   /// <summary>
   /// Acts as a factory for various types.
   /// </summary>
@@ -45,29 +46,22 @@ namespace ActiveAttributes.Core.Assembly
     /// Create a <see cref="MethodPatcher"/>.
     /// </summary>
     /// <param name="mutableMethod">The mutable method.</param>
-    /// <param name="propertyInfoFieldInfo">The field containing the <see cref="PropertyInfo"/></param>
-    /// <param name="eventInfoFieldInfo">The field containing the <see cref="EventInfo"/></param>
-    /// <param name="methodInfoFieldInfo">The field containing the <see cref="MethodInfo"/></param>
-    /// <param name="delegateFieldInfo">The field containing the <see cref="Delegate"/></param>
-    /// <param name="aspects">The collection of <see cref="IAspectGenerator"/>s that should be applied to the method.</param>
+    /// <param name="aspects">The collection of <see cref="IExpressionGenerator"/>s that should be applied to the method.</param>
     /// <param name="typeProvider">A type provider for the mutable method.</param>
     /// <returns></returns>
-    MethodPatcher GetMethodPatcher (
+    IMethodPatcher GetMethodPatcher (
         MutableMethodInfo mutableMethod,
-        FieldInfo propertyInfoFieldInfo,
-        FieldInfo eventInfoFieldInfo,
-        FieldInfo methodInfoFieldInfo,
-        FieldInfo delegateFieldInfo,
-        IEnumerable<IAspectGenerator> aspects,
+        FieldInfoContainer fieldInfoContainer,
+        IEnumerable<IExpressionGenerator> aspects,
         ITypeProvider typeProvider);
 
     /// <summary>
-    /// Creates a <see cref="AspectGenerator"/> for a given <see cref="IArrayAccessor"/> and <see cref="IAspectDescriptor"/>.
+    /// Creates a <see cref="ExpressionGenerator"/> for a given <see cref="IArrayAccessor"/> and <see cref="IDescriptor"/>.
     /// </summary>
     /// <param name="arrayAccessor">The array containing the aspects.</param>
     /// <param name="index">The array index of the aspect.</param>
     /// <param name="descriptor">The descriptor of the aspect.</param>
     /// <returns></returns>
-    IAspectGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor descriptor);
+    IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IDescriptor descriptor);
   }
 }

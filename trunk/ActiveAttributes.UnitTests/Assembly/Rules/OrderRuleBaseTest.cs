@@ -41,7 +41,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Rules
       {
       }
 
-      public override int Compare (IAspectDescriptor x, IAspectDescriptor y)
+      public override int Compare (IDescriptor x, IDescriptor y)
       {
         throw new NotImplementedException();
       }

@@ -13,27 +13,26 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Text;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
+using Remotion.Collections;
+using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
   /// <summary>
-  /// An <see cref="IAspectDescriptor"/> that is based on <see cref="CustomAttributeData"/>.
+  /// Serves as a <see cref="IDescriptor"/> based on <see cref="ICustomAttributeData"/>.
   /// </summary>
-  public class CustomDataDescriptor : IAspectDescriptor
+  public class CustomAttributeDataDescriptor : IDescriptor
   {
     private readonly AspectAttribute _aspectAttribute;
-    private readonly CustomAttributeData _customAttributeData;
+    private readonly ICustomAttributeData _customAttributeData;
 
-    public CustomDataDescriptor (CustomAttributeData customAttributeData)
+    public CustomAttributeDataDescriptor (ICustomAttributeData customAttributeData)
     {
       if (!typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new ArgumentException ("CustomAttributeData must be from an AspectAttribute");
@@ -47,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return _aspectAttribute.Priority; }
     }
 
-    public AspectScope Scope
+    public Scope Scope
     {
       get { return _aspectAttribute.Scope; }
     }
@@ -62,12 +61,13 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return _customAttributeData.Constructor; }
     }
 
-    public IList<CustomAttributeTypedArgument> ConstructorArguments
+    public ReadOnlyCollection<object> ConstructorArguments
     {
       get { return _customAttributeData.ConstructorArguments; }
     }
 
-    public IList<CustomAttributeNamedArgument> NamedArguments
+    // TODO is typed AND named? 
+    public ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments
     {
       get { return _customAttributeData.NamedArguments; }
     }
@@ -75,35 +75,6 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
     public bool Matches (MethodInfo method)
     {
       return _aspectAttribute.Matches (method);
-    }
-
-    public override string ToString ()
-    {
-      var stringBuilder = new StringBuilder();
-      stringBuilder.Append (_aspectAttribute.GetType().Name)
-          .Append ("(");
-
-      var arguments = _customAttributeData.ConstructorArguments;
-      var argumentsString = string.Join (", ", arguments.Select (x => "\"" + x.Value + "\"").ToArray());
-      stringBuilder.Append (argumentsString);
-      if (arguments.Count > 0)
-        stringBuilder.Append (", ");
-
-      var namedArguments = _customAttributeData.NamedArguments.Where (x => x.MemberInfo.Name != "Scope" && x.MemberInfo.Name != "Priority").ToList();
-      var namedArgumentsString = string.Join (", ", namedArguments.Select (x => x.MemberInfo.Name + " = \"" + x.TypedValue.Value + "\"").ToArray());
-      stringBuilder.Append (namedArgumentsString);
-      if (namedArguments.Count > 0)
-        stringBuilder.Append (", ");
-
-      stringBuilder
-          .Append ("Scope = ")
-          .Append (Scope).Append (", ")
-          .Append ("Priority = ")
-          .Append (Priority);
-
-      stringBuilder.Append (")");
-
-      return stringBuilder.ToString();
     }
   }
 }

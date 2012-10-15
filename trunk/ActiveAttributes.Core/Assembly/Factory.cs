@@ -37,30 +37,20 @@ namespace ActiveAttributes.Core.Assembly
                  : new InstanceArrayAccessor (fieldInfo);
     }
 
-    public MethodPatcher GetMethodPatcher (
+    public IMethodPatcher GetMethodPatcher (
         MutableMethodInfo mutableMethod,
-        FieldInfo propertyInfoFieldInfo,
-        FieldInfo eventInfoFieldInfo,
-        FieldInfo methodInfoFieldInfo,
-        FieldInfo delegateFieldInfo,
-        IEnumerable<IAspectGenerator> aspects,
+      FieldInfoContainer fieldInfoContainer,
+        IEnumerable<IExpressionGenerator> aspects,
         ITypeProvider typeProvider)
     {
-      ArgumentUtility.CheckNotNull ("mutableMethod", mutableMethod);
-      ArgumentUtility.CheckNotNull ("propertyInfoFieldInfo", propertyInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("eventInfoFieldInfo", eventInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("methodInfoFieldInfo", methodInfoFieldInfo);
-      ArgumentUtility.CheckNotNull ("delegateFieldInfo", delegateFieldInfo);
-      ArgumentUtility.CheckNotNullOrEmpty ("aspects", aspects);
-      ArgumentUtility.CheckNotNull ("typeProvider", typeProvider);
 
       return new MethodPatcher (
-          mutableMethod, propertyInfoFieldInfo, eventInfoFieldInfo, methodInfoFieldInfo, delegateFieldInfo, aspects, typeProvider);
+          mutableMethod, fieldInfoContainer.PropertyInfoField, fieldInfoContainer.EventInfoField, fieldInfoContainer.MethodInfoField, fieldInfoContainer.DelegateField, aspects, typeProvider);
     }
 
-    public IAspectGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor descriptor)
+    public IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IDescriptor descriptor)
     {
-      return new AspectGenerator (arrayAccessor, index, descriptor);
+      return new ExpressionGenerator (arrayAccessor, index, descriptor);
     }
   }
 }

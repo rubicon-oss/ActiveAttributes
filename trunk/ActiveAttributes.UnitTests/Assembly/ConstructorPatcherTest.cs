@@ -37,28 +37,28 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class ConstructorPatcherTest : TestBase
   {
-    private ICollection<IAspectGenerator> _emptyAspects;
-    private ICollection<IAspectGenerator> _instanceAspect;
+    private ICollection<IExpressionGenerator> _emptyAspects;
+    private ICollection<IExpressionGenerator> _instanceAspect;
 
     [SetUp]
     public override void SetUp ()
     {
-      var generator1 = MockRepository.GenerateMock<IAspectGenerator>();
-      var generator2 = MockRepository.GenerateMock<IAspectGenerator>();
+      var generator1 = MockRepository.GenerateMock<IExpressionGenerator>();
+      var generator2 = MockRepository.GenerateMock<IExpressionGenerator>();
 
       generator1.Expect (x => x.GetInitExpression()).Return (Expression.Constant (null, typeof (AspectAttribute)));
       generator2.Expect (x => x.GetInitExpression()).Return (Expression.Constant (null, typeof (AspectAttribute)));
 
-      var descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
-      var descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
+      var descriptor1 = MockRepository.GenerateMock<IDescriptor>();
+      var descriptor2 = MockRepository.GenerateMock<IDescriptor>();
 
-      descriptor1.Expect (x => x.Scope).Return (AspectScope.Instance);
-      descriptor2.Expect (x => x.Scope).Return (AspectScope.Static);
+      descriptor1.Expect (x => x.Scope).Return (Scope.Instance);
+      descriptor2.Expect (x => x.Scope).Return (Scope.Static);
 
       generator1.Expect (x => x.Descriptor).Return (descriptor1);
       generator2.Expect (x => x.Descriptor).Return (descriptor2);
 
-      _emptyAspects = new IAspectGenerator[0];
+      _emptyAspects = new IExpressionGenerator[0];
       _instanceAspect = new[] { generator1 };
     }
 
@@ -189,7 +189,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       PatchAndTest (methodInfo, methodInfo, _instanceAspect, test);
     }
 
-    private Expression StaticAspectsAssign (IEnumerable<IAspectGenerator> aspects)
+    private Expression StaticAspectsAssign (IEnumerable<IExpressionGenerator> aspects)
     {
       var fieldInfo = typeof (DomainClassBase).GetFields().Single (x => x.Name == "StaticAspects");
       var field = Expression.Field (null, fieldInfo);
@@ -199,7 +199,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       return assignIfNullExpression;
     }
 
-    private Expression InstanceAspectsAssign (IEnumerable<IAspectGenerator> aspects)
+    private Expression InstanceAspectsAssign (IEnumerable<IExpressionGenerator> aspects)
     {
       var fieldInfo = typeof (DomainClassBase).GetFields ().Single (x => x.Name == "InstanceAspects");
       var field = Expression.Field (null, fieldInfo);
@@ -271,7 +271,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     private void PatchAndTest (
-        MethodInfo methodInfo, MethodInfo copyInfo, ICollection<IAspectGenerator> aspects, Action<IEnumerable<MutableConstructorInfo>> test)
+        MethodInfo methodInfo, MethodInfo copyInfo, ICollection<IExpressionGenerator> aspects, Action<IEnumerable<MutableConstructorInfo>> test)
     {
       var declaringType = methodInfo.DeclaringType;
       var patcher = new ConstructorPatcher();
@@ -287,9 +287,16 @@ namespace ActiveAttributes.UnitTests.Assembly
                 var eventInfoField = declaringType.GetFields().Single (x => x.Name == "EventInfo");
                 var methodInfoField = declaringType.GetFields().Single (x => x.Name == "MethodInfo");
                 var delegateField = declaringType.GetFields().Single (x => x.Name == "Delegate");
+                var fieldData = new FieldInfoContainer
+                                {
+                                    PropertyInfoField = propertyInfoField,
+                                    EventInfoField = eventInfoField,
+                                    MethodInfoField = methodInfoField,
+                                    DelegateField = delegateField
+                                };
 
                 patcher.AddReflectionAndDelegateInitialization (
-                    mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, mutableCopy);
+                    mutableMethod, fieldData, mutableCopy);
 
                 var instanceField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
                     .Single (x => x.Name == "InstanceAspects");
@@ -300,8 +307,8 @@ namespace ActiveAttributes.UnitTests.Assembly
                 instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
                 staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
 
-                var instanceAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Instance);
-                var staticAspects = aspects.Where (x => x.Descriptor.Scope == AspectScope.Static);
+                var instanceAspects = aspects.Where (x => x.Descriptor.Scope == Scope.Instance);
+                var staticAspects = aspects.Where (x => x.Descriptor.Scope == Scope.Static);
 
                 patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects.Concat (instanceAspects));
 

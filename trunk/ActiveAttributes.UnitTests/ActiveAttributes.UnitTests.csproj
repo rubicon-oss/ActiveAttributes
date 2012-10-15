@@ -75,10 +75,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
-    <Compile Include="Assembly\AspectGeneratorTest.cs" />
-    <Compile Include="Assembly\AssemblerTest.cs" />
-    <Compile Include="Assembly\Providers\AspectProviderTest.cs" />
-    <Compile Include="Assembly\AspectSchedulerTest.cs" />
+    <Compile Include="Aspects\CflowMethodInterceptionAspectAttributeTest.cs" />
+    <Compile Include="Assembly\ExpressionGeneratorTest.cs" />
+    <Compile Include="Assembly\GiveItSomeNameTest.cs" />
+    <Compile Include="Assembly\MethodAssemblerTest.cs" />
+    <Compile Include="Utilities\DescriptorProviderTest.cs" />
+    <Compile Include="Assembly\SchedulerTest.cs" />
     <Compile Include="Assembly\Configurators\CustomAttributesConfiguratorTest.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptorTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
@@ -86,15 +88,16 @@
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
     <Compile Include="Assembly\MethodCopierTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
-    <Compile Include="Assembly\Providers\EventAspectProviderTest.cs" />
-    <Compile Include="Assembly\Providers\PropertyAspectProviderTest.cs" />
-    <Compile Include="Assembly\Providers\InterfaceMethodAspectProviderTest.cs" />
-    <Compile Include="Assembly\Providers\MethodLevelAspectProviderTest.cs" />
-    <Compile Include="Assembly\Providers\MethodParameterAspectProviderTest.cs" />
-    <Compile Include="Assembly\Providers\TypeLevelAspectProviderTest.cs" />
+    <Compile Include="Assembly\Providers\EventBasedDescriptorProviderTest.cs" />
+    <Compile Include="Assembly\Providers\PropertyBasedDescriptorProviderTest.cs" />
+    <Compile Include="Assembly\Providers\InterfaceMethodBasedDescriptorProviderTest.cs" />
+    <Compile Include="Assembly\Providers\MethodBasedDescriptorProviderTest.cs" />
+    <Compile Include="Assembly\Providers\ParameterBasedDescriptorProviderTest.cs" />
+    <Compile Include="Assembly\Providers\TypeBasedDescriptorProviderTest.cs" />
     <Compile Include="Assembly\Rules\OrderRuleBaseTest.cs" />
     <Compile Include="Assembly\Rules\RoleOrderRuleTest.cs" />
     <Compile Include="Assembly\Rules\TypeOrderRuleTest.cs" />
+    <Compile Include="Assembly\TypeAssemblerTest.cs" />
     <Compile Include="Assembly\TypeProviderTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Configuration\ApplyAspectAttributeTest.cs" />
@@ -105,7 +108,7 @@
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
-    <Compile Include="Extensions\CustomAttributeDataExtensionsTest.cs" />
+    <Compile Include="Extensions\ICustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />

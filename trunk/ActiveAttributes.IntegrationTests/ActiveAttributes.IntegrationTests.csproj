@@ -67,6 +67,7 @@
     <Compile Include="ArgumentManipulationTest.cs" />
     <Compile Include="AspectScopeTest.cs" />
     <Compile Include="CachingAspectTest.cs" />
+    <Compile Include="CflowTest.cs" />
     <Compile Include="InterfaceAspectsTest.cs" />
     <Compile Include="MethodBoundaryTest.cs" />
     <Compile Include="ProceedTest.cs" />

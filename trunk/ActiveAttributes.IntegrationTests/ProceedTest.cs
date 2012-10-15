@@ -28,7 +28,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedMethod ()
     {
-      var type = AssembleType<DomainType1> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType1> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType1> ();
 
       instance.Method1();
@@ -39,7 +39,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedMethod ()
     {
-      var type = AssembleType<DomainType1> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType1> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType1> ();
 
       instance.Method2();
@@ -50,7 +50,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedProperty ()
     {
-      var type = AssembleType<DomainType3> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType3> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType3> ();
       SkipDeletion();
       
@@ -67,7 +67,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedProperty ()
     {
-      var type = AssembleType<DomainType3> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType3> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType3>();
 
       instance.Property2 = "test";
@@ -84,7 +84,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void ProceedPropertyAsMethod ()
     {
-      var type = AssembleType<DomainType2> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType2> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType2> ();
 
       instance.Property3 = "test";
@@ -100,7 +100,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void NotProceedPropertyAsMethod ()
     {
-      var type = AssembleType<DomainType2> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType2> (TypeAssembler.Singleton.ModifyType);
       var instance = type.CreateInstance<DomainType2> ();
 
       instance.Property4 = "test";

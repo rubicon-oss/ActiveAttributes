@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace ActiveAttributes.Core.Assembly.Configuration
 {
-  public interface IOrderRule : IComparer<IAspectDescriptor>
+  public interface IOrderRule : IComparer<IDescriptor>
   {
     string Source { get; }
   }

@@ -32,7 +32,7 @@ namespace ActiveAttributes.Core.Assembly
     /// </summary>
     /// <param name="mutableType">The mutable type.</param>
     /// <returns>References to the introduced fields.</returns>
-    FieldIntroducer.Data IntroduceTypeAspectFields (MutableType mutableType);
+    FieldInfoContainer IntroduceTypeFields (MutableType mutableType);
 
     /// <summary>
     /// Introduces fields for storing instance and static <see cref="AspectAttribute"/>s on method-level.
@@ -40,14 +40,6 @@ namespace ActiveAttributes.Core.Assembly
     /// <param name="mutableType">The mutable type.</param>
     /// <param name="methodInfo">The method.</param>
     /// <returns>References to the introduced fields.</returns>
-    FieldIntroducer.Data IntroduceMethodAspectFields (MutableType mutableType, MethodInfo methodInfo);
-
-    /// <summary>
-    /// Introduces fields for storing the <see cref="MethodInfo"/> and the <see cref="Delegate"/> to a certain method.
-    /// </summary>
-    /// <param name="mutableType">The mutable type.</param>
-    /// <param name="methodInfo">The method.</param>
-    /// <returns>References to the introduced fields.</returns>
-    FieldIntroducer.Data IntroduceMethodReflectionFields (MutableType mutableType, MethodInfo methodInfo);
+    FieldInfoContainer IntroduceMethodFields (MutableType mutableType, MethodInfo methodInfo);
   }
 }

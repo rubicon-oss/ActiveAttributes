@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +45,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly FieldInfo _eventInfoFieldInfo;
     private readonly FieldInfo _methodInfoFieldInfo;
     private readonly FieldInfo _delegateFieldInfo;
-    private readonly IList<IAspectGenerator> _aspects;
+    private readonly IList<IExpressionGenerator> _aspects;
     private readonly ITypeProvider _typeProvider;
 
 
@@ -62,7 +61,7 @@ namespace ActiveAttributes.Core.Assembly
         FieldInfo eventInfoFieldInfo,
         FieldInfo methodInfoFieldInfo,
         FieldInfo delegateFieldInfo,
-        IEnumerable<IAspectGenerator> aspects,
+        IEnumerable<IExpressionGenerator> aspects,
         ITypeProvider typeProvider)
     {
       _mutableMethod = mutableMethod;
@@ -76,7 +75,7 @@ namespace ActiveAttributes.Core.Assembly
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
       _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
       _onInterceptSetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
-      
+
       _createDelegateMethodInfo = typeof (Delegate).GetMethod (
           "CreateDelegate",
           new[] { typeof (Type), typeof (object), typeof (MethodInfo) });
@@ -90,9 +89,6 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GetPatchedBody (MethodBodyModificationContext ctx)
     {
-      // TODO unnecessary ToList?
-      var generatorsAsList = _aspects.ToList();
-
       var methodInfoField = Expression.Field (ctx.This, _methodInfoFieldInfo);
       var delegateField = Expression.Field (ctx.This, _delegateFieldInfo);
 
@@ -106,9 +102,9 @@ namespace ActiveAttributes.Core.Assembly
       var invocations = invocationVariablesAndInitializations.Item1;
       var invocationInitExpressions = invocationVariablesAndInitializations.Item2;
 
-      var outermostAspect = generatorsAsList.Last ().GetStorageExpression (ctx.This);
-      var outermostAspectInterceptMethod = GetAspectInterceptMethod (_aspects.Last ().Descriptor.AspectType);
-      var outermostInvocation = invocations.Last ();
+      var outermostAspect = _aspects.Last().GetStorageExpression (ctx.This);
+      var outermostAspectInterceptMethod = GetAspectInterceptMethod (_aspects.Last().Descriptor.AspectType);
+      var outermostInvocation = invocations.Last();
       var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
 
       var returnValueExpression = Expression.Property (invocationContext, "ReturnValue");
@@ -125,7 +121,7 @@ namespace ActiveAttributes.Core.Assembly
         Expression invocationContext,
         Expression originalBodyDelegate,
         Expression thisExpression)
-    {   
+    {
       // var invocation0 = new InnerInvocation (invocationContext, _originalBodyDelegate);
       // var invocation1 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[0], method), invocation0);
       // var invocation2 = new OuterInvocation (invocationContext, Delegate.CreateDelegate (typeof (Action<IInvocation>), _aspects[1], method), invocation1);
@@ -175,7 +171,7 @@ namespace ActiveAttributes.Core.Assembly
       var invocationContextCreateExpression = Expression.New (invocationContextConstructor, invocationContextArguments);
       return invocationContextCreateExpression;
     }
-    
+
     private Expression GetInnermostInvocationCreationExpression (Expression invocationContext, Expression originalBodyDelegate)
     {
       var invocationType = _typeProvider.InvocationType;
@@ -229,6 +225,5 @@ namespace ActiveAttributes.Core.Assembly
           return _onInterceptGetMethodInfo;
       }
     }
-
   }
 }

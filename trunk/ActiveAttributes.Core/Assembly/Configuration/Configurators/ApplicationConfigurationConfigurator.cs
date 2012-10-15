@@ -21,11 +21,11 @@ using ActiveAttributes.Core.Configuration;
 
 namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 {
-  public class ApplicationConfigurationConfigurator : IAspectConfigurator
+  public class ApplicationConfigurationConfigurator : IConfigurator
   {
     private readonly string _ruleSource = typeof(ApplicationConfigurationConfigurator).Name;
 
-    public void Initialize (IAspectConfiguration configuration)
+    public void Initialize (IConfiguration configuration)
     {
       var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
 

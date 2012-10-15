@@ -35,13 +35,14 @@ namespace ActiveAttributes.IntegrationTests
     {
       base.SetUp ();
 
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
-      _instance = (DomainType) Activator.CreateInstance (type);
     }
 
     [Test]
     public void Cache ()
     {
+      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
+      _instance = (DomainType) Activator.CreateInstance (type);
+      SkipDeletion ();
       var input = "a";
 
       var result1 = _instance.Method (input);

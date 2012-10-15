@@ -13,20 +13,21 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
+using Remotion.Collections;
+using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
   /// <summary>
-  /// An <see cref="IAspectDescriptor"/> that is based on the <see cref="Type"/> of an aspect.
+  /// Serves as a <see cref="IDescriptor"/> based on <see cref="Type"/> of an aspect.
   /// </summary>
-  public class TypeDescriptor : IAspectDescriptor
+  public class TypeDescriptor : IDescriptor
   {
-    public TypeDescriptor (Type aspectType, AspectScope scope, int priority)
+    public TypeDescriptor (Type aspectType, Scope scope, int priority)
     {
       AspectType = aspectType;
       Scope = scope;
@@ -35,7 +36,7 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
 
     public int Priority { get; private set; }
 
-    public AspectScope Scope { get; private set; }
+    public Scope Scope { get; private set; }
 
     public Type AspectType { get; private set; }
 
@@ -44,14 +45,14 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return AspectType.GetConstructor (Type.EmptyTypes); }
     }
 
-    public IList<CustomAttributeTypedArgument> ConstructorArguments
+    public ReadOnlyCollection<object> ConstructorArguments
     {
-      get { return new CustomAttributeTypedArgument[0]; }
+      get { return new ReadOnlyCollection<object> (new ICustomAttributeNamedArgument[0]); }
     }
 
-    public IList<CustomAttributeNamedArgument> NamedArguments
+    public ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments
     {
-      get { return new CustomAttributeNamedArgument[0]; }
+      get { return new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]); }
     }
 
     public bool Matches (MethodInfo method)

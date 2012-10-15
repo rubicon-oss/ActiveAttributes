@@ -20,31 +20,52 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  internal static class CustomAttributeDataExtensions
+  public static class ICustomAttributeDataExtensions
   {
+    /// <summary>
+    /// Determines if the <see cref="CustomAttributeData"/> is inheriting.
+    /// </summary>
+    public static bool IsInheriting (this ICustomAttributeData customAttributeData)
+    {
+      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
+      Assertion.IsTrue (customAttributeData.Constructor.DeclaringType != null);
+
+      var attributeType = customAttributeData.Constructor.DeclaringType;
+      var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute> ().Single ();
+      return attributeUsageAttr.Inherited;
+    }
+
+    /// <summary>
+    /// Determines if the <see cref="CustomAttributeData"/> describes an <see cref="AspectAttribute"/>.
+    /// </summary>
+    public static bool IsAspectAttribute (this ICustomAttributeData customAttributeData)
+    {
+      return typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
+    }
+
     /// <summary>
     /// Creates the actual <see cref="Attribute"/> described by an instance of <see cref="CustomAttributeData"/>.
     /// </summary>
     /// <param name="data">The data describing the attribute.</param>
     /// <returns>The attribute.</returns>
-    public static Attribute CreateAttribute (this CustomAttributeData data)
+    public static Attribute CreateAttribute (this ICustomAttributeData data)
     {
       ArgumentUtility.CheckNotNull ("data", data);
       Assertion.IsTrue (data.NamedArguments != null);
 
-      Func<CustomAttributeTypedArgument, object> argumentConverter = ConvertTypedArgumentToObject;
+      Func<ICustomAttributeNamedArgument, object> argumentConverter = ConvertTypedArgumentToObject;
 
-      var arguments = data.ConstructorArguments.Select (argumentConverter);
-      var attribute = (Attribute) data.Constructor.Invoke (arguments.ToArray());
+      var arguments = data.ConstructorArguments;
+      var attribute = (Attribute) data.Constructor.Invoke (arguments.ToArray ());
 
       foreach (var namedArgument in data.NamedArguments)
       {
-        var typedArgument = namedArgument.TypedValue;
-        var argument = ConvertTypedArgumentToObject (typedArgument);
+        var argument = ConvertTypedArgumentToObject (namedArgument);
 
         var memberInfo = namedArgument.MemberInfo;
 
@@ -59,28 +80,6 @@ namespace ActiveAttributes.Core.Extensions
 
       return attribute;
     }
-
-    /// <summary>
-    /// Determines if the <see cref="CustomAttributeData"/> is inheriting.
-    /// </summary>
-    public static bool IsInheriting (this CustomAttributeData customAttributeData)
-    {
-      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
-      Assertion.IsTrue (customAttributeData.Constructor.DeclaringType != null);
-
-      var attributeType = customAttributeData.Constructor.DeclaringType;
-      var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute> ().Single ();
-      return attributeUsageAttr.Inherited;
-    }
-
-    /// <summary>
-    /// Determines if the <see cref="CustomAttributeData"/> describes an <see cref="AspectAttribute"/>.
-    /// </summary>
-    public static bool IsAspectAttribute (this CustomAttributeData customAttributeData)
-    {
-      return typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
-    }
-
     /// <summary>
     /// Converts a <see cref="CustomAttributeTypedArgument"/> using an <paramref name="arrayConstructor"/> for array values and a
     /// <paramref name="elementConstructor"/> for element values.
@@ -91,22 +90,22 @@ namespace ActiveAttributes.Core.Extensions
     /// <param name="arrayConstructor">A delegate creating a new array based on its type and values.</param>
     /// <returns>``0.</returns>
     public static T ConvertTo<T> (
-        this CustomAttributeTypedArgument argument, Func<Type, object, T> elementConstructor, Func<Type, IEnumerable<T>, T> arrayConstructor)
+        this ICustomAttributeNamedArgument argument, Func<Type, object, T> elementConstructor, Func<Type, IEnumerable<T>, T> arrayConstructor)
     {
-      var argumentType = argument.ArgumentType;
+      var argumentType = argument.MemberType;
       if (!argumentType.IsArray)
       {
         return elementConstructor (argumentType, argument.Value);
       }
       else
       {
-        var typedArguments = (ReadOnlyCollection<CustomAttributeTypedArgument>) argument.Value;
+        var typedArguments = (ReadOnlyCollection<ICustomAttributeNamedArgument>) argument.Value;
         var elements = typedArguments.Select (x => x.ConvertTo (elementConstructor, arrayConstructor));
         return arrayConstructor (argumentType.GetElementType (), elements);
       }
     }
 
-    private static object ConvertTypedArgumentToObject (CustomAttributeTypedArgument typedArgument)
+    private static object ConvertTypedArgumentToObject (ICustomAttributeNamedArgument typedArgument)
     {
       return typedArgument.ConvertTo (CreateElement, CreateArray);
     }
@@ -118,7 +117,7 @@ namespace ActiveAttributes.Core.Extensions
 
     private static object CreateArray (Type type, IEnumerable<object> objs)
     {
-      var source = objs.ToArray();
+      var source = objs.ToArray ();
       var destination = Array.CreateInstance (type, source.Length);
       Array.Copy (source, destination, source.Length);
       return destination;

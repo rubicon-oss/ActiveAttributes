@@ -20,5 +20,8 @@
     <RegexTestSelector>
       <RegularExpression>ActiveAttributes\.Common\.UnitTests\.InvokeAspectAttributeTest\..*</RegularExpression>
     </RegexTestSelector>
+    <RegexTestSelector>
+      <RegularExpression>.*</RegularExpression>
+    </RegexTestSelector>
   </IgnoredTests>
 </ProjectConfiguration>

@@ -30,7 +30,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
       _type2 = type2;
     }
 
-    public override int Compare (IAspectDescriptor x, IAspectDescriptor y)
+    public override int Compare (IDescriptor x, IDescriptor y)
     {
       var type1 = x.AspectType;
       var type2 = y.AspectType;

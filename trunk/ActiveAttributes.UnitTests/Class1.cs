@@ -17,14 +17,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ActiveAttributes.Core.Assembly.Providers;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 
 namespace ActiveAttributes.UnitTests
 {
   [TestFixture]
   class Class1
   {
+    [Test]
+    public void name2 ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((object obj) => obj.ToString());
+      var inst = new MethodBasedDescriptorProvider();
+
+      inst.GetDescriptors (method).ToArray();
+    }
+
     public event EventHandler Event;
     [Test]
     public void name ()

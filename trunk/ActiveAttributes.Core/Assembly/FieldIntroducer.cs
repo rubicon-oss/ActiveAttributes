@@ -27,7 +27,7 @@ namespace ActiveAttributes.Core.Assembly
     private const string c_instancePrefix = "_m_";
     private const string c_staticPrefix = "_s_";
 
-    public Data IntroduceTypeAspectFields (MutableType mutableType)
+    public FieldInfoContainer IntroduceTypeFields (MutableType mutableType)
     {
       var instanceAspectsFieldName = c_instancePrefix + "TypeLevel_InstanceAspects";
       var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
@@ -36,32 +36,14 @@ namespace ActiveAttributes.Core.Assembly
       var staticAspectsField = mutableType.AddField (
           typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
 
-      return new Data
+      return new FieldInfoContainer
              {
                  StaticAspectsField = staticAspectsField,
                  InstanceAspectsField = instanceAspectsField
              };
     }
 
-    public Data IntroduceMethodAspectFields (MutableType mutableType, MethodInfo methodInfo)
-    {
-      var uniqueMethodName = methodInfo.Name + _counter++;
-
-      var staticAspectsFieldName = c_staticPrefix + uniqueMethodName + "_StaticAspects";
-      var staticAspectsField = mutableType.AddField (
-          typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
-
-      var instanceAspectsFieldName = c_instancePrefix + uniqueMethodName + "_InstanceAspects";
-      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
-
-      return new Data
-             {
-                 StaticAspectsField = staticAspectsField,
-                 InstanceAspectsField = instanceAspectsField
-             };
-    }
-
-    public Data IntroduceMethodReflectionFields (MutableType mutableType, MethodInfo methodInfo)
+    public FieldInfoContainer IntroduceMethodFields (MutableType mutableType, MethodInfo methodInfo)
     {
       var uniqueMethodName = methodInfo.Name + _counter++;
       var instanceBaseName = c_instancePrefix + uniqueMethodName;
@@ -79,23 +61,22 @@ namespace ActiveAttributes.Core.Assembly
       var delegateFieldName = instanceBaseName + "_Delegate";
       var delegateField = mutableType.AddField (delegateType, delegateFieldName);
 
-      return new Data
+      var staticAspectsFieldName = c_staticPrefix + uniqueMethodName + "_StaticAspects";
+      var staticAspectsField = mutableType.AddField (
+          typeof (AspectAttribute[]), staticAspectsFieldName, FieldAttributes.Static | FieldAttributes.Private);
+
+      var instanceAspectsFieldName = c_instancePrefix + uniqueMethodName + "_InstanceAspects";
+      var instanceAspectsField = mutableType.AddField (typeof (AspectAttribute[]), instanceAspectsFieldName);
+
+      return new FieldInfoContainer
              {
                  PropertyInfoField = propertyInfoField,
                  EventInfoField = eventInfoField,
                  MethodInfoField = methodInfoField,
                  DelegateField = delegateField,
+                 StaticAspectsField = staticAspectsField,
+                 InstanceAspectsField = instanceAspectsField
              };
-    }
-
-    public struct Data
-    {
-      public FieldInfo PropertyInfoField;
-      public FieldInfo EventInfoField;
-      public FieldInfo MethodInfoField;
-      public FieldInfo DelegateField;
-      public FieldInfo StaticAspectsField;
-      public FieldInfo InstanceAspectsField;
     }
   }
 }

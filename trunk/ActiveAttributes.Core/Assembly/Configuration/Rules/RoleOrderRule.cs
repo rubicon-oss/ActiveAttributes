@@ -20,12 +20,12 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
 {
   public class RoleOrderRule : OrderRuleBase
   {
-    private readonly IAspectConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
     private readonly string _role1;
     private readonly string _role2;
 
-    public RoleOrderRule (string source, string role1, string role2, IAspectConfiguration configuration)
+    public RoleOrderRule (string source, string role1, string role2, IConfiguration configuration)
         : base(source)
     {
       _role1 = role1;
@@ -33,7 +33,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Rules
       _configuration = configuration;
     }
 
-    public override int Compare (IAspectDescriptor x, IAspectDescriptor y)
+    public override int Compare (IDescriptor x, IDescriptor y)
     {
       var type1 = x.AspectType;
       var type2 = y.AspectType;

@@ -30,7 +30,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void InstanceScope ()
     {
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
       var instance1 = type.CreateInstance<DomainType>();
       var instance2 = type.CreateInstance<DomainType>();
 
@@ -40,7 +40,7 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void StaticScope ()
     {
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
       var instance1 = type.CreateInstance<DomainType> ();
       var instance2 = type.CreateInstance<DomainType>();
 
@@ -50,10 +50,10 @@ namespace ActiveAttributes.IntegrationTests
 
     public class DomainType
     {
-      [DomainAspect (Scope = AspectScope.Instance)]
+      [DomainAspect (Scope = Scope.Instance)]
       public virtual Guid InstanceMethod () { return Guid.Empty; }
 
-      [DomainAspect (Scope = AspectScope.Static)]
+      [DomainAspect (Scope = Scope.Static)]
       public virtual Guid StaticMethod () { return Guid.Empty; }
     }
 

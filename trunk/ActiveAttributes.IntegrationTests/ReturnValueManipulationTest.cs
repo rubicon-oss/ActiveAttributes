@@ -32,7 +32,7 @@ namespace ActiveAttributes.IntegrationTests
     {
       base.SetUp();
 
-      var type = AssembleType<DomainType> (Assembler.Singleton.ModifyType);
+      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
       _instance = type.CreateInstance<DomainType>();
     }
 
