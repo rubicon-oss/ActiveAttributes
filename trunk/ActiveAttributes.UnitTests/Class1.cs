@@ -37,6 +37,7 @@ namespace ActiveAttributes.UnitTests
     }
 
     public event EventHandler Event;
+
     [Test]
     public void name ()
     {

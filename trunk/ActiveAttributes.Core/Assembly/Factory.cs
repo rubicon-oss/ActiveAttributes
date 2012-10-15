@@ -13,13 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Accessors;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -39,13 +37,18 @@ namespace ActiveAttributes.Core.Assembly
 
     public IMethodPatcher GetMethodPatcher (
         MutableMethodInfo mutableMethod,
-      FieldInfoContainer fieldInfoContainer,
+        FieldInfoContainer fieldInfoContainer,
         IEnumerable<IExpressionGenerator> aspects,
         ITypeProvider typeProvider)
     {
-
       return new MethodPatcher (
-          mutableMethod, fieldInfoContainer.PropertyInfoField, fieldInfoContainer.EventInfoField, fieldInfoContainer.MethodInfoField, fieldInfoContainer.DelegateField, aspects, typeProvider);
+          mutableMethod,
+          fieldInfoContainer.PropertyInfoField,
+          fieldInfoContainer.EventInfoField,
+          fieldInfoContainer.MethodInfoField,
+          fieldInfoContainer.DelegateField,
+          aspects,
+          typeProvider);
     }
 
     public IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IDescriptor descriptor)
