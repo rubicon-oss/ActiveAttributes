@@ -14,54 +14,78 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ActiveAttributes.Core.Assembly.Providers;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
+  class Test
+  {
+    public void Muh<T>()
+    {
+      
+    } 
+  }
+
   [TestFixture]
-  class Class1
+  public class Class1
   {
     [Test]
+    public void name22 ()
+    {
+      var method = typeof (Test).GetMethod ("Muh");
+      var method2 = method.MakeGenericMethod (new[] { typeof (int) });
+
+      Assert.That (method.IsGenericMethod, Is.True);
+      Assert.That (method.IsGenericMethodDefinition, Is.True);
+      //Assert.That (method.ContainsGenericParameters, Is.False);
+      var type = method.GetGenericArguments();
+    }
+
+
+    [Test]
+    [Ignore]
     public void name2 ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((object obj) => obj.ToString());
+      var mutableType = MutableTypeObjectMother.CreateForExistingType();
+      var method2 = mutableType.GetMethod ("ToString");
+      var method3 = typeof (object).GetMethod ("ToString");
+
+      //Assert.That (method2, Is.EqualTo (method3));
+      //var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((object obj) => obj.ToString());
       var inst = new MethodBasedDescriptorProvider();
 
-      inst.GetDescriptors (method).ToArray();
+      inst.GetDescriptors (method2).ToArray();
     }
 
     public event EventHandler Event;
 
     [Test]
+    [Ignore]
     public void name ()
     {
       var handler = new EventHandler (Method);
       AddHandler2 (handler);
     }
 
-    private void Method (object sender, EventArgs eventArgs)
-    {
-    }
+    private void Method (object sender, EventArgs eventArgs) {}
 
     private void AddHandler2 (EventHandler handler)
     {
-      var typeArgs = handler.Method.GetParameters ().Select (x => x.ParameterType)
-        .Concat (new[] { typeof (object[]) })
-        .ToArray ();
+      var typeArgs = handler.Method.GetParameters().Select (x => x.ParameterType)
+          .Concat (new[] { typeof (object[]) })
+          .ToArray();
       var delegateType = Expression.GetDelegateType (typeArgs);
-      var parameters = handler.Method.GetParameters ().Select (x => Expression.Parameter (x.ParameterType, x.Name)).ToArray ();
+      var parameters = handler.Method.GetParameters().Select (x => Expression.Parameter (x.ParameterType, x.Name)).ToArray();
       var lambda = Expression.Lambda (
           delegateType,
-          Expression.NewArrayInit (typeof (object), parameters.Cast<Expression> ()),
+          Expression.NewArrayInit (typeof (object), parameters.Cast<Expression>()),
           false,
           parameters);
-      var del = lambda.Compile ();
+      var del = lambda.Compile();
 
       var action = new Action<object[]> (
           (args) => handler.DynamicInvoke (args));

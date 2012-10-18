@@ -53,7 +53,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration
       _roles = new Dictionary<Type, string>();
     }
 
-    public IList<IDescriptorProvider> Providers
+    public IList<IDescriptorProvider> DescriptorProviders
     {
       get { return !IsReadOnly ? _aspectProviders : new ReadOnlyCollection<IDescriptorProvider> (_aspectProviders); }
     }

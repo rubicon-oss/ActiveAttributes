@@ -18,7 +18,10 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <IgnoredTests>
     <RegexTestSelector>
-      <RegularExpression>.*</RegularExpression>
+      <RegularExpression>ActiveAttributes\.IntegrationTests\.InterfaceAspectsTest\..*</RegularExpression>
+    </RegexTestSelector>
+    <RegexTestSelector>
+      <RegularExpression>ActiveAttributes\.IntegrationTests\.ProceedTest\..*</RegularExpression>
     </RegexTestSelector>
   </IgnoredTests>
 </ProjectConfiguration>

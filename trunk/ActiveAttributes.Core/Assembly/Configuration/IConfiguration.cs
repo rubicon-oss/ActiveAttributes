@@ -21,7 +21,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration
 {
   public interface IConfiguration
   {
-    IList<IDescriptorProvider> Providers { get; }
+    IList<IDescriptorProvider> DescriptorProviders { get; }
 
     IList<IOrderRule> Rules { get; }
 

@@ -26,16 +26,6 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class ExpressionGenerator : IExpressionGenerator
   {
-    private static Expression ConvertTypedArgumentToExpression (ICustomAttributeNamedArgument typedArgument)
-    {
-      return typedArgument.ConvertTo (CreateElement, CreateArray);
-    }
-
-    //private static Expression ConvertTypedArgumentToExpression (CustomAttributeTypedArgument typedArgument)
-    //    {
-    //      return typedArgument.ConvertTo (CreateElement, CreateArray);
-    //    }
-
     private static MemberBinding GetMemberBindingExpression (ICustomAttributeNamedArgument namedArgument)
     {
       var constantExpression = ConvertTypedArgumentToExpression (namedArgument);
@@ -43,12 +33,10 @@ namespace ActiveAttributes.Core.Assembly
       return bindingExpression;
     }
 
-    //private static MemberBinding GetMemberBindingExpression (CustomAttributeNamedArgument namedArgument)
-    //{
-    //  var constantExpression = ConvertTypedArgumentToExpression (namedArgument.TypedValue);
-    //  var bindingExpression = Expression.Bind (namedArgument.MemberInfo, constantExpression);
-    //  return bindingExpression;
-    //}
+    private static Expression ConvertTypedArgumentToExpression (ICustomAttributeNamedArgument typedArgument)
+    {
+      return typedArgument.ConvertTo (CreateElement, CreateArray);
+    }
 
     private static Expression CreateElement (Type type, object obj)
     {
@@ -95,8 +83,7 @@ namespace ActiveAttributes.Core.Assembly
 
       var constructorInfo = Descriptor.ConstructorInfo;
       var constructorArguments = constructorInfo.GetParameters().Select (x => x.ParameterType).Zip (
-          Descriptor.ConstructorArguments, (t, v) => Expression.Constant (v, t));
-      //var constructorArguments = Descriptor.ConstructorArguments
+          Descriptor.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();
       var createExpression = Expression.New (constructorInfo, constructorArguments.ToArray());
 
       var memberBindingExpressions = Descriptor.NamedArguments.Select (GetMemberBindingExpression);

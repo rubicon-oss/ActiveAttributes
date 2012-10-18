@@ -14,13 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Text;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Extensions;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
+using System.Linq;
+using Castle.Core.Internal;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
@@ -75,6 +79,30 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
     public bool Matches (MethodInfo method)
     {
       return _aspectAttribute.Matches (method);
+    }
+
+    public override string ToString ()
+    {
+      var stringBuilder = new StringBuilder();
+
+      stringBuilder
+          .Append (_aspectAttribute.GetType().Name)
+          .Append ("(");
+
+      var namedWithoutScopeAndPriority = _customAttributeData.NamedArguments
+          .Where (x => x.MemberInfo.Name != "Scope" && x.MemberInfo.Name != "Priority");
+
+      var arguments = new List<string>();
+      arguments.AddRange (_customAttributeData.ConstructorArguments.Select (x => "{" + x.ToString() + "}"));
+      arguments.Add ("Scope = " + Scope);
+      arguments.Add ("Priority = " + Priority);
+      arguments.AddRange (namedWithoutScopeAndPriority.Select (x => x.MemberInfo.Name + " = {" + x.Value + "}"));
+      arguments.ForEach (x => stringBuilder.Append (x).Append (", "));
+
+      stringBuilder.Remove (stringBuilder.Length - 2, 2);
+      stringBuilder.Append (")");
+
+      return stringBuilder.ToString();
     }
   }
 }

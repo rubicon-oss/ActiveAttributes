@@ -1,137 +1,230 @@
-//// Copyright (c) rubicon IT GmbH, www.rubicon.eu
-////
-//// See the NOTICE file distributed with this work for additional information
-//// regarding copyright ownership.  rubicon licenses this file to you under 
-//// the Apache License, Version 2.0 (the "License"); you may not use this 
-//// file except in compliance with the License.  You may obtain a copy of the 
-//// License at
-////
-////   http://www.apache.org/licenses/LICENSE-2.0
-////
-//// Unless required by applicable law or agreed to in writing, software 
-//// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-//// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-//// License for the specific language governing permissions and limitations
-//// under the License.
-// TODO UNIT TEST
-//using System;
-//using System.Linq;
-//using System.Reflection;
-//using ActiveAttributes.Core.Extensions;
-//using NUnit.Framework;
-//using Remotion.Utilities;
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// See the NOTICE file distributed with this work for additional information
+// regarding copyright ownership.  rubicon licenses this file to you under 
+// the Apache License, Version 2.0 (the "License"); you may not use this 
+// file except in compliance with the License.  You may obtain a copy of the 
+// License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+// License for the specific language governing permissions and limitations
+// under the License.
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Extensions;
+using NUnit.Framework;
+using Remotion.Collections;
+using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
+using Rhino.Mocks;
 
-//namespace ActiveAttributes.UnitTests.Extensions
-//{
-//  [TestFixture]
-//  public class ICustomAttributeDataExtensionsTest
-//  {
-//    [Test]
-//    public void ConstructorElementArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorElementArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+namespace ActiveAttributes.UnitTests.Extensions
+{
+  [TestFixture]
+  public class ICustomAttributeDataExtensionsTest
+  {
+    public class ConvertTo
+    {
+      private string _elementField;
+      private object[] _arrayField;
 
-//      Assert.That (attribute.ConstructorElementArg, Is.EqualTo ("a"));
-//    }
+      private ICustomAttributeNamedArgument _customAttributeNamedArgumentMock;
 
-//    [Test]
-//    public void ConstructorArrayArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.ConstructorArrayArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+      [Test]
+      public void Element ()
+      {
+        var customAttributeNamedArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument> ();
+        var input = "test";
+        var output = "output";
+        customAttributeNamedArgumentMock
+            .Expect (x => x.MemberType)
+            .Return (typeof(string));
+        customAttributeNamedArgumentMock
+            .Expect (x => x.Value)
+            .Return (input);
 
-//      Assert.That (attribute.ConstructorArrayArg, Is.EquivalentTo (new[] { "a" }));
-//    }
+        Func<Type, object, object> elementConstructor =
+            (type, value) =>
+            {
+              Assert.That (type, Is.EqualTo (typeof (string)));
+              Assert.That (value, Is.SameAs (input));
+              return output;
+            };
+        Func<Type, IEnumerable<object>, object> arrayConstructor =
+            (type, enumerable) =>
+            {
+              throw new Exception ("should not get here");
+            };
 
-//    [Test]
-//    public void PropertyElementArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyElementArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+        var result = ICustomAttributeDataExtensions.ConvertTo (customAttributeNamedArgumentMock, elementConstructor, arrayConstructor);
 
-//      Assert.That (attribute.PropertyElementArg, Is.EqualTo ("a"));
-//    }
+        Assert.That (result, Is.SameAs (output));
+        customAttributeNamedArgumentMock.VerifyAllExpectations ();
+      }
 
-//    [Test]
-//    public void PropertyArrayArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.PropertyArrayArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+      [Test]
+      public void Array ()
+      {
+        var customAttributeNamedArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument> ();
+        var input = new object[] { "str", 7 };
+        var output = "output";
+        customAttributeNamedArgumentMock
+            .Expect (x => x.MemberType)
+            .Return (typeof(object[]));
+        customAttributeNamedArgumentMock
+            .Expect (x => x.Value)
+            .Return (input);
 
-//      Assert.That (attribute.PropertyArrayArg, Is.EquivalentTo (new[] { "a" }));
-//    }
+        Func<Type, object, object> elementConstructor = (type, value) => value;
+        Func<Type, IEnumerable<object>, object> arrayConstructor =
+            (type, enumerable) =>
+            {
+              Assert.That (type, Is.EqualTo (typeof (object)));
+              Assert.That (enumerable, Is.EquivalentTo (input));
+              return output;
+            };
 
-//    [Test]
-//    public void FieldElementArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldElementArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+        var result = ICustomAttributeDataExtensions.ConvertTo (customAttributeNamedArgumentMock, elementConstructor, arrayConstructor);
 
-//      Assert.That (attribute.FieldElementArg, Is.EqualTo ("a"));
-//    }
+        Assert.That (result, Is.SameAs (output));
+        customAttributeNamedArgumentMock.VerifyAllExpectations ();
+      }
+    }
 
-//    [Test]
-//    public void FieldArrayArg ()
-//    {
-//      var methodInfo = MemberInfoFromExpressionUtility.GetMethod (((DomainType obj) => obj.FieldArrayArg()));
-//      var customAttributeData = CustomAttributeData.GetCustomAttributes (methodInfo).Single();
-//      var attribute = (DomainAttribute) customAttributeData.CreateAttribute();
+    public class IsAspectAttribute
+    {
+      [Test]
+      public void AspectAttribute_ReturnsTrue ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData> ();
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof(DomainAttribute).GetConstructor(Type.EmptyTypes));
 
-//      Assert.That (attribute.FieldArrayArg, Is.EquivalentTo (new[] { "a" }));
-//    }
+        var result = ICustomAttributeDataExtensions.IsAspectAttribute (customAttributeDataMock);
 
+        Assert.That (result, Is.True);
+      }
 
-//    public class DomainType
-//    {
-//      [Domain ("a")]
-//      public void ConstructorElementArg () { }
+      [Test]
+      public void CompilerGenerated_ReturnsFalse ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData> ();
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (CompilerGeneratedAttribute).GetConstructors ().Single ());
 
-//      [Domain (new[] { "a" })]
-//      public void ConstructorArrayArg () { }
+        var result = ICustomAttributeDataExtensions.IsAspectAttribute (customAttributeDataMock);
 
-//      [Domain (PropertyElementArg = "a")]
-//      public void PropertyElementArg () { }
+        Assert.That (result, Is.False);
+      }
+    }
 
-//      [Domain (PropertyArrayArg = new[] { "a" })]
-//      public void PropertyArrayArg () { }
+    public class CreateAttribute
+    {
+      [Test]
+      public void DefaultConstructor ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (DomainAttribute).GetConstructor (Type.EmptyTypes));
+        customAttributeDataMock
+            .Expect (x => x.ConstructorArguments)
+            .Return (new ReadOnlyCollection<object>(new object[0]));
+        // TODO: how to test enumerable? ToCollection before argument checks?
+        customAttributeDataMock
+            .Expect (x => x.NamedArguments)
+            .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]))
+            .Repeat.Twice();
 
-//      [Domain (FieldElementArg = "a")]
-//      public void FieldElementArg () { }
+        var result = ICustomAttributeDataExtensions.CreateAttribute (customAttributeDataMock);
 
-//      [Domain (FieldArrayArg = new[] { "a" })]
-//      public void FieldArrayArg () { }
-//    }
+        Assert.That (result, Is.TypeOf<DomainAttribute>());
+      }
 
-//    public class DomainAttribute : Attribute
-//    {
-//      public string FieldElementArg;
-//      public string[] FieldArrayArg;
+      [Test]
+      public void ConstructorWithArgument ()
+      {
+        var input = new[] { "ctor" };
 
-//      public DomainAttribute ()
-//      {  
-//      }
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData> ();
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (DomainAttribute).GetConstructor (new[] { typeof (string) }));
+        customAttributeDataMock
+            .Expect (x => x.ConstructorArguments)
+            .Return (new ReadOnlyCollection<object> (input));
+        // TODO: how to test enumerable? ToCollection before argument checks?
+        customAttributeDataMock
+            .Expect (x => x.NamedArguments)
+            .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]))
+            .Repeat.Twice ();
 
-//      public DomainAttribute (string constructorElementArg)
-//      {
-//        ConstructorElementArg = constructorElementArg;
-//      }
+        var result = ICustomAttributeDataExtensions.CreateAttribute<DomainAttribute> (customAttributeDataMock);
 
-//      public DomainAttribute (string[] constructorArrayArg)
-//      {
-//        ConstructorArrayArg = constructorArrayArg;
-//      }
+        Assert.That (result, Is.Not.SameAs (input));
+        Assert.That (result.ConstructorArgument, Is.EqualTo ("ctor"));
+      }
 
-//      public string ConstructorElementArg { get; set; }
-//      public string[] ConstructorArrayArg { get; set; }
+      [Test]
+      public void NamedArgument ()
+      {
+        var input = new[] { "named" };
 
-//      public string PropertyElementArg { get; set; }
-//      public string[] PropertyArrayArg { get; set; }
-//    }
-//  }
-//}
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData> ();
+        var customAttributeNamedArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument>();
+        customAttributeNamedArgumentMock
+            .Expect (x => x.MemberInfo)
+            .Return (typeof(DomainAttribute).GetFields().Single());
+        customAttributeNamedArgumentMock
+            .Expect (x => x.MemberType)
+            .Return (typeof (string[]));
+        customAttributeNamedArgumentMock
+            .Expect (x => x.Value)
+            .Return (input);
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (DomainAttribute).GetConstructor (Type.EmptyTypes));
+        customAttributeDataMock
+            .Expect (x => x.ConstructorArguments)
+            .Return (new ReadOnlyCollection<object> (new object[0]));
+        // TODO: how to test enumerable? ToCollection before argument checks?
+        customAttributeDataMock
+            .Expect (x => x.NamedArguments)
+            .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new[] { customAttributeNamedArgumentMock }))
+            .Repeat.Twice ();
+
+        var result = ICustomAttributeDataExtensions.CreateAttribute<DomainAttribute> (customAttributeDataMock);
+
+        Assert.That (result.Field, Is.Not.SameAs (input));
+        Assert.That (result.Field, Is.EqualTo (input));
+      }
+    }
+
+    class DomainAttribute : AspectAttribute
+    {
+      public string[] Field;
+
+      public DomainAttribute () {}
+
+      public DomainAttribute (string constructorArgument)
+      {
+        ConstructorArgument = constructorArgument;
+      }
+
+      public string ConstructorArgument { get; set; }
+    }
+  }
+}

@@ -7926,20 +7926,8 @@
             </summary>
             <seealso cref="T:JetBrains.Annotations.AssertionConditionAttribute"/>
         </member>
-        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
-            <summary>
-            Indicates that the value of marked element could be <c>null</c> sometimes, so the check for <c>null</c> is necessary before its usage
-            </summary>
-        </member>
-        <member name="T:JetBrains.Annotations.CannotApplyEqualityOperatorAttribute">
-            <summary>
-            Indicates that the value of marked type (or its derivatives) cannot be compared using '==' or '!=' operators.
-            There is only exception to compare with <c>null</c>, it is permitted
-            </summary>
-        </member>
         <member name="T:JetBrains.Annotations.BaseTypeRequiredAttribute">
             <summary>
-            Used for ReSharper intellisense only.
             When applied to target attribute, specifies a requirement for any type which is marked with 
             target attribute to implement or inherit specific type or types
             </summary>
@@ -7955,16 +7943,55 @@
             </code>
             </example>
         </member>
-        <member name="M:JetBrains.Annotations.BaseTypeRequiredAttribute.#ctor(System.Type[])">
+        <member name="M:JetBrains.Annotations.BaseTypeRequiredAttribute.#ctor(System.Type)">
             <summary>
             Initializes new instance of BaseTypeRequiredAttribute
             </summary>
-            <param name="baseTypes">Specifies which types are required</param>
+            <param name="baseType">Specifies which types are required</param>
         </member>
         <member name="P:JetBrains.Annotations.BaseTypeRequiredAttribute.BaseTypes">
             <summary>
             Gets enumerations of specified base types
             </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of marked element could be <c>null</c> sometimes, so the check for <c>null</c> is necessary before its usage
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.CannotApplyEqualityOperatorAttribute">
+            <summary>
+            Indicates that the value of marked type (or its derivatives) cannot be compared using '==' or '!=' operators.
+            There is only exception to compare with <c>null</c>, it is permitted
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.ContractAnnotationAttribute">
+            <summary>
+            Describes dependency between method input and output
+            </summary>
+            <syntax>
+            <p>Function definition table syntax:</p>
+            <list>
+            <item>FDT      ::= FDTRow [;FDTRow]*</item>
+            <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>
+            <item>Input    ::= ParameterName: Value [, Input]*</item>
+            <item>Output   ::= [ParameterName: Value]* {halt|stop|void|nothing|Value}</item>
+            <item>Value    ::= true | false | null | notnull | canbenull</item>
+            </list>
+            If method has single input parameter, it's name could be omitted. <br/>
+            Using "halt" (or "void"/"nothing", which is the same) for method output means that methos doesn't return normally. <br/>
+            "canbenull" annotation is only applicable for output parameters. <br/>
+            You can use multiple [ContractAnnotation] for each FDT row, or use single attribute with rows separated by semicolon. <br/>
+            </syntax>
+            <examples>
+            <list>
+            <item>[ContractAnnotation("=> halt")] public void TerminationMethod()</item>
+            <item>[ContractAnnotation("halt &lt;= condition: false")] public void Assert(bool condition, string text) // Regular Assertion method</item>
+            <item>[ContractAnnotation("s:null => true")] public bool IsNullOrEmpty(string s) // String.IsNullOrEmpty</item>
+            <item>[ContractAnnotation("null => null; notnull => notnull")] public object Transform(object data) // Method which returns null if parameter is null, and not null if parameter is not null</item>
+            <item>[ContractAnnotation("s:null=>false; =>true,result:notnull; =>false, result:null")] public bool TryParse(string s, out Person result)</item>
+            </list>
+            </examples>
         </member>
         <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Access">
             <summary>
@@ -7976,7 +8003,13 @@
             Indicates implicit assignment to a member
             </summary>
         </member>
-        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.Instantiated">
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:JetBrains.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
             <summary>
             Indicates implicit instantiation of a type
             </summary>
@@ -7996,15 +8029,33 @@
             Entity marked with attribute and all its members considered used
             </summary>
         </member>
+        <member name="T:JetBrains.Annotations.InstantHandleAttribute">
+            <summary>
+            Tells code analysis engine if the parameter is completely handled when the invoked method is on stack. 
+            If the parameter is delegate, indicates that delegate is executed while the method is executed.
+            If the parameter is enumerable, indicates that it is enumerated while the method is executed.
+            </summary>
+        </member>
         <member name="T:JetBrains.Annotations.InvokerParameterNameAttribute">
             <summary>
-            Indicates that the function argument should be string literal and match one  of the parameters of the caller function.
+            Indicates that the function argument should be string literal and match one of the parameters of the caller function.
             For example, <see cref="T:System.ArgumentNullException"/> has such parameter.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.LinqTunnelAttribute">
+            <summary>
+            Indicates that method is *pure* linq method, with postponed enumeration. C# iterator methods (yield ...) are always LinqTunnel.
             </summary>
         </member>
         <member name="T:JetBrains.Annotations.LocalizationRequiredAttribute">
             <summary>
             Indicates that marked element should be localized or not.
+            </summary>
+        </member>
+        <member name="M:JetBrains.Annotations.LocalizationRequiredAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:JetBrains.Annotations.LocalizationRequiredAttribute"/> class with
+            <see cref="P:JetBrains.Annotations.LocalizationRequiredAttribute.Required"/> set to <see langword="true"/>.
             </summary>
         </member>
         <member name="M:JetBrains.Annotations.LocalizationRequiredAttribute.#ctor(System.Boolean)">
@@ -8050,9 +8101,24 @@
             
             </summary>
         </member>
+        <member name="T:JetBrains.Annotations.NotifyPropertyChangedInvocatorAttribute">
+            <summary>
+            Indicates that the function is used to notify class type property value is changed.
+            </summary>
+        </member>
         <member name="T:JetBrains.Annotations.NotNullAttribute">
             <summary>
             Indicates that the value of marked element could never be <c>null</c>
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:JetBrains.Annotations.PureAttribute">
+            <summary>
+            Indicates that method doesn't contain observable side effects.
             </summary>
         </member>
         <member name="T:JetBrains.Annotations.StringFormatMethodAttribute">
@@ -8533,11 +8599,6 @@
               value is not type <see cref="T:System.SByte"/>, <see cref="T:System.Int16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.Int64"/>, 
               <see cref="T:System.Byte"/>, <see cref="T:System.UInt16"/>, <see cref="T:System.UInt32"/>, <see cref="T:System.UInt64"/>.
             </exception>
-        </member>
-        <member name="T:Remotion.Utilities.ListUtility">
-            <summary>
-            Provides utility methods for processing IList instances. 
-            </summary>
         </member>
         <member name="T:Remotion.Utilities.NameValueCollectionUtility">
             <summary>

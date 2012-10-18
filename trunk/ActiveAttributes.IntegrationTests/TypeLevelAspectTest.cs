@@ -57,7 +57,7 @@ namespace ActiveAttributes.IntegrationTests
 
       public override bool Matches (System.Reflection.MethodInfo methodInfo)
       {
-        return methodInfo.Name != "Method3";
+        return methodInfo.IsVirtual && methodInfo.Name != "Method3";
       }
     } 
   }

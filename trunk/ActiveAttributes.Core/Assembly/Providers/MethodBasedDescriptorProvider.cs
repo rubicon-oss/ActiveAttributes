@@ -37,7 +37,7 @@ namespace ActiveAttributes.Core.Assembly.Providers
     {
       ArgumentUtility.CheckNotNull ("method", method);
 
-      var methodSequence = method.CreateSequence (x => _methodFinder.GetBaseMethod (x)).Cast<MemberInfo>();
+      var methodSequence = method.CreateSequence (x => _methodFinder.GetBaseMethod (x)).Cast<MemberInfo>().ToArray();
 
       return DescriptorProvider.GetDescriptors (method, methodSequence);
     }

@@ -15,14 +15,13 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Providers;
-using System.Linq;
-using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -53,7 +52,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
       ArgumentUtility.CheckNotNull ("factory", factory);
 
-      _aspectProviders = configuration.Providers.OfType<IMethodLevelDescriptorProvider>().ToList();
+      _aspectProviders = configuration.DescriptorProviders.OfType<IMethodLevelDescriptorProvider>().ToList();
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
       _scheduler = scheduler;
@@ -64,13 +63,14 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyMethod (MutableType mutableType, MethodInfo method, IEnumerable<IExpressionGenerator> typeGenerators)
     {
-      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (method)).ToArray ();
+      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (method)).ToArray();
       var fields = _fieldIntroducer.IntroduceMethodFields (mutableType, method);
-      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray ();
+      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray();
 
-      // TODO Any()
-      // TODO Matching()
-      var allGenerators = typeGenerators.Concat (generators);
+      var allGenerators = generators.Concat (typeGenerators.Where (x => x.Descriptor.Matches (method))).ConvertToCollection ();
+      if (!allGenerators.Any ())
+        return;
+
       var allAsTuples = allGenerators.Select (x => Tuple.Create (x.Descriptor, x));
       var sortedGenerators = _scheduler.GetOrdered (allAsTuples);
 

@@ -71,7 +71,8 @@ namespace ActiveAttributes.Core.Assembly
     {
       var methodInfoField = Expression.Field (ctx.This, methodInfoFieldInfo);
 
-      var methodInfoConstantExpression = Expression.Constant (methodInfo.UnderlyingSystemMethodInfo, typeof (MethodInfo)); // TODO HOW TO TEST????
+      // TODO How to test if UnderlyingSystemMethodInfo was used instead of mutableMethod?
+      var methodInfoConstantExpression = Expression.Constant (methodInfo.UnderlyingSystemMethodInfo, typeof (MethodInfo));
       var methodInfoAssignExpression = Expression.Assign (methodInfoField, methodInfoConstantExpression);
 
       return methodInfoAssignExpression;

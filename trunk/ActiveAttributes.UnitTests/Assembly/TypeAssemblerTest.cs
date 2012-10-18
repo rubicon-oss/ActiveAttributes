@@ -44,7 +44,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       // Arrange
       aspectConfigurationMock
-          .Expect (x => x.Providers)
+          .Expect (x => x.DescriptorProviders)
           .Return (aspectProviders);
       aspectProviderMock
           .Expect (x => x.GetDescriptors (mutableType))

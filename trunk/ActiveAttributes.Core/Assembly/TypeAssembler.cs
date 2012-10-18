@@ -31,15 +31,6 @@ namespace ActiveAttributes.Core.Assembly
     static TypeAssembler ()
     {
       var methodCopier = new MethodCopier ();
-      var aspectProviders = new IDescriptorProvider[]
-                            {
-                                new TypeBasedDescriptorProvider(),
-                                new MethodBasedDescriptorProvider(),
-                                new InterfaceMethodBasedDescriptorProvider(),
-                                new ParameterBasedDescriptorProvider(),
-                                new PropertyBasedDescriptorProvider(),
-                                new EventBasedDescriptorProvider()
-                            };
       var configuration = Configuration.Configuration.Singleton;
       var constructorPatcher = new ConstructorPatcher ();
       var fieldIntroducer = new FieldIntroducer ();
@@ -52,7 +43,6 @@ namespace ActiveAttributes.Core.Assembly
       var typeAssembler = new TypeAssembler (configuration, fieldIntroducer, giveMeSomeName, methodAssembler);
 
       Singleton = typeAssembler;
-      //Singleton = new TypeAssembler (aspectProviders, fieldIntroducer, constructorPatcher, methodCopier, factory, scheduler);
     }
 
     public static ITypeAssemblyParticipant Singleton { get; private set; }
@@ -65,7 +55,7 @@ namespace ActiveAttributes.Core.Assembly
     public TypeAssembler (
         IConfiguration configuration, IFieldIntroducer fieldIntroducer, IGiveMeSomeName giveMeSomeName, IMethodAssembler methodAssembler)
     {
-      _aspectProviders = configuration.Providers.OfType<ITypeLevelDescriptorProvider> ().ToList ();
+      _aspectProviders = configuration.DescriptorProviders.OfType<ITypeLevelDescriptorProvider> ().ToList ();
       _methodAssembler = methodAssembler;
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;

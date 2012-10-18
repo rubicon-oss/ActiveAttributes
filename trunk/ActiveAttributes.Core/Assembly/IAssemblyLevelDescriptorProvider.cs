@@ -13,14 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
-namespace ActiveAttributes.Core.Assembly.Providers
+namespace ActiveAttributes.Core.Assembly
 {
-  public interface IMethodLevelDescriptorProvider : IDescriptorProvider
+  public interface IAssemblyLevelDescriptorProvider : IDescriptorProvider
   {
-    IEnumerable<IDescriptor> GetDescriptors (MethodInfo method);
+    IEnumerable<IDescriptor> GetDescriptors (System.Reflection.Assembly assembly);
   }
 }

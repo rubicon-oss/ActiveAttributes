@@ -69,9 +69,13 @@
     <Compile Include="Assembly\ExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\FieldInfoContainer.cs" />
     <Compile Include="Assembly\GiveItSomeName.cs" />
+    <Compile Include="Assembly\IAssemblyLevelDescriptorProvider.cs" />
+    <Compile Include="Assembly\IDescriptorProvider.cs" />
     <Compile Include="Assembly\IExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\IGiveMeSomeName.cs" />
     <Compile Include="Assembly\IMethodAssembler.cs" />
+    <Compile Include="Assembly\IMethodLevelDescriptorProvider.cs" />
+    <Compile Include="Assembly\ITypeLevelDescriptorProvider.cs" />
     <Compile Include="Assembly\MethodAssembler.cs" />
     <Compile Include="Assembly\Scheduler.cs" />
     <Compile Include="Assembly\Configuration\RoleAttribute.cs" />
@@ -86,11 +90,7 @@
     <Compile Include="Assembly\IMethodPatcher.cs" />
     <Compile Include="Assembly\Descriptors\TypeDescriptor.cs" />
     <Compile Include="Assembly\Providers\EventBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\IDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\IAssemblyLevelDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\IMethodLevelDescriptorProvider.cs" />
     <Compile Include="Assembly\Providers\InterfaceMethodBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\ITypeLevelDescriptorProvider.cs" />
     <Compile Include="Assembly\Providers\MethodBasedDescriptorProvider.cs" />
     <Compile Include="Assembly\Providers\ParameterBasedDescriptorProvider.cs" />
     <Compile Include="Assembly\Providers\PropertyBasedDescriptorProvider.cs" />
@@ -146,7 +146,7 @@
     <Compile Include="Contexts\IReadOnlyInvocationContext.cs" />
     <Compile Include="Contexts\IArgumentCollection.cs" />
     <Compile Include="Contexts\IReadOnlyArgumentCollection.cs" />
-    <Compile Include="Extensions\CustomAttributeDataExtensions.cs" />
+    <Compile Include="Extensions\ICustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />

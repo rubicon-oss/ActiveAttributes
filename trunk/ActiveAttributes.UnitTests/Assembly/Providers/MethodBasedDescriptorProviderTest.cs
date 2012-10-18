@@ -45,14 +45,14 @@ namespace ActiveAttributes.UnitTests.Assembly.Providers
       Assert.That (result, Has.All.Matches<IDescriptor> (x => x.AspectType == typeof (InheritingAspectAttribute)));
     }
 
-    private class BaseType
+    class BaseType
     {
       [InheritingAspect]
       [NotInheritingAspect]
       public virtual void Method () {}
     }
 
-    private class DomainType : BaseType
+    class DomainType : BaseType
     {
       public override void Method () {}
     }
