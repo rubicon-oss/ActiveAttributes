@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Utilities
 {
@@ -32,10 +33,9 @@ namespace ActiveAttributes.Core.Utilities
       Items = items;
     }
 
+    [UsedImplicitly]
     protected UndefinedOrderException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
+        : base (info, context) {}
 
     public IEnumerable<object> Items { get; private set; }
 

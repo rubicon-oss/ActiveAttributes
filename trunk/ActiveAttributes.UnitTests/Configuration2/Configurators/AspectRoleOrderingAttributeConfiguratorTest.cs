@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;

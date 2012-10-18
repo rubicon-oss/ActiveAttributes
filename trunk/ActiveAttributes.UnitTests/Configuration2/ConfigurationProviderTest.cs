@@ -14,9 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly.Configuration.Configurators;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Configuration2.Configurators;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -40,7 +39,7 @@ namespace ActiveAttributes.UnitTests.Checked
     public void CallsAppConfigConfiguratorFirst ()
     {
       var mockRepository = new MockRepository();
-      var appConfigConfiguratorMock = mockRepository.StrictMock<ApplicationConfigurationConfigurator>();
+      var appConfigConfiguratorMock = mockRepository.StrictMock<AppConfigConfigurator>();
       var otherConfiguratorMock = mockRepository.StrictMock<IActiveAttributesConfigurator>();
 
       // Arrange

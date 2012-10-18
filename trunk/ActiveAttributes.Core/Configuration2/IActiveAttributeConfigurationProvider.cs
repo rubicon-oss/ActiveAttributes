@@ -18,6 +18,9 @@ using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
+  /// <summary>
+  /// Serves as a provider for an <see cref="IActiveAttributesConfiguration"/>.
+  /// </summary>
   [ConcreteImplementation (typeof (ActiveAttributeConfigurationProvider))]
   public interface IActiveAttributeConfigurationProvider
   {

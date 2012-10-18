@@ -16,11 +16,15 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Utilities
 {
   // TODO remove generic parameter
-  // TODO docs
+  /// <summary>
+  /// Exception that is thrown when sorting a set of items is not possible due to a circular dependency.
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
   public class CircularDependencyException<T> : Exception
   {
     private const string c_message = "Circular dependencies detected:\r\n";
@@ -31,10 +35,9 @@ namespace ActiveAttributes.Core.Utilities
       Cycles = cycles;
     }
 
+    [UsedImplicitly]
     protected CircularDependencyException (SerializationInfo info, StreamingContext context)
-      : base (info, context)
-    {
-    }
+      : base (info, context) { }
 
     public IEnumerable<IEnumerable<T>> Cycles { get; private set; }
 

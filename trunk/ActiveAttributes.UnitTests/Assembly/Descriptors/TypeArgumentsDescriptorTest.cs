@@ -15,7 +15,6 @@
 // under the License.
 
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;

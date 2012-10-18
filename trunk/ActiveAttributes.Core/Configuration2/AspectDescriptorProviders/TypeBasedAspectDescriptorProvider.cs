@@ -13,13 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Utilities;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -33,7 +31,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 
       var typeSequence = type.CreateSequence (x => x.BaseType).Cast<MemberInfo>();
 
-      return DescriptorProvider.GetDescriptors (type, typeSequence);
+      return AspectDescriptorProviderUtility.GetDescriptors (type, typeSequence);
     }
   }
 }

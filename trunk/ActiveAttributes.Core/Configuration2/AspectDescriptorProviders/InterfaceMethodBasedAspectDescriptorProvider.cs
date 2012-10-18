@@ -13,19 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Utilities;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 {
-  // TODO provide constructor for allowMultiple and inherited
+  // TODO Provide constructor for ignoreAllowMultiple and ignoreInherited
+  // TODO OR
+  // TODO Overthink ;)
   public class InterfaceMethodBasedAspectDescriptorProvider : IMethodLevelAspectDescriptorProvider
   {
     public IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method)
@@ -42,7 +42,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
               x.InterfaceMethods, (targetMember, interfaceMember) => new { TargetMember = targetMember, InterfaceMember = interfaceMember }));
 
       var interfaceMembers = targetInterfaceZip.Where (x => x.TargetMember == method).Select (x => x.InterfaceMember).Cast<MemberInfo>();
-      return DescriptorProvider.GetDescriptors (null, interfaceMembers);
+      return AspectDescriptorProviderUtility.GetDescriptors (null, interfaceMembers);
     }
   }
 }

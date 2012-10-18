@@ -24,7 +24,7 @@ using Remotion.Development.UnitTesting.Reflection;
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class InterfaceMethodBasedDescriptorProviderTest
+  public class InterfaceMethodBasedAspectDescriptorProviderTest
   {
     private InterfaceMethodBasedAspectDescriptorProvider _provider;
 
@@ -81,10 +81,10 @@ namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
       public void Method2 () { }
     }
 
-    [AttributeUsage (AttributeTargets.All, Inherited = true)]
+    [AttributeUsage (AttributeTargets.All, Inherited = true, AllowMultiple = true)]
     class InheritingAspectAttribute : Core.Aspects.AspectAttribute { }
 
-    [AttributeUsage (AttributeTargets.All, Inherited = false)]
+    [AttributeUsage (AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute { }
   }
 }

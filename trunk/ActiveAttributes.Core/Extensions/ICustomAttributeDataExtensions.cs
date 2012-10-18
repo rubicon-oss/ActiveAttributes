@@ -20,6 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using ActiveAttributes.Core.Configuration2.Configurators;
 
 namespace ActiveAttributes.Core.Extensions
 {
@@ -69,8 +70,21 @@ namespace ActiveAttributes.Core.Extensions
       Assertion.IsTrue (customAttributeData.Constructor.DeclaringType != null);
 
       var attributeType = customAttributeData.Constructor.DeclaringType;
-      var attributeUsageAttr = attributeType.GetCustomAttributes (typeof (AttributeUsageAttribute), true).Cast<AttributeUsageAttribute>().Single();
-      return attributeUsageAttr.Inherited;
+      var attributeUsageAttribute = attributeType.GetCustomAttributes<AttributeUsageAttribute> (inherit: true).Single();
+      return attributeUsageAttribute.Inherited;
+    }
+
+    /// <summary>
+    /// Determines if the <see cref="CustomAttributeData"/> allows multiple use.
+    /// </summary>
+    public static bool AllowsMultiple (this ICustomAttributeData customAttributeData)
+    {
+      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
+      Assertion.IsTrue (customAttributeData.Constructor.DeclaringType != null);
+
+      var attributeType = customAttributeData.Constructor.DeclaringType;
+      var attributeUsageAttribute = attributeType.GetCustomAttributes<AttributeUsageAttribute> (inherit: true).Single();
+      return attributeUsageAttribute.AllowMultiple;
     }
 
     public static T CreateAttribute<T> (this ICustomAttributeData customAttributeData) where T : Attribute

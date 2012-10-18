@@ -76,33 +76,37 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Aspects\CflowMethodInterceptionAspectAttributeTest.cs" />
+    <Compile Include="Assembly\ExpressionGeneratorContainerTest.cs" />
     <Compile Include="Assembly\ExpressionGeneratorTest.cs" />
     <Compile Include="Assembly\GiveItSomeNameTest.cs" />
     <Compile Include="Assembly\MethodAssemblerTest.cs" />
-    <Compile Include="Checked\ConfigurationProviderTest.cs" />
-    <Compile Include="Checked\DefaultAspectDescriptorProvidersConfiguratorTest.cs" />
-    <Compile Include="Utilities\DescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\EventBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\InterfaceMethodBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\MethodBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\ParameterBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\PropertyBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\TypeBasedAspectDescriptorProviderTest.cs" />
+    <Compile Include="Configuration2\ConfigurationProviderTest.cs" />
+    <Compile Include="Configuration2\Configurators\AspectRoleAttributeConfiguratorTest.cs" />
+    <Compile Include="Configuration2\Configurators\AspectRoleOrderingAttributeConfiguratorTest.cs" />
+    <Compile Include="Configuration2\Configurators\AspectTypeOrderingAttributeConfiguratorTest.cs" />
+    <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfiguratorTest.cs" />
+    <Compile Include="Configuration2\AspectDescriptorProviders\AspectDescriptorProviderUtilityTest.cs" />
     <Compile Include="Assembly\SchedulerTest.cs" />
-    <Compile Include="Assembly\Configurators\CustomAttributesConfiguratorTest.cs" />
     <Compile Include="Assembly\Descriptors\CustomDataDescriptorTest.cs" />
     <Compile Include="Assembly\ConstructorPatcherTest.cs" />
     <Compile Include="Assembly\Descriptors\TypeArgumentsDescriptorTest.cs" />
     <Compile Include="Assembly\FieldIntroducerTest.cs" />
     <Compile Include="Assembly\MethodCopierTest.cs" />
     <Compile Include="Assembly\MethodPatcherTest.cs" />
-    <Compile Include="Assembly\Providers\EventBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Providers\PropertyBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Providers\InterfaceMethodBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Providers\MethodBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Providers\ParameterBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Providers\TypeBasedDescriptorProviderTest.cs" />
     <Compile Include="Configuration2\Rules\AspectOrderingRuleBaseTest.cs" />
     <Compile Include="Configuration2\Rules\RoleOrderingRuleTest.cs" />
     <Compile Include="Configuration2\Rules\TypeOrderingRuleTest.cs" />
     <Compile Include="Assembly\TypeAssemblerTest.cs" />
     <Compile Include="Assembly\TypeProviderTest.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="Configuration\ApplyAspectAttributeTest.cs" />
+    <Compile Include="Configuration2\CustomAttributes\ApplyAspectAttributeTest.cs" />
     <Compile Include="Invocations\IndexerGetInvocationTest.cs" />
     <Compile Include="Invocations\IndexerSetInvocationTest.cs" />
     <Compile Include="Invocations\OuterInvocationTest.cs" />
@@ -134,6 +138,11 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assembly\Configurators\" />
+    <Folder Include="Assembly\Providers\" />
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

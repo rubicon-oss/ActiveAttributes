@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using ActiveAttributes.Core.Configuration2.Rules;
 using Remotion.Utilities;

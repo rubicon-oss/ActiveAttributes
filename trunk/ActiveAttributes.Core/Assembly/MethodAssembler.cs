@@ -17,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
@@ -32,7 +30,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IEnumerable<IMethodLevelAspectDescriptorProvider> _aspectProviders;
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IGiveMeSomeName _giveMeSomeName;
-    private readonly IScheduler _scheduler;
+    private readonly IAspectSorter _aspectSorter;
     private readonly IMethodCopier _methodCopier;
     private readonly IConstructorPatcher _constructorPatcher;
     private readonly IFactory _factory;
@@ -41,7 +39,7 @@ namespace ActiveAttributes.Core.Assembly
         IActiveAttributesConfiguration activeAttributesConfiguration,
         IFieldIntroducer fieldIntroducer,
         IGiveMeSomeName giveMeSomeName,
-        IScheduler scheduler,
+        IAspectSorter aspectSorter,
         IMethodCopier methodCopier,
         IConstructorPatcher constructorPatcher,
         IFactory factory)
@@ -49,7 +47,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("activeAttributesConfiguration", activeAttributesConfiguration);
       ArgumentUtility.CheckNotNull ("fieldIntroducer", fieldIntroducer);
       ArgumentUtility.CheckNotNull ("giveMeSomeName", giveMeSomeName);
-      ArgumentUtility.CheckNotNull ("scheduler", scheduler);
+      ArgumentUtility.CheckNotNull ("aspectSorter", aspectSorter);
       ArgumentUtility.CheckNotNull ("methodCopier", methodCopier);
       ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
       ArgumentUtility.CheckNotNull ("factory", factory);
@@ -57,7 +55,7 @@ namespace ActiveAttributes.Core.Assembly
       _aspectProviders = activeAttributesConfiguration.AspectDescriptorProviders.OfType<IMethodLevelAspectDescriptorProvider>().ToList();
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
-      _scheduler = scheduler;
+      _aspectSorter = aspectSorter;
       _methodCopier = methodCopier;
       _constructorPatcher = constructorPatcher;
       _factory = factory;
@@ -74,7 +72,7 @@ namespace ActiveAttributes.Core.Assembly
         return;
 
       var allAsTuples = allGenerators.Select (x => Tuple.Create (x.AspectDescriptor, x));
-      var sortedGenerators = _scheduler.GetOrdered (allAsTuples);
+      var sortedGenerators = _aspectSorter.Sort (allAsTuples);
 
       var mutableMethod = mutableType.GetOrAddMutableMethod (method);
       var copiedMethod = _methodCopier.GetCopy (mutableMethod);

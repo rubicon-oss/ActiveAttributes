@@ -17,8 +17,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;

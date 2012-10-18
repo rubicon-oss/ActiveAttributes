@@ -24,7 +24,7 @@ using NUnit.Framework;
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class PropertyBasedDescriptorProviderTest
+  public class PropertyBasedAspectDescriptorProviderTest
   {
     [Test]
     public void GetAspects ()

@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,21 +13,20 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration2.Configurators;
+using ActiveAttributes.Core.Configuration2;
+using Remotion.Collections;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Serves as a rule for the ordering of aspects during the code generation.
+  /// Sorts a collection of <see cref="IExpressionGenerator"/>s according to a <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
-  public interface IAspectOrderingRule : IComparer<IAspectDescriptor>
+  public interface IAspectSorter
   {
-    /// <summary>
-    /// Indicates the source of the rule (e.g., <see cref="AppConfigConfigurator"/> or <see cref="CustomAttributesConfigurator"/>).
-    /// </summary>
-    string Source { get; }
+    IEnumerable<T> Sort<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects);
+    IEnumerable<IAspectDescriptor> Sort (IEnumerable<IAspectDescriptor> aspects);
   }
 }

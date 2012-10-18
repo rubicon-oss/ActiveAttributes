@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;

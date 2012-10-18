@@ -16,7 +16,6 @@
 
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
 using NUnit.Framework;
@@ -24,36 +23,29 @@ using NUnit.Framework;
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class EventBasedDescriptorProviderTest
+  public class TypeBasedAspectDescriptorProviderTest
   {
     [Test]
-    public void GetAspects ()
+    public void Normal ()
     {
-      var method = typeof (DomainType).GetMethod ("add_Event");
-      var provider = new EventBasedAspectDescriptorProvider();
+      var type = typeof (DerivedType);
 
-      var result = provider.GetDescriptors (method).ToArray();
+      var result = new TypeBasedAspectDescriptorProvider().GetDescriptors (type).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
       Assert.That (result, Has.All.Matches<IAspectDescriptor> (x => x.Type == typeof (InheritingAspectAttribute)));
     }
 
-    private class BaseType
-    {
-      [InheritingAspect]
-      [NotInheritingAspect]
-      public virtual event EventHandler Event;
-    }
+    [InheritingAspect]
+    [NotInheritingAspect]
+    class BaseType { }
 
-    private class DomainType : BaseType
-    {
-      public override event EventHandler Event;
-    }
+    class DerivedType : BaseType { }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    private class InheritingAspectAttribute : AspectAttribute {}
+    class InheritingAspectAttribute : Core.Aspects.AspectAttribute { }
 
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
-    private class NotInheritingAspectAttribute : AspectAttribute {}
+    class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute { }
   }
 }

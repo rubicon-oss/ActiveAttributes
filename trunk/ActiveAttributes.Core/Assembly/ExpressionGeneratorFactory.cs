@@ -15,12 +15,8 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2;
-using Microsoft.Scripting.Ast;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -49,62 +45,4 @@ namespace ActiveAttributes.Core.Assembly
       return aspects.Where (x => x.Scope == scope).Select ((x, i) => new ExpressionGenerator (accessor, i, x)).Cast<IExpressionGenerator>();
     }
   }
-
-  //public class ExpressionGeneratorContainer
-  //{
-  //  private readonly ReadOnlyCollection<IAspectDescriptor> _instanceAspects;
-  //  private readonly ReadOnlyCollection<IAspectDescriptor> _staticAspects;
-  //  private readonly ReadOnlyDictionary<IAspectDescriptor, Tuple<IArrayAccessor, int>> _aspectStorageInfo;
-
-  //  public ExpressionGeneratorContainer (IEnumerable<IAspectDescriptor> aspects, IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor)
-  //  {
-  //    var aspectCollection = aspects.ConvertToCollection();
-  //    _instanceAspects = aspectCollection.Where (d => d.Scope == Scope.Instance).ToList ().AsReadOnly ();
-  //    _staticAspects = aspectCollection.Where (d => d.Scope == Scope.Static).ToList ().AsReadOnly();
-
-  //    _aspectStorageInfo = 
-  //        _instanceAspects.Select ((d, i) => new { Descriptor = d, Tuple = Tuple.Create (instanceAccessor, i) })
-  //        .Concat (_staticAspects.Select ((d, i) => new { Descriptor = d, Tuple = Tuple.Create (staticAccessor, i) }))
-  //        .ToDictionary (t => t.Descriptor, t => t.Tuple)
-  //        .AsReadOnly();
-  //  }
-    
-  //  public ReadOnlyCollection<IAspectDescriptor> InstanceAspects
-  //  {
-  //    get { return _instanceAspects; }
-  //  }
-
-  //  public ReadOnlyCollection<IAspectDescriptor> StaticAspects
-  //  {
-  //    get { return _staticAspects; }
-  //  }
-
-  //  public ReadOnlyDictionary<IAspectDescriptor, Tuple<IArrayAccessor, int>> AspectStorageInfo
-  //  {
-  //    get { return _aspectStorageInfo; }
-  //  }
-
-  //  public Expression GetStorageExpression (IAspectDescriptor descriptor, Expression thisExpression)
-  //  {
-  //    var aspectTuple = _aspectStorageInfo[descriptor];
-  //    return GetStorageExpression (thisExpression, aspectTuple.Item1, aspectTuple.Item2);
-  //  }
-
-  //  private Expression GetStorageExpression (Expression thisExpression, IArrayAccessor arrayAccessor, int index)
-  //  {
-  //    // TODO Inline ExpressionGenerator.GetStorageExpression here
-  //    throw new NotImplementedException();
-  //  }
-
-  //  public Expression GetNewInstanceArrayInitExpression ()
-  //  {
-  //    // TODO Inline ExpressionGenerator.GetInitExpression and a part of ConstructorPatcher here
-  //    return Expression.NewArrayInit (...);
-  //  }
-
-  //  public Expression GetNewStaticArrayInitExpression ()
-  //  {
-  //    return Expression.NewArrayInit (...);
-  //  }
-  //}
 }

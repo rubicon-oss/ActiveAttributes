@@ -17,25 +17,14 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.ServiceLocation;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
 
-namespace ActiveAttributes.Core.Checked
+namespace ActiveAttributes.Core
 {
-  /// <summary>
-  ///   Serves as a factory for objects with extended functionality through <see cref="AspectAttribute" />s.
-  /// </summary>
-  [ConcreteImplementation (typeof (ObjectFactory))]
-  public interface IObjectFactory
-  {
-    T Create<T> ();
-  }
-
   public class ObjectFactory : IObjectFactory
   {
     public static T Create<T> ()
@@ -46,6 +35,7 @@ namespace ActiveAttributes.Core.Checked
 
     T IObjectFactory.Create<T> ()
     {
+      // TODO (high)
       var activeAttributesAssembler = ServiceLocator.Current.GetInstance<IActiveAttributesAssembler>();
 
       var typeAssembler = new Remotion.TypePipe.TypeAssembly.TypeAssembler (

@@ -13,20 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Rules;
 
-namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
+namespace ActiveAttributes.Core.Configuration2.Configurators
 {
-  public class ApplicationConfigurationConfigurator : IActiveAttributesConfigurator
+  public class AppConfigConfigurator : IActiveAttributesConfigurator
   {
-    private readonly string _ruleSource = typeof(ApplicationConfigurationConfigurator).Name;
-
     public virtual void Initialize (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
       var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
@@ -35,7 +30,7 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
       {
         var beforeType = Type.GetType (item.BeforeType, true);
         var afterType = Type.GetType (item.AfterType, true);
-        var rule = new TypeOrderingRule (_ruleSource, beforeType, afterType);
+        var rule = new TypeOrderingRule (GetType().Name, beforeType, afterType);
 
         activeAttributesConfiguration.AspectOrderingRules.Add (rule);
       }

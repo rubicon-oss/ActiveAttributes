@@ -18,9 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Configuration.Configurators;
-using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Configuration2.Configurators;
 
 namespace ActiveAttributes.UseCases
 {
@@ -32,7 +31,7 @@ namespace ActiveAttributes.UseCases
     [STAThread]
     static void Main ()
     {
-      var configurator = new ApplicationConfigurationConfigurator();
+      var configurator = new AppConfigConfigurator();
       configurator.Initialize (new ActiveAttributesConfiguration());
 
       Application.EnableVisualStyles ();

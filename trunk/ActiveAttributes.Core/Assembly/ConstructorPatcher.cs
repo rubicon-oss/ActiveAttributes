@@ -20,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 

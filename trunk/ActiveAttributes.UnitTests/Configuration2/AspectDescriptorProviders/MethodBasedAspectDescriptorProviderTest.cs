@@ -16,36 +16,52 @@
 
 using System;
 using System.Linq;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
 
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class TypeBasedDescriptorProviderTest
+  public class MethodBasedAspectDescriptorProviderTest
   {
+    private MethodBasedAspectDescriptorProvider _provider;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _provider = new MethodBasedAspectDescriptorProvider();
+    }
+
     [Test]
     public void Normal ()
     {
-      var type = typeof (DerivedType);
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
 
-      var result = new TypeBasedAspectDescriptorProvider().GetDescriptors (type).ToArray();
+      var result = _provider.GetDescriptors (method).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
       Assert.That (result, Has.All.Matches<IAspectDescriptor> (x => x.Type == typeof (InheritingAspectAttribute)));
     }
 
-    [InheritingAspect]
-    [NotInheritingAspect]
-    class BaseType { }
+    class BaseType
+    {
+      [InheritingAspect]
+      [NotInheritingAspect]
+      public virtual void Method () {}
+    }
 
-    class DerivedType : BaseType { }
+    class DomainType : BaseType
+    {
+      public override void Method () {}
+    }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    class InheritingAspectAttribute : Core.Aspects.AspectAttribute { }
+    private class InheritingAspectAttribute : AspectAttribute {}
 
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
-    class NotInheritingAspectAttribute : Core.Aspects.AspectAttribute { }
+    private class NotInheritingAspectAttribute : AspectAttribute {}
   }
 }

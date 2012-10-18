@@ -13,20 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
+using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class ParameterBasedDescriptorProviderTest
+  public class ParameterBasedAspectDescriptorProviderTest
   {
     private ParameterBasedAspectDescriptorProvider _provider;
 

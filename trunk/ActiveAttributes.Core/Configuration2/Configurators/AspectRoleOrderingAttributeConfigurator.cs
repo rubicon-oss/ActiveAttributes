@@ -17,11 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using ActiveAttributes.Core.Configuration2.Rules;
-using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
 {
@@ -52,9 +51,9 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
         if (!typeOrderingAttributes.Any())
           continue;
 
-        string aspectRole = null;
+        string aspectRole;
         if (!activeAttributesConfiguration.AspectRoles.TryGetValue (aspectType, out aspectRole))
-          throw new Exception("TODO");
+          throw new Exception ("TODO");
 
         foreach (var roleOrderingAttribute in typeOrderingAttributes)
         {
@@ -68,7 +67,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
             var afterRole = roleOrderingAttribute.Position == Position.Before
                                 ? otherAspectRole
                                 : aspectRole;
-            var typeOrderingRule = new RoleOrderingRule (GetType ().Name, beforeRole, afterRole, activeAttributesConfiguration);
+            var typeOrderingRule = new RoleOrderingRule (GetType().Name, beforeRole, afterRole, activeAttributesConfiguration);
             activeAttributesConfiguration.AspectOrderingRules.Add (typeOrderingRule);
           }
         }

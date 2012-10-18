@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Utilities
+namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 {
-  public static class DescriptorProvider
+  public static class AspectDescriptorProviderUtility
   {
     public static IEnumerable<IAspectDescriptor> GetDescriptors (MemberInfo baseMember, IEnumerable<MemberInfo> members)
     {
@@ -37,7 +38,8 @@ namespace ActiveAttributes.Core.Utilities
         var isBase = member == baseMember;
         var customAttributeDatas = TypePipeCustomAttributeData.GetCustomAttributes (member)
             .Where (x => x.IsAspectAttribute())
-            .Where (x => isBase || x.IsInheriting());
+            .Where (x => isBase || x.IsInheriting())
+            .Where (x => x.AllowsMultiple() || aspectsData.All (y => y.Constructor.DeclaringType != x.Constructor.DeclaringType));
         // TODO add AllowMultiple
         // TODO TypePipeCustomAttributeData: add parameter for including interfaces
 

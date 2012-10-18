@@ -16,7 +16,6 @@
 
 using System;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Checked;
 using NUnit.Framework;
 using XValidation;
 using XValidation.Validations;

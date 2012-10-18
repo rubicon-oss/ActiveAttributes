@@ -17,7 +17,6 @@
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 

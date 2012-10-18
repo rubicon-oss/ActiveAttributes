@@ -102,6 +102,64 @@ namespace ActiveAttributes.UnitTests.Extensions
       }
     }
 
+    public class IsInheriting
+    {
+      [Test]
+      public void InheritedTrue_ReturnsTrue ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
+        // TODO FS atLeatOnce
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (InheritingAttribute).GetConstructors().Single())
+            .Repeat.AtLeastOnce();
+
+        Assert.That (customAttributeDataMock.IsInheriting(), Is.True);
+      }
+
+      [Test]
+      public void InheritedFalse_ReturnsFalse ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
+        // TODO FS atLeatOnce
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (NotInheritingAttribute).GetConstructors().Single())
+            .Repeat.AtLeastOnce();
+
+        Assert.That (customAttributeDataMock.IsInheriting(), Is.False);
+      }
+    }
+
+    public class AllowsMultiple
+    {
+      [Test]
+      public void AllowMultipleTrue_ReturnsTrue ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
+        // TODO FS atLeatOnce
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (AllowMultipleAttribute).GetConstructors().Single())
+            .Repeat.AtLeastOnce();
+
+        Assert.That (customAttributeDataMock.AllowsMultiple(), Is.True);
+      }
+
+      [Test]
+      public void AllowMultipleFalse_ReturnsFalse ()
+      {
+        var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
+        // TODO FS atLeatOnce
+        customAttributeDataMock
+            .Expect (x => x.Constructor)
+            .Return (typeof (DisallowMultipleAttribute).GetConstructors().Single())
+            .Repeat.AtLeastOnce();
+
+        Assert.That (customAttributeDataMock.AllowsMultiple(), Is.False);
+      }
+    }
+
     public class IsAspectAttribute
     {
       [Test]
@@ -226,5 +284,17 @@ namespace ActiveAttributes.UnitTests.Extensions
 
       public string ConstructorArgument { get; set; }
     }
+
+    [AttributeUsage (AttributeTargets.All, Inherited = true)]
+    class InheritingAttribute : Attribute {}
+
+    [AttributeUsage (AttributeTargets.All, Inherited = false)]
+    class NotInheritingAttribute : Attribute {}
+
+    [AttributeUsage (AttributeTargets.All, AllowMultiple = true)]
+    class AllowMultipleAttribute : Attribute {}
+
+    [AttributeUsage (AttributeTargets.All, AllowMultiple = false)]
+    class DisallowMultipleAttribute : Attribute {}
   }
 }

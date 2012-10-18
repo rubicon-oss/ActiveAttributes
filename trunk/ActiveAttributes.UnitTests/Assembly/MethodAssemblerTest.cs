@@ -17,8 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -40,7 +38,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var configurationMock = mockRepository.StrictMock<IActiveAttributesConfiguration>();
       var fieldIntroducerMock = mockRepository.StrictMock<IFieldIntroducer>();
       var giveMeSomeNameMock = mockRepository.StrictMock<IGiveMeSomeName>();
-      var schedulerMock = mockRepository.StrictMock<IScheduler>();
+      var schedulerMock = mockRepository.StrictMock<IAspectSorter>();
       var methodCopierMock = mockRepository.StrictMock<IMethodCopier>();
       var constructorPatcherMock = mockRepository.StrictMock<IConstructorPatcher>();
       var factoryMock = mockRepository.StrictMock<IFactory>();
@@ -95,7 +93,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (true);
       schedulerMock
           .Expect (
-              x => x.GetOrdered (
+              x => x.Sort (
                   Arg<IEnumerable<Tuple<IAspectDescriptor, IExpressionGenerator>>>
                       .Matches (y => y.SetEquals (schedulerTuple))))
           .Return (sortedGenerators);
@@ -131,7 +129,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var configurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration>();
       var fieldIntroducerStub = MockRepository.GenerateStub<IFieldIntroducer>();
       var giveMeSomeNameStub = MockRepository.GenerateStub<IGiveMeSomeName>();
-      var schedulerStub = MockRepository.GenerateStub<IScheduler>();
+      var schedulerStub = MockRepository.GenerateStub<IAspectSorter>();
       var methodCopierStub = MockRepository.GenerateStub<IMethodCopier>();
       var constructorPatcherStub = MockRepository.GenerateStub<IConstructorPatcher>();
       var factoryStub = MockRepository.GenerateStub<IFactory>();
@@ -181,7 +179,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var configurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration>();
       var fieldIntroducerStub = MockRepository.GenerateStub<IFieldIntroducer>();
       var giveMeSomeNameStub = MockRepository.GenerateStub<IGiveMeSomeName>();
-      var schedulerStub = MockRepository.GenerateStub<IScheduler>();
+      var schedulerStub = MockRepository.GenerateStub<IAspectSorter>();
       var methodCopierStub = MockRepository.GenerateStub<IMethodCopier>();
       var constructorPatcherStub = MockRepository.GenerateStub<IConstructorPatcher>();
       var factoryStub = MockRepository.GenerateStub<IFactory>();

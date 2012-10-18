@@ -16,8 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Configuration.Configurators;
+using ActiveAttributes.Core.Configuration2.Configurators;
 
 namespace ActiveAttributes.Core.Configuration2
 {
@@ -34,7 +33,7 @@ namespace ActiveAttributes.Core.Configuration2
     {
       var configuration = new ActiveAttributesConfiguration();
 
-      var sortedConfigurators = _configurators.BringToFront (x => x is ApplicationConfigurationConfigurator);
+      var sortedConfigurators = _configurators.BringToFront (x => x is AppConfigConfigurator);
       foreach (var configurator in sortedConfigurators)
       {
         configurator.Initialize (configuration);

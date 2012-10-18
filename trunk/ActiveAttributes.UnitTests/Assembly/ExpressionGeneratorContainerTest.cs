@@ -13,30 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Configuration;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Configuration
+namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class ApplyAspectAttributeTest
+  public class ExpressionGeneratorContainerTest
   {
-    [Test]
-    public void CreateThrowsForNonAspectType ()
-    {
-      Assert.That (() => new ApplyAspectAttribute (typeof (int)), Throws.ArgumentException);
-    }
-
-    [Test]
-    public void Create ()
-    {
-      var aspectType = typeof (MethodInterceptionAspectAttribute);
-      var attribute = new ApplyAspectAttribute (aspectType);
-
-      Assert.That (attribute.AspectType, Is.EqualTo (aspectType));
-    }
+    
   }
 }

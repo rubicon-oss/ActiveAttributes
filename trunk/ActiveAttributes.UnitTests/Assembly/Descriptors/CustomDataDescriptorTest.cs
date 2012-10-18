@@ -16,7 +16,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;

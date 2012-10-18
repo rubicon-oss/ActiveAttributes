@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,21 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration2.Configurators;
 
-namespace ActiveAttributes.Core.Configuration2
+using System;
+using ActiveAttributes.Core.Aspects;
+
+namespace ActiveAttributes.Core.Configuration2.CustomAttributes
 {
-  /// <summary>
-  /// Serves as a rule for the ordering of aspects during the code generation.
-  /// </summary>
-  public interface IAspectOrderingRule : IComparer<IAspectDescriptor>
+  // TODO only valid on class and interface? Thought it was for parameters?!
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+  public class ApplyAspectAttribute : Attribute
   {
-    /// <summary>
-    /// Indicates the source of the rule (e.g., <see cref="AppConfigConfigurator"/> or <see cref="CustomAttributesConfigurator"/>).
-    /// </summary>
-    string Source { get; }
+    public ApplyAspectAttribute (Type aspectType)
+    {
+      AspectType = aspectType;
+      if (!typeof (AspectAttribute).IsAssignableFrom (aspectType))
+        throw new ArgumentException ("Type must derive from 'AspectAttribute'", "aspectType");
+    }
+
+    public Type AspectType { get; private set; }
   }
 }

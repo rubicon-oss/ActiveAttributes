@@ -20,8 +20,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Rules;
 using ActiveAttributes.Core.Utilities;
@@ -33,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class SchedulerTest
   {
-    private IScheduler _scheduler;
+    private IAspectSorter _aspectSorter;
     private IActiveAttributesConfiguration _activeAttributesConfiguration;
 
     private IAspectDescriptor _descriptor1;
@@ -45,7 +43,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void SetUp ()
     {
       _activeAttributesConfiguration = MockRepository.GenerateMock<IActiveAttributesConfiguration>();
-      _scheduler = new Scheduler (_activeAttributesConfiguration);
+      _aspectSorter = new AspectSorter (_activeAttributesConfiguration);
 
       _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
       _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
@@ -69,7 +67,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
-      var actual = _scheduler.GetOrdered (aspects);
+      var actual = _aspectSorter.Sort (aspects);
       var expected = new[] { _descriptor2, _descriptor1, _descriptor3 };
       Assert.That (actual, Is.EqualTo (expected));
     }
@@ -85,7 +83,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
-      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<CircularDependencyException<IAspectDescriptor>>());
+      Assert.That (() => _aspectSorter.Sort (aspects), Throws.TypeOf<CircularDependencyException<IAspectDescriptor>>());
     }
 
     [Test]
@@ -98,7 +96,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (new ReadOnlyCollection<IAspectOrderingRule> (rules));
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
-      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<UndefinedOrderException>());
+      Assert.That (() => _aspectSorter.Sort (aspects), Throws.TypeOf<UndefinedOrderException>());
     }
 
     [Test]
@@ -113,7 +111,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor3, _descriptor2 };
 
-      var actual = _scheduler.GetOrdered (aspects).ToArray();
+      var actual = _aspectSorter.Sort (aspects).ToArray();
       var expected = new[] { _descriptor3, _descriptor2, _descriptor1 };
       Assert.That (actual, Is.EqualTo (expected));
     }

@@ -17,7 +17,6 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Checked;
 using NUnit.Framework;
 using Remotion.Utilities;
 

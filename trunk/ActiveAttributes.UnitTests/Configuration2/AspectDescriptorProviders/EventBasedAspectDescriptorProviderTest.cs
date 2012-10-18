@@ -20,27 +20,19 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Reflection;
 
 namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
 {
   [TestFixture]
-  public class MethodBasedDescriptorProviderTest
+  public class EventBasedAspectDescriptorProviderTest
   {
-    private MethodBasedAspectDescriptorProvider _provider;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _provider = new MethodBasedAspectDescriptorProvider();
-    }
-
     [Test]
-    public void Normal ()
+    public void GetAspects ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+      var method = typeof (DomainType).GetMethod ("add_Event");
+      var provider = new EventBasedAspectDescriptorProvider();
 
-      var result = _provider.GetDescriptors (method).ToArray();
+      var result = provider.GetDescriptors (method).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
       Assert.That (result, Has.All.Matches<IAspectDescriptor> (x => x.Type == typeof (InheritingAspectAttribute)));
@@ -50,18 +42,18 @@ namespace ActiveAttributes.UnitTests.Configuration2.AspectDescriptorProviders
     {
       [InheritingAspect]
       [NotInheritingAspect]
-      public virtual void Method () {}
+      public virtual event EventHandler Event;
     }
 
     class DomainType : BaseType
     {
-      public override void Method () {}
+      public override event EventHandler Event;
     }
 
     [AttributeUsage (AttributeTargets.All, Inherited = true)]
-    private class InheritingAspectAttribute : AspectAttribute {}
+    class InheritingAspectAttribute : AspectAttribute {}
 
     [AttributeUsage (AttributeTargets.All, Inherited = false)]
-    private class NotInheritingAspectAttribute : AspectAttribute {}
+    class NotInheritingAspectAttribute : AspectAttribute {}
   }
 }

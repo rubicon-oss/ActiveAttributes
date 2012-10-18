@@ -13,36 +13,27 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ActiveAttributes.Core.Checked;
-using ActiveAttributes.Core.Configuration2;
 using Remotion.Collections;
 
-namespace ActiveAttributes.Core.Assembly.Configuration
+namespace ActiveAttributes.Core.Configuration2
 {
-  // TODO test
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
-    public static IActiveAttributesConfiguration Singleton { get; private set; }
-
     private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
-    private readonly IList<IAspectOrderingRule> _rules;
-    private readonly IDictionary<Type, string> _roles;
+    private readonly IList<IAspectOrderingRule> _aspectOrderingRules;
+    private readonly IDictionary<Type, string> _aspectRoles;
 
     private bool _isLocked;
-
-    static ActiveAttributesConfiguration ()
-    {
-      Singleton = new ActiveAttributesConfiguration();
-    }
 
     public ActiveAttributesConfiguration ()
     {
       _aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
-      _rules = new List<IAspectOrderingRule>();
-      _roles = new Dictionary<Type, string>();
+      _aspectOrderingRules = new List<IAspectOrderingRule>();
+      _aspectRoles = new Dictionary<Type, string>();
     }
 
     public IList<IAspectDescriptorProvider> AspectDescriptorProviders
@@ -52,12 +43,12 @@ namespace ActiveAttributes.Core.Assembly.Configuration
 
     public IList<IAspectOrderingRule> AspectOrderingRules
     {
-      get { return !IsLocked ? _rules : new ReadOnlyCollection<IAspectOrderingRule> (_rules); }
+      get { return !IsLocked ? _aspectOrderingRules : new ReadOnlyCollection<IAspectOrderingRule> (_aspectOrderingRules); }
     }
 
     public IDictionary<Type, string> AspectRoles
     {
-      get { return !IsLocked ? _roles : new ReadOnlyDictionary<Type, string> (_roles); }
+      get { return !IsLocked ? _aspectRoles : new ReadOnlyDictionary<Type, string> (_aspectRoles); }
     }
 
     public bool IsLocked
@@ -73,22 +64,4 @@ namespace ActiveAttributes.Core.Assembly.Configuration
       _isLocked = true;
     }
   }
-
-  //public class ConfigProvider : IConfigProvider
-  //{
-  //  private IEnumerable _configurators;
-
-  //  public ConfigProvider (IEnumerable<IConfigurator> configurators)
-  //  {
-  //    _configurators = configurators;
-  //  }
-
-  //  public Configuration GetConfiguration () 
-  //  {
-  //    var config = new Configuration ();
-  //    foreach (var configurator in _configurators)
-  //      configurator.Initialize (config);
-  //    return config;
-  //  }
-  //}
 }

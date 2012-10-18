@@ -16,10 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration2;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
@@ -39,11 +38,11 @@ namespace ActiveAttributes.Core.Assembly
     static TypeAssembler ()
     {
       var methodCopier = new MethodCopier();
-      var configuration = Configuration.ActiveAttributesConfiguration.Singleton;
+      var configuration = new ActiveAttributesConfiguration();
       var constructorPatcher = new ConstructorPatcher();
       var fieldIntroducer = new FieldIntroducer();
       var factory = new Factory();
-      var scheduler = new Scheduler (configuration);
+      var scheduler = new AspectSorter (configuration);
       var expressionGenerator = new ExpressionGeneratorFactory();
       var giveMeSomeName = new GiveItSomeName (factory, expressionGenerator, constructorPatcher);
 
