@@ -69,17 +69,18 @@
     <Compile Include="Assembly\ExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\FieldInfoContainer.cs" />
     <Compile Include="Assembly\GiveItSomeName.cs" />
-    <Compile Include="Assembly\IAssemblyLevelDescriptorProvider.cs" />
-    <Compile Include="Assembly\IDescriptorProvider.cs" />
+    <Compile Include="Assembly\IActiveAttributesAssembler.cs" />
+    <Compile Include="Assembly\IAssemblyLevelAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\IAspectDescriptorProvider.cs" />
     <Compile Include="Assembly\IExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\IGiveMeSomeName.cs" />
     <Compile Include="Assembly\IMethodAssembler.cs" />
-    <Compile Include="Assembly\IMethodLevelDescriptorProvider.cs" />
-    <Compile Include="Assembly\ITypeLevelDescriptorProvider.cs" />
+    <Compile Include="Assembly\IMethodLevelAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\ITypeLevelAspectDescriptorProvider.cs" />
     <Compile Include="Assembly\MethodAssembler.cs" />
     <Compile Include="Assembly\Scheduler.cs" />
     <Compile Include="Assembly\Configuration\RoleAttribute.cs" />
-    <Compile Include="Assembly\Configuration\Rules\OrderRuleBase.cs" />
+    <Compile Include="Configuration2\Rules\AspectOrderingRuleBase.cs" />
     <Compile Include="Assembly\Factory.cs" />
     <Compile Include="Assembly\IExpressionGenerator.cs" />
     <Compile Include="Assembly\IScheduler.cs" />
@@ -88,28 +89,31 @@
     <Compile Include="Assembly\IFieldIntroducer.cs" />
     <Compile Include="Assembly\IMethodCopier.cs" />
     <Compile Include="Assembly\IMethodPatcher.cs" />
-    <Compile Include="Assembly\Descriptors\TypeDescriptor.cs" />
-    <Compile Include="Assembly\Providers\EventBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\InterfaceMethodBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\MethodBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\ParameterBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\PropertyBasedDescriptorProvider.cs" />
-    <Compile Include="Assembly\Providers\TypeBasedDescriptorProvider.cs" />
+    <Compile Include="Assembly\Descriptors\TypeAspectDescriptor.cs" />
+    <Compile Include="Assembly\Providers\EventBasedAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\Providers\InterfaceMethodBasedAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\Providers\MethodBasedAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\Providers\ParameterBasedAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\Providers\PropertyBasedAspectDescriptorProvider.cs" />
+    <Compile Include="Assembly\Providers\TypeBasedAspectDescriptorProvider.cs" />
     <Compile Include="Assembly\TypeAssembler.cs" />
+    <Compile Include="Configuration2\ActiveAttributeConfigurationProvider.cs" />
+    <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
+    <Compile Include="Checked\ObjectFactory.cs" />
     <Compile Include="Configuration\TypeRuleCollection.cs" />
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Assembly\Configuration\ApplyAspectAttribute.cs" />
-    <Compile Include="Assembly\Configuration\Configuration.cs" />
+    <Compile Include="Assembly\Configuration\ActiveAttributesConfiguration.cs" />
     <Compile Include="Configuration\AspectsConfigurationSection.cs" />
     <Compile Include="Assembly\Configuration\Configurators\ApplicationConfigurationConfigurator.cs" />
     <Compile Include="Assembly\Configuration\OrderingAttribute.cs" />
     <Compile Include="Assembly\Configuration\Configurators\CustomAttributesConfigurator.cs" />
-    <Compile Include="Assembly\Configuration\IConfiguration.cs" />
-    <Compile Include="Assembly\Configuration\IConfigurator.cs" />
-    <Compile Include="Assembly\Configuration\IOrderRule.cs" />
+    <Compile Include="Configuration2\IActiveAttributesConfiguration.cs" />
+    <Compile Include="Configuration2\IActiveAttributesConfigurator.cs" />
+    <Compile Include="Configuration2\IAspectOrderingRule.cs" />
     <Compile Include="Assembly\Configuration\OrderPosition.cs" />
-    <Compile Include="Assembly\Configuration\Rules\RoleOrderRule.cs" />
-    <Compile Include="Assembly\Configuration\Rules\TypeOrderRule.cs" />
+    <Compile Include="Configuration2\Rules\RoleOrderingRule.cs" />
+    <Compile Include="Configuration2\Rules\TypeOrderingRule.cs" />
     <Compile Include="Invocations\IndexerGetInvocation.cs" />
     <Compile Include="Invocations\IndexerSetInvocation.cs" />
     <Compile Include="Invocations\PropertySetInvocation.cs" />
@@ -129,7 +133,7 @@
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
     <Compile Include="Assembly\IArrayAccessor.cs" />
-    <Compile Include="Assembly\IDescriptor.cs" />
+    <Compile Include="Assembly\IAspectDescriptor.cs" />
     <Compile Include="Assembly\Accessors\InstanceArrayAccessor.cs" />
     <Compile Include="Assembly\MethodCopier.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
@@ -163,9 +167,6 @@
     <Compile Include="Aspects\MethodBoundaryAspectAttribute.cs" />
     <Compile Include="Invocations\IReadOnlyInvocation.cs" />
     <Compile Include="Invocations\OuterInvocation.cs" />
-    <Compile Include="ObjectFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Aspects\PropertyInterceptionAspectAttribute.cs" />
     <Compile Include="Utilities\DescriptorProvider.cs" />
@@ -181,12 +182,14 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
-    <None Include="Configuration\Schema.xsd">
+    <None Include="Configuration\schema.xsd">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Extensions\EnumerableToString.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configuration2\AspectDescriptorProviders\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /D /Y "$(SolutionDir)\..\..\Remotion2\Remotion\TypePipe\UnitTests\bin\Release\*" "$(SolutionDir)\prereq\"

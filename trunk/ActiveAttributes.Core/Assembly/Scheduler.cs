@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -26,14 +28,14 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class Scheduler : IScheduler
   {
-    private readonly IConfiguration _configuration;
+    private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
 
-    public Scheduler (IConfiguration configuration)
+    public Scheduler (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
-      _configuration = configuration;
+      _activeAttributesConfiguration = activeAttributesConfiguration;
     }
 
-    public IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IDescriptor, T>> aspects)
+    public IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects)
     {
       var aspectsAsCollection = aspects.ConvertToCollection();
       var descriptors = aspectsAsCollection.Select (x => x.Item1);
@@ -42,7 +44,7 @@ namespace ActiveAttributes.Core.Assembly
       return sortedValues;
     }
 
-    public IEnumerable<IDescriptor> GetOrdered (IEnumerable<IDescriptor> aspects)
+    public IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects)
     {
       var aspectsAsCollection = aspects.ConvertToCollection();
 
@@ -55,7 +57,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     // TODO extract IAspectDependencyProvider ?
-    private IEnumerable<Tuple<IDescriptor, IDescriptor>> GetDependenciesByPriority2 (ICollection<IDescriptor> aspects)
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByPriority2 (ICollection<IAspectDescriptor> aspects)
     {
       var combinations = (from aspect1 in aspects
                           from aspect2 in aspects
@@ -76,11 +78,11 @@ namespace ActiveAttributes.Core.Assembly
     }
 
 
-    private IEnumerable<Tuple<IDescriptor, IDescriptor>> GetDependenciesByRule (ICollection<IDescriptor> aspects)
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByRule (ICollection<IAspectDescriptor> aspects)
     {
       var combinations = (from aspect1 in aspects
                           from aspect2 in aspects
-                          from rule in _configuration.Rules
+                          from rule in _activeAttributesConfiguration.AspectOrderingRules
                           select new
                                  {
                                      Aspect1 = aspect1,
@@ -98,8 +100,8 @@ namespace ActiveAttributes.Core.Assembly
       }
     }
 
-    private IEnumerable<Tuple<IDescriptor, IDescriptor>> CleanConflicts (
-        IEnumerable<Tuple<IDescriptor, IDescriptor>> rules, params IEnumerable<Tuple<IDescriptor, IDescriptor>>[] rulesAlreadyDefined)
+    private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> CleanConflicts (
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> rules, params IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>>[] rulesAlreadyDefined)
     {
       var conflictRules = rulesAlreadyDefined.SelectMany(x => x.Select(y => Tuple.Create (y.Item2, y.Item1)));
       return rules.Where (x => !conflictRules.Contains (x));

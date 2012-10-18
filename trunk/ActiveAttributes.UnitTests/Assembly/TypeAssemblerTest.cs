@@ -16,7 +16,8 @@
 using System;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Providers;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Rhino.Mocks;
@@ -31,20 +32,20 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var mockRepository = new MockRepository();
 
-      var aspectConfigurationMock = mockRepository.StrictMock<IConfiguration>();
+      var aspectConfigurationMock = mockRepository.StrictMock<IActiveAttributesConfiguration>();
       var fieldIntroducerMock = mockRepository.StrictMock<IFieldIntroducer>();
       var giveMeSomeNameMock = mockRepository.StrictMock<IGiveMeSomeName>();
       var methodAssemblerMock = mockRepository.StrictMock<IMethodAssembler>();
       var mutableType = MutableTypeObjectMother.CreateForExistingType();
-      var aspectProviderMock = mockRepository.StrictMock<ITypeLevelDescriptorProvider>();
+      var aspectProviderMock = mockRepository.StrictMock<ITypeLevelAspectDescriptorProvider>();
       var aspectProviders = new[] { aspectProviderMock };
-      var descriptorsFake = new IDescriptor[0];
+      var descriptorsFake = new IAspectDescriptor[0];
       var fieldDataFake = new FieldInfoContainer();
       var generatorsFake = new IExpressionGenerator[0];
 
       // Arrange
       aspectConfigurationMock
-          .Expect (x => x.DescriptorProviders)
+          .Expect (x => x.AspectDescriptorProviders)
           .Return (aspectProviders);
       aspectProviderMock
           .Expect (x => x.GetDescriptors (mutableType))

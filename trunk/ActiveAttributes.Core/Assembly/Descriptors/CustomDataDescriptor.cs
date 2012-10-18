@@ -16,27 +16,27 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
-using System.Linq;
-using Castle.Core.Internal;
 
 namespace ActiveAttributes.Core.Assembly.Descriptors
 {
   /// <summary>
-  /// Serves as a <see cref="IDescriptor"/> based on <see cref="ICustomAttributeData"/>.
+  ///   Serves as a <see cref="IAspectDescriptor" /> based on <see cref="ICustomAttributeData" />.
   /// </summary>
-  public class CustomAttributeDataDescriptor : IDescriptor
+  public class CustomAttributeDataAspectDescriptor : IAspectDescriptor
   {
     private readonly AspectAttribute _aspectAttribute;
     private readonly ICustomAttributeData _customAttributeData;
 
-    public CustomAttributeDataDescriptor (ICustomAttributeData customAttributeData)
+    public CustomAttributeDataAspectDescriptor (ICustomAttributeData customAttributeData)
     {
       if (!typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new ArgumentException ("CustomAttributeData must be from an AspectAttribute");
@@ -55,7 +55,7 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return _aspectAttribute.Scope; }
     }
 
-    public Type AspectType
+    public Type Type
     {
       get { return _aspectAttribute.GetType(); }
     }

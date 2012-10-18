@@ -16,16 +16,18 @@
 
 using System;
 using System.Configuration;
-using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Configuration;
+using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Configuration2.Rules;
 
 namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
 {
-  public class ApplicationConfigurationConfigurator : IConfigurator
+  public class ApplicationConfigurationConfigurator : IActiveAttributesConfigurator
   {
     private readonly string _ruleSource = typeof(ApplicationConfigurationConfigurator).Name;
 
-    public void Initialize (IConfiguration configuration)
+    public virtual void Initialize (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
       var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
 
@@ -33,9 +35,9 @@ namespace ActiveAttributes.Core.Assembly.Configuration.Configurators
       {
         var beforeType = Type.GetType (item.BeforeType, true);
         var afterType = Type.GetType (item.AfterType, true);
-        var rule = new TypeOrderRule (_ruleSource, beforeType, afterType);
+        var rule = new TypeOrderingRule (_ruleSource, beforeType, afterType);
 
-        configuration.Rules.Add (rule);
+        activeAttributesConfiguration.AspectOrderingRules.Add (rule);
       }
     }
   }

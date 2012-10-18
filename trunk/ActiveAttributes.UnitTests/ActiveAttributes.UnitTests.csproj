@@ -79,6 +79,8 @@
     <Compile Include="Assembly\ExpressionGeneratorTest.cs" />
     <Compile Include="Assembly\GiveItSomeNameTest.cs" />
     <Compile Include="Assembly\MethodAssemblerTest.cs" />
+    <Compile Include="Checked\ConfigurationProviderTest.cs" />
+    <Compile Include="Checked\DefaultAspectDescriptorProvidersConfiguratorTest.cs" />
     <Compile Include="Utilities\DescriptorProviderTest.cs" />
     <Compile Include="Assembly\SchedulerTest.cs" />
     <Compile Include="Assembly\Configurators\CustomAttributesConfiguratorTest.cs" />
@@ -94,9 +96,9 @@
     <Compile Include="Assembly\Providers\MethodBasedDescriptorProviderTest.cs" />
     <Compile Include="Assembly\Providers\ParameterBasedDescriptorProviderTest.cs" />
     <Compile Include="Assembly\Providers\TypeBasedDescriptorProviderTest.cs" />
-    <Compile Include="Assembly\Rules\OrderRuleBaseTest.cs" />
-    <Compile Include="Assembly\Rules\RoleOrderRuleTest.cs" />
-    <Compile Include="Assembly\Rules\TypeOrderRuleTest.cs" />
+    <Compile Include="Configuration2\Rules\AspectOrderingRuleBaseTest.cs" />
+    <Compile Include="Configuration2\Rules\RoleOrderingRuleTest.cs" />
+    <Compile Include="Configuration2\Rules\TypeOrderingRuleTest.cs" />
     <Compile Include="Assembly\TypeAssemblerTest.cs" />
     <Compile Include="Assembly\TypeProviderTest.cs" />
     <Compile Include="Class1.cs" />

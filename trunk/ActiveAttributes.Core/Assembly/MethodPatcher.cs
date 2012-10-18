@@ -103,7 +103,7 @@ namespace ActiveAttributes.Core.Assembly
       var invocationInitExpressions = invocationVariablesAndInitializations.Item2;
 
       var outermostAspect = _aspects.Last().GetStorageExpression (ctx.This);
-      var outermostAspectInterceptMethod = GetAspectInterceptMethod (_aspects.Last().Descriptor.AspectType);
+      var outermostAspectInterceptMethod = GetAspectInterceptMethod (_aspects.Last().AspectDescriptor.Type);
       var outermostInvocation = invocations.Last();
       var aspectCallExpression = GetOutermostAspectCallExpression (outermostAspect, outermostAspectInterceptMethod, outermostInvocation);
 
@@ -138,7 +138,7 @@ namespace ActiveAttributes.Core.Assembly
         }
         else
         {
-          var innerAspectType = _aspects[i - 1].Descriptor.AspectType;
+          var innerAspectType = _aspects[i - 1].AspectDescriptor.Type;
           var innerAspect = _aspects[i - 1].GetStorageExpression (thisExpression);
           var innerAspectInterceptMethod = GetAspectInterceptMethod (innerAspectType);
           var innerInvocation = invocations[i - 1];

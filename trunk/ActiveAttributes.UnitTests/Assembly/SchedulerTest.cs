@@ -21,7 +21,9 @@ using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Configuration2.Rules;
 using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -32,39 +34,39 @@ namespace ActiveAttributes.UnitTests.Assembly
   public class SchedulerTest
   {
     private IScheduler _scheduler;
-    private IConfiguration _configuration;
+    private IActiveAttributesConfiguration _activeAttributesConfiguration;
 
-    private IDescriptor _descriptor1;
-    private IDescriptor _descriptor2;
-    private IDescriptor _descriptor3;
-    private IDescriptor _descriptor4;
+    private IAspectDescriptor _descriptor1;
+    private IAspectDescriptor _descriptor2;
+    private IAspectDescriptor _descriptor3;
+    private IAspectDescriptor _descriptor4;
 
     [SetUp]
     public void SetUp ()
     {
-      _configuration = MockRepository.GenerateMock<IConfiguration>();
-      _scheduler = new Scheduler (_configuration);
+      _activeAttributesConfiguration = MockRepository.GenerateMock<IActiveAttributesConfiguration>();
+      _scheduler = new Scheduler (_activeAttributesConfiguration);
 
-      _descriptor1 = MockRepository.GenerateMock<IDescriptor>();
-      _descriptor2 = MockRepository.GenerateMock<IDescriptor>();
-      _descriptor3 = MockRepository.GenerateMock<IDescriptor>();
-      _descriptor4 = MockRepository.GenerateMock<IDescriptor>();
+      _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor3 = MockRepository.GenerateMock<IAspectDescriptor>();
+      _descriptor4 = MockRepository.GenerateMock<IAspectDescriptor>();
 
-      _descriptor1.Expect (x => x.AspectType).Return (typeof (Aspect1));
-      _descriptor2.Expect (x => x.AspectType).Return (typeof (Aspect2));
-      _descriptor3.Expect (x => x.AspectType).Return (typeof (Aspect3));
-      _descriptor4.Expect (x => x.AspectType).Return (typeof (Aspect4));
+      _descriptor1.Expect (x => x.Type).Return (typeof (Aspect1));
+      _descriptor2.Expect (x => x.Type).Return (typeof (Aspect2));
+      _descriptor3.Expect (x => x.Type).Return (typeof (Aspect3));
+      _descriptor4.Expect (x => x.Type).Return (typeof (Aspect4));
     }
 
     [Test]
     public void Orders ()
     {
-      var rules = new List<IOrderRule>
+      var rules = new List<IAspectOrderingRule>
                   {
-                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect3))
+                    new TypeOrderingRule("source", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderingRule("source", typeof(Aspect1), typeof(Aspect3))
                   };
-      _configuration.Expect (x => x.Rules).Return (rules);
+      _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
       var actual = _scheduler.GetOrdered (aspects);
@@ -75,25 +77,25 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ThrowsForCircularDependency ()
     {
-      var rules = new List<IOrderRule>
+      var rules = new List<IAspectOrderingRule>
                   {
-                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect2))
+                    new TypeOrderingRule("source", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderingRule("source", typeof(Aspect1), typeof(Aspect2))
                   };
-      _configuration.Expect (x => x.Rules).Return (rules);
+      _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
-      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<CircularDependencyException<IDescriptor>>());
+      Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<CircularDependencyException<IAspectDescriptor>>());
     }
 
     [Test]
     public void ThrowsForUndefinedOrder ()
     {
-      var rules = new List<IOrderRule>
+      var rules = new List<IAspectOrderingRule>
                   {
-                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderingRule("source", typeof(Aspect2), typeof(Aspect1)),
                   };
-      _configuration.Expect (x => x.Rules).Return (new ReadOnlyCollection<IOrderRule> (rules));
+      _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (new ReadOnlyCollection<IAspectOrderingRule> (rules));
       var aspects = new[] { _descriptor1, _descriptor2, _descriptor3 };
 
       Assert.That (() => _scheduler.GetOrdered (aspects), Throws.TypeOf<UndefinedOrderException>());
@@ -103,12 +105,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void PriorityOverRules ()
     {
       _descriptor3.Expect (x => x.Priority).Return (1);
-      var rules = new List<IOrderRule>
+      var rules = new List<IAspectOrderingRule>
                   {
-                    new TypeOrderRule("", typeof(Aspect2), typeof(Aspect1)),
-                    new TypeOrderRule("", typeof(Aspect1), typeof(Aspect3)),
+                    new TypeOrderingRule("source", typeof(Aspect2), typeof(Aspect1)),
+                    new TypeOrderingRule("source", typeof(Aspect1), typeof(Aspect3)),
                   };
-      _configuration.Expect (x => x.Rules).Return (rules);
+      _activeAttributesConfiguration.Expect (x => x.AspectOrderingRules).Return (rules);
       var aspects = new[] { _descriptor1, _descriptor3, _descriptor2 };
 
       var actual = _scheduler.GetOrdered (aspects).ToArray();

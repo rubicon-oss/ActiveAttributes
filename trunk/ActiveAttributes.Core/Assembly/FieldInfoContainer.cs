@@ -25,7 +25,14 @@ namespace ActiveAttributes.Core.Assembly
     public FieldInfo PropertyInfoField;
     public FieldInfo EventInfoField;
 
+    // TODO Replace these:
     public FieldInfo StaticAspectsField;
     public FieldInfo InstanceAspectsField;
+
+    // TODO With these:
+    // IArrayAccessor StaticAspectsField - instead of FieldInfo
+    // IArrayAccessor InstanceAspectsField - instead of FieldInfo
+
+    // TODO Remove IFactory.GetArrayAccessor method, move implementation to FieldIntroducer - create StaticArrayAccessor/InstanceArrayAccessor there.
   }
 }

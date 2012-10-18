@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="aspects"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:c="http://activeattributes.codeplex.com/configuration/aspects.xsd"
-    targetNamespace="http://activeattributes.codeplex.com/configuration/aspects.xsd"
+    xmlns:c="http://activeattributes.codeplex.com/configuration/schema.xsd"
+    targetNamespace="http://activeattributes.codeplex.com/configuration/schema.xsd"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
   <xs:element name="aspects">

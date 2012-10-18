@@ -27,9 +27,9 @@ namespace ActiveAttributes.Core.Assembly
   public interface IExpressionGenerator
   {
     /// <summary>
-    /// The underlying <see cref="IDescriptor"/>.
+    /// The underlying <see cref="IAspectDescriptor"/>.
     /// </summary>
-    IDescriptor Descriptor { get; }
+    IAspectDescriptor AspectDescriptor { get; }
 
     /// <summary>
     /// Creates an <see cref="Expression"/> that can be used to access the <see cref="AspectAttribute"/>.
@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
 
     /// <summary>
     /// Creates an <see cref="Expression"/> that generates an exact copy of the <see cref="AspectAttribute"/>
-    /// described by the <see cref="IDescriptor"/>.
+    /// described by the <see cref="IAspectDescriptor"/>.
     /// </summary>
     /// <returns>An <see cref="Expression"/> creating the <see cref="AspectAttribute"/>.</returns>
     Expression GetInitExpression ();

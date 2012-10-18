@@ -27,7 +27,7 @@ namespace ActiveAttributes.Core.Utilities
 {
   public static class DescriptorProvider
   {
-    public static IEnumerable<IDescriptor> GetDescriptors (MemberInfo baseMember, IEnumerable<MemberInfo> members)
+    public static IEnumerable<IAspectDescriptor> GetDescriptors (MemberInfo baseMember, IEnumerable<MemberInfo> members)
     {
       var aspectsData = new List<ICustomAttributeData>();
       var membersAsCollection = members.ConvertToCollection();
@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Utilities
         aspectsData.AddRange (customAttributeDatas);
       }
 
-      return aspectsData.Select (x => new CustomAttributeDataDescriptor (x)).Cast<IDescriptor>();
+      return aspectsData.Select (x => new CustomAttributeDataAspectDescriptor (x)).Cast<IAspectDescriptor>();
     }
   }
 }

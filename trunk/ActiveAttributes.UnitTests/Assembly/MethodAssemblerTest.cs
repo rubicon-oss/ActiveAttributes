@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -35,7 +37,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var mockRepository = new MockRepository();
 
-      var configurationMock = mockRepository.StrictMock<IConfiguration>();
+      var configurationMock = mockRepository.StrictMock<IActiveAttributesConfiguration>();
       var fieldIntroducerMock = mockRepository.StrictMock<IFieldIntroducer>();
       var giveMeSomeNameMock = mockRepository.StrictMock<IGiveMeSomeName>();
       var schedulerMock = mockRepository.StrictMock<IScheduler>();
@@ -43,15 +45,15 @@ namespace ActiveAttributes.UnitTests.Assembly
       var constructorPatcherMock = mockRepository.StrictMock<IConstructorPatcher>();
       var factoryMock = mockRepository.StrictMock<IFactory>();
 
-      var aspectProviderMock = mockRepository.StrictMock<IMethodLevelDescriptorProvider>();
+      var aspectProviderMock = mockRepository.StrictMock<IMethodLevelAspectDescriptorProvider>();
       var aspectProviders = new[] { aspectProviderMock };
-      var descriptorsFake = new IDescriptor[0];
+      var descriptorsFake = new IAspectDescriptor[0];
       var fieldDataFake = new FieldInfoContainer();
 
       var methodGeneratorMock = mockRepository.StrictMock<IExpressionGenerator>();
       var typeGeneratorMock = mockRepository.StrictMock<IExpressionGenerator>();
-      var methodDescriptorStub = MockRepository.GenerateStub<IDescriptor>();
-      var typeDescriptorMock = MockRepository.GenerateStub<IDescriptor>();
+      var methodDescriptorStub = MockRepository.GenerateStub<IAspectDescriptor>();
+      var typeDescriptorMock = MockRepository.GenerateStub<IAspectDescriptor>();
       var methodGenerators = new[] { methodGeneratorMock };
       var typeGenerators = new[] { typeGeneratorMock };
       var schedulerTuple =
@@ -71,7 +73,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       // Arrange
       configurationMock
-          .Expect (x => x.DescriptorProviders)
+          .Expect (x => x.AspectDescriptorProviders)
           .Return (aspectProviders);
       aspectProviderMock
           .Expect (x => x.GetDescriptors (method))
@@ -83,10 +85,10 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Expect (x => x.IntroduceExpressionGenerators (mutableType, descriptorsFake, fieldDataFake))
           .Return (methodGenerators);
       methodGeneratorMock
-          .Expect (x => x.Descriptor)
+          .Expect (x => x.AspectDescriptor)
           .Return (methodDescriptorStub);
       typeGeneratorMock
-          .Expect (x => x.Descriptor)
+          .Expect (x => x.AspectDescriptor)
           .Return (typeDescriptorMock).Repeat.AtLeastOnce();
       typeDescriptorMock
           .Expect (x => x.Matches(method))
@@ -94,7 +96,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       schedulerMock
           .Expect (
               x => x.GetOrdered (
-                  Arg<IEnumerable<Tuple<IDescriptor, IExpressionGenerator>>>
+                  Arg<IEnumerable<Tuple<IAspectDescriptor, IExpressionGenerator>>>
                       .Matches (y => y.SetEquals (schedulerTuple))))
           .Return (sortedGenerators);
       methodCopierMock
@@ -126,7 +128,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ProceedOnlyIfAny_TypeGenerator ()
     {
-      var configurationStub = MockRepository.GenerateStub<IConfiguration>();
+      var configurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration>();
       var fieldIntroducerStub = MockRepository.GenerateStub<IFieldIntroducer>();
       var giveMeSomeNameStub = MockRepository.GenerateStub<IGiveMeSomeName>();
       var schedulerStub = MockRepository.GenerateStub<IScheduler>();
@@ -138,13 +140,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = mutableType.GetMethods().First();
 
       var expressionGeneratorMock = MockRepository.GenerateStrictMock<IExpressionGenerator>();
-      var descriptorMock = MockRepository.GenerateStrictMock<IDescriptor>();
+      var descriptorMock = MockRepository.GenerateStrictMock<IAspectDescriptor>();
       var methodPatcherMock = MockRepository.GenerateStrictMock<IMethodPatcher>();
 
       // Arrange
       configurationStub
-          .Stub (x => x.DescriptorProviders)
-          .Return (new IDescriptorProvider[0]);
+          .Stub (x => x.AspectDescriptorProviders)
+          .Return (new IAspectDescriptorProvider[0]);
       giveMeSomeNameStub
           .Stub (x => x.IntroduceExpressionGenerators (null, null, new FieldInfoContainer()))
           .IgnoreArguments()
@@ -155,7 +157,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (methodPatcherMock);
 
       expressionGeneratorMock
-          .Expect (x => x.Descriptor)
+          .Expect (x => x.AspectDescriptor)
           .Return (descriptorMock);
       descriptorMock
           .Expect (x => x.Matches(null))
@@ -176,7 +178,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ProceedOnlyIfAny_MethodGenerator ()
     {
-      var configurationStub = MockRepository.GenerateStub<IConfiguration>();
+      var configurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration>();
       var fieldIntroducerStub = MockRepository.GenerateStub<IFieldIntroducer>();
       var giveMeSomeNameStub = MockRepository.GenerateStub<IGiveMeSomeName>();
       var schedulerStub = MockRepository.GenerateStub<IScheduler>();
@@ -188,13 +190,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = mutableType.GetMethods().First();
 
       var expressionGeneratorMock = MockRepository.GenerateStrictMock<IExpressionGenerator>();
-      var descriptorMock = MockRepository.GenerateStrictMock<IDescriptor>();
+      var descriptorMock = MockRepository.GenerateStrictMock<IAspectDescriptor>();
       var methodPatcherMock = MockRepository.GenerateStrictMock<IMethodPatcher>();
 
       // Arrange
       configurationStub
-          .Stub (x => x.DescriptorProviders)
-          .Return (new IDescriptorProvider[0]);
+          .Stub (x => x.AspectDescriptorProviders)
+          .Return (new IAspectDescriptorProvider[0]);
       giveMeSomeNameStub
           .Stub (x => x.IntroduceExpressionGenerators (null, null, new FieldInfoContainer()))
           .IgnoreArguments()

@@ -46,7 +46,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var instanceArrayAccessorStub = MockRepository.GenerateStub<IArrayAccessor>();
       var staticArrayAccessorStub = MockRepository.GenerateStub<IArrayAccessor>();
-      var aspectDescriptors = new[] { MockRepository.GenerateStub<IDescriptor>() };
+      var aspectDescriptors = new[] { MockRepository.GenerateStub<IAspectDescriptor>() };
       var aspectGenerators = new IExpressionGenerator[0];
       var mutableType = MutableTypeObjectMother.CreateForExistingType();
 

@@ -42,14 +42,14 @@ namespace ActiveAttributes.Core.Assembly
     }
 
     public IEnumerable<IExpressionGenerator> IntroduceExpressionGenerators (
-        MutableType mutableType, IEnumerable<IDescriptor> aspectDescriptors, FieldInfoContainer fieldInfoContainer)
+        MutableType mutableType, IEnumerable<IAspectDescriptor> descriptors, FieldInfoContainer fieldInfoContainer)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
+      ArgumentUtility.CheckNotNull ("descriptors", descriptors);
 
       var instanceAspectsAccessor = _factory.GetAccessor (fieldInfoContainer.InstanceAspectsField);
       var staticAspectsAccessor = _factory.GetAccessor (fieldInfoContainer.StaticAspectsField);
-      var aspectGenerators = _expressionGeneratorFactory.GetExpressionGenerators (instanceAspectsAccessor, staticAspectsAccessor, aspectDescriptors).ToArray();
+      var aspectGenerators = _expressionGeneratorFactory.GetExpressionGenerators (instanceAspectsAccessor, staticAspectsAccessor, descriptors).ToArray();
       _constructorPatcher.AddAspectInitialization (mutableType, staticAspectsAccessor, instanceAspectsAccessor, aspectGenerators);
       return aspectGenerators;
     }

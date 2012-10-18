@@ -21,11 +21,11 @@ namespace ActiveAttributes.Core.Assembly
 {
   // TODO rename
   /// <summary>
-  /// Converts <see cref="IDescriptor"/>s to <see cref="IExpressionGenerator"/>s.
+  /// Converts <see cref="IAspectDescriptor"/>s to <see cref="IExpressionGenerator"/>s.
   /// </summary>
   public interface IGiveMeSomeName
   {
     IEnumerable<IExpressionGenerator> IntroduceExpressionGenerators (
-        MutableType mutableType, IEnumerable<IDescriptor> aspectDescriptors, FieldInfoContainer fieldInfoContainer);
+        MutableType mutableType, IEnumerable<IAspectDescriptor> descriptors, FieldInfoContainer fieldInfoContainer);
   }
 }

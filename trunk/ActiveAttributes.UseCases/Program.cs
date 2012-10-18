@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Configuration.Configurators;
+using ActiveAttributes.Core.Checked;
 
 namespace ActiveAttributes.UseCases
 {
@@ -32,7 +33,7 @@ namespace ActiveAttributes.UseCases
     static void Main ()
     {
       var configurator = new ApplicationConfigurationConfigurator();
-      configurator.Initialize (new Configuration());
+      configurator.Initialize (new ActiveAttributesConfiguration());
 
       Application.EnableVisualStyles ();
       Application.SetCompatibleTextRenderingDefault (false);

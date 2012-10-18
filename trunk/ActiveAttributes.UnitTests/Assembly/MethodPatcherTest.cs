@@ -38,8 +38,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IExpressionGenerator _generator1;
     private IExpressionGenerator _generator2;
 
-    private IDescriptor _descriptor1;
-    private IDescriptor _descriptor2;
+    private IAspectDescriptor _descriptor1;
+    private IAspectDescriptor _descriptor2;
 
     private IEnumerable<IExpressionGenerator> _oneGenerator;
     private IEnumerable<IExpressionGenerator> _twoGenerators;
@@ -52,17 +52,17 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       base.SetUp ();
 
-      _descriptor1 = MockRepository.GenerateMock<IDescriptor> ();
-      _descriptor2 = MockRepository.GenerateMock<IDescriptor> ();
+      _descriptor1 = MockRepository.GenerateMock<IAspectDescriptor> ();
+      _descriptor2 = MockRepository.GenerateMock<IAspectDescriptor> ();
 
-      _descriptor1.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
-      _descriptor2.Stub (x => x.AspectType).Return (typeof (MethodInterceptionAspectAttribute));
+      _descriptor1.Stub (x => x.Type).Return (typeof (MethodInterceptionAspectAttribute));
+      _descriptor2.Stub (x => x.Type).Return (typeof (MethodInterceptionAspectAttribute));
 
       _generator1 = MockRepository.GenerateMock<IExpressionGenerator> ();
       _generator2 = MockRepository.GenerateMock<IExpressionGenerator>();
 
-      _generator1.Stub (x => x.Descriptor).Return (_descriptor1);
-      _generator2.Stub (x => x.Descriptor).Return (_descriptor2);
+      _generator1.Stub (x => x.AspectDescriptor).Return (_descriptor1);
+      _generator2.Stub (x => x.AspectDescriptor).Return (_descriptor2);
 
       var fieldInfo1 = MemberInfoFromExpressionUtility.GetField (() => DomainTypeBase.AspectField1);
       var fieldInfo2 = MemberInfoFromExpressionUtility.GetField (() => DomainTypeBase.AspectField2);
@@ -387,7 +387,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private Expression OutermostAspectCall (IExpressionGenerator generator, Expression invocation)
     {
-      var convertedAspect = Expression.Convert (generator.GetStorageExpression (null), generator.Descriptor.AspectType);
+      var convertedAspect = Expression.Convert (generator.GetStorageExpression (null), generator.AspectDescriptor.Type);
       var call = Expression.Call (convertedAspect, _onInterceptMethod, new[] { invocation });
       return call;
     }

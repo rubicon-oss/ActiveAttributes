@@ -34,7 +34,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public class GetInitExpression
     {
       private IArrayAccessor _arrayAccessorMock;
-      private IDescriptor _descriptorMock;
+      private IAspectDescriptor _aspectDescriptorMock;
       private ICustomAttributeNamedArgument _namedPropertyArgumentMock;
       private ICustomAttributeNamedArgument _namedFieldArgumentMock;
 
@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       public void SetUp ()
       {
         _arrayAccessorMock = MockRepository.GenerateStrictMock<IArrayAccessor>();
-        _descriptorMock = MockRepository.GenerateStrictMock<IDescriptor>();
+        _aspectDescriptorMock = MockRepository.GenerateStrictMock<IAspectDescriptor>();
         _namedPropertyArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument>();
         _namedFieldArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument>();
       }
@@ -54,17 +54,17 @@ namespace ActiveAttributes.UnitTests.Assembly
         var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
         var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
 
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorInfo)
             .Return (constructorInfo);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorArguments)
             .Return (constructorArguments);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.NamedArguments)
             .Return (namedArgumentsCollection);
 
-        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _descriptorMock);
+        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _aspectDescriptorMock);
 
         var expected = Expression.MemberInit (Expression.New (constructorInfo));
         var actual = generator.GetInitExpression();
@@ -78,17 +78,17 @@ namespace ActiveAttributes.UnitTests.Assembly
         var constructorArguments = new ReadOnlyCollection<object> (new[] { "ctor" });
         var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
 
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorInfo)
             .Return (constructorInfo);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorArguments)
             .Return (constructorArguments);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.NamedArguments)
             .Return (namedArgumentsCollection);
 
-        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _descriptorMock);
+        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _aspectDescriptorMock);
 
         var expected = Expression.MemberInit (Expression.New (constructorInfo, Expression.Constant ("ctor", typeof (string))));
         var actual = generator.GetInitExpression();
@@ -124,17 +124,17 @@ namespace ActiveAttributes.UnitTests.Assembly
         _namedFieldArgumentMock
             .Expect (x => x.Value)
             .Return ("field");
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorInfo)
             .Return (constructorInfo);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorArguments)
             .Return (constructorArguments);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.NamedArguments)
             .Return (namedArgumentsCollection);
 
-        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _descriptorMock);
+        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _aspectDescriptorMock);
 
         var expected = Expression.MemberInit (
             Expression.New (constructorInfo),
@@ -166,17 +166,17 @@ namespace ActiveAttributes.UnitTests.Assembly
         _namedFieldArgumentMock
             .Expect (x => x.Value)
             .Return (new object[] { "str", 7 });
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorInfo)
             .Return (constructorInfo);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.ConstructorArguments)
             .Return (constructorArguments);
-        _descriptorMock
+        _aspectDescriptorMock
             .Expect (x => x.NamedArguments)
             .Return (namedArgumentsCollection);
 
-        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _descriptorMock);
+        var generator = new ExpressionGenerator (_arrayAccessorMock, 0, _aspectDescriptorMock);
 
         var expected = Expression.MemberInit (
             Expression.New (constructorInfo),

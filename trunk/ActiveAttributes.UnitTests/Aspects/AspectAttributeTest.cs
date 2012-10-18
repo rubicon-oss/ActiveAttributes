@@ -19,6 +19,7 @@
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.Utilities;
 

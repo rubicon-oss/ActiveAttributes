@@ -21,6 +21,7 @@ using System.Reflection;
 
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 
 using Microsoft.Scripting.Ast;
@@ -128,22 +129,24 @@ namespace ActiveAttributes.Core.Assembly
       var aspectsAsCollection = aspects.ConvertToCollection();
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
-              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == Scope.Instance)),
-              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.Descriptor.Scope == Scope.Static)));
+              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.Scope == Scope.Instance)),
+              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.Scope == Scope.Static)));
 
       AddMutation (mutableType, mutation);
     }
 
     private Expression GeAspectsArrayAssignExpression (IArrayAccessor accessor, BodyContextBase ctx, IEnumerable<IExpressionGenerator> aspects)
     {
-      var instanceAspectsField = accessor.GetAccessExpression (accessor.IsStatic ? null : ctx.This);
-      var instanceAspectsArray = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
-      Expression instanceAspectsAssign = Expression.Assign (instanceAspectsField, instanceAspectsArray);
+      // TODO remove check - always pass in ctx.This
+      var aspectsField = accessor.GetAccessExpression (accessor.IsStatic ? null : ctx.This);
+      var newAspectsArrayExpression = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
+      Expression instanceAspectsAssign = Expression.Assign (aspectsField, newAspectsArrayExpression);
 
+      // TODO Workaround until RM-5119 is implemented
       if (accessor.IsStatic)
       {
         instanceAspectsAssign = Expression.IfThen (
-            Expression.Equal (instanceAspectsField, Expression.Constant (null)),
+            Expression.Equal (aspectsField, Expression.Constant (null)),
             instanceAspectsAssign);
       }
 

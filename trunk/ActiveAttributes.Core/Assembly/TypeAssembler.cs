@@ -13,28 +13,36 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Providers;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using Remotion.Logging;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class TypeAssembler : ITypeAssemblyParticipant
+  public class TypeAssembler : IActiveAttributesAssembler
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (TypeAssembler));
 
+    public static ITypeAssemblyParticipant Singleton { get; private set; }
+
+    private readonly IEnumerable<ITypeLevelAspectDescriptorProvider> _aspectProviders;
+    private readonly IFieldIntroducer _fieldIntroducer;
+    private readonly IGiveMeSomeName _giveMeSomeName;
+    private readonly IMethodAssembler _methodAssembler;
+
     static TypeAssembler ()
     {
-      var methodCopier = new MethodCopier ();
-      var configuration = Configuration.Configuration.Singleton;
-      var constructorPatcher = new ConstructorPatcher ();
-      var fieldIntroducer = new FieldIntroducer ();
-      var factory = new Factory ();
+      var methodCopier = new MethodCopier();
+      var configuration = Configuration.ActiveAttributesConfiguration.Singleton;
+      var constructorPatcher = new ConstructorPatcher();
+      var fieldIntroducer = new FieldIntroducer();
+      var factory = new Factory();
       var scheduler = new Scheduler (configuration);
       var expressionGenerator = new ExpressionGeneratorFactory();
       var giveMeSomeName = new GiveItSomeName (factory, expressionGenerator, constructorPatcher);
@@ -45,17 +53,10 @@ namespace ActiveAttributes.Core.Assembly
       Singleton = typeAssembler;
     }
 
-    public static ITypeAssemblyParticipant Singleton { get; private set; }
-
-    private readonly IEnumerable<ITypeLevelDescriptorProvider> _aspectProviders;
-    private readonly IFieldIntroducer _fieldIntroducer;
-    private readonly IGiveMeSomeName _giveMeSomeName;
-    private readonly IMethodAssembler _methodAssembler;
-
     public TypeAssembler (
-        IConfiguration configuration, IFieldIntroducer fieldIntroducer, IGiveMeSomeName giveMeSomeName, IMethodAssembler methodAssembler)
+        IActiveAttributesConfiguration activeAttributesConfiguration, IFieldIntroducer fieldIntroducer, IGiveMeSomeName giveMeSomeName, IMethodAssembler methodAssembler)
     {
-      _aspectProviders = configuration.DescriptorProviders.OfType<ITypeLevelDescriptorProvider> ().ToList ();
+      _aspectProviders = activeAttributesConfiguration.AspectDescriptorProviders.OfType<ITypeLevelAspectDescriptorProvider>().ToList();
       _methodAssembler = methodAssembler;
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
@@ -63,11 +64,11 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyType (MutableType mutableType)
     {
-      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (mutableType)).ToArray ();
+      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (mutableType)).ToArray();
       var fields = _fieldIntroducer.IntroduceTypeFields (mutableType);
-      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray ();
+      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray();
 
-      foreach (var method in mutableType.GetMethods ())
+      foreach (var method in mutableType.GetMethods())
       {
         _methodAssembler.ModifyMethod (mutableType, method, generators);
       }

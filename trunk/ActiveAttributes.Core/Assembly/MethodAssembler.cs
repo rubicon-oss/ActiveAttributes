@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -27,7 +29,7 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class MethodAssembler : IMethodAssembler
   {
-    private readonly IEnumerable<IMethodLevelDescriptorProvider> _aspectProviders;
+    private readonly IEnumerable<IMethodLevelAspectDescriptorProvider> _aspectProviders;
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IGiveMeSomeName _giveMeSomeName;
     private readonly IScheduler _scheduler;
@@ -36,7 +38,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IFactory _factory;
 
     public MethodAssembler (
-        IConfiguration configuration,
+        IActiveAttributesConfiguration activeAttributesConfiguration,
         IFieldIntroducer fieldIntroducer,
         IGiveMeSomeName giveMeSomeName,
         IScheduler scheduler,
@@ -44,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly
         IConstructorPatcher constructorPatcher,
         IFactory factory)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("activeAttributesConfiguration", activeAttributesConfiguration);
       ArgumentUtility.CheckNotNull ("fieldIntroducer", fieldIntroducer);
       ArgumentUtility.CheckNotNull ("giveMeSomeName", giveMeSomeName);
       ArgumentUtility.CheckNotNull ("scheduler", scheduler);
@@ -52,7 +54,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
       ArgumentUtility.CheckNotNull ("factory", factory);
 
-      _aspectProviders = configuration.DescriptorProviders.OfType<IMethodLevelDescriptorProvider>().ToList();
+      _aspectProviders = activeAttributesConfiguration.AspectDescriptorProviders.OfType<IMethodLevelAspectDescriptorProvider>().ToList();
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
       _scheduler = scheduler;
@@ -67,11 +69,11 @@ namespace ActiveAttributes.Core.Assembly
       var fields = _fieldIntroducer.IntroduceMethodFields (mutableType, method);
       var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray();
 
-      var allGenerators = generators.Concat (typeGenerators.Where (x => x.Descriptor.Matches (method))).ConvertToCollection ();
+      var allGenerators = generators.Concat (typeGenerators.Where (x => x.AspectDescriptor.Matches (method))).ConvertToCollection ();
       if (!allGenerators.Any ())
         return;
 
-      var allAsTuples = allGenerators.Select (x => Tuple.Create (x.Descriptor, x));
+      var allAsTuples = allGenerators.Select (x => Tuple.Create (x.AspectDescriptor, x));
       var sortedGenerators = _scheduler.GetOrdered (allAsTuples);
 
       var mutableMethod = mutableType.GetOrAddMutableMethod (method);

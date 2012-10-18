@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 
@@ -31,13 +32,13 @@ namespace ActiveAttributes.Core.Aspects
   public abstract class AspectAttribute : Attribute
   {
     /// <summary>
-    ///   Scope of an aspect. It can be either <see cref = "Core.Assembly.Configuration.Scope.Static" /> or <see cref = "Core.Assembly.Configuration.Scope.Instance" />.
+    ///   Scope of an aspect. It can be either <see cref = "Configuration2.Scope.Static" /> or <see cref = "Configuration2.Scope.Instance" />.
     /// </summary>
     public Scope Scope { get; set; }
 
     /// <summary>
     ///   Gets or sets the priority of an aspect. Priorities can define the order of aspects applied to a target element. 
-    ///   Priorities are superior to <see cref = "IOrderRule" />.
+    ///   Priorities are superior to <see cref = "IAspectOrderingRule" />.
     /// </summary>
     public int Priority { get; set; }
 

@@ -24,6 +24,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  // TODO: rename (InvocationTypeProvider?)
   public interface ITypeProvider
   {
     Type InvocationType { get; }

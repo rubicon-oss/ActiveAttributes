@@ -18,6 +18,7 @@ using System;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Invocations;
 using NUnit.Framework;
 using TypePipe.IntegrationTests;

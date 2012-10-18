@@ -13,9 +13,9 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Configuration;
+using System.Xml;
 using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Configuration
@@ -26,7 +26,7 @@ namespace ActiveAttributes.Core.Configuration
     [ConfigurationProperty ("xmlns")]
     public string XmlNamespace
     {
-      get { throw new NotSupportedException (); }
+      get { throw new NotSupportedException(); }
     }
 
     [ConfigurationProperty ("ignoreAssemblyDefinedRules")]
@@ -41,11 +41,11 @@ namespace ActiveAttributes.Core.Configuration
       get { return (TypeRuleCollection) base["typeRules"]; }
     }
 
-    protected override bool OnDeserializeUnrecognizedElement (string elementName, System.Xml.XmlReader reader)
+    protected override bool OnDeserializeUnrecognizedElement (string elementName, XmlReader reader)
     {
       var message = "Unknown element name: " + elementName + Environment.NewLine +
                     "Example configuration: " + Environment.NewLine +
-                    "<aspects xmlns=\"http://activeattributes.codeplex.com/configuration/aspects.xsd\">" + Environment.NewLine +
+                    "<aspects xmlns=\"http://activeattributes.codeplex.com/configuration/schema.xsd\">" + Environment.NewLine +
                     "  <typeRules>" + Environment.NewLine +
                     "    <add beforeType=\"MyAssembly.Type1, MyAssembly\"" + Environment.NewLine +
                     "         afterType=\"MyAssembly.Type2, MyAssembly\" />" + Environment.NewLine +

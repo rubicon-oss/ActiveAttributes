@@ -21,6 +21,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Configuration2;
 using JetBrains.Annotations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -49,14 +50,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       generator1.Expect (x => x.GetInitExpression()).Return (Expression.Constant (null, typeof (AspectAttribute)));
       generator2.Expect (x => x.GetInitExpression()).Return (Expression.Constant (null, typeof (AspectAttribute)));
 
-      var descriptor1 = MockRepository.GenerateMock<IDescriptor>();
-      var descriptor2 = MockRepository.GenerateMock<IDescriptor>();
+      var descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
+      var descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
 
       descriptor1.Expect (x => x.Scope).Return (Scope.Instance);
       descriptor2.Expect (x => x.Scope).Return (Scope.Static);
 
-      generator1.Expect (x => x.Descriptor).Return (descriptor1);
-      generator2.Expect (x => x.Descriptor).Return (descriptor2);
+      generator1.Expect (x => x.AspectDescriptor).Return (descriptor1);
+      generator2.Expect (x => x.AspectDescriptor).Return (descriptor2);
 
       _emptyAspects = new IExpressionGenerator[0];
       _instanceAspect = new[] { generator1 };
@@ -307,8 +308,8 @@ namespace ActiveAttributes.UnitTests.Assembly
                 instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
                 staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
 
-                var instanceAspects = aspects.Where (x => x.Descriptor.Scope == Scope.Instance);
-                var staticAspects = aspects.Where (x => x.Descriptor.Scope == Scope.Static);
+                var instanceAspects = aspects.Where (x => x.AspectDescriptor.Scope == Scope.Instance);
+                var staticAspects = aspects.Where (x => x.AspectDescriptor.Scope == Scope.Static);
 
                 patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects.Concat (instanceAspects));
 

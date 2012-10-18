@@ -19,11 +19,15 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  // TODO IFieldWrapper
   /// <summary>
-  /// Generates an expression that provides access to a field.
+  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
   /// </summary>
   public interface IArrayAccessor
   {
+    // FieldInfo Field { get; }
+
+    // TODO return MemberExpression
     Expression GetAccessExpression (Expression thisExpression);
 
     bool IsStatic { get; }

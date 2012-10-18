@@ -24,6 +24,6 @@ namespace ActiveAttributes.Core.Assembly
   public interface IExpressionGeneratorFactory
   {
     IEnumerable<IExpressionGenerator> GetExpressionGenerators (
-        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IDescriptor> descriptors);
+        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IAspectDescriptor> descriptors);
   }
 }

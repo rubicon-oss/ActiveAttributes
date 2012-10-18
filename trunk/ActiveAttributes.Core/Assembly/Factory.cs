@@ -51,9 +51,9 @@ namespace ActiveAttributes.Core.Assembly
           typeProvider);
     }
 
-    public IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IDescriptor descriptor)
+    public IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor aspectDescriptor)
     {
-      return new ExpressionGenerator (arrayAccessor, index, descriptor);
+      return new ExpressionGenerator (arrayAccessor, index, aspectDescriptor);
     }
   }
 }

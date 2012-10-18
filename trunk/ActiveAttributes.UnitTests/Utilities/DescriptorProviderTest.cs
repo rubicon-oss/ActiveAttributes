@@ -33,8 +33,8 @@ namespace ActiveAttributes.UnitTests.Utilities
       var result = DescriptorProvider.GetDescriptors (memberSequence[0], memberSequence).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (2));
-      Assert.That (result, Has.Some.Matches<IDescriptor> (desc => desc.AspectType == typeof (InheritingAspectAttribute)));
-      Assert.That (result, Has.Some.Matches<IDescriptor> (desc => desc.AspectType == typeof (NotInheritingAspectAttribute)));
+      Assert.That (result, Has.Some.Matches<IAspectDescriptor> (desc => desc.Type == typeof (InheritingAspectAttribute)));
+      Assert.That (result, Has.Some.Matches<IAspectDescriptor> (desc => desc.Type == typeof (NotInheritingAspectAttribute)));
     }
 
     [Test]
@@ -45,7 +45,7 @@ namespace ActiveAttributes.UnitTests.Utilities
       var result = DescriptorProvider.GetDescriptors (memberSequence[0], memberSequence).ToArray();
 
       Assert.That (result, Has.Length.EqualTo (1));
-      Assert.That (result, Has.All.Matches<IDescriptor> (desc => desc.AspectType == typeof (InheritingAspectAttribute)));
+      Assert.That (result, Has.All.Matches<IAspectDescriptor> (desc => desc.Type == typeof (InheritingAspectAttribute)));
     }
 
     [InheritingAspect]

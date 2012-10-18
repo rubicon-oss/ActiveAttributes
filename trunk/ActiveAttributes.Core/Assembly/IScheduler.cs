@@ -17,16 +17,18 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Configuration;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2;
 using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Sorts a collection of <see cref="IExpressionGenerator"/>s according to the <see cref="IConfiguration"/>.
+  /// Sorts a collection of <see cref="IExpressionGenerator"/>s according to the <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
   public interface IScheduler
   {
-    IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IDescriptor, T>> aspects);
-    IEnumerable<IDescriptor> GetOrdered (IEnumerable<IDescriptor> aspects);
+    IEnumerable<T> GetOrdered<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects);
+    IEnumerable<IAspectDescriptor> GetOrdered (IEnumerable<IAspectDescriptor> aspects);
   }
 }

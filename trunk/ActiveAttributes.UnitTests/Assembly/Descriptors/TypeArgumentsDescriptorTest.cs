@@ -17,6 +17,7 @@
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
+using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly.Descriptors
@@ -32,9 +33,9 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var aspectType = typeof (AspectAttribute);
         var scope = Scope.Instance;
         var priority = 5;
-        var descriptor = new TypeDescriptor (aspectType, scope, priority);
+        var descriptor = new TypeAspectDescriptor (aspectType, scope, priority);
 
-        Assert.That (descriptor.AspectType, Is.EqualTo (aspectType));
+        Assert.That (descriptor.Type, Is.EqualTo (aspectType));
         Assert.That (descriptor.Scope, Is.EqualTo (scope));
         Assert.That (descriptor.Priority, Is.EqualTo (priority));
       }

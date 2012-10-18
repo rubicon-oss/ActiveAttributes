@@ -3,7 +3,7 @@ using System.ComponentModel.Design;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Providers;
+using ActiveAttributes.Core.Checked;
 using ActiveAttributes.Core.Invocations;
 using NLog.Internal;
 using NUnit.Framework;

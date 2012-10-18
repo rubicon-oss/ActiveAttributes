@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Configuration;
 using JetBrains.Annotations;
@@ -24,6 +23,11 @@ namespace ActiveAttributes.Core.Configuration
   [ConfigurationCollection (typeof (TypeRuleElement))]
   public class TypeRuleCollection : ConfigurationElementCollection
   {
+    public TypeRuleElement this [int idx]
+    {
+      get { return (TypeRuleElement) BaseGet (idx); }
+    }
+
     protected override ConfigurationElement CreateNewElement ()
     {
       return new TypeRuleElement();
@@ -33,11 +37,6 @@ namespace ActiveAttributes.Core.Configuration
     {
       var typeRule = (TypeRuleElement) element;
       return typeRule.BeforeType + typeRule.AfterType;
-    }
-
-    public TypeRuleElement this [int idx]
-    {
-      get { return (TypeRuleElement) BaseGet (idx); }
     }
   }
 }

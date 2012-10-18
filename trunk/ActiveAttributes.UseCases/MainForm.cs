@@ -19,7 +19,8 @@ using System.Threading;
 using System.Windows.Forms;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly.Configuration;
-using ActiveAttributes.Core.Assembly.Configuration.Rules;
+using ActiveAttributes.Core.Checked;
+using ActiveAttributes.Core.Configuration2.Rules;
 using ActiveAttributes.UseCases.Aspects;
 
 namespace ActiveAttributes.UseCases
@@ -77,16 +78,16 @@ namespace ActiveAttributes.UseCases
 
     private void button6_Click (object sender, EventArgs e)
     {
-      Configuration.Singleton.Rules.Clear ();
-      Configuration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
+      ActiveAttributesConfiguration.Singleton.AspectOrderingRules.Clear ();
+      ActiveAttributesConfiguration.Singleton.AspectOrderingRules.Add (new TypeOrderingRule ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
       var obj = ObjectFactory.Create<DomainClass> ();
       obj.Method ();
     }
 
     private void button5_Click (object sender, EventArgs e)
     {
-      Configuration.Singleton.Rules.Clear ();
-      Configuration.Singleton.Rules.Add (new TypeOrderRule ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
+      ActiveAttributesConfiguration.Singleton.AspectOrderingRules.Clear ();
+      ActiveAttributesConfiguration.Singleton.AspectOrderingRules.Add (new TypeOrderingRule ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
       var obj = ObjectFactory.Create<DomainClass> ();
       obj.Method ();
     }

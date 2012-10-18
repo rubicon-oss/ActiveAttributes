@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Configuration;
 using ActiveAttributes.Core.Assembly.Descriptors;
+using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting.Reflection;
@@ -75,7 +76,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         Assert.That (descriptor.ConstructorInfo, Is.SameAs (customAttributeDataMock.Constructor));
         Assert.That (descriptor.ConstructorArguments, Is.SameAs (customAttributeDataMock.ConstructorArguments));
@@ -93,7 +94,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<NonAspectAttribute> (method);
 
-        new CustomAttributeDataDescriptor (customAttributeDataMock);
+        new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
       }
 
       [Test]
@@ -103,7 +104,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         Assert.That (descriptor.Scope, Is.EqualTo (Scope.Instance));
         Assert.That (descriptor.Priority, Is.EqualTo (5));
@@ -119,7 +120,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         var result = descriptor.ToString ();
         Assert.That (result, Is.EqualTo ("AspectAttribute(Scope = Static, Priority = 0)"));
@@ -132,7 +133,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         var result = descriptor.ToString ();
         Assert.That (result, Is.StringContaining ("Attribute({muh}"));
@@ -145,7 +146,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         var result = descriptor.ToString ();
         Assert.That (result, Is.StringContaining ("PropertyArgument = {muh}, MemberNameFilter = {_}"));
@@ -158,7 +159,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         var method = MethodInfo.GetCurrentMethod ();
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         var result = descriptor.ToString ();
         Assert.That (result, Is.EqualTo ("AspectAttribute(Scope = Instance, Priority = 5)"));
@@ -175,7 +176,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
 
         var customAttributeDataMock = GetCustomAttributeDataMockFor<AspectAttribute> (method);
 
-        var descriptor = new CustomAttributeDataDescriptor (customAttributeDataMock);
+        var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
         var matchingMethod = NormalizingMemberInfoFromExpressionUtility.GetMethod ((object obj) => obj.ToString ());
         var notMatchingMethod = NormalizingMemberInfoFromExpressionUtility.GetMethod ((object obj) => obj.GetType ());

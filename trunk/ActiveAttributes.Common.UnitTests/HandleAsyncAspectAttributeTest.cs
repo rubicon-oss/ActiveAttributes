@@ -17,6 +17,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms.VisualStyles;
 using ActiveAttributes.Core;
+using ActiveAttributes.Core.Checked;
 using NUnit.Framework;
 
 namespace ActiveAttributes.Common.UnitTests

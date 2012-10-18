@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core;
+using ActiveAttributes.Core.Checked;
 using NUnit.Framework;
 
 namespace ActiveAttributes.Common.UnitTests

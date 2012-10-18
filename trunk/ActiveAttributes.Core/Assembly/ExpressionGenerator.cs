@@ -40,6 +40,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private static Expression CreateElement (Type type, object obj)
     {
+      // TODO Should not be necessary with TypePipe custom attribute data - if it still is, fix in TypePipe
       if (type.IsEnum)
         obj = Enum.ToObject (type, obj);
 
@@ -54,20 +55,20 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IArrayAccessor _arrayAccessor;
     private readonly int _index;
 
-    public ExpressionGenerator (IArrayAccessor arrayAccessor, int index, IDescriptor descriptor)
+    public ExpressionGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor aspectDescriptor)
     {
       ArgumentUtility.CheckNotNull ("arrayAccessor", arrayAccessor);
-      ArgumentUtility.CheckNotNull ("descriptor", descriptor);
+      ArgumentUtility.CheckNotNull ("aspectDescriptor", aspectDescriptor);
       Assertion.IsTrue (index >= 0);
 
       _arrayAccessor = arrayAccessor;
       _index = index;
-      Descriptor = descriptor;
+      AspectDescriptor = aspectDescriptor;
     }
 
-    public IDescriptor Descriptor { get; private set; }
+    public IAspectDescriptor AspectDescriptor { get; private set; }
 
-    public Expression GetStorageExpression (Expression thisExpression)
+    public Expression GetStorageExpression (Expression thisExpression /*, IArrayAccessor arrayAccessor, int index */)
     {
       // thisExpression can be null
 
@@ -81,12 +82,12 @@ namespace ActiveAttributes.Core.Assembly
     {
       Func<ICustomAttributeNamedArgument, Expression> argumentConverter = ConvertTypedArgumentToExpression;
 
-      var constructorInfo = Descriptor.ConstructorInfo;
+      var constructorInfo = AspectDescriptor.ConstructorInfo;
       var constructorArguments = constructorInfo.GetParameters().Select (x => x.ParameterType).Zip (
-          Descriptor.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();
+          AspectDescriptor.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();
       var createExpression = Expression.New (constructorInfo, constructorArguments.ToArray());
 
-      var memberBindingExpressions = Descriptor.NamedArguments.Select (GetMemberBindingExpression);
+      var memberBindingExpressions = AspectDescriptor.NamedArguments.Select (GetMemberBindingExpression);
 
       var initExpression = Expression.MemberInit (createExpression, memberBindingExpressions);
 
