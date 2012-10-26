@@ -26,6 +26,9 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
     {
       var section = (AspectsConfigurationSection) ConfigurationManager.GetSection ("aspects");
 
+      if (section == null)
+        return;
+
       foreach (TypeRuleElement item in section.TypeRules)
       {
         var beforeType = Type.GetType (item.BeforeType, true);

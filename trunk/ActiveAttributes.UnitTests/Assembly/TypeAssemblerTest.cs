@@ -30,21 +30,17 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var mockRepository = new MockRepository();
 
-      var aspectConfigurationMock = mockRepository.StrictMock<IActiveAttributesConfiguration>();
       var fieldIntroducerMock = mockRepository.StrictMock<IFieldIntroducer>();
       var giveMeSomeNameMock = mockRepository.StrictMock<IGiveMeSomeName>();
       var methodAssemblerMock = mockRepository.StrictMock<IMethodAssembler>();
       var mutableType = MutableTypeObjectMother.CreateForExistingType();
       var aspectProviderMock = mockRepository.StrictMock<ITypeLevelAspectDescriptorProvider>();
-      var aspectProviders = new[] { aspectProviderMock };
+      var aspectDescriptorProviders = new[] { aspectProviderMock };
       var descriptorsFake = new IAspectDescriptor[0];
       var fieldDataFake = new FieldInfoContainer();
       var generatorsFake = new IExpressionGenerator[0];
 
       // Arrange
-      aspectConfigurationMock
-          .Expect (x => x.AspectDescriptorProviders)
-          .Return (aspectProviders);
       aspectProviderMock
           .Expect (x => x.GetDescriptors (mutableType))
           .Return (descriptorsFake);
@@ -62,7 +58,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       mockRepository.ReplayAll();
 
       // Act
-      var assembler = new TypeAssembler (aspectConfigurationMock, fieldIntroducerMock, giveMeSomeNameMock, methodAssemblerMock);
+      var assembler = new TypeAssembler (aspectDescriptorProviders, fieldIntroducerMock, giveMeSomeNameMock, methodAssemblerMock);
       assembler.ModifyType (mutableType);
 
       // Assert

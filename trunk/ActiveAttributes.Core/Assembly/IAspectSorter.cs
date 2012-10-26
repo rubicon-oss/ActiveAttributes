@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Configuration2;
@@ -22,7 +21,8 @@ using Remotion.Collections;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Sorts a collection of <see cref="IExpressionGenerator"/>s according to a <see cref="IActiveAttributesConfiguration"/>.
+  /// Sorts a collection of items (i.e., mostly <see cref="IAspectDescriptor"/>s) according to the ordering rules defined in
+  /// the <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
   public interface IAspectSorter
   {

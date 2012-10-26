@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Accessors;
+using ActiveAttributes.Core.Assembly.FieldWrappers;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -28,11 +28,11 @@ namespace ActiveAttributes.Core.Assembly
       return new TypeProvider (methodInfo);
     }
 
-    public IArrayAccessor GetAccessor (FieldInfo fieldInfo)
+    public IFieldWrapper GetAccessor (FieldInfo fieldInfo)
     {
       return fieldInfo.IsStatic
-                 ? (IArrayAccessor) new StaticArrayAccessor (fieldInfo)
-                 : new InstanceArrayAccessor (fieldInfo);
+                 ? (IFieldWrapper) new StaticFieldWrapper (fieldInfo)
+                 : new InstanceFieldWrapper (fieldInfo);
     }
 
     public IMethodPatcher GetMethodPatcher (
@@ -51,9 +51,9 @@ namespace ActiveAttributes.Core.Assembly
           typeProvider);
     }
 
-    public IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor aspectDescriptor)
+    public IExpressionGenerator GetGenerator (IFieldWrapper fieldWrapper, int index, IAspectDescriptor aspectDescriptor)
     {
-      return new ExpressionGenerator (arrayAccessor, index, aspectDescriptor);
+      return new ExpressionGenerator (fieldWrapper, index, aspectDescriptor);
     }
   }
 }

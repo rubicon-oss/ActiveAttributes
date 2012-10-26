@@ -116,8 +116,8 @@ namespace ActiveAttributes.Core.Assembly
 
     public void AddAspectInitialization (
         MutableType mutableType,
-        IArrayAccessor staticAccessor,
-        IArrayAccessor instanceAccessor,
+        IFieldWrapper staticAccessor,
+        IFieldWrapper instanceAccessor,
         IEnumerable<IExpressionGenerator> aspects)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
@@ -134,14 +134,14 @@ namespace ActiveAttributes.Core.Assembly
       AddMutation (mutableType, mutation);
     }
 
-    private Expression GeAspectsArrayAssignExpression (IArrayAccessor accessor, BodyContextBase ctx, IEnumerable<IExpressionGenerator> aspects)
+    private Expression GeAspectsArrayAssignExpression (IFieldWrapper accessor, BodyContextBase ctx, IEnumerable<IExpressionGenerator> aspects)
     {
       // TODO remove check - always pass in ctx.This
-      var aspectsField = accessor.GetAccessExpression (accessor.IsStatic ? null : ctx.This);
+      var aspectsField = accessor.GetAccessExpression (ctx.This);
       var newAspectsArrayExpression = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
       Expression instanceAspectsAssign = Expression.Assign (aspectsField, newAspectsArrayExpression);
 
-      // TODO Workaround until RM-5119 is implemented
+      // WAIT RM-5119 static constructor
       if (accessor.IsStatic)
       {
         instanceAspectsAssign = Expression.IfThen (

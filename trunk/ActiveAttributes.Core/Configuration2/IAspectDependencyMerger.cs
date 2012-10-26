@@ -13,17 +13,26 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
+using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly;
+using Remotion.Collections;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
   /// <summary>
-  /// Serves as a provider for an <see cref="IActiveAttributesConfiguration"/>.
+  /// Serves as a merger for dependencies between <see cref="IAspectDescriptor"/>s.
   /// </summary>
-  [ConcreteImplementation (typeof (ActiveAttributeConfigurationProvider))]
-  public interface IActiveAttributeConfigurationProvider
+  /// <remarks>
+  /// Dependencies are merged by applying only the non-conflicting subset of new to the previous dependencies.
+  /// </remarks>
+  [ConcreteImplementation (typeof (AspectDependencyMerger))]
+  public interface IAspectDependencyMerger
   {
-    IActiveAttributesConfiguration GetConfiguration ();
+    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies);
   }
 }

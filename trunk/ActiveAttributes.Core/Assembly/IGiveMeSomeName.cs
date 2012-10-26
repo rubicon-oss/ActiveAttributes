@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -23,6 +24,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Converts <see cref="IAspectDescriptor"/>s to <see cref="IExpressionGenerator"/>s.
   /// </summary>
+  [ConcreteImplementation (typeof (GiveItSomeName))]
   public interface IGiveMeSomeName
   {
     IEnumerable<IExpressionGenerator> IntroduceExpressionGenerators (

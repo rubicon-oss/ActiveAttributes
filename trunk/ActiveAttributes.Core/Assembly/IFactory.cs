@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Accessors;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -26,6 +26,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Acts as a factory for various types.
   /// </summary>
+  [ConcreteImplementation (typeof (Factory))]
   public interface IFactory
   {
     // TODO Get -> Create
@@ -37,20 +38,20 @@ namespace ActiveAttributes.Core.Assembly
     ITypeProvider GetTypeProvider (MethodInfo methodInfo);
     
     /// <summary>
-    /// Creates an <see cref="IArrayAccessor"/> for a given static field.
+    /// Creates an <see cref="IFieldWrapper"/> for a given static field.
     /// </summary>
     /// <param name="fieldInfo">The static field.</param>
-    /// <returns>An <see cref="IArrayAccessor"/></returns>
-    IArrayAccessor GetAccessor (FieldInfo fieldInfo);
+    /// <returns>An <see cref="IFieldWrapper"/></returns>
+    IFieldWrapper GetAccessor (FieldInfo fieldInfo);
 
     /// <summary>
-    /// Creates an <see cref="IExpressionGenerator"/> for a given <see cref="IArrayAccessor"/> and <see cref="IAspectDescriptor"/>.
+    /// Creates an <see cref="IExpressionGenerator"/> for a given <see cref="IFieldWrapper"/> and <see cref="IAspectDescriptor"/>.
     /// </summary>
-    /// <param name="arrayAccessor">The array containing the aspects.</param>
+    /// <param name="fieldWrapper">The array containing the aspects.</param>
     /// <param name="index">The array index of the aspect.</param>
     /// <returns></returns>
     /// <param name="aspectDescriptor">The descriptor of the aspect.</param>
-    IExpressionGenerator GetGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor aspectDescriptor);
+    IExpressionGenerator GetGenerator (IFieldWrapper fieldWrapper, int index, IAspectDescriptor aspectDescriptor);
 
     /// <summary>
     /// Create an <see cref="IMethodPatcher"/>.

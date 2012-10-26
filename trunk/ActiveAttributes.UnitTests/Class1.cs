@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
+using ActiveAttributes.Core.Invocations;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -25,49 +26,29 @@ using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
-  class Test
-  {
-    public void Muh<T>()
-    {
-      
-    } 
-  }
-
-  [ConcreteImplementationAttribute(typeof(Test2))]
-  public interface ITest
-  {
-    string Muh ();
-  }
-
-  class Test2 : ITest
-  {
-    public string Muh ()
-    {
-      return "muh";
-    }
-  }
-
 
   [TestFixture]
   public class Class1
   {
-    [Test]
-    public void name22 ()
+
+    //private string Method (string arg)
+    //{
+    //  arg = 
+    //  return arg;
+    //}
+
+    // [After(
+    private string Aspect (string arg)
     {
-      var method = typeof (Test).GetMethod ("Muh");
-      var method2 = method.MakeGenericMethod (new[] { typeof (int) });
-
-      Assert.That (method.IsGenericMethod, Is.True);
-      Assert.That (method.IsGenericMethodDefinition, Is.True);
-      //Assert.That (method.ContainsGenericParameters, Is.False);
-      var type = method.GetGenericArguments();
-
-      ServiceLocator.SetLocatorProvider (() => new DefaultServiceLocator());
-      var muh = ServiceLocator.Current.GetInstance<ITest>();
-      Assert.That (muh.Muh(), Is.EqualTo ("muh"));
-
+      arg += "aspect" + arg;
+      return arg;
     }
 
+    [Test]
+    public void name123 ()
+    {
+
+    }
 
     [Test]
     [Ignore]

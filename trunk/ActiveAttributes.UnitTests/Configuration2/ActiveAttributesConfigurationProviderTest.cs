@@ -13,22 +13,27 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
+using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
 using Rhino.Mocks;
+using System.Linq;
 
-namespace ActiveAttributes.UnitTests.Checked
+namespace ActiveAttributes.UnitTests.Configuration2
 {
   [TestFixture]
-  public class ConfigurationProviderTest
+  public class ActiveAttributesConfigurationProviderTest
   {
+
+
     [Test]
     public void CallsConfigurators ()
     {
       var configuratorMock = MockRepository.GenerateMock<IActiveAttributesConfigurator>();
-      var configurationProvider = new ActiveAttributeConfigurationProvider (new[] { configuratorMock });
+      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
 
       var result = configurationProvider.GetConfiguration();
 
@@ -55,7 +60,7 @@ namespace ActiveAttributes.UnitTests.Checked
       mockRepository.ReplayAll();
 
       // Act
-      var configurationProvider = new ActiveAttributeConfigurationProvider (new[] { otherConfiguratorMock, appConfigConfiguratorMock });
+      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
       configurationProvider.GetConfiguration();
 
       // Assert
@@ -73,8 +78,15 @@ namespace ActiveAttributes.UnitTests.Checked
           .IgnoreArguments()
           .WhenCalled (x => ((IActiveAttributesConfiguration) x.Arguments[0]).Lock());
 
-      var configurationProvider = new ActiveAttributeConfigurationProvider (new[] { firstConfiguratorMock, secondConfiguratorMock });
+      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
       configurationProvider.GetConfiguration();
+    }
+
+    [Test]
+    public void name ()
+    {
+      var ints = new[] { 1, 2, 3 };
+      Assert.That (ints.SendToBack (x => x == 1), Is.EqualTo (new[] { 2, 3, 1 }));
     }
   }
 }

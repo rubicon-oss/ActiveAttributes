@@ -13,46 +13,60 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Linq;
 using System.Reflection;
-using Remotion.FunctionalProgramming;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Extensions
 {
-  internal static class PropertyInfoExtensions
+  public static class PropertyInfoExtensions
   {
-    // TODO maybe use TypePipe's RelatedPropertyFinder class instead
+    private static readonly IRelatedPropertyFinder s_relatedPropertyFinder;
+
+    static PropertyInfoExtensions ()
+    {
+      s_relatedPropertyFinder = new RelatedPropertyFinder ();
+    }
+
     /// <summary>
     /// Returns the base <see cref="PropertyInfo"/>.
     /// </summary>
-    /// <returns>The base <see cref="PropertyInfo"/>; can be null.</returns>
+    /// <returns>
+    /// The base <see cref="PropertyInfo"/>; can be null.
+    /// </returns>
     public static PropertyInfo GetBaseProperty (this PropertyInfo propertyInfo)
     {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-      Assertion.IsTrue (propertyInfo.DeclaringType != null);
+      return s_relatedPropertyFinder.GetBaseProperty (propertyInfo);
 
-      var typeSequence = propertyInfo.DeclaringType.BaseType.CreateSequence (x => x.BaseType);
-      var getMethod = propertyInfo.GetGetMethod (true);
-      var setMethod = propertyInfo.GetSetMethod (true);
-      var getMethodBase = getMethod != null ? getMethod.GetBaseDefinition() : null;
-      var setMethodBase = setMethod != null ? setMethod.GetBaseDefinition() : null;
+      #region my implementation
 
-      var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
-      return typeSequence
-          .SelectMany (x => x.GetProperties (bindingFlags))
-          .FirstOrDefault (
-              x => x.GetGetMethod (true).IsRootEqualTo (getMethodBase) ||
-                   x.GetSetMethod (true).IsRootEqualTo (setMethodBase));
+      //ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      //Assertion.IsTrue (propertyInfo.DeclaringType != null);
+
+      //var typeSequence = propertyInfo.DeclaringType.BaseType.CreateSequence (x => x.BaseType);
+      //var getMethod = propertyInfo.GetGetMethod (true);
+      //var setMethod = propertyInfo.GetSetMethod (true);
+      //var getMethodBase = getMethod != null ? getMethod.GetBaseDefinition() : null;
+      //var setMethodBase = setMethod != null ? setMethod.GetBaseDefinition() : null;
+
+      //var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
+      //return typeSequence
+      //    .SelectMany (x => x.GetProperties (bindingFlags))
+      //    .FirstOrDefault (
+      //        x => x.GetGetMethod (true).IsRootEqualTo (getMethodBase) ||
+      //             x.GetSetMethod (true).IsRootEqualTo (setMethodBase));
+
+      #endregion
     }
 
     /// <summary>
     /// Determines whether the specified <see cref="PropertyInfo"/> is an indexer.
     /// </summary>
     /// <param name="propertyInfo">The <see cref="PropertyInfo"/>.</param>
-    /// <returns><c>true</c> if the specified <see cref="PropertyInfo"/> is an indexer; otherwise, <c>false</c>.</returns>
+    /// <returns>
+    /// <c>true</c> if the specified <see cref="PropertyInfo"/> is an indexer; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsIndexer (this PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);

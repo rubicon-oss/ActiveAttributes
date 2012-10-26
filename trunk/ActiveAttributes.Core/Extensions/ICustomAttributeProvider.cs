@@ -13,30 +13,25 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Reflection;
 
-internal static partial class EnumerableExtensions
+namespace ActiveAttributes.Core.Extensions
 {
-  public static string ToString<T> (this IEnumerable<T> collection)
+  public static class ICustomAttributeProviderExtensions
   {
-    return ToString (collection, t => t.ToString (), ", ");
-  }
-
-  public static string ToString<T> (this IEnumerable<T> collection, string separator)
-  {
-    return ToString (collection, t => t.ToString (), separator);
-  }
-
-  public static string ToString<T> (this IEnumerable<T> collection, Func<T, string> stringElement, string separator)
-  {
-    var sb = new StringBuilder ();
-    foreach (var item in collection)
+    /// <summary>
+    /// Gets all custom attributes of a certain type from the <see cref="ICustomAttributeProvider"/>.
+    /// </summary>
+    /// <typeparam name="T">The custom attribute type.</typeparam>
+    /// <param name="customAttributeProvider">The custom attribute provider.</param>
+    /// <param name="inherit">Specifies whether inherited custom attributes should be included.</param>
+    public static IEnumerable<T> GetCustomAttributes<T> (this ICustomAttributeProvider customAttributeProvider, bool inherit) where T : Attribute
     {
-      sb.Append (stringElement (item));
-      sb.Append (separator);
+      return customAttributeProvider.GetCustomAttributes (typeof (T), inherit).Cast<T>();
     }
-    return sb.ToString (0, Math.Max (0, sb.Length - separator.Length));
   }
 }

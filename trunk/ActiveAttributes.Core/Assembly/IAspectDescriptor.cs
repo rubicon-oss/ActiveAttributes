@@ -24,53 +24,44 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  ///   Provides information describing an <see cref="AspectAttribute" />.
+  /// Provides information describing an <see cref="AspectAttribute" />.
   /// </summary>
   public interface IAspectDescriptor
   {
     /// <summary>
-    ///   The <see cref="System.Type" /> of the <see cref="AspectAttribute" />.
+    /// The <see cref="System.Type" /> of the <see cref="AspectAttribute" />.
     /// </summary>
     Type Type { get; }
 
     /// <summary>
-    ///   A numeric value describing the priority over other <see cref="AspectAttribute" />s. A higher priority means
-    ///   that the aspect is invoked earlier. The priority also overrides the <see cref="IActiveAttributesConfiguration" />.
+    /// A numeric value describing the priority over other <see cref="AspectAttribute" />s. A higher priority means
+    /// that the aspect is invoked earlier. The priority also overrides the <see cref="IActiveAttributesConfiguration" />.
     /// </summary>
     int Priority { get; }
 
     /// <summary>
-    ///   The <see cref="Configuration2.Scope" /> (or lifetime) of the <see cref="AspectAttribute" />.
+    /// The <see cref="Configuration2.Scope" /> (or lifetime) of the <see cref="AspectAttribute" />.
     /// </summary>
     Scope Scope { get; }
 
     /// <summary>
-    ///   The <see cref="ConstructorInfo" /> used to create the <see cref="AspectAttribute" />.
+    /// The <see cref="ConstructorInfo" /> used to create the <see cref="AspectAttribute" />.
     /// </summary>
     ConstructorInfo ConstructorInfo { get; }
 
     /// <summary>
-    ///   The list of <see cref="CustomAttributeTypedArgument" />s passed to the constructor.
+    /// The list of <see cref="CustomAttributeTypedArgument" />s passed to the constructor.
     /// </summary>
     ReadOnlyCollection<object> ConstructorArguments { get; }
 
     /// <summary>
-    ///   The list of <see cref="CustomAttributeNamedArgument" />s.
+    /// The list of <see cref="CustomAttributeNamedArgument" />s.
     /// </summary>
     ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments { get; }
 
     /// <summary>
-    ///   Returns
-    ///   <value> true </value>
-    ///   if the method matches the requirements of the <see cref="AspectAttribute" />,
-    ///   otherwise false.
+    /// Returns <value>true</value> if the method matches the requirements of the <see cref="AspectAttribute"/>, otherwise false.
     /// </summary>
-    /// <param name="method"> The method. </param>
-    /// <returns>
-    ///   <value> True </value>
-    ///   or
-    ///   <value> false </value>
-    ///   . </returns>
     bool Matches (MethodInfo method);
   }
 }

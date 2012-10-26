@@ -18,10 +18,14 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Configuration2.Configurators;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
+using Castle.Components.DictionaryAdapter.Xml;
+using System.Linq;
 
 namespace ActiveAttributes.Core
 {
@@ -35,11 +39,27 @@ namespace ActiveAttributes.Core
 
     T IObjectFactory.Create<T> ()
     {
-      // TODO (high)
-      var activeAttributesAssembler = ServiceLocator.Current.GetInstance<IActiveAttributesAssembler>();
+      IActiveAttributesConfigurationProvider configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
+      var configuration = configurationProvider.GetConfiguration();
+
+
+      var constructorPatcher = new ConstructorPatcher();
+      var factory = new Factory();
+      var giveMeSomeName = new GiveItSomeName (factory, new ExpressionGeneratorFactory(), constructorPatcher);
+      var fieldIntroducer = new FieldIntroducer();
+      var methodAssembler = new MethodAssembler (
+          configuration.AspectDescriptorProviders.OfType<IMethodLevelAspectDescriptorProvider>(),
+          fieldIntroducer,
+          giveMeSomeName,
+          new AspectSorter (configuration),
+          new MethodCopier(),
+          constructorPatcher,
+          factory);
+      var typeAssembler_ = new TypeAssembler (
+          configuration.AspectDescriptorProviders.OfType<ITypeLevelAspectDescriptorProvider>(), fieldIntroducer, giveMeSomeName, methodAssembler);
 
       var typeAssembler = new Remotion.TypePipe.TypeAssembly.TypeAssembler (
-          new[] { TypeAssembler.Singleton }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
+          new[] { typeAssembler_ }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
       var assembledType = typeAssembler.AssembleType (typeof (T));
 
       return (T) Activator.CreateInstance (assembledType);

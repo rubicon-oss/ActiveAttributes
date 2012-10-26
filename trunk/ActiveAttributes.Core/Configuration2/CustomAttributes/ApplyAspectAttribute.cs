@@ -19,7 +19,9 @@ using ActiveAttributes.Core.Aspects;
 
 namespace ActiveAttributes.Core.Configuration2.CustomAttributes
 {
-  // TODO only valid on class and interface? Thought it was for parameters?!
+  /// <summary>
+  /// Attribute that is used on other <see cref="Attribute"/>s in order to signalize that a given <see cref="AspectAttribute"/> should be applied.
+  /// </summary>
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
   public class ApplyAspectAttribute : Attribute
   {

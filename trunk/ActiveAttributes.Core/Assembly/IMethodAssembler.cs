@@ -16,10 +16,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  [ConcreteImplementation (typeof (MethodAssembler))]
   public interface IMethodAssembler
   {
     void ModifyMethod (MutableType mutableType, MethodInfo method, IEnumerable<IExpressionGenerator> typeGenerators);

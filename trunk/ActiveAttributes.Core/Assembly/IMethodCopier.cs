@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -21,6 +22,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Copies a method.
   /// </summary>
+  [ConcreteImplementation (typeof (MethodCopier))]
   public interface IMethodCopier
   {
     /// <summary>

@@ -21,7 +21,6 @@ using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -104,106 +103,6 @@ namespace ActiveAttributes.Core.Assembly
     {
       var conflictRules = rulesAlreadyDefined.SelectMany(x => x.Select(y => Tuple.Create (y.Item2, y.Item1)));
       return rules.Where (x => !conflictRules.Contains (x));
-    }
-  }
-
-  public interface IAspectDependencyMerger
-  {
-    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeRules (
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousRules,
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newRules);
-  }
-
-  public class AspectDependencyMerger : IAspectDependencyMerger
-  {
-    public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeRules (
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousRules, IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newRules)
-    {
-      ArgumentUtility.CheckNotNull ("previousRules", previousRules);
-      ArgumentUtility.CheckNotNull ("newRules", newRules);
-
-      var previousRulesAsCollection = previousRules.ConvertToCollection();
-      var forbiddenRules = previousRulesAsCollection.Select (x => Tuple.Create (x.Item2, x.Item1));
-      return previousRulesAsCollection.Concat (newRules.Where (x => !forbiddenRules.Contains (x)));
-    }
-  }
-
-  public interface IAspectDependencyProvider
-  {
-    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors);
-  }
-
-  public class RuleDependencyProvider : IAspectDependencyProvider
-  {
-    private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
-
-    public RuleDependencyProvider (IActiveAttributesConfiguration activeAttributesConfiguration)
-    {
-      ArgumentUtility.CheckNotNull ("activeAttributesConfiguration", activeAttributesConfiguration);
-
-      _activeAttributesConfiguration = activeAttributesConfiguration;
-    }
-
-    public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors)
-    {
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
-
-      var aspectDescriptorsAsCollection = aspectDescriptors.ConvertToCollection();
-
-      var combinations = (from aspectDescriptor1 in aspectDescriptorsAsCollection
-                          from aspectDescriptor2 in aspectDescriptorsAsCollection
-                          from rule in _activeAttributesConfiguration.AspectOrderingRules
-                          select new
-                                 {
-                                     Aspect1 = aspectDescriptor1,
-                                     Aspect2 = aspectDescriptor2,
-                                     Rule = rule
-                                 }).ToList();
-
-      foreach (var combination in combinations)
-      {
-        var compared = combination.Rule.Compare (combination.Aspect1, combination.Aspect2);
-        if (compared == -1)
-          yield return Tuple.Create (combination.Aspect1, combination.Aspect2);
-        else if (compared == 1)
-          yield return Tuple.Create (combination.Aspect2, combination.Aspect1);
-      }
-    }
-  }
-
-  public class PriorityDependencyProvider : IAspectDependencyProvider
-  {
-    private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
-
-    public PriorityDependencyProvider (IActiveAttributesConfiguration activeAttributesConfiguration)
-    {
-      ArgumentUtility.CheckNotNull ("activeAttributesConfiguration", activeAttributesConfiguration);
-
-      _activeAttributesConfiguration = activeAttributesConfiguration;
-    }
-
-    public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors)
-    {
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
-
-      var aspectDescriptorsAsCollection = aspectDescriptors.ConvertToCollection ();
-
-      var combinations = (from aspectDescriptor1 in aspectDescriptorsAsCollection
-                          from aspectDescriptor2 in aspectDescriptorsAsCollection
-                          select new
-                          {
-                            Aspect1 = aspectDescriptor1,
-                            Aspect2 = aspectDescriptor2
-                          }).ToList ();
-
-      foreach (var combination in combinations)
-      {
-        var compared = combination.Aspect1.Priority.CompareTo (combination.Aspect2.Priority);
-        if (compared == 1)
-          yield return Tuple.Create (combination.Aspect1, combination.Aspect2);
-        else if (compared == -1)
-          yield return Tuple.Create (combination.Aspect2, combination.Aspect1);
-      }
     }
   }
 }

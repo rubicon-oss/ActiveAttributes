@@ -66,11 +66,16 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\CflowMethodInterceptionAspectAttribute.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
+    <Compile Include="Configuration2\AspectDependencyMerger.cs" />
     <Compile Include="Assembly\ExpressionGeneratorContainer.cs" />
     <Compile Include="Assembly\ExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\FieldInfoContainer.cs" />
     <Compile Include="Assembly\GiveItSomeName.cs" />
     <Compile Include="Assembly\IActiveAttributesAssembler.cs" />
+    <Compile Include="Configuration2\IAspectDependencyMerger.cs" />
+    <Compile Include="Configuration2\AspectDependencyProviders\RuleDependencyProvider.cs" />
+    <Compile Include="Configuration2\AspectDependencyProviders\PriorityDependencyProvider.cs" />
+    <Compile Include="Configuration2\IAspectDependencyProvider.cs" />
     <Compile Include="Configuration2\IAssemblyLevelAspectDescriptorProvider.cs" />
     <Compile Include="Configuration2\IAspectDescriptorProvider.cs" />
     <Compile Include="Assembly\IExpressionGeneratorFactory.cs" />
@@ -92,7 +97,7 @@
     <Compile Include="Configuration2\Configurators\AspectTypeOrderingAttributeConfigurator.cs" />
     <Compile Include="Configuration2\Configurators\AspectRoleOrderingAttributeConfigurator.cs" />
     <Compile Include="Configuration2\CustomAttributes\AspectRoleOrderingAttribute.cs" />
-    <Compile Include="Configuration2\IActiveAttributeConfigurationProvider.cs" />
+    <Compile Include="Configuration2\IActiveAttributesConfigurationProvider.cs" />
     <Compile Include="Configuration2\MemberFlags.cs" />
     <Compile Include="Configuration2\Position.cs" />
     <Compile Include="Configuration2\Rules\AspectOrderingRuleBase.cs" />
@@ -106,8 +111,9 @@
     <Compile Include="Assembly\IMethodPatcher.cs" />
     <Compile Include="Assembly\Descriptors\TypeAspectDescriptor.cs" />
     <Compile Include="Assembly\TypeAssembler.cs" />
-    <Compile Include="Configuration2\ActiveAttributeConfigurationProvider.cs" />
+    <Compile Include="Configuration2\ActiveAttributesesConfigurationProvider.cs" />
     <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
+    <Compile Include="Extensions\ICustomAttributeProvider.cs" />
     <Compile Include="IObjectFactory.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="Configuration2\Scope.cs" />
@@ -142,12 +148,12 @@
     <Compile Include="Assembly\Descriptors\CustomDataDescriptor.cs" />
     <Compile Include="Assembly\ConstructorPatcher.cs" />
     <Compile Include="Assembly\FieldIntroducer.cs" />
-    <Compile Include="Assembly\IArrayAccessor.cs" />
+    <Compile Include="Assembly\IFieldWrapper.cs" />
     <Compile Include="Assembly\IAspectDescriptor.cs" />
-    <Compile Include="Assembly\Accessors\InstanceArrayAccessor.cs" />
+    <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapper.cs" />
     <Compile Include="Assembly\MethodCopier.cs" />
     <Compile Include="Assembly\MethodPatcher.cs" />
-    <Compile Include="Assembly\Accessors\StaticArrayAccessor.cs" />
+    <Compile Include="Assembly\FieldWrappers\StaticFieldWrapper.cs" />
     <Compile Include="Assembly\TypeProvider.cs" />
     <Compile Include="Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Contexts\ActionInvocationContext.template.cs" />
@@ -192,7 +198,7 @@
     <None Include="Configuration\schema.xsd">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="Extensions\EnumerableToString.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

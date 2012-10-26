@@ -17,12 +17,14 @@ using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
   /// <summary>
   /// Serves as a configuration object for all concerns of <see cref="AspectAttribute"/>s.
   /// </summary>
+  [ConcreteImplementation (typeof (ActiveAttributesConfiguration))]
   public interface IActiveAttributesConfiguration
   {
     /// <summary>

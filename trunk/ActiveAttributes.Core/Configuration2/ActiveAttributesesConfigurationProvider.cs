@@ -15,18 +15,19 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ActiveAttributes.Core.Configuration2.Configurators;
+using ActiveAttributes.Core.Extensions;
+using Microsoft.Practices.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
-  public class ActiveAttributeConfigurationProvider : IActiveAttributeConfigurationProvider
+  public class ActiveAttributesesConfigurationProvider : IActiveAttributesConfigurationProvider
   {
     private readonly IEnumerable<IActiveAttributesConfigurator> _configurators;
 
-    public ActiveAttributeConfigurationProvider (IEnumerable<IActiveAttributesConfigurator> configurators)
+    public ActiveAttributesesConfigurationProvider ()
     {
-      _configurators = configurators;
+      _configurators = ServiceLocator.Current.GetAllInstances<IActiveAttributesConfigurator>();
     }
 
     public IActiveAttributesConfiguration GetConfiguration ()
@@ -42,15 +43,6 @@ namespace ActiveAttributes.Core.Configuration2
       }
 
       return configuration;
-    }
-  }
-
-  public static class Extensions
-  {
-    public static IEnumerable<T> BringToFront<T> (this IEnumerable<T> enumerable, Func<T, bool> predicate)
-    {
-      var list = enumerable.ToList();
-      return list.Where (predicate).Concat (list.Where (x => !predicate (x)));
     }
   }
 }

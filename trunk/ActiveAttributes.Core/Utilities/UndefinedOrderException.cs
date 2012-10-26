@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ActiveAttributes.Core.Extensions;
 using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Utilities

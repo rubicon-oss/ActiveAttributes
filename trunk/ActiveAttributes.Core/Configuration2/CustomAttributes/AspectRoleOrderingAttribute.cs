@@ -18,6 +18,9 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.CustomAttributes
 {
+  /// <summary>
+  /// Defines an ordering by role.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
   public class AspectRoleOrderingAttribute : Attribute
   {

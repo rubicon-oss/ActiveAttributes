@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
+using ActiveAttributes.Core.Extensions;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators

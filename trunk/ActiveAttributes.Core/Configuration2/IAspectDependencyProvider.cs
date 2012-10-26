@@ -13,33 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
-using Microsoft.Scripting.Ast;
+using System.Collections.Generic;
+using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly;
+using Remotion.Collections;
 
-namespace ActiveAttributes.Core.Assembly.Accessors
+namespace ActiveAttributes.Core.Configuration2
 {
   /// <summary>
-  /// Generates an expression that provides access to an instance field.
+  /// Serves as a provider for dependencies between different <see cref="AspectAttribute"/>s.
   /// </summary>
-  public class InstanceArrayAccessor : IArrayAccessor
+  public interface IAspectDependencyProvider
   {
-    private readonly FieldInfo _fieldInfo;
-
-    public InstanceArrayAccessor (FieldInfo fieldInfo)
-    {
-      _fieldInfo = fieldInfo;
-    }
-
-    public Expression GetAccessExpression (Expression thisExpression)
-    {
-      return Expression.Field (thisExpression, _fieldInfo);
-    }
-
-    public bool IsStatic
-    {
-      get { return false; }
-    }
+    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors);
   }
 }

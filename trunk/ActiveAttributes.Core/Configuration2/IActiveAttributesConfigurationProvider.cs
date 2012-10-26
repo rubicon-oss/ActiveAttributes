@@ -13,33 +13,17 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
-using Microsoft.Scripting.Ast;
+using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Assembly.Accessors
+namespace ActiveAttributes.Core.Configuration2
 {
   /// <summary>
-  /// Generates an expression that provides access to a static field.
+  /// Serves as a provider for an <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
-  public class StaticArrayAccessor : IArrayAccessor
+  [ConcreteImplementation (typeof (ActiveAttributesesConfigurationProvider))]
+  public interface IActiveAttributesConfigurationProvider
   {
-    private readonly MemberExpression _accessExpression;
-
-    public StaticArrayAccessor (FieldInfo fieldInfo)
-    {
-      _accessExpression = Expression.Field (null, fieldInfo);
-    }
-
-    public Expression GetAccessExpression (Expression thisExpression)
-    {
-      return _accessExpression;
-    }
-
-    public bool IsStatic
-    {
-      get { return true; }
-    }
+    IActiveAttributesConfiguration GetConfiguration ();
   }
 }

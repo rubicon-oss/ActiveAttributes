@@ -13,12 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.CustomAttributes
 {
+  /// <summary>
+  /// Defines an ordering by type.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
   public class AspectTypeOrderingAttribute : Attribute
   {
@@ -26,7 +28,7 @@ namespace ActiveAttributes.Core.Configuration2.CustomAttributes
     {
       ArgumentUtility.CheckNotNull ("aspectTypes", aspectTypes);
       ArgumentUtility.CheckNotNullOrEmpty ("aspectTypes", aspectTypes);
-      
+
       Position = position;
       AspectTypes = aspectTypes;
     }

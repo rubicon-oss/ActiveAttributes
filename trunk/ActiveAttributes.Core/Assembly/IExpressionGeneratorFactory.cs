@@ -15,15 +15,17 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
   /// Serves as a factory for <see cref="IExpressionGenerator"/>s.
   /// </summary>
+  [ConcreteImplementation (typeof (ExpressionGeneratorFactory))]
   public interface IExpressionGeneratorFactory
   {
     IEnumerable<IExpressionGenerator> GetExpressionGenerators (
-        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IAspectDescriptor> descriptors);
+        IFieldWrapper instanceAccessor, IFieldWrapper staticAccessor, IEnumerable<IAspectDescriptor> descriptors);
   }
 }

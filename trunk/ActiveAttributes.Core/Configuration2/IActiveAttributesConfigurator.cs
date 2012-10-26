@@ -14,12 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Configuration2.Configurators;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
   /// <summary>
   /// Serves as a configurator for a <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
+  [ConcreteImplementation (typeof (AppConfigConfigurator), Position = 1)]
+  [ConcreteImplementation (typeof (DefaultAspectDescriptorProvidersConfigurator), Position = 2)]
   public interface IActiveAttributesConfigurator
   {
     /// <summary>

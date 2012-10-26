@@ -13,13 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.CustomAttributes
 {
-  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+  /// <summary>
+  /// Associate a role with a target type.
+  /// </summary>
+  [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
   public class AspectRoleAttribute : Attribute
   {
     public AspectRoleAttribute (string roleName)

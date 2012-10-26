@@ -20,6 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Extensions;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
@@ -84,14 +85,6 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
              from type in assembly.GetTypes()
              where typeof (AspectAttribute).IsAssignableFrom (type)
              select type;
-    }
-  }
-
-  public static class Extensions
-  {
-    public static IEnumerable<T> GetCustomAttributes<T> (this ICustomAttributeProvider customAttributeProvider, bool inherit) where T : Attribute
-    {
-      return customAttributeProvider.GetCustomAttributes (typeof (T), inherit).Cast<T>();
     }
   }
 }

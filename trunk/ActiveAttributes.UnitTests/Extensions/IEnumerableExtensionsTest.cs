@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,23 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using Microsoft.Scripting.Ast;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.UnitTests.Extensions
 {
-  // TODO IFieldWrapper
-  /// <summary>
-  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
-  /// </summary>
-  public interface IArrayAccessor
+  [TestFixture]
+  public class IEnumerableExtensionsTest
   {
-    // FieldInfo Field { get; }
-
-    // TODO return MemberExpression
-    Expression GetAccessExpression (Expression thisExpression);
-
-    bool IsStatic { get; }
+     
   }
 }

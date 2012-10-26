@@ -30,32 +30,18 @@ namespace ActiveAttributes.Core.Assembly
 
     public static ITypeAssemblyParticipant Singleton { get; private set; }
 
-    private readonly IEnumerable<ITypeLevelAspectDescriptorProvider> _aspectProviders;
+    private readonly IEnumerable<ITypeLevelAspectDescriptorProvider> _typeLevelAspectDescriptorProviders;
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IGiveMeSomeName _giveMeSomeName;
     private readonly IMethodAssembler _methodAssembler;
 
-    static TypeAssembler ()
-    {
-      var methodCopier = new MethodCopier();
-      var configuration = new ActiveAttributesConfiguration();
-      var constructorPatcher = new ConstructorPatcher();
-      var fieldIntroducer = new FieldIntroducer();
-      var factory = new Factory();
-      var scheduler = new AspectSorter (configuration);
-      var expressionGenerator = new ExpressionGeneratorFactory();
-      var giveMeSomeName = new GiveItSomeName (factory, expressionGenerator, constructorPatcher);
-
-      var methodAssembler = new MethodAssembler (configuration, fieldIntroducer, giveMeSomeName, scheduler, methodCopier, constructorPatcher, factory);
-      var typeAssembler = new TypeAssembler (configuration, fieldIntroducer, giveMeSomeName, methodAssembler);
-
-      Singleton = typeAssembler;
-    }
-
     public TypeAssembler (
-        IActiveAttributesConfiguration activeAttributesConfiguration, IFieldIntroducer fieldIntroducer, IGiveMeSomeName giveMeSomeName, IMethodAssembler methodAssembler)
+        IEnumerable<ITypeLevelAspectDescriptorProvider> typeLevelAspectDescriptorProviders,
+        IFieldIntroducer fieldIntroducer,
+        IGiveMeSomeName giveMeSomeName,
+        IMethodAssembler methodAssembler)
     {
-      _aspectProviders = activeAttributesConfiguration.AspectDescriptorProviders.OfType<ITypeLevelAspectDescriptorProvider>().ToList();
+      _typeLevelAspectDescriptorProviders = typeLevelAspectDescriptorProviders;
       _methodAssembler = methodAssembler;
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
@@ -63,7 +49,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyType (MutableType mutableType)
     {
-      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (mutableType)).ToArray();
+      var descriptors = _typeLevelAspectDescriptorProviders.SelectMany (x => x.GetDescriptors (mutableType)).ToArray ();
       var fields = _fieldIntroducer.IntroduceTypeFields (mutableType);
       var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray();
 

@@ -302,8 +302,8 @@ namespace ActiveAttributes.UnitTests.Assembly
                     .Single (x => x.Name == "InstanceAspects");
                 var staticField = declaringType.GetFields (BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public)
                     .Single (x => x.Name == "StaticAspects");
-                var instanceAccessor = MockRepository.GenerateMock<IArrayAccessor>();
-                var staticAccessor = MockRepository.GenerateMock<IArrayAccessor>();
+                var instanceAccessor = MockRepository.GenerateMock<IFieldWrapper>();
+                var staticAccessor = MockRepository.GenerateMock<IFieldWrapper>();
                 instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
                 staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
 

@@ -19,6 +19,7 @@ using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 

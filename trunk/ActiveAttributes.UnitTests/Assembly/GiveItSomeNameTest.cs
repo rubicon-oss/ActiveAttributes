@@ -44,8 +44,8 @@ namespace ActiveAttributes.UnitTests.Assembly
               StaticAspectsField = NormalizingMemberInfoFromExpressionUtility.GetField (() => _staticField)
           };
 
-      var instanceArrayAccessorStub = MockRepository.GenerateStub<IArrayAccessor>();
-      var staticArrayAccessorStub = MockRepository.GenerateStub<IArrayAccessor>();
+      var instanceArrayAccessorStub = MockRepository.GenerateStub<IFieldWrapper>();
+      var staticArrayAccessorStub = MockRepository.GenerateStub<IFieldWrapper>();
       var aspectDescriptors = new[] { MockRepository.GenerateStub<IAspectDescriptor>() };
       var aspectGenerators = new IExpressionGenerator[0];
       var mutableType = MutableTypeObjectMother.CreateForExistingType();

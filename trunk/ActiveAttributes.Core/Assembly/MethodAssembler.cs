@@ -27,7 +27,7 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class MethodAssembler : IMethodAssembler
   {
-    private readonly IEnumerable<IMethodLevelAspectDescriptorProvider> _aspectProviders;
+    private readonly IEnumerable<IMethodLevelAspectDescriptorProvider> _methodLevelAspectDescriptorProviders;
     private readonly IFieldIntroducer _fieldIntroducer;
     private readonly IGiveMeSomeName _giveMeSomeName;
     private readonly IAspectSorter _aspectSorter;
@@ -36,7 +36,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IFactory _factory;
 
     public MethodAssembler (
-        IActiveAttributesConfiguration activeAttributesConfiguration,
+        IEnumerable<IMethodLevelAspectDescriptorProvider> methodLevelAspectDescriptorProviders,
         IFieldIntroducer fieldIntroducer,
         IGiveMeSomeName giveMeSomeName,
         IAspectSorter aspectSorter,
@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Assembly
         IConstructorPatcher constructorPatcher,
         IFactory factory)
     {
-      ArgumentUtility.CheckNotNull ("activeAttributesConfiguration", activeAttributesConfiguration);
+      ArgumentUtility.CheckNotNull ("methodLevelAspectDescriptorProviders", methodLevelAspectDescriptorProviders);
       ArgumentUtility.CheckNotNull ("fieldIntroducer", fieldIntroducer);
       ArgumentUtility.CheckNotNull ("giveMeSomeName", giveMeSomeName);
       ArgumentUtility.CheckNotNull ("aspectSorter", aspectSorter);
@@ -52,7 +52,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("constructorPatcher", constructorPatcher);
       ArgumentUtility.CheckNotNull ("factory", factory);
 
-      _aspectProviders = activeAttributesConfiguration.AspectDescriptorProviders.OfType<IMethodLevelAspectDescriptorProvider>().ToList();
+      _methodLevelAspectDescriptorProviders = methodLevelAspectDescriptorProviders;
       _fieldIntroducer = fieldIntroducer;
       _giveMeSomeName = giveMeSomeName;
       _aspectSorter = aspectSorter;
@@ -63,20 +63,23 @@ namespace ActiveAttributes.Core.Assembly
 
     public void ModifyMethod (MutableType mutableType, MethodInfo method, IEnumerable<IExpressionGenerator> typeGenerators)
     {
-      var descriptors = _aspectProviders.SelectMany (x => x.GetDescriptors (method)).ToArray();
       var fields = _fieldIntroducer.IntroduceMethodFields (mutableType, method);
-      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray();
+      var descriptors = _methodLevelAspectDescriptorProviders.SelectMany (x => x.GetDescriptors (method));
+      var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray ();
 
-      var allGenerators = generators.Concat (typeGenerators.Where (x => x.AspectDescriptor.Matches (method))).ConvertToCollection ();
+      //var allGenerators = generators.Concat (typeGenerators.Where (x => x.AspectDescriptor.Matches (method)));
+      var allGenerators = generators;
       if (!allGenerators.Any ())
         return;
 
       var allAsTuples = allGenerators.Select (x => Tuple.Create (x.AspectDescriptor, x));
       var sortedGenerators = _aspectSorter.Sort (allAsTuples);
-
+      
+      // TODO: Maybe use mutableMethod as a parameter, not method
       var mutableMethod = mutableType.GetOrAddMutableMethod (method);
+      
+      // TODO: Move copying to AddReflectionAndDelegateInitialization
       var copiedMethod = _methodCopier.GetCopy (mutableMethod);
-
       _constructorPatcher.AddReflectionAndDelegateInitialization (mutableMethod, fields, copiedMethod);
 
       var typeProvider = _factory.GetTypeProvider (method);

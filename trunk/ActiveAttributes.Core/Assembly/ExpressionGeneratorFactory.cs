@@ -25,7 +25,7 @@ namespace ActiveAttributes.Core.Assembly
   public class ExpressionGeneratorFactory : IExpressionGeneratorFactory
   {
     public IEnumerable<IExpressionGenerator> GetExpressionGenerators (
-        IArrayAccessor instanceAccessor, IArrayAccessor staticAccessor, IEnumerable<IAspectDescriptor> descriptors)
+        IFieldWrapper instanceAccessor, IFieldWrapper staticAccessor, IEnumerable<IAspectDescriptor> descriptors)
     {
       ArgumentUtility.CheckNotNull ("instanceAccessor", instanceAccessor);
       ArgumentUtility.CheckNotNull ("staticAccessor", staticAccessor);
@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
       return instanceGenerators.Concat (staticGenerators);
     }
 
-    private IEnumerable<IExpressionGenerator> GetExpressionGenerators (IArrayAccessor accessor, IEnumerable<IAspectDescriptor> aspects, Scope scope)
+    private IEnumerable<IExpressionGenerator> GetExpressionGenerators (IFieldWrapper accessor, IEnumerable<IAspectDescriptor> aspects, Scope scope)
     {
       return aspects.Where (x => x.Scope == scope).Select ((x, i) => new ExpressionGenerator (accessor, i, x)).Cast<IExpressionGenerator>();
     }

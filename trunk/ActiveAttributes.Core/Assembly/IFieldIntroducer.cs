@@ -13,10 +13,10 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -25,6 +25,7 @@ namespace ActiveAttributes.Core.Assembly
   /// Introduces fields for storing reflection information (e.g., <see cref="MethodInfo"/> and <see cref="Delegate"/>)
   /// and <see cref="AspectAttribute"/>s.
   /// </summary>
+  [ConcreteImplementation (typeof (FieldIntroducer))]
   public interface IFieldIntroducer
   {
     /// <summary>

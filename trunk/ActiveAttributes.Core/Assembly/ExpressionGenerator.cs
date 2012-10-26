@@ -52,16 +52,16 @@ namespace ActiveAttributes.Core.Assembly
       return Expression.NewArrayInit (type, objs);
     }
 
-    private readonly IArrayAccessor _arrayAccessor;
+    private readonly IFieldWrapper _fieldWrapper;
     private readonly int _index;
 
-    public ExpressionGenerator (IArrayAccessor arrayAccessor, int index, IAspectDescriptor aspectDescriptor)
+    public ExpressionGenerator (IFieldWrapper fieldWrapper, int index, IAspectDescriptor aspectDescriptor)
     {
-      ArgumentUtility.CheckNotNull ("arrayAccessor", arrayAccessor);
+      ArgumentUtility.CheckNotNull ("fieldWrapper", fieldWrapper);
       ArgumentUtility.CheckNotNull ("aspectDescriptor", aspectDescriptor);
       Assertion.IsTrue (index >= 0);
 
-      _arrayAccessor = arrayAccessor;
+      _fieldWrapper = fieldWrapper;
       _index = index;
       AspectDescriptor = aspectDescriptor;
     }
@@ -72,7 +72,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       // thisExpression can be null
 
-      var array = _arrayAccessor.GetAccessExpression (thisExpression);
+      var array = _fieldWrapper.GetAccessExpression (thisExpression);
       var index = Expression.Constant (_index);
 
       return Expression.ArrayAccess (array, index);
@@ -80,7 +80,6 @@ namespace ActiveAttributes.Core.Assembly
 
     public Expression GetInitExpression ()
     {
-      Func<ICustomAttributeNamedArgument, Expression> argumentConverter = ConvertTypedArgumentToExpression;
 
       var constructorInfo = AspectDescriptor.ConstructorInfo;
       var constructorArguments = constructorInfo.GetParameters().Select (x => x.ParameterType).Zip (

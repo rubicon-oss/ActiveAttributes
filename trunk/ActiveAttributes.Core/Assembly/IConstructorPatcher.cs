@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
@@ -26,6 +27,7 @@ namespace ActiveAttributes.Core.Assembly
   /// Patches all constructors of a <see cref="MutableType"/> for initialization of aspect related fields
   /// (e.g., reflection information, method delegate, and instance/static aspect arrays).
   /// </summary>
+  [ConcreteImplementation (typeof (ConstructorPatcher))]
   public interface IConstructorPatcher
   {
     /// <summary>
@@ -49,8 +51,8 @@ namespace ActiveAttributes.Core.Assembly
     /// <param name="aspects">The static <see cref="AspectAttribute"/>s.</param>
     void AddAspectInitialization (
         MutableType mutableType,
-        IArrayAccessor staticAccessor,
-        IArrayAccessor instanceAccessor,
+        IFieldWrapper staticAccessor,
+        IFieldWrapper instanceAccessor,
         IEnumerable<IExpressionGenerator> aspects);
   }
 }

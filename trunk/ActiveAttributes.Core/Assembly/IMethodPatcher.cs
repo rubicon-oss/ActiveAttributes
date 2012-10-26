@@ -15,12 +15,14 @@
 // under the License.
 
 using ActiveAttributes.Core.Aspects;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
   /// Patches a method for invoking applied <see cref="AspectAttribute"/>s.
   /// </summary>
+  [ConcreteImplementation (typeof (MethodPatcher))]
   public interface IMethodPatcher
   {
     void AddMethodInterception ();
