@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,17 +15,26 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using ActiveAttributes.Core.Assembly;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Core.Assembly.Done
 {
-  /// <summary>
-  /// Serves as a provider for <see cref="IAspectDescriptor"/>s on method level.
-  /// </summary>
-  /// <remarks><inheritdoc/></remarks>
-  public interface IMethodLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  public class MethodInterceptionService
   {
-    IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method);
+    private readonly IInvocationTypeProvider _invocationTypeProvider;
+
+    public MethodInterceptionService (IInvocationTypeProvider invocationTypeProvider)
+    {
+      _invocationTypeProvider = invocationTypeProvider;
+    }
+
+    public void AddInterception (
+        MutableMethodInfo method, IFieldWrapper delegateField, IFieldWrapper memberInfoField, IEnumerable<IAspectDescriptor> aspectDescriptors)
+    {
+      // get invocationcontext type
+      // create invocationcontext
+      // create tuples of invocation variables and init expressions
+      // 
+    }
   }
 }

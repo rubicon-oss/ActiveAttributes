@@ -489,7 +489,7 @@ namespace ActiveAttributes.UnitTests.Assembly
             var methodInfoField = typeof (T).GetFields().Single(x => x.Name == "MethodInfo");
             var delegateField = typeof (T).GetFields().Single(x => x.Name == "Delegate");
 
-            var typeProvider = new TypeProvider (mutableMethod.UnderlyingSystemMethodInfo);
+            var typeProvider = new InvocationTypeProvider (mutableMethod.UnderlyingSystemMethodInfo);
             var patcher = new MethodPatcher (mutableMethod, propertyInfoField, eventInfoField, methodInfoField, delegateField, aspects, typeProvider);
             patcher.AddMethodInterception();
 

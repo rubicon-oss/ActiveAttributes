@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly.Done;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly

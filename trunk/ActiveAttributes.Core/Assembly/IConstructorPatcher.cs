@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly.Done;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 

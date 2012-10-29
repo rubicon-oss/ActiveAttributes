@@ -67,8 +67,8 @@ namespace ActiveAttributes.Core.Assembly
       var descriptors = _methodLevelAspectDescriptorProviders.SelectMany (x => x.GetDescriptors (method));
       var generators = _giveMeSomeName.IntroduceExpressionGenerators (mutableType, descriptors, fields).ToArray ();
 
-      //var allGenerators = generators.Concat (typeGenerators.Where (x => x.AspectDescriptor.Matches (method)));
-      var allGenerators = generators;
+      var allGenerators = generators.Concat (typeGenerators.Where (x => x.AspectDescriptor.Matches (method)));
+      //var allGenerators = generators;
       if (!allGenerators.Any ())
         return;
 

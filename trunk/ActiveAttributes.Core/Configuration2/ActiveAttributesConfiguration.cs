@@ -17,10 +17,46 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Assembly;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
+  /// <summary>
+  /// Serves as a configuration object for all concerns of <see cref="AspectAttribute"/>s.
+  /// </summary>
+  [ConcreteImplementation (typeof (ActiveAttributesConfiguration))]
+  public interface IActiveAttributesConfiguration
+  {
+    /// <summary>
+    /// A list of <see cref="IAspectDescriptorProvider"/>s used to get <see cref="IAspectDescriptor"/>s for a certain join-point.
+    /// </summary>
+    IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
+
+    /// <summary>
+    /// A list of <see cref="IAspectOrderingRule"/>s used to sort aspects properly.
+    /// </summary>
+    IList<IAspectOrderingRule> AspectOrderingRules { get; }
+
+    /// <summary>
+    /// A dictionary of aspect types and their corresponding rules.
+    /// </summary>
+    IDictionary<Type, string> AspectRoles { get; }
+
+    /// <summary>
+    /// Gets whether the configuration is locked. This is of remarkable importance when <see cref="IActiveAttributesConfigurator"/>s behave
+    /// inconsistently, giving the opportunity to lock the configuration within the .appConfig file.
+    /// </summary>
+    bool IsLocked { get; }
+
+    /// <summary>
+    /// Locks the configuration for further modification.
+    /// </summary>
+    void Lock ();
+  }
+
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
     private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
@@ -31,9 +67,9 @@ namespace ActiveAttributes.Core.Configuration2
 
     public ActiveAttributesConfiguration ()
     {
-      _aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
-      _aspectOrderingRules = new List<IAspectOrderingRule>();
-      _aspectRoles = new Dictionary<Type, string>();
+      _aspectDescriptorProviders = new List<IAspectDescriptorProvider> ();
+      _aspectOrderingRules = new List<IAspectOrderingRule> ();
+      _aspectRoles = new Dictionary<Type, string> ();
     }
 
     public IList<IAspectDescriptorProvider> AspectDescriptorProviders

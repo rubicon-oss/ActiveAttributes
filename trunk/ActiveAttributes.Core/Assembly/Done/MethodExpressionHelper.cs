@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,17 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Configuration2
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.Utilities;
+
+namespace ActiveAttributes.Core.Assembly.Done
 {
-  /// <summary>
-  /// Serves as a provider for an <see cref="IActiveAttributesConfiguration"/>.
-  /// </summary>
-  [ConcreteImplementation (typeof (ActiveAttributesesConfigurationProvider))]
-  public interface IActiveAttributesConfigurationProvider
+  public interface IMethodExpressionHelper {}
+
+  public class MethodExpressionHelper : IMethodExpressionHelper
   {
-    IActiveAttributesConfiguration GetConfiguration ();
+    private readonly MethodBodyModificationContext _context;
+
+    public MethodExpressionHelper (MethodBodyModificationContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      _context = context;
+    }
   }
 }

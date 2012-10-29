@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly FieldInfo _methodInfoFieldInfo;
     private readonly FieldInfo _delegateFieldInfo;
     private readonly IList<IExpressionGenerator> _aspects;
-    private readonly ITypeProvider _typeProvider;
+    private readonly IInvocationTypeProvider _invocationTypeProvider;
 
 
     private readonly MethodInfo _onInterceptMethodInfo;
@@ -62,7 +62,7 @@ namespace ActiveAttributes.Core.Assembly
         FieldInfo methodInfoFieldInfo,
         FieldInfo delegateFieldInfo,
         IEnumerable<IExpressionGenerator> aspects,
-        ITypeProvider typeProvider)
+        IInvocationTypeProvider invocationTypeProvider)
     {
       _mutableMethod = mutableMethod;
       _propertyInfoFieldInfo = propertyInfoFieldInfo;
@@ -70,7 +70,7 @@ namespace ActiveAttributes.Core.Assembly
       _methodInfoFieldInfo = methodInfoFieldInfo;
       _delegateFieldInfo = delegateFieldInfo;
       _aspects = aspects.ToList();
-      _typeProvider = typeProvider;
+      _invocationTypeProvider = invocationTypeProvider;
 
       _onInterceptMethodInfo = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
       _onInterceptGetMethodInfo = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
@@ -93,7 +93,7 @@ namespace ActiveAttributes.Core.Assembly
       var delegateField = Expression.Field (ctx.This, _delegateFieldInfo);
 
       // InvocationContext<...> ctx = new InvocationContext<TInstance, TA1[, ...][, TR]> (_methodInfo, this, arg1, arg2[, ...]);
-      var invocationContextType = _typeProvider.InvocationContextType;
+      var invocationContextType = _invocationTypeProvider.InvocationContextType;
       var invocationContext = Expression.Variable (invocationContextType, "ctx");
       var invocationContextCreateExpression = GetInvocationContextNewExpression (invocationContextType, methodInfoField, ctx.This, ctx.Parameters);
       var invocationContextAssignExpression = Expression.Assign (invocationContext, invocationContextCreateExpression);
@@ -174,7 +174,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GetInnermostInvocationCreationExpression (Expression invocationContext, Expression originalBodyDelegate)
     {
-      var invocationType = _typeProvider.InvocationType;
+      var invocationType = _invocationTypeProvider.InvocationType;
       var invocationConstructor = invocationType.GetConstructors().Single();
 
       return Expression.New (invocationConstructor, invocationContext, originalBodyDelegate);

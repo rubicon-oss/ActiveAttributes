@@ -24,14 +24,13 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  // TODO: rename (InvocationTypeProvider?)
-  public interface ITypeProvider
+  public interface IInvocationTypeProvider
   {
     Type InvocationType { get; }
     Type InvocationContextType { get; }
   }
 
-  public class TypeProvider : ITypeProvider
+  public class InvocationTypeProvider : IInvocationTypeProvider
   {
     private static readonly Type[] _actionInvocationOpenTypes
         = new[]
@@ -75,7 +74,7 @@ namespace ActiveAttributes.Core.Assembly
               typeof (FuncInvocationContext<,,,,,>)
           };
 
-    public TypeProvider (MethodInfo methodInfo)
+    public InvocationTypeProvider (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       Assertion.IsTrue (methodInfo.DeclaringType != null);

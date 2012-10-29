@@ -14,17 +14,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Core.Assembly.Done
 {
-  /// <summary>
-  /// Serves as a provider for <see cref="IAspectDescriptor"/>s on type level.
-  /// </summary>
-  /// <remarks><inheritdoc/></remarks>
-  public interface ITypeLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  [ConcreteImplementation (typeof (ConstructorExpressionHelperFactory))]
+  public interface IConstructorExpressionHelperFactory
   {
-    IEnumerable<IAspectDescriptor> GetDescriptors (Type type);
+    IConstructorExpressionHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase);
+  }
+
+  public class ConstructorExpressionHelperFactory : IConstructorExpressionHelperFactory
+  {
+    public IConstructorExpressionHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase)
+    {
+      return new ConstructorExpressionHelper (new AspectInitExpressionHelper(), bodyContextBase);
+    }
   }
 }

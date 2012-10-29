@@ -15,24 +15,35 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using ActiveAttributes.Core.Extensions;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
 {
+  /// <summary>
+  /// Serves as a provider for an <see cref="IActiveAttributesConfiguration"/>.
+  /// </summary>
+  [ConcreteImplementation (typeof (ActiveAttributesesConfigurationProvider))]
+  public interface IActiveAttributesConfigurationProvider
+  {
+    IActiveAttributesConfiguration GetConfiguration ();
+  }
+
   public class ActiveAttributesesConfigurationProvider : IActiveAttributesConfigurationProvider
   {
     private readonly IEnumerable<IActiveAttributesConfigurator> _configurators;
 
     public ActiveAttributesesConfigurationProvider ()
     {
-      _configurators = ServiceLocator.Current.GetAllInstances<IActiveAttributesConfigurator>();
+      _configurators = ServiceLocator.Current.GetAllInstances<IActiveAttributesConfigurator> ();
     }
 
     public IActiveAttributesConfiguration GetConfiguration ()
     {
-      var configuration = new ActiveAttributesConfiguration();
+      var configuration = new ActiveAttributesConfiguration ();
 
       var sortedConfigurators = _configurators.BringToFront (x => x is AppConfigConfigurator);
       foreach (var configurator in sortedConfigurators)

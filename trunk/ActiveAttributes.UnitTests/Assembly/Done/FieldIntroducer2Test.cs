@@ -14,45 +14,44 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.Done;
 using ActiveAttributes.Core.Assembly.Done.FieldWrapper;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.TypePipe.Expressions;
-using Remotion.TypePipe.UnitTests.Expressions;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
+namespace ActiveAttributes.UnitTests.Assembly.Done
 {
   [TestFixture]
-  public class InstanceFieldWrapperTest
+  public class FieldIntroducer2Test
   {
-    private FieldInfo _fieldInfo;
-    private ThisExpression _thisExpression;
+    private MutableType _mutableType;
+    private FieldIntroducer2 _introducer;
 
     [SetUp]
     public void SetUp ()
     {
-      _fieldInfo = ObjectMother.GetFieldInfo();
-      _thisExpression = ObjectMother.GetThisExpression();
+      _mutableType = ObjectMother.GetMutableType();
+      _introducer = new FieldIntroducer2();
     }
 
     [Test]
-    public void Initialization ()
+    public void AddField ()
     {
-      var fieldWrapper = new InstanceFieldWrapper (_fieldInfo);
+      var result = _introducer.AddField (_mutableType, typeof (int), "field", FieldAttributes.Private);
 
-      Assert.That (fieldWrapper.Field, Is.SameAs (_fieldInfo));
+      Assert.That (result, Is.TypeOf<InstanceFieldWrapper>());
+      var addedField = _mutableType.AddedFields.Single();
+      Assert.That (result.Field, Is.SameAs (addedField));
     }
 
     [Test]
-    public void GetAccessExpression ()
+    public void AddField_Static ()
     {
-      var fieldWrapper = new InstanceFieldWrapper (_fieldInfo);
+      var result = _introducer.AddField (_mutableType, typeof (int), "field", FieldAttributes.Static);
 
-      var expected = Expression.Field (_thisExpression, _fieldInfo);
-      var actual = fieldWrapper.GetAccessExpression (_thisExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      Assert.That (result, Is.TypeOf<StaticFieldWrapper>());
     }
   }
 }

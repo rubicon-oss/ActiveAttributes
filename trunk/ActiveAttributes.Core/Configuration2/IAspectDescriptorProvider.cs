@@ -14,6 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.Core.Configuration2
@@ -24,5 +26,37 @@ namespace ActiveAttributes.Core.Configuration2
   /// <remarks>
   /// Used as a marker interface.
   /// </remarks>
-  public interface IAspectDescriptorProvider {}
+  public interface IAspectDescriptorProvider { }
+
+  /// <summary>
+  /// Serves as a provider for <see cref="IAspectDescriptor"/>s on assembly level.
+  /// </summary>
+  /// <remarks><inheritdoc/></remarks>
+  public interface IAssemblyLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  {
+    IEnumerable<IAspectDescriptor> GetDescriptors (System.Reflection.Assembly assembly);
+  }
+
+  /// <summary>
+  /// Serves as a provider for <see cref="IAspectDescriptor"/>s on type level.
+  /// </summary>
+  /// <remarks><inheritdoc/></remarks>
+  public interface ITypeLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  {
+    IEnumerable<IAspectDescriptor> GetDescriptors (Type type);
+  }
+
+  /// <summary>
+  /// Serves as a provider for <see cref="IAspectDescriptor"/>s on method level.
+  /// </summary>
+  /// <remarks><inheritdoc/></remarks>
+  public interface IMethodLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  {
+    IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method);
+  }
+
+  public class IExpressionLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  {
+    // TODO (research)
+  }
 }

@@ -17,6 +17,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Done;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -204,7 +205,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       //  var generator = new AspectGenerator (_arrayAccessor, 0, descriptor);
 
       //  var expected = Expression.MemberInit (Expression.New (customData.Constructor, _arrayExpression));
-      //  var actual = generator.GetInitExpression ();
+      //  var actual = generator.CreateInitExpression ();
 
       //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
       //}
@@ -222,7 +223,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       //  var expected = Expression.MemberInit (
       //      Expression.New (customData.Constructor),
       //      Expression.Bind (member, _elementExpression));
-      //  var actual = generator.GetInitExpression ();
+      //  var actual = generator.CreateInitExpression ();
 
       //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
       //}
@@ -240,7 +241,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       //  var expected = Expression.MemberInit (
       //      Expression.New (customData.Constructor),
       //      Expression.Bind (member, _arrayExpression));
-      //  var actual = generator.GetInitExpression ();
+      //  var actual = generator.CreateInitExpression ();
 
       //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
       //}
@@ -258,7 +259,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       //  var expected = Expression.MemberInit (
       //      Expression.New (customData.Constructor),
       //      Expression.Bind (member, _elementExpression));
-      //  var actual = generator.GetInitExpression ();
+      //  var actual = generator.CreateInitExpression ();
 
       //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
       //}
@@ -276,7 +277,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       //  var expected = Expression.MemberInit (
       //      Expression.New (customData.Constructor),
       //      Expression.Bind (member, _arrayExpression));
-      //  var actual = generator.GetInitExpression ();
+      //  var actual = generator.CreateInitExpression ();
 
       //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
       //}
@@ -318,9 +319,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     //    var generator = new AspectGenerator (accessor, 0, descriptor);
 
     //    var expected = Expression.ArrayAccess (
-    //        Expression.Field (new ThisExpression(GetType()), fieldInfo),
+    //        Expression.Field (new ThisExpression(GetType_()), fieldInfo),
     //        Expression.Constant (0));
-    //    var actual = generator.GetStorageExpression (new ThisExpression(GetType()));
+    //    var actual = generator.GetStorageExpression (new ThisExpression(GetType_()));
 
     //    ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     //  }
@@ -328,7 +329,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     //  private IArrayAccessor GetAccessor (FieldInfo fieldInfo, bool thisExpression)
     //  {
     //    var mock = MockRepository.GenerateMock<IArrayAccessor> ();
-    //    var expression = Expression.Field (thisExpression ? new ThisExpression(GetType()) : null, fieldInfo);
+    //    var expression = Expression.Field (thisExpression ? new ThisExpression(GetType_()) : null, fieldInfo);
     //    mock.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (expression);
     //    return mock;
     //  }

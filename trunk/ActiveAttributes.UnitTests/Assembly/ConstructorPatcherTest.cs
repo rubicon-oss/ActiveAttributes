@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Done;
 using ActiveAttributes.Core.Configuration2;
 using JetBrains.Annotations;
 using Microsoft.Scripting.Ast;

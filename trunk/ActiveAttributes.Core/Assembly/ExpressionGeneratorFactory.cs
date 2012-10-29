@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActiveAttributes.Core.Assembly.Done;
 using ActiveAttributes.Core.Configuration2;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;

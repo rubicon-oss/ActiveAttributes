@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.Done;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
@@ -31,11 +32,11 @@ namespace ActiveAttributes.Core.Assembly
   {
     // TODO Get -> Create
     /// <summary>
-    /// Creates a <see cref="ITypeProvider"/> for a given methd.
+    /// Creates a <see cref="IInvocationTypeProvider"/> for a given methd.
     /// </summary>
     /// <param name="methodInfo">The method.</param>
-    /// <returns>An <see cref="ITypeProvider"/></returns>
-    ITypeProvider GetTypeProvider (MethodInfo methodInfo);
+    /// <returns>An <see cref="IInvocationTypeProvider"/></returns>
+    IInvocationTypeProvider GetTypeProvider (MethodInfo methodInfo);
     
     /// <summary>
     /// Creates an <see cref="IFieldWrapper"/> for a given static field.
@@ -58,12 +59,12 @@ namespace ActiveAttributes.Core.Assembly
     /// </summary>
     /// <param name="mutableMethod">The mutable method.</param>
     /// <param name="aspects">The collection of <see cref="IExpressionGenerator"/>s that should be applied to the method.</param>
-    /// <param name="typeProvider">A type provider for the mutable method.</param>
+    /// <param name="invocationTypeProvider">A type provider for the mutable method.</param>
     /// <returns></returns>
     IMethodPatcher GetMethodPatcher (
         MutableMethodInfo mutableMethod,
         FieldInfoContainer fieldInfoContainer,
         IEnumerable<IExpressionGenerator> aspects,
-        ITypeProvider typeProvider);
+        IInvocationTypeProvider invocationTypeProvider);
   }
 }

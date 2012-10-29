@@ -13,26 +13,22 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using ActiveAttributes.Core.Assembly.Done;
 using Remotion.Collections;
-using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Core.Assembly
 {
-  /// <summary>
-  /// Serves as a merger for dependencies between <see cref="IAspectDescriptor"/>s.
-  /// </summary>
-  /// <remarks>
-  /// Dependencies are merged by applying only the non-conflicting subset of new to the previous dependencies.
-  /// </remarks>
-  [ConcreteImplementation (typeof (AspectDependencyMerger))]
-  public interface IAspectDependencyMerger
+  public interface IAspectDescriptorContainer
   {
-    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies);
+    IFieldWrapper InstanceField { get; }
+    IFieldWrapper StaticField { get; }
+
+    ReadOnlyCollection<IAspectDescriptor> InstanceAspects { get; }
+    ReadOnlyCollection<IAspectDescriptor> StaticAspects { get; }
+
+    ReadOnlyDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AspectStorageInfo { get; }
   }
 }

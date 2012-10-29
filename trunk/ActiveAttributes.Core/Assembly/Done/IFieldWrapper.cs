@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,12 +13,22 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
 
-namespace ActiveAttributes.Core.Configuration2
+using System;
+using System.Reflection;
+using Microsoft.Scripting.Ast;
+
+namespace ActiveAttributes.Core.Assembly.Done
 {
-  public class IExpressionLevelAspectDescriptorProvider : IAspectDescriptorProvider
+  /// <summary>
+  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
+  /// </summary>
+  public interface IFieldWrapper
   {
-    // TODO (research)
+    FieldInfo Field { get; }
+
+    MemberExpression GetAccessExpression (Expression thisExpression);
+
+    bool IsStatic { get; }
   }
 }

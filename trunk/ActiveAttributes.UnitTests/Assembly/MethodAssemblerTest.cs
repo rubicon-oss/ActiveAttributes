@@ -39,33 +39,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IGiveMeSomeName _giveMeSomeName;
     private IMethodLevelAspectDescriptorProvider _aspectDescriptorProvider;
     
-    [Test]
-    public void asdg ()
-    {
-      var kernel = new RhinoMocksKernel()
-          .WithStrict (out _giveMeSomeName)
-          .WithStrict (out _aspectDescriptorProvider)
-          .With (new[] { _aspectDescriptorProvider });
-
-      var objToReturn = new IAspectDescriptor[0];
-      _aspectDescriptorProvider
-          .Expect (x => x.GetDescriptors (null))
-          .IgnoreArguments()
-          .Return (objToReturn);
-      _giveMeSomeName
-          .Expect (
-              x => x.IntroduceExpressionGenerators (
-                  Arg<MutableType>.Is.Equal (_mutableType),
-                  Arg<IEnumerable<IAspectDescriptor>>.Is.Equal (objToReturn),
-                  Arg<FieldInfoContainer>.Is.Anything))
-          .Return (new IExpressionGenerator[0]);
-
-      var assembler = kernel.Get<MethodAssembler>();
-      assembler.ModifyMethod (_mutableType, _methodInfo, new IExpressionGenerator[0]);
-
-      kernel.VerifyAll ();
-    }
-
 
     [Test]
     [Ignore]
@@ -104,7 +77,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = mutableType.GetMethods().First();
       var mutableMethod = mutableType.GetOrAddMutableMethod (method);
       var copiedMethodFake = MutableMethodInfoObjectMother.Create();
-      var typeProviderFake = MockRepository.GenerateStub<ITypeProvider>();
+      var typeProviderFake = MockRepository.GenerateStub<IInvocationTypeProvider>();
       var methodPatcherMock = mockRepository.StrictMock<IMethodPatcher>();
 
       // Arrange
@@ -263,7 +236,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private MutableType _mutableType;
     private MethodInfo _methodInfo;
     private FieldInfoContainer _fakeFields;
-    private ITypeProvider _fakeTypeProvider;
+    private IInvocationTypeProvider _fakeInvocationTypeProvider;
     private IMethodPatcher _methodPatcherMock;
 
     private IAspectDescriptor _fakeDescriptorA;
@@ -291,7 +264,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _methodInfo = _mutableType.GetMethods().First();
       _fakeFields = CreateFieldInfoContainer ();
 
-      _fakeTypeProvider = MockRepository.GenerateStub<ITypeProvider>();
+      _fakeInvocationTypeProvider = MockRepository.GenerateStub<IInvocationTypeProvider>();
       _methodPatcherMock = MockRepository.GenerateStrictMock<IMethodPatcher>();
 
       _fakeDescriptorA = CreateDescriptor ();
@@ -364,8 +337,8 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _constructorPatcherMock.Expect (mock => mock.AddReflectionAndDelegateInitialization (_mutableMethod, _fakeFields, _fakeCopiedMethod));
 
-      _factoryStub.Stub (stub => stub.GetTypeProvider (_methodInfo)).Return (_fakeTypeProvider);
-      _factoryStub.Stub (stub => stub.GetMethodPatcher (_mutableMethod, _fakeFields, fakeSortedGenerators, _fakeTypeProvider)).Return (_methodPatcherMock);
+      _factoryStub.Stub (stub => stub.GetTypeProvider (_methodInfo)).Return (_fakeInvocationTypeProvider);
+      _factoryStub.Stub (stub => stub.GetMethodPatcher (_mutableMethod, _fakeFields, fakeSortedGenerators, _fakeInvocationTypeProvider)).Return (_methodPatcherMock);
 
       _methodPatcherMock.Expect (mock => mock.AddMethodInterception());
 

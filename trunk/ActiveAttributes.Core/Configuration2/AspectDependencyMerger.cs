@@ -19,10 +19,25 @@ using System.Linq;
 using ActiveAttributes.Core.Assembly;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2
 {
+  /// <summary>
+  /// Serves as a merger for dependencies between <see cref="IAspectDescriptor"/>s.
+  /// </summary>
+  /// <remarks>
+  /// Dependencies are merged by applying only the non-conflicting subset of new to the previous dependencies.
+  /// </remarks>
+  [ConcreteImplementation (typeof (AspectDependencyMerger))]
+  public interface IAspectDependencyMerger
+  {
+    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
+        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies);
+  }
+
   public class AspectDependencyMerger : IAspectDependencyMerger
   {
     public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (

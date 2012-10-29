@@ -81,12 +81,5 @@ namespace ActiveAttributes.UnitTests.Configuration2
       var configurationProvider = new ActiveAttributesesConfigurationProvider ();
       configurationProvider.GetConfiguration();
     }
-
-    [Test]
-    public void name ()
-    {
-      var ints = new[] { 1, 2, 3 };
-      Assert.That (ints.SendToBack (x => x == 1), Is.EqualTo (new[] { 2, 3, 1 }));
-    }
   }
 }

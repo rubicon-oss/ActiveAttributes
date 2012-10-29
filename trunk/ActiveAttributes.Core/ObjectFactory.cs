@@ -31,10 +31,12 @@ namespace ActiveAttributes.Core
 {
   public class ObjectFactory : IObjectFactory
   {
+    private static IObjectFactory _factory;
+
     public static T Create<T> ()
     {
-      var objectFactory = ServiceLocator.Current.GetInstance<IObjectFactory>();
-      return objectFactory.Create<T>();
+      _factory = _factory ?? ServiceLocator.Current.GetInstance<IObjectFactory>();
+      return _factory.Create<T> ();
     }
 
     T IObjectFactory.Create<T> ()

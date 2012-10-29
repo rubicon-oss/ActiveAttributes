@@ -21,9 +21,21 @@ using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  /// <summary>
+  /// Sorts a collection of items (i.e., mostly <see cref="IAspectDescriptor"/>s) according to the ordering rules defined in
+  /// the <see cref="IActiveAttributesConfiguration"/>.
+  /// </summary>
+  [ConcreteImplementation (typeof (AspectSorter))]
+  public interface IAspectSorter
+  {
+    IEnumerable<T> Sort<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects);
+    IEnumerable<IAspectDescriptor> Sort (IEnumerable<IAspectDescriptor> aspects);
+  }
+
   public class AspectSorter : IAspectSorter
   {
     private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;

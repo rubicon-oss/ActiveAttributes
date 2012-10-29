@@ -16,16 +16,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrappers;
+using ActiveAttributes.Core.Assembly.Done;
+using ActiveAttributes.Core.Assembly.Done.FieldWrapper;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public class Factory : IFactory
   {
-    public ITypeProvider GetTypeProvider (MethodInfo methodInfo)
+    public IInvocationTypeProvider GetTypeProvider (MethodInfo methodInfo)
     {
-      return new TypeProvider (methodInfo);
+      return new InvocationTypeProvider (methodInfo);
     }
 
     public IFieldWrapper GetAccessor (FieldInfo fieldInfo)
@@ -39,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
         MutableMethodInfo mutableMethod,
         FieldInfoContainer fieldInfoContainer,
         IEnumerable<IExpressionGenerator> aspects,
-        ITypeProvider typeProvider)
+        IInvocationTypeProvider invocationTypeProvider)
     {
       return new MethodPatcher (
           mutableMethod,
@@ -48,7 +49,7 @@ namespace ActiveAttributes.Core.Assembly
           fieldInfoContainer.MethodInfoField,
           fieldInfoContainer.DelegateField,
           aspects,
-          typeProvider);
+          invocationTypeProvider);
     }
 
     public IExpressionGenerator GetGenerator (IFieldWrapper fieldWrapper, int index, IAspectDescriptor aspectDescriptor)

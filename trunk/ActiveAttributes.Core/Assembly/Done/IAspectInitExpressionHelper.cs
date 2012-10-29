@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,19 +14,18 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Configuration2;
-using Remotion.Collections;
+using ActiveAttributes.Core.Assembly.Done;
+using Microsoft.Scripting.Ast;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly
 {
   /// <summary>
-  /// Sorts a collection of items (i.e., mostly <see cref="IAspectDescriptor"/>s) according to the ordering rules defined in
-  /// the <see cref="IActiveAttributesConfiguration"/>.
+  /// Serves as a helper for creation of <see cref="MemberInitExpression"/>s for <see cref="IAspectDescriptor"/>s.
   /// </summary>
-  public interface IAspectSorter
+  [ConcreteImplementation (typeof (AspectInitExpressionHelper))]
+  public interface IAspectInitExpressionHelper
   {
-    IEnumerable<T> Sort<T> (IEnumerable<Tuple<IAspectDescriptor, T>> aspects);
-    IEnumerable<IAspectDescriptor> Sort (IEnumerable<IAspectDescriptor> aspects);
+    MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor);
   }
 }

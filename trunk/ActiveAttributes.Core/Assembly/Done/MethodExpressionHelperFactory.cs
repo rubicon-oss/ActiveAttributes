@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,22 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
-using Microsoft.Scripting.Ast;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Assembly.Done
 {
-  /// <summary>
-  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
-  /// </summary>
-  public interface IFieldWrapper
+  [ConcreteImplementation (typeof (MethodExpressionHelperFactory))]
+  public interface IMethodExpressionHelperFactory
   {
-    FieldInfo Field { get; }
+    IMethodExpressionHelper CreateMethodExpressionHelper (MethodBodyModificationContext context);
+  }
 
-    MemberExpression GetAccessExpression (Expression thisExpression);
-
-    bool IsStatic { get; }
+  public class MethodExpressionHelperFactory : IMethodExpressionHelperFactory
+  {
+    public IMethodExpressionHelper CreateMethodExpressionHelper (MethodBodyModificationContext context)
+    {
+      return new MethodExpressionHelper (context);
+    }
   }
 }

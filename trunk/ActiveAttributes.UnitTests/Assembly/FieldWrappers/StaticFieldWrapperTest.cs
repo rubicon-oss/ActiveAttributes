@@ -14,10 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly.FieldWrappers;
+using System.Reflection;
+using ActiveAttributes.Core.Assembly.Done.FieldWrapper;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.UnitTests.Expressions;
 
@@ -26,27 +26,32 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
   [TestFixture]
   public class StaticFieldWrapperTest
   {
-    private static int _field;
+    private FieldInfo _fieldInfo;
+    private ThisExpression _thisExpression;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _fieldInfo = ObjectMother.GetFieldInfo (attributes: FieldAttributes.Static);
+      _thisExpression = ObjectMother.GetThisExpression();
+    }
 
     [Test]
     public void Initialization ()
     {
-      var field = NormalizingMemberInfoFromExpressionUtility.GetField (() => _field);
+      var fieldWrapper = new StaticFieldWrapper (_fieldInfo);
 
-      var fieldWrapper = new StaticFieldWrapper (field);
-
-      Assert.That (fieldWrapper.Field, Is.SameAs (field));
+      Assert.That (fieldWrapper.Field, Is.SameAs (_fieldInfo));
     }
 
     [Test]
     public void GetAccessExpression ()
     {
-      var field = NormalizingMemberInfoFromExpressionUtility.GetField (() => _field);
+      var fieldWrapper = new StaticFieldWrapper (_fieldInfo);
 
-      var fieldWrapper = new StaticFieldWrapper (field);
+      var expected = Expression.Field (null, _fieldInfo);
+      var actual = fieldWrapper.GetAccessExpression (_thisExpression);
 
-      var expected = Expression.Field (null, field);
-      var actual = fieldWrapper.GetAccessExpression (null);
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }
   }

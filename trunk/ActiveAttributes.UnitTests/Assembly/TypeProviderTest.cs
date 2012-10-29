@@ -31,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void ActionMethod ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method1 (""));
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (ActionInvocation<DomainClass, string>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (ActionInvocationContext<DomainClass, string>)));
@@ -40,7 +40,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void FuncMethod ()
     {
       var method = MemberInfoFromExpressionUtility.GetMethod ((DomainClass obj) => obj.Method2 (""));
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (FuncInvocation<DomainClass, string, int>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (FuncInvocationContext<DomainClass, string, int>)));
@@ -50,7 +50,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void PropertyGetMethod ()
     {
       var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "get_Property");
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (PropertyGetInvocation<DomainClass, string>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (PropertyGetInvocationContext<DomainClass, string>)));
@@ -60,7 +60,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void PropertySetMethod ()
     {
       var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "set_Property");
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (PropertySetInvocation<DomainClass, string>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (PropertySetInvocationContext<DomainClass, string>)));
@@ -71,7 +71,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void IndexerGetMethod ()
     {
       var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "get_Item");
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (IndexerGetInvocation<DomainClass, int, string>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (IndexerGetInvocationContext<DomainClass, int, string>)));
@@ -81,7 +81,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void IndexerSetMethod ()
     {
       var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "set_Item");
-      var provider = new TypeProvider (method);
+      var provider = new InvocationTypeProvider (method);
 
       Assert.That (provider.InvocationType, Is.EqualTo (typeof (IndexerSetInvocation<DomainClass, int, string>)));
       Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (IndexerSetInvocationContext<DomainClass, int, string>)));
@@ -91,7 +91,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     //public void EventAddMethod ()
     //{
     //  var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "add_Event");
-    //  var provider = new TypeProvider (method);
+    //  var provider = new invocationTypeProvider (method);
 
     //  Assert.That (provider.InvocationType, Is.EqualTo (typeof (IndexerGetInvocation<DomainClass, int, string>)));
     //  Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (IndexerGetInvocationContext<DomainClass, int, string>)));
@@ -101,7 +101,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     //public void EventRemoveMethod ()
     //{
     //  var method = typeof (DomainClass).GetMethods ().Single (x => x.Name == "remove_Event");
-    //  var provider = new TypeProvider (method);
+    //  var provider = new invocationTypeProvider (method);
 
     //  Assert.That (provider.InvocationType, Is.EqualTo (typeof (IndexerSetInvocation<DomainClass, int, string>)));
     //  Assert.That (provider.InvocationContextType, Is.EqualTo (typeof (IndexerSetInvocationContext<DomainClass, int, string>)));
