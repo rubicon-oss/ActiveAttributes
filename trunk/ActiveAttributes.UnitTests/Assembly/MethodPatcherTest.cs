@@ -120,7 +120,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       Action<MutableMethodInfo> test = mutableMethod =>
       {
-        // new InvocationContext<TInstance> (this, methodInfo);
+        // new InvocationContext<TInstance> (this, method);
         var invocationContextCreate = InvocationContextCreate<ActionInvocationContext<DomainType>> (mutableMethod);
         ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationContextCreate);
       };
@@ -134,7 +134,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       Action<MutableMethodInfo> test = mutableMethod =>
       {
-        // new InvocationContext<TInstance> (this, methodInfo);
+        // new InvocationContext<TInstance> (this, method);
         var invocationContextCreate = InvocationContextCreate<PropertySetInvocationContext<DomainType4, string>> (mutableMethod);
         ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationContextCreate);
       };
@@ -311,7 +311,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       Action<MutableMethodInfo> test = mutableMethod =>
       {
-        // new InvocationContext<TInstance, TA1, TA2> (this, methodInfo, arg1, arg2);
+        // new InvocationContext<TInstance, TA1, TA2> (this, method, arg1, arg2);
         var invocationContextCreate = InvocationContextCreate<ActionInvocationContext<DomainType2, string, int>> (mutableMethod);
         ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationContextCreate);
       };
@@ -331,7 +331,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       Action<MutableMethodInfo> test = mutableMethod =>
       {
-        // new InvocationContext<TInstance, TA1, TA2> (this, methodInfo, arg1, arg2);
+        // new InvocationContext<TInstance, TA1, TA2> (this, method, arg1, arg2);
         var invocationContextCreate = InvocationContextCreate<FuncInvocationContext<DomainType3, string>> (mutableMethod);
         ExpressionTreeComparer2.CheckTreeContains (mutableMethod.Body, invocationContextCreate);
       };
@@ -346,7 +346,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       Action<MutableMethodInfo> test = mutableMethod =>
       {
-        // ActionInvocationContext ctx = new ActionInvocationContext<TInstance, TA1, TA2> (this, methodInfo);
+        // ActionInvocationContext ctx = new ActionInvocationContext<TInstance, TA1, TA2> (this, method);
         var invocationContext = InvocationContext<ActionInvocationContext<DomainType2, string, int>>();
         var invocationContextCreate = InvocationContextCreate<ActionInvocationContext<DomainType2, string, int>> (mutableMethod);
         var invocationContextAssign = Expression.Assign (invocationContext, invocationContextCreate);

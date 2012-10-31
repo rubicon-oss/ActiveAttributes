@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +33,8 @@ namespace ActiveAttributes.Core.Configuration2
     /// A list of <see cref="IAspectDescriptorProvider"/>s used to get <see cref="IAspectDescriptor"/>s for a certain join-point.
     /// </summary>
     IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
+
+    IList<IAspectDependencyProvider> AspectDependencyProviders { get; }
 
     /// <summary>
     /// A list of <see cref="IAspectOrderingRule"/>s used to sort aspects properly.
@@ -60,6 +61,7 @@ namespace ActiveAttributes.Core.Configuration2
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
     private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
+    private readonly IList<IAspectDependencyProvider> _aspectDependencyProviders;
     private readonly IList<IAspectOrderingRule> _aspectOrderingRules;
     private readonly IDictionary<Type, string> _aspectRoles;
 
@@ -67,14 +69,20 @@ namespace ActiveAttributes.Core.Configuration2
 
     public ActiveAttributesConfiguration ()
     {
-      _aspectDescriptorProviders = new List<IAspectDescriptorProvider> ();
-      _aspectOrderingRules = new List<IAspectOrderingRule> ();
-      _aspectRoles = new Dictionary<Type, string> ();
+      _aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
+      _aspectDependencyProviders = new List<IAspectDependencyProvider>();
+      _aspectOrderingRules = new List<IAspectOrderingRule>();
+      _aspectRoles = new Dictionary<Type, string>();
     }
 
     public IList<IAspectDescriptorProvider> AspectDescriptorProviders
     {
       get { return !IsLocked ? _aspectDescriptorProviders : new ReadOnlyCollection<IAspectDescriptorProvider> (_aspectDescriptorProviders); }
+    }
+
+    public IList<IAspectDependencyProvider> AspectDependencyProviders
+    {
+      get { return !IsLocked ? _aspectDependencyProviders : new ReadOnlyCollection<IAspectDependencyProvider> (_aspectDependencyProviders); }
     }
 
     public IList<IAspectOrderingRule> AspectOrderingRules

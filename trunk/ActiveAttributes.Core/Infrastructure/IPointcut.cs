@@ -13,19 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using System.Reflection;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure
 {
-  public struct FieldInfoContainer
+  public interface IPointcut
   {
-    public FieldInfo DelegateField;
-    public FieldInfo MethodInfoField;
-    public FieldInfo PropertyInfoField;
-    public FieldInfo EventInfoField;
-
-    public FieldInfo StaticAspectsField;
-    public FieldInfo InstanceAspectsField;
+    bool MatchVisit (IJoinpoint joinpoint);
   }
 }

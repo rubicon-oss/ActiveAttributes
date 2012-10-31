@@ -38,7 +38,6 @@ namespace ActiveAttributes.UnitTests.Assembly
     private BodyContextBase _bodyContext;
     private ConstructorExpressionsHelper _constructorExpressionsHelper;
 
-    private IAspectDescriptorContainer _aspectDescriptorContainerMock;
     private IAspectInitExpressionHelper _aspectInitExpressionHelperMock;
 
     [SetUp]
@@ -48,7 +47,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       _thisExpression = new ThisExpression (_declaringType);
       _bodyContext = ObjectMother.GetBodyContextBase (_declaringType);
       _aspectInitExpressionHelperMock = MockRepository.GenerateStrictMock<IAspectInitExpressionHelper>();
-      _aspectDescriptorContainerMock = MockRepository.GenerateStrictMock<IAspectDescriptorContainer>();
       _constructorExpressionsHelper = new ConstructorExpressionsHelper (_aspectInitExpressionHelperMock, _bodyContext);
     }
 
@@ -139,54 +137,5 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private class DomainAspect1Attribute : AspectAttribute {}
     private class DomainAspect2Attribute : AspectAttribute {}
-
-
-
-
-
-    [Test]
-    public void CreateAspectAccessExpression_Instance ()
-    {
-      var field = ObjectMother.GetFieldWrapper (typeof (AspectAttribute[]), declaringType: _declaringType);
-      var aspectDescriptor = ObjectMother.GetInstanceAspectDescriptor ();
-      var instanceAspectDescriptors = new Dictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>>
-                                      {
-                                          { aspectDescriptor, Tuple.Create (field, 0) }
-                                      }.AsReadOnly ();
-
-      _aspectDescriptorContainerMock
-          .Expect (x => x.AspectStorageInfo)
-          .Return (instanceAspectDescriptors);
-
-      var actual = _constructorExpressionsHelper.CreateAspectAccessExpression (_aspectDescriptorContainerMock, aspectDescriptor);
-      var expected = Expression.ArrayAccess (
-          Expression.Field (_thisExpression, field.Field),
-          Expression.Constant (0));
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
-    [Test]
-    public void CreateAspectAccessExpression_StaticWithIndex ()
-    {
-      var field = ObjectMother.GetFieldWrapper (typeof (AspectAttribute[]), FieldAttributes.Static, _declaringType);
-      var aspectDescriptor = ObjectMother.GetStaticAspectDescriptor ();
-      var instanceAspectDescriptors = new Dictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>>
-                                      {
-                                          { aspectDescriptor, Tuple.Create (field, 1) },
-                                      }.AsReadOnly ();
-
-      _aspectDescriptorContainerMock
-          .Expect (x => x.AspectStorageInfo)
-          .Return (instanceAspectDescriptors);
-
-      var actual = _constructorExpressionsHelper.CreateAspectAccessExpression (_aspectDescriptorContainerMock, aspectDescriptor);
-      var expected = Expression.ArrayAccess (
-          Expression.Field (null, field.Field),
-          Expression.Constant (1));
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
-
   }
 }

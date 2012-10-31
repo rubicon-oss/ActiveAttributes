@@ -40,8 +40,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
             .Where (x => x.IsAspectAttribute())
             .Where (x => isBase || x.IsInheriting())
             .Where (x => x.AllowsMultiple() || aspectsData.All (y => y.Constructor.DeclaringType != x.Constructor.DeclaringType));
-        // TODO add AllowMultiple
-        // TODO TypePipeCustomAttributeData: add parameter for including interfaces
+        // TODO (tp) TypePipeCustomAttributeData: add parameter for including interfaces
 
         aspectsData.AddRange (customAttributeDatas);
       }

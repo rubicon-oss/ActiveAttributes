@@ -41,12 +41,12 @@ namespace ActiveAttributes.Core.Assembly.Done
   public class ConstructorInitializationService : IConstructorInitializationService
   {
     private readonly IFieldIntroducer2 _fieldIntroducer2;
-    private readonly IConstructorExpressionHelperFactory _expressionHelperFactory;
+    private readonly IConstructorExpressionsHelperFactory _expressionsHelperFactory;
 
-    public ConstructorInitializationService (IFieldIntroducer2 fieldIntroducer2, IConstructorExpressionHelperFactory expressionHelperFactory)
+    public ConstructorInitializationService (IFieldIntroducer2 fieldIntroducer2, IConstructorExpressionsHelperFactory expressionsHelperFactory)
     {
       _fieldIntroducer2 = fieldIntroducer2;
-      _expressionHelperFactory = expressionHelperFactory;
+      _expressionsHelperFactory = expressionsHelperFactory;
     }
 
     public IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors)
@@ -56,7 +56,7 @@ namespace ActiveAttributes.Core.Assembly.Done
 
       var attributes = FieldAttributes.Private | (aspectDescriptors.Any (x => x.Scope == Scope.Static) ? FieldAttributes.Static : 0);
       var field = _fieldIntroducer2.AddField (mutableType, typeof (AspectAttribute[]), "Aspects", attributes);
-      Func<IConstructorExpressionHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectDescriptors);
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectDescriptors);
 
       AddInitialization (mutableType, expressionProvider);
 
@@ -70,7 +70,7 @@ namespace ActiveAttributes.Core.Assembly.Done
 
       var mutableType = (MutableType) method.DeclaringType;
       IFieldWrapper field;
-      Func<IConstructorExpressionHelper, Expression> expressionProvider;
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider;
 
       var property = method.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo();
       if (property != null)
@@ -96,20 +96,20 @@ namespace ActiveAttributes.Core.Assembly.Done
 
       var mutableType = (MutableType) method.DeclaringType;
       var field = _fieldIntroducer2.AddField (mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
-      Func<IConstructorExpressionHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
 
       AddInitialization (mutableType, expressionProvider);
 
       return field;
     }
 
-    private void AddInitialization (MutableType mutableType, Func<IConstructorExpressionHelper, Expression> expressionProvider)
+    private void AddInitialization (MutableType mutableType, Func<IConstructorExpressionsHelper, Expression> expressionProvider)
     {
       var constructor = mutableType.AllMutableConstructors.Single();
       constructor.SetBody (
           ctx =>
           {
-            var expressionHelper = _expressionHelperFactory.CreateConstructorExpressionHelper (ctx);
+            var expressionHelper = _expressionsHelperFactory.CreateConstructorExpressionHelper (ctx);
             return Expression.Block (ctx.PreviousBody, expressionProvider (expressionHelper));
           });
     }

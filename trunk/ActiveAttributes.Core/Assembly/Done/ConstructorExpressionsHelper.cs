@@ -29,8 +29,8 @@ using Remotion.Utilities;
 namespace ActiveAttributes.Core.Assembly.Done
 {
 
-  [ConcreteImplementation (typeof (ConstructorExpressionHelper))]
-  public interface IConstructorExpressionHelper
+  [ConcreteImplementation (typeof (ConstructorExpressionsHelper))]
+  public interface IConstructorExpressionsHelper
   {
     BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MemberInfo method);
     BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
@@ -38,12 +38,12 @@ namespace ActiveAttributes.Core.Assembly.Done
     BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IEnumerable<IAspectDescriptor> aspectDescriptors);
   }
 
-  public class ConstructorExpressionHelper : IConstructorExpressionHelper
+  public class ConstructorExpressionsHelper : IConstructorExpressionsHelper
   {
     private readonly IAspectInitExpressionHelper _aspectInitExpressionHelper;
     private readonly BodyContextBase _context;
 
-    public ConstructorExpressionHelper (IAspectInitExpressionHelper aspectInitExpressionHelper, BodyContextBase context)
+    public ConstructorExpressionsHelper (IAspectInitExpressionHelper aspectInitExpressionHelper, BodyContextBase context)
     {
       ArgumentUtility.CheckNotNull ("aspectInitExpressionHelper", aspectInitExpressionHelper);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -123,18 +123,5 @@ namespace ActiveAttributes.Core.Assembly.Done
     {
       return fieldWrapper.GetAccessExpression (_context.This);
     }
-
-
-
-
-    public IndexExpression CreateAspectAccessExpression (IAspectDescriptorContainer aspectDescriptorContainer, IAspectDescriptor aspectDescriptor)
-    {
-      var tuple = aspectDescriptorContainer.AspectStorageInfo[aspectDescriptor];
-      var field = tuple.Item1;
-      var index = tuple.Item2;
-
-      return Expression.ArrayAccess (GetFieldAccessExpression (field), Expression.Constant (index));
-    }
-
   }
 }

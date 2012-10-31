@@ -13,17 +13,26 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly.Done
 {
+  /// <summary>
+  /// Serves as a helper for creation of <see cref="MemberInitExpression"/>s for <see cref="IAspectDescriptor"/>s.
+  /// </summary>
+  [ConcreteImplementation (typeof (AspectInitExpressionHelper))]
+  public interface IAspectInitExpressionHelper
+  {
+    MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor);
+  }
+
   public class AspectInitExpressionHelper : IAspectInitExpressionHelper
   {
     public MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor)

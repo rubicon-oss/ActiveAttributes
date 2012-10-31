@@ -32,7 +32,7 @@ namespace ActiveAttributes.Core.Assembly
   /// </summary>
   /// <remarks>
   /// <code>
-  /// var ctx = new InvocationContext(methodInfo, this, arg0, arg1, ...);
+  /// var ctx = new InvocationContext(method, this, arg0, arg1, ...);
   /// var invocation0 = new Invocation(ctx, _originalMethodDelegate);
   /// var invocation1 = new OuterInvocation(ctx, Delegate.CreateDelegate (typeof (Action&lt;IInvocation&gt;), _aspects[1], method), invocation0);
   /// aspect[1].Intercept(invocation1);
@@ -83,7 +83,6 @@ namespace ActiveAttributes.Core.Assembly
 
     public void AddMethodInterception ()
     {
-      // TODO check for empty aspects
       _mutableMethod.SetBody (GetPatchedBody);
     }
 

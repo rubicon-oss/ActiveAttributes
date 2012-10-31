@@ -28,7 +28,7 @@ namespace ActiveAttributes.Core.Utilities
   {
     private const string c_message = "Undefined order for items:\r\n";
 
-    // TODO change to IEnumerable
+    // TODO (low) change to IEnumerable
     public UndefinedOrderException (IEnumerable<object> items)
     {
       Items = items;

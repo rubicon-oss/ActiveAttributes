@@ -15,18 +15,30 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ActiveAttributes.Core.Aspects;
 using Remotion.ServiceLocation;
-using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Configuration2.Configurators
 {
   /// <summary>
-  /// Converts <see cref="IAspectDescriptor"/>s to <see cref="IExpressionGenerator"/>s.
+  /// Serves as a provider for all aspect types in a given assembly.
   /// </summary>
-  [ConcreteImplementation (typeof (GiveItSomeName))]
-  public interface IGiveMeSomeName
+  [ConcreteImplementation (typeof (AspectTypesProvider))]
+  public interface IAspectTypesProvider
   {
-    IEnumerable<IExpressionGenerator> IntroduceExpressionGenerators (
-        MutableType mutableType, IEnumerable<IAspectDescriptor> descriptors, FieldInfoContainer fieldInfoContainer);
+    IEnumerable<Type> GetAspectTypes (params System.Reflection.Assembly[] assemblies);
+  }
+
+  public class AspectTypesProvider : IAspectTypesProvider
+  {
+    public IEnumerable<Type> GetAspectTypes (params System.Reflection.Assembly[] assemblies)
+    {
+      // TODO (low) cache
+      return from assembly in assemblies
+             from type in assembly.GetTypes()
+             where typeof (AspectAttribute).IsAssignableFrom (type)
+             select type;
+    }
   }
 }

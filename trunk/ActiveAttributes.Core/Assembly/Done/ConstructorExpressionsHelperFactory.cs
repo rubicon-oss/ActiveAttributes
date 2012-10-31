@@ -19,17 +19,24 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Core.Assembly.Done
 {
-  [ConcreteImplementation (typeof (ConstructorExpressionHelperFactory))]
-  public interface IConstructorExpressionHelperFactory
+  [ConcreteImplementation (typeof (ConstructorExpressionsHelperFactory))]
+  public interface IConstructorExpressionsHelperFactory
   {
-    IConstructorExpressionHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase);
+    IConstructorExpressionsHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase);
   }
 
-  public class ConstructorExpressionHelperFactory : IConstructorExpressionHelperFactory
+  public class ConstructorExpressionsHelperFactory : IConstructorExpressionsHelperFactory
   {
-    public IConstructorExpressionHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase)
+    private readonly AspectInitExpressionHelper _aspectInitExpressionHelper;
+
+    public ConstructorExpressionsHelperFactory (AspectInitExpressionHelper aspectInitExpressionHelper)
     {
-      return new ConstructorExpressionHelper (new AspectInitExpressionHelper(), bodyContextBase);
+      _aspectInitExpressionHelper = aspectInitExpressionHelper;
+    }
+
+    public IConstructorExpressionsHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase)
+    {
+      return new ConstructorExpressionsHelper (_aspectInitExpressionHelper, bodyContextBase);
     }
   }
 }

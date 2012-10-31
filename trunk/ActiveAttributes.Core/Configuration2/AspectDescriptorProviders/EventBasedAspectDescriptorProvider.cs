@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 
     public EventBasedAspectDescriptorProvider ()
     {
-      _eventFinder = new RelatedEventFinder(); // TODO inject
+      _eventFinder = new RelatedEventFinder(); // TODO (low) inject
     }
 
     public IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method)

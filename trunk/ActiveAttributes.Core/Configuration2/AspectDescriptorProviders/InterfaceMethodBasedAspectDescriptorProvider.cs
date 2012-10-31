@@ -23,9 +23,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 {
-  // TODO Provide constructor for ignoreAllowMultiple and ignoreInherited
-  // TODO OR
-  // TODO Overthink ;)
+  // TODO (idea) Provide constructor for ignoreAllowMultiple and ignoreInherited
   public class InterfaceMethodBasedAspectDescriptorProvider : IMethodLevelAspectDescriptorProvider
   {
     public IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method)

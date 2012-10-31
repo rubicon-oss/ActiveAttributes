@@ -108,7 +108,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       public void InheritedTrue_ReturnsTrue ()
       {
         var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
-        // TODO FS atLeatOnce
         customAttributeDataMock
             .Expect (x => x.Constructor)
             .Return (typeof (InheritingAttribute).GetConstructors().Single())
@@ -121,7 +120,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       public void InheritedFalse_ReturnsFalse ()
       {
         var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
-        // TODO FS atLeatOnce
         customAttributeDataMock
             .Expect (x => x.Constructor)
             .Return (typeof (NotInheritingAttribute).GetConstructors().Single())
@@ -137,7 +135,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       public void AllowMultipleTrue_ReturnsTrue ()
       {
         var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
-        // TODO FS atLeatOnce
         customAttributeDataMock
             .Expect (x => x.Constructor)
             .Return (typeof (AllowMultipleAttribute).GetConstructors().Single())
@@ -150,7 +147,6 @@ namespace ActiveAttributes.UnitTests.Extensions
       public void AllowMultipleFalse_ReturnsFalse ()
       {
         var customAttributeDataMock = MockRepository.GenerateStrictMock<ICustomAttributeData>();
-        // TODO FS atLeatOnce
         customAttributeDataMock
             .Expect (x => x.Constructor)
             .Return (typeof (DisallowMultipleAttribute).GetConstructors().Single())
@@ -201,7 +197,6 @@ namespace ActiveAttributes.UnitTests.Extensions
         customAttributeDataMock
             .Expect (x => x.ConstructorArguments)
             .Return (new ReadOnlyCollection<object>(new object[0]));
-        // TODO: how to test enumerable? ToCollection before argument checks?
         customAttributeDataMock
             .Expect (x => x.NamedArguments)
             .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]))
@@ -224,7 +219,6 @@ namespace ActiveAttributes.UnitTests.Extensions
         customAttributeDataMock
             .Expect (x => x.ConstructorArguments)
             .Return (new ReadOnlyCollection<object> (input));
-        // TODO: how to test enumerable? ToCollection before argument checks?
         customAttributeDataMock
             .Expect (x => x.NamedArguments)
             .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]))
@@ -258,11 +252,10 @@ namespace ActiveAttributes.UnitTests.Extensions
         customAttributeDataMock
             .Expect (x => x.ConstructorArguments)
             .Return (new ReadOnlyCollection<object> (new object[0]));
-        // TODO: how to test enumerable? ToCollection before argument checks?
         customAttributeDataMock
             .Expect (x => x.NamedArguments)
             .Return (new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new[] { customAttributeNamedArgumentMock }))
-            .Repeat.Twice ();
+            .Repeat.Twice();
 
         var result = ICustomAttributeDataExtensions.CreateAttribute<DomainAttribute> (customAttributeDataMock);
 

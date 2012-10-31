@@ -20,10 +20,12 @@ using System.Reflection;
 using ActiveAttributes.Core.Contexts;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Invocations;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  [ConcreteImplementation (typeof (InvocationTypeProvider))]
   public interface IInvocationTypeProvider
   {
     Type InvocationType { get; }
@@ -122,7 +124,7 @@ namespace ActiveAttributes.Core.Assembly
       }
       else if (methodInfo.IsEventAccessor ())
       {
-        throw new NotImplementedException("TODO");
+        throw new NotImplementedException();
       }
       else
       {

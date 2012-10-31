@@ -83,11 +83,13 @@
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Aspects\CflowMethodInterceptionAspectAttributeTest.cs" />
     <Compile Include="Assembly\AspectInitExpressionHelperTest.cs" />
-    <Compile Include="Assembly\AspectDescriptorContainerTest.cs" />
     <Compile Include="Assembly\Done\ConstructorInitializationServiceTest.cs" />
     <Compile Include="Assembly\Done\FieldIntroducer2Test.cs" />
+    <Compile Include="Assembly\Done\InvocationExpressionHelperTest.cs" />
+    <Compile Include="Assembly\Done\InvocationTypeProvider2Test.cs" />
+    <Compile Include="Assembly\Done\MethodExpressionHelperTest.cs" />
     <Compile Include="Assembly\ExpressionGeneratorTest.cs" />
-    <Compile Include="Assembly\Done\ConstructorExpressionHelperTest.cs" />
+    <Compile Include="Assembly\Done\ConstructorExpressionsHelperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
     <Compile Include="Assembly\GiveItSomeNameTest.cs" />
@@ -117,7 +119,7 @@
     <Compile Include="Configuration2\Rules\RoleOrderingRuleTest.cs" />
     <Compile Include="Configuration2\Rules\TypeOrderingRuleTest.cs" />
     <Compile Include="Assembly\TypeAssemblerTest.cs" />
-    <Compile Include="Assembly\TypeProviderTest.cs" />
+    <Compile Include="Assembly\InvocationTypeProviderTest.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Configuration2\CustomAttributes\ApplyAspectAttributeTest.cs" />
     <Compile Include="Extensions\EnumExtensionsTest.cs" />

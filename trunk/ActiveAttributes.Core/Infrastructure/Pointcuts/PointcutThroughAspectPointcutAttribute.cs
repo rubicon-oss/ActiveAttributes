@@ -14,18 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public struct FieldInfoContainer
-  {
-    public FieldInfo DelegateField;
-    public FieldInfo MethodInfoField;
-    public FieldInfo PropertyInfoField;
-    public FieldInfo EventInfoField;
-
-    public FieldInfo StaticAspectsField;
-    public FieldInfo InstanceAspectsField;
-  }
+  public class PointcutThroughAspectPointcutAttribute : Attribute, IPointcut {}
 }

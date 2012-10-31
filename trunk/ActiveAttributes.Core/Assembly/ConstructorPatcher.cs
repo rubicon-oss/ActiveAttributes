@@ -72,7 +72,6 @@ namespace ActiveAttributes.Core.Assembly
     {
       var methodInfoField = Expression.Field (ctx.This, methodInfoFieldInfo);
 
-      // TODO How to test if UnderlyingSystemMethodInfo was used instead of mutableMethod?
       var methodInfoConstantExpression = Expression.Constant (methodInfo.UnderlyingSystemMethodInfo, typeof (MethodInfo));
       var methodInfoAssignExpression = Expression.Assign (methodInfoField, methodInfoConstantExpression);
 
@@ -137,7 +136,6 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression GeAspectsArrayAssignExpression (IFieldWrapper accessor, BodyContextBase ctx, IEnumerable<IExpressionGenerator> aspects)
     {
-      // TODO remove check - always pass in ctx.This
       var aspectsField = accessor.GetAccessExpression (ctx.This);
       var newAspectsArrayExpression = Expression.NewArrayInit (typeof (AspectAttribute), aspects.Select (x => x.GetInitExpression ()));
       Expression instanceAspectsAssign = Expression.Assign (aspectsField, newAspectsArrayExpression);

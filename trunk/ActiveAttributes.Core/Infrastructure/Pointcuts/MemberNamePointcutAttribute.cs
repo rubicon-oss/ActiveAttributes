@@ -14,18 +14,23 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public struct FieldInfoContainer
+  public abstract class PointcutAttributeBase : Attribute, IPointcut
   {
-    public FieldInfo DelegateField;
-    public FieldInfo MethodInfoField;
-    public FieldInfo PropertyInfoField;
-    public FieldInfo EventInfoField;
+    private readonly Execution _execution;
 
-    public FieldInfo StaticAspectsField;
-    public FieldInfo InstanceAspectsField;
+    protected PointcutAttributeBase (Execution execution)
+    {
+      _execution = execution;
+    }
+
+    public Execution Execution
+    {
+      get { return _execution; }
+    }
+
+    public abstract bool MatchVisit (IJoinpoint joinpoint);
   }
 }

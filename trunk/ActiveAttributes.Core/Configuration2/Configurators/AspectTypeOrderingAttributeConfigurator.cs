@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using ActiveAttributes.Core.Configuration2.Rules;
@@ -47,7 +46,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
     {
       foreach (var aspectType in _aspectTypes)
       {
-        foreach (var typeOrderingAttribute in aspectType.GetCustomAttributes<AspectTypeOrderingAttribute>(inherit:true))
+        foreach (var typeOrderingAttribute in aspectType.GetCustomAttributes<AspectTypeOrderingAttribute> (inherit: true))
         {
           foreach (var otherAspectType in typeOrderingAttribute.AspectTypes)
           {
@@ -59,32 +58,11 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
             var afterType = typeOrderingAttribute.Position == Position.Before
                                 ? otherAspectType
                                 : aspectType;
-            var typeOrderingRule = new TypeOrderingRule (GetType ().Name, beforeType, afterType);
+            var typeOrderingRule = new TypeOrderingRule (GetType().Name, beforeType, afterType);
             activeAttributesConfiguration.AspectOrderingRules.Add (typeOrderingRule);
           }
         }
       }
-    }
-  }
-
-  // TODO (high)
-  /// <summary>
-  /// Serves as a provider for all aspect types in a given assembly.
-  /// </summary>
-  public interface IAspectTypesProvider
-  {
-    IEnumerable<Type> GetAspectTypes (params System.Reflection.Assembly[] assemblies);
-  }
-
-  public class AspectTypesProvider : IAspectTypesProvider
-  {
-    public IEnumerable<Type> GetAspectTypes (params System.Reflection.Assembly[] assemblies)
-    {
-      // TODO (low) cache
-      return from assembly in assemblies
-             from type in assembly.GetTypes()
-             where typeof (AspectAttribute).IsAssignableFrom (type)
-             select type;
     }
   }
 }

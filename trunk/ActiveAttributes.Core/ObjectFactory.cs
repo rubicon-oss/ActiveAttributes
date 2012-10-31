@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Done;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using Microsoft.Practices.ServiceLocation;
@@ -35,8 +36,32 @@ namespace ActiveAttributes.Core
 
     public static T Create<T> ()
     {
+
       _factory = _factory ?? ServiceLocator.Current.GetInstance<IObjectFactory>();
       return _factory.Create<T> ();
+    }
+
+    private void Muh ()
+    {
+
+      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider> ();
+      var configuration = configurationProvider.GetConfiguration();
+
+      var fieldIntroducer2 = new FieldIntroducer2();
+      var aspectInitExpressionHelper = new AspectInitExpressionHelper();
+      var constructorExpressionHelperFactory = new ConstructorExpressionsHelperFactory(aspectInitExpressionHelper);
+      var constructorInitializationService = new ConstructorInitializationService (fieldIntroducer2, constructorExpressionHelperFactory);
+
+      var invocationTypeProvider2 = new InvocationTypeProvider2();
+      var invocationExpressionHelper = new InvocationExpressionHelper();
+      var methodExpressionHelperFactory = new MethodExpressionHelperFactory(invocationExpressionHelper);
+      var methodInterceptionService = new MethodInterceptionService (invocationTypeProvider2, methodExpressionHelperFactory);
+
+      var aspectDependencyMerger = new AspectDependencyMerger();
+      var aspectDependencyProviders = configuration.AspectDependencyProviders;
+      var aspectSorter = new AspectSorter (aspectDependencyMerger, aspectDependencyProviders);
+
+
     }
 
     T IObjectFactory.Create<T> ()

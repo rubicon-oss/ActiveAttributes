@@ -23,14 +23,12 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  // TODO review all docs
   /// <summary>
   /// Acts as a factory for various types.
   /// </summary>
   [ConcreteImplementation (typeof (Factory))]
   public interface IFactory
   {
-    // TODO Get -> Create
     /// <summary>
     /// Creates a <see cref="IInvocationTypeProvider"/> for a given methd.
     /// </summary>

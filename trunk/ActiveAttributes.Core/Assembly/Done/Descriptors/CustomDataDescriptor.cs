@@ -69,7 +69,6 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return _customAttributeData.ConstructorArguments; }
     }
 
-    // TODO is typed AND named? 
     public ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments
     {
       get { return _customAttributeData.NamedArguments; }

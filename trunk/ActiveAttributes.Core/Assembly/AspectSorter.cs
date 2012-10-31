@@ -22,6 +22,7 @@ using ActiveAttributes.Core.Utilities;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -38,7 +39,18 @@ namespace ActiveAttributes.Core.Assembly
 
   public class AspectSorter : IAspectSorter
   {
+    private readonly IAspectDependencyMerger _aspectDependencyMerger;
+    private readonly IEnumerable<IAspectDependencyProvider> _aspectDependencyProviders;
     private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
+
+    public AspectSorter (IAspectDependencyMerger aspectDependencyMerger, IEnumerable<IAspectDependencyProvider> aspectDependencyProviders)
+    {
+      ArgumentUtility.CheckNotNull ("aspectDependencyMerger", aspectDependencyMerger);
+      ArgumentUtility.CheckNotNull ("aspectDependencyProviders", aspectDependencyProviders);
+
+      _aspectDependencyMerger = aspectDependencyMerger;
+      _aspectDependencyProviders = aspectDependencyProviders;
+    }
 
     public AspectSorter (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
@@ -66,7 +78,6 @@ namespace ActiveAttributes.Core.Assembly
       return aspectsAsCollection.TopologicalSort (allDependencies, throwIfOrderIsUndefined: true);
     }
 
-    // TODO extract IAspectDependencyProvider ?
     private IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependenciesByPriority2 (ICollection<IAspectDescriptor> aspects)
     {
       var combinations = (from aspect1 in aspects

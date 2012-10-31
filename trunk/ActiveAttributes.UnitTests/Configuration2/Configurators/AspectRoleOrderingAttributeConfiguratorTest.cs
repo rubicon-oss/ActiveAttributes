@@ -81,7 +81,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
     }
 
     [Test]
-    [ExpectedException(ExpectedMessage = "TODO")]
+    [ExpectedException(ExpectedMessage = "TODO (low) exception text")]
     public void ThrowsForAspectsWithoutRole ()
     {
       var aspectType = typeof (Domain2AspectAttribute);

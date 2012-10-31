@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 
     public PropertyBasedAspectDescriptorProvider ()
     {
-      _propertyFinder = new RelatedPropertyFinder(); // TODO inject
+      _propertyFinder = new RelatedPropertyFinder(); // TODO (low) inject
     }
 
     public IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method)

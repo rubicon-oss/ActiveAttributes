@@ -44,6 +44,7 @@ namespace ActiveAttributes.UnitTests
 
     public static Type GetType_ ()
     {
+      // TODO create array of types and use random item
       return typeof (object);
     }
 
@@ -66,10 +67,10 @@ namespace ActiveAttributes.UnitTests
       return new ThisExpression (type ?? typeof (object));
     }
 
-    public static BodyContextBase GetBodyContextBase (MutableType declaringType = null)
+    public static BodyContextBase GetBodyContextBase (MutableType declaringType = null, IEnumerable<ParameterExpression> parameterExpressions = null)
     {
       declaringType = declaringType ?? GetMutableType();
-      var parameterExpressions = new ParameterExpression[0];
+      parameterExpressions = parameterExpressions ?? new ParameterExpression[0];
       var isStatic = false;
       var memberSelector = new MemberSelector (new BindingFlagsEvaluator());
 
@@ -160,6 +161,14 @@ namespace ActiveAttributes.UnitTests
       return mock;
     }
 
+    public static MemberExpression GetMemberExpression (Type type = null)
+    {
+      type = GetInstantiatableType (type);
+      var field = GetFieldInfo (type, attributes: FieldAttributes.Static);
+
+      return Expression.Field (null, field);
+    }
+
     public static IAspectDescriptor GetAspectDescriptor (Type aspectType = null, Scope scope = Scope.Static)
     {
       aspectType = GetAssignableType (typeof (AspectAttribute), aspectType);
@@ -176,6 +185,14 @@ namespace ActiveAttributes.UnitTests
       return mock;
     }
 
+    public static ParameterExpression GetParameterExpression (Type type = null, string name = null)
+    {
+      type = GetInstantiatableType (type);
+      name = name ?? "parameter" + s_random.Next (0, 100);
+
+      return Expression.Parameter (type, name);
+    }
+
     public static IAspectDescriptor GetInstanceAspectDescriptor (Type aspectType = null)
     {
       return GetAspectDescriptor (aspectType, Scope.Instance);
@@ -186,15 +203,16 @@ namespace ActiveAttributes.UnitTests
       return GetAspectDescriptor (aspectType, Scope.Static);
     }
 
-    public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null)
+    public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null, ThisExpression thisExpression = null)
     {
       var field = GetFieldInfo (type, attributes: attributes, declaringType: declaringType);
-      return GetFieldWrapper (field);
+      thisExpression = thisExpression ?? GetThisExpression (field.DeclaringType);
+      return GetFieldWrapper (field, thisExpression);
     }
 
-    public static IFieldWrapper GetFieldWrapper (FieldInfo field)
+    public static IFieldWrapper GetFieldWrapper (FieldInfo field, ThisExpression thisExpression = null)
     {
-      var thisExpression = field.IsStatic ? null : GetThisExpression (field.DeclaringType);
+      thisExpression = field.IsStatic ? null : thisExpression ?? GetThisExpression (field.DeclaringType);
 
       var mock = MockRepository.GenerateStub<IFieldWrapper>();
       mock
@@ -205,6 +223,14 @@ namespace ActiveAttributes.UnitTests
           .Return (Expression.Field (thisExpression, field));
 
       return mock;
+    }
+
+    public static NewExpression GetNewExpression (Type type = null)
+    {
+      type = GetInstantiatableType (type);
+      var constructor = type.GetConstructors().First();
+      var parameters = constructor.GetParameters().Select(x => Expression.Parameter(x.ParameterType));
+      return Expression.New (constructor, parameters.Cast<Expression>());
     }
 
     private static ParameterInfo GetParameterInfo (string name = null, Type parameterType = null, int position = -1)

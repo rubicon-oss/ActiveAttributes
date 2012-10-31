@@ -30,7 +30,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
 
     public MethodBasedAspectDescriptorProvider ()
     {
-      _methodFinder = new RelatedMethodFinder(); // TODO inject
+      _methodFinder = new RelatedMethodFinder(); // TODO (low) inject
     }
 
     public IEnumerable<IAspectDescriptor> GetDescriptors (MethodInfo method)

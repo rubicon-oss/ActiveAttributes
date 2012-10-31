@@ -13,19 +13,24 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using System.Reflection;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure.Aspects
 {
-  public struct FieldInfoContainer
+  public abstract class AspectAttribute : Attribute, IAspect, IMemberNamePointcut, ITypePointcut
   {
-    public FieldInfo DelegateField;
-    public FieldInfo MethodInfoField;
-    public FieldInfo PropertyInfoField;
-    public FieldInfo EventInfoField;
+    public AspectAttribute ()
+    {
+      var sdf;
 
-    public FieldInfo StaticAspectsField;
-    public FieldInfo InstanceAspectsField;
+
+    }
+    public Execution Execution { get; set; }
+
+    public string MemberName { get; set; }
+
+    public Type Type { get; set; }
   }
 }

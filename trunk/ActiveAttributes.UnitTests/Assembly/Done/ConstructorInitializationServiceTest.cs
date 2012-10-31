@@ -38,8 +38,8 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
     private MutableType _mutableType;
     private MutableConstructorInfo _firstConstructor;
 
-    private IConstructorExpressionHelperFactory _expressionHelperFactoryStub;
-    private IConstructorExpressionHelper _expressionHelperMock;
+    private IConstructorExpressionsHelperFactory _expressionsHelperFactoryStub;
+    private IConstructorExpressionsHelper _expressionsHelperMock;
     private IFieldIntroducer2 _fieldIntroducer2Mock;
 
     private ConstructorInitializationService _service;
@@ -49,16 +49,16 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
     {
       _mutableType = ObjectMother.GetMutableType (typeof (DomainType));
 
-      _expressionHelperFactoryStub = MockRepository.GenerateStub<IConstructorExpressionHelperFactory>();
-      _expressionHelperMock = MockRepository.GenerateStrictMock<IConstructorExpressionHelper>();
+      _expressionsHelperFactoryStub = MockRepository.GenerateStub<IConstructorExpressionsHelperFactory>();
+      _expressionsHelperMock = MockRepository.GenerateStrictMock<IConstructorExpressionsHelper>();
       _fieldIntroducer2Mock = MockRepository.GenerateStrictMock<IFieldIntroducer2>();
       _firstConstructor = _mutableType.AllMutableConstructors.First ();
 
-      _expressionHelperFactoryStub
+      _expressionsHelperFactoryStub
           .Stub (x => x.CreateConstructorExpressionHelper (Arg<BodyContextBase>.Is.Anything))
-          .Return (_expressionHelperMock);
+          .Return (_expressionsHelperMock);
 
-      _service = new ConstructorInitializationService (_fieldIntroducer2Mock, _expressionHelperFactoryStub);
+      _service = new ConstructorInitializationService (_fieldIntroducer2Mock, _expressionsHelperFactoryStub);
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       _fieldIntroducer2Mock
           .Expect (x => x.AddField (_mutableType, typeof (AspectAttribute[]), "Aspects", FieldAttributes.Private | FieldAttributes.Static))
           .Return (fakeField);
-      _expressionHelperMock
+      _expressionsHelperMock
           .Expect (x => x.CreateAspectAssignExpression (fakeField, aspectDescriptors))
           .Return (fakeExpression);
       var previousBody = _firstConstructor.Body;
@@ -81,7 +81,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       var result = _service.AddAspectInitialization (_mutableType, aspectDescriptors);
 
       _fieldIntroducer2Mock.VerifyAllExpectations ();
-      _expressionHelperMock.VerifyAllExpectations ();
+      _expressionsHelperMock.VerifyAllExpectations ();
       var expectedExpression = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _firstConstructor.Body);
       var expectedDictionary = new Dictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>>()
@@ -100,7 +100,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       var fakeExpression = Expression.Assign (Expression.Parameter (typeof (int)), Expression.Constant (1));
 
       _fieldIntroducer2Mock.Expect (x => x.AddField (_mutableType, typeof (AspectAttribute[]), "Aspects", FieldAttributes.Private));
-      _expressionHelperMock.Expect (x => x.CreateAspectAssignExpression (null, null)).IgnoreArguments().Return (fakeExpression);
+      _expressionsHelperMock.Expect (x => x.CreateAspectAssignExpression (null, null)).IgnoreArguments().Return (fakeExpression);
 
       _service.AddAspectInitialization (_mutableType, aspectDescriptors);
     }
@@ -115,7 +115,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       _fieldIntroducer2Mock
           .Expect (x => x.AddField (_mutableType, typeof(Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static))
           .Return (fakeField);
-      _expressionHelperMock
+      _expressionsHelperMock
           .Expect (x => x.CreateDelegateAssignExpression (fakeField, method))
           .Return (fakeExpression);
       var previousBody = _firstConstructor.Body;
@@ -152,7 +152,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       _fieldIntroducer2Mock
           .Expect (x => x.AddField (_mutableType, fieldType, fieldName, FieldAttributes.Private | FieldAttributes.Static))
           .Return (fakeField);
-      _expressionHelperMock
+      _expressionsHelperMock
           .Expect (x => x.CreateMemberInfoAssignExpression (fakeField, memberInfo))
           .Return (fakeExpression);
       var previousBody = _firstConstructor.Body;
@@ -160,7 +160,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Done
       var result = _service.AddMemberInfoInitialization (method);
 
       _fieldIntroducer2Mock.VerifyAllExpectations ();
-      _expressionHelperMock.VerifyAllExpectations ();
+      _expressionsHelperMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeField));
       var expected = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
       ExpressionTreeComparer.CheckAreEqualTrees (expected, _firstConstructor.Body);

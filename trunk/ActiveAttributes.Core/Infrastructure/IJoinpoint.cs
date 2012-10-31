@@ -15,17 +15,14 @@
 // under the License.
 using System;
 using System.Reflection;
+using Microsoft.Scripting.Ast;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure
 {
-  public struct FieldInfoContainer
+  public interface IJoinpoint
   {
-    public FieldInfo DelegateField;
-    public FieldInfo MethodInfoField;
-    public FieldInfo PropertyInfoField;
-    public FieldInfo EventInfoField;
-
-    public FieldInfo StaticAspectsField;
-    public FieldInfo InstanceAspectsField;
+    Type DeclaringType { get; }
+    MemberInfo Member { get; }
+    Expression Expression { get; }
   }
 }

@@ -54,7 +54,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
 
         string aspectRole;
         if (!activeAttributesConfiguration.AspectRoles.TryGetValue (aspectType, out aspectRole))
-          throw new Exception ("TODO");
+          throw new Exception ("TODO (low) exception text");
 
         foreach (var roleOrderingAttribute in typeOrderingAttributes)
         {

@@ -14,18 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly.Done;
-using Microsoft.Scripting.Ast;
-using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  /// <summary>
-  /// Serves as a helper for creation of <see cref="MemberInitExpression"/>s for <see cref="IAspectDescriptor"/>s.
-  /// </summary>
-  [ConcreteImplementation (typeof (AspectInitExpressionHelper))]
-  public interface IAspectInitExpressionHelper
+  public interface ITypePointcut : IPointcut
   {
-    MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor);
+    Type Type { get; }
   }
 }

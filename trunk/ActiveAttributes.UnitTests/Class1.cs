@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Diagnostics;
 using System.Linq;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
@@ -30,6 +31,40 @@ namespace ActiveAttributes.UnitTests
   [TestFixture]
   public class Class1
   {
+    public class DomainAttribute : Attribute
+    {
+      public static int counter;
+
+      public DomainAttribute ()
+      {
+        foreach (var frame in new StackTrace().GetFrames())
+
+        {
+          if (frame.GetFileName() == "Class1.cs")
+
+          {
+            Console.WriteLine ();
+          }
+        }
+        counter++;
+      }
+    }
+
+    [DomainAttribute]
+    public class DomainType
+    {
+      public DomainType ()
+      {
+        var x = GetType().GetCustomAttributes (true);
+        var y = GetType().GetCustomAttributes (true);
+      }
+    }
+
+    [Test]
+    public void name2123123 ()
+    {
+      new DomainType ();
+    }
 
     //private string Method (string arg)
     //{

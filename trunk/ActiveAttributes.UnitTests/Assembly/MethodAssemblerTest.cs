@@ -133,7 +133,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       //mockRepository.VerifyAll();
     }
 
-    // TODO test name
     [Test]
     [Ignore]
     public void ProceedOnlyIfAny_TypeGenerator ()
@@ -184,7 +183,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       //descriptorMock.VerifyAllExpectations();
     }
 
-    // TODO test name
     [Test]
     [Ignore]
     public void ProceedOnlyIfAny_MethodGenerator ()

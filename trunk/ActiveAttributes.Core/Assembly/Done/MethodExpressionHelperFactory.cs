@@ -14,7 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Core.Assembly.Done
@@ -22,14 +25,27 @@ namespace ActiveAttributes.Core.Assembly.Done
   [ConcreteImplementation (typeof (MethodExpressionHelperFactory))]
   public interface IMethodExpressionHelperFactory
   {
-    IMethodExpressionHelper CreateMethodExpressionHelper (MethodBodyModificationContext context);
+    IMethodExpressionHelper CreateMethodExpressionHelper (
+        MutableMethodInfo method,
+        BodyContextBase context,
+        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary);
   }
 
   public class MethodExpressionHelperFactory : IMethodExpressionHelperFactory
   {
-    public IMethodExpressionHelper CreateMethodExpressionHelper (MethodBodyModificationContext context)
+    private readonly InvocationExpressionHelper _invocationExpressionHelper;
+
+    public MethodExpressionHelperFactory (InvocationExpressionHelper invocationExpressionHelper)
     {
-      return new MethodExpressionHelper (context);
+      _invocationExpressionHelper = invocationExpressionHelper;
+    }
+
+    public IMethodExpressionHelper CreateMethodExpressionHelper (
+        MutableMethodInfo method,
+        BodyContextBase context,
+        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
+    {
+      return new MethodExpressionHelper (method, context, aspectDescriptorDictionary, _invocationExpressionHelper);
     }
   }
 }

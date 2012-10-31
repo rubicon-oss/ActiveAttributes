@@ -14,21 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using ActiveAttributes.Core.Assembly.Done;
-using Remotion.Collections;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public interface IAspectDescriptorContainer
+  public interface IControlFlowPointcut : IPointcut
   {
-    IFieldWrapper InstanceField { get; }
-    IFieldWrapper StaticField { get; }
-
-    ReadOnlyCollection<IAspectDescriptor> InstanceAspects { get; }
-    ReadOnlyCollection<IAspectDescriptor> StaticAspects { get; }
-
-    ReadOnlyDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AspectStorageInfo { get; }
+    string ExecutionOf { get; }
   }
 }
