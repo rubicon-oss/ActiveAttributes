@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Interception.Contexts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.Common.UnitTests

@@ -19,8 +19,8 @@
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Contexts;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Contexts;
+using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
 #endregion

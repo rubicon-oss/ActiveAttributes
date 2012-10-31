@@ -20,6 +20,6 @@ namespace ActiveAttributes.Core.Infrastructure
 {
   public interface IPointcut
   {
-    bool MatchVisit (IJoinpoint joinpoint);
+    bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint);
   }
 }

@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using NUnit.Framework;

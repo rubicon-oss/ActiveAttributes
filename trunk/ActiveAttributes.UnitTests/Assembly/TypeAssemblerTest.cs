@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using NUnit.Framework;
 using Remotion.TypePipe.UnitTests.MutableReflection;

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Rules;
 using NUnit.Framework;

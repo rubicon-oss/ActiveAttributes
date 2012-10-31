@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Descriptors;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Extensions;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;

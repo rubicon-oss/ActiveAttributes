@@ -15,8 +15,8 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Contexts;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Contexts;
+using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Invocations

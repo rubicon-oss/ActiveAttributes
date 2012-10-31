@@ -16,7 +16,7 @@
 
 using System;
 using System.Runtime.Serialization;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 
 namespace ActiveAttributes.Core.Aspects
 {

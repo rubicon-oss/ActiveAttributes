@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Diagnostics;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 

@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Extensions

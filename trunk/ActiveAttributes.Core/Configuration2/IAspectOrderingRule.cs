@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2.Configurators;
 
 namespace ActiveAttributes.Core.Configuration2

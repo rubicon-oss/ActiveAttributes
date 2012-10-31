@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Contexts;
+using ActiveAttributes.Core.Interception.Contexts;
 using XValidation;
 using System.Linq;
 

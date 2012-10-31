@@ -20,6 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Descriptors;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
 using Remotion.Utilities;
 

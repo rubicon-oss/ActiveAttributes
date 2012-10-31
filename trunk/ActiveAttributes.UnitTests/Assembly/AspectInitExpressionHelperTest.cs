@@ -17,7 +17,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Done;
+using ActiveAttributes.Core.Assembly.Old;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
 

@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Aspects

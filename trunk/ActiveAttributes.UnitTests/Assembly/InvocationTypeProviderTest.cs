@@ -17,8 +17,9 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Contexts;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Interception.Contexts;
+using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Utilities;
 

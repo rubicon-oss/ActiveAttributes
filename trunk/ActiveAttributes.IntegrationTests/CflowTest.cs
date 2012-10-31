@@ -2,7 +2,7 @@
 using System.ComponentModel.Design;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 using NLog.Internal;
 using NUnit.Framework;
 using Rhino.Mocks;

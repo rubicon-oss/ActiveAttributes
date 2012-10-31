@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Rules

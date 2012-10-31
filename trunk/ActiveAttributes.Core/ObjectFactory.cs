@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Done;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using Microsoft.Practices.ServiceLocation;

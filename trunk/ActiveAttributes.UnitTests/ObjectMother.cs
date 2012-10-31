@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Done;
+using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using Microsoft.Scripting.Ast;
 using Remotion.Reflection.MemberSignatures;

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;

@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.Linq;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
-using ActiveAttributes.Core.Invocations;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;

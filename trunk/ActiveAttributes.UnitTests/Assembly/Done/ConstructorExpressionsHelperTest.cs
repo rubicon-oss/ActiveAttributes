@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Done;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;

@@ -16,8 +16,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Done;
-using ActiveAttributes.Core.Assembly.Done.FieldWrapper;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 

@@ -18,7 +18,7 @@ using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 using NLog;
 using NLog.Config;
 using NLog.Layouts;

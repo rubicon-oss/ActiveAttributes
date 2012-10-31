@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Old;
 using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Configuration2

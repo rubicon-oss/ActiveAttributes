@@ -16,7 +16,7 @@
 using System;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Done;
+using ActiveAttributes.Core.Assembly.Old;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.UnitTests.MutableReflection;

@@ -17,7 +17,8 @@
 using System;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests

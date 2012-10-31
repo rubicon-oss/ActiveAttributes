@@ -17,7 +17,7 @@
 using System;
 using System.Windows.Forms;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Invocations;
+using ActiveAttributes.Core.Interception.Invocations;
 
 namespace ActiveAttributes.UseCases.Aspects
 {

@@ -13,24 +13,28 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 
-public static class EnumExtensions
+namespace ActiveAttributes.Core.Extensions
 {
-  public static bool HasFlags<T> (this Enum actual, T expected)
+  public static class EnumExtensions
   {
-    var f1 = (int) (object) actual;
-    var f2 = (int) (object) expected;
-    return (f1 & f2) == f2;
-  }
+    public static bool HasFlags<T> (this Enum actual, T expected)
+    {
+      var f1 = (int) (object) actual;
+      var f2 = (int) (object) expected;
+      return (f1 & f2) == f2;
+    }
 
-  public static T AddFlag<T> (this Enum flags1, T flags2)
-  {
-    return (T) (object) ((int) (object) flags1 | (int) (object) flags2);
-  }
+    public static T AddFlag<T> (this Enum flags1, T flags2)
+    {
+      return (T) (object) ((int) (object) flags1 | (int) (object) flags2);
+    }
 
-  public static T RemoveFlag<T> (this Enum flags1, T flags2)
-  {
-    return (T) (object) ((int) (object) flags1 & ~(int) (object) flags2);
+    public static T RemoveFlag<T> (this Enum flags1, T flags2)
+    {
+      return (T) (object) ((int) (object) flags1 & ~(int) (object) flags2);
+    }
   }
 }
