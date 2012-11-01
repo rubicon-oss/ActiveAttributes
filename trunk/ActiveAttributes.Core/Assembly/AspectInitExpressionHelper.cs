@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,32 +32,26 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (AspectInitExpressionHelper))]
   public interface IAspectInitExpressionHelper
   {
-    MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor);
     MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo);
   }
 
   public class AspectInitExpressionHelper : IAspectInitExpressionHelper
   {
-    public MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor)
+    public MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo)
     {
-      var constructorInfo = aspectDescriptor.ConstructorInfo;
+      var constructorInfo = aspectConstructionInfo.ConstructorInfo;
       var constructorArguments = constructorInfo.GetParameters().Select (x => x.ParameterType).Zip (
-          aspectDescriptor.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();
+          aspectConstructionInfo.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();
       var createExpression = Expression.New (constructorInfo, constructorArguments.ToArray());
 
-      var memberBindingExpressions = aspectDescriptor.NamedArguments.Select (GetMemberBindingExpression);
+      var memberBindingExpressions = aspectConstructionInfo.NamedArguments.Select (GetMemberBindingExpression);
 
-      var initExpression = Expression.MemberInit (createExpression, memberBindingExpressions);
+      var initExpression = Expression.MemberInit (createExpression, memberBindingExpressions.Cast<MemberBinding>());
 
       return initExpression;
     }
 
-    public MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo)
-    {
-      throw new NotImplementedException();
-    }
-
-    private MemberBinding GetMemberBindingExpression (ICustomAttributeNamedArgument namedArgument)
+    private MemberAssignment GetMemberBindingExpression (ICustomAttributeNamedArgument namedArgument)
     {
       var constantExpression = ConvertTypedArgumentToExpression (namedArgument);
       var bindingExpression = Expression.Bind (namedArgument.MemberInfo, constantExpression);
@@ -67,15 +60,15 @@ namespace ActiveAttributes.Core.Assembly
 
     private Expression ConvertTypedArgumentToExpression (ICustomAttributeNamedArgument typedArgument)
     {
-      return typedArgument.ConvertTo (CreateElement, CreateArray);
+      return typedArgument.ConvertTo<Expression> (CreateElement, CreateArray);
     }
 
-    private Expression CreateArray (Type type, IEnumerable<Expression> objs)
+    private NewArrayExpression CreateArray (Type type, IEnumerable<Expression> objs)
     {
       return Expression.NewArrayInit (type, objs);
     }
 
-    private Expression CreateElement (Type type, object obj)
+    private ConstantExpression CreateElement (Type type, object obj)
     {
       // TODO Should not be necessary with TypePipe custom attribute data - if it still is, fix in TypePipe
       if (type.IsEnum)
