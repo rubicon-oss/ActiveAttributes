@@ -49,141 +49,141 @@ namespace ActiveAttributes.UnitTests.Assembly.Old
       _namedFieldArgumentMock = MockRepository.GenerateStrictMock<ICustomAttributeNamedArgument>();
     }
 
-    [Test]
-    public void Constructor ()
-    {
-      var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute());
-      var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
-      var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
+    //[Test]
+    //public void Constructor ()
+    //{
+    //  var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute());
+    //  var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
+    //  var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
 
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorInfo)
-          .Return (constructorInfo);
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorArguments)
-          .Return (constructorArguments);
-      _aspectDescriptorMock
-          .Expect (x => x.NamedArguments)
-          .Return (namedArgumentsCollection);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorInfo)
+    //      .Return (constructorInfo);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorArguments)
+    //      .Return (constructorArguments);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.NamedArguments)
+    //      .Return (namedArgumentsCollection);
 
-      var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
-      var expected = Expression.MemberInit (Expression.New (constructorInfo));
+    //  var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
+    //  var expected = Expression.MemberInit (Expression.New (constructorInfo));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
+    //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+    //}
 
-    [Test]
-    public void ConstructorWithArgument ()
-    {
-      var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute (""));
-      var constructorArguments = new ReadOnlyCollection<object> (new[] { "ctor" });
-      var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
+    //[Test]
+    //public void ConstructorWithArgument ()
+    //{
+    //  var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute (""));
+    //  var constructorArguments = new ReadOnlyCollection<object> (new[] { "ctor" });
+    //  var namedArgumentsCollection = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
 
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorInfo)
-          .Return (constructorInfo);
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorArguments)
-          .Return (constructorArguments);
-      _aspectDescriptorMock
-          .Expect (x => x.NamedArguments)
-          .Return (namedArgumentsCollection);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorInfo)
+    //      .Return (constructorInfo);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorArguments)
+    //      .Return (constructorArguments);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.NamedArguments)
+    //      .Return (namedArgumentsCollection);
 
-      var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
-      var expected = Expression.MemberInit (Expression.New (constructorInfo, Expression.Constant ("ctor", typeof (string))));
+    //  var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
+    //  var expected = Expression.MemberInit (Expression.New (constructorInfo, Expression.Constant ("ctor", typeof (string))));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
+    //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+    //}
 
-    [Test]
-    public void NamedElementArgument ()
-    {
-      var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute());
-      var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
-      var namedArgumentsCollection =
-          new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (
-              new[] { _namedPropertyArgumentMock, _namedFieldArgumentMock });
-      var propertyInfo =
-          NormalizingMemberInfoFromExpressionUtility.GetProperty ((AspectAttribute obj) => obj.PropertyElementArg);
-      var fieldInfo = NormalizingMemberInfoFromExpressionUtility.GetField ((AspectAttribute obj) => obj.FieldElementArg);
+    //[Test]
+    //public void NamedElementArgument ()
+    //{
+    //  var constructorInfo = NormalizingMemberInfoFromExpressionUtility.GetConstructor (() => new AspectAttribute());
+    //  var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
+    //  var namedArgumentsCollection =
+    //      new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (
+    //          new[] { _namedPropertyArgumentMock, _namedFieldArgumentMock });
+    //  var propertyInfo =
+    //      NormalizingMemberInfoFromExpressionUtility.GetProperty ((AspectAttribute obj) => obj.PropertyElementArg);
+    //  var fieldInfo = NormalizingMemberInfoFromExpressionUtility.GetField ((AspectAttribute obj) => obj.FieldElementArg);
 
-      _namedPropertyArgumentMock
-          .Expect (x => x.MemberInfo)
-          .Return (propertyInfo);
-      _namedPropertyArgumentMock
-          .Expect (x => x.MemberType)
-          .Return (propertyInfo.PropertyType);
-      _namedPropertyArgumentMock
-          .Expect (x => x.Value)
-          .Return ("prop");
-      _namedFieldArgumentMock
-          .Expect (x => x.MemberInfo)
-          .Return (fieldInfo);
-      _namedFieldArgumentMock
-          .Expect (x => x.MemberType)
-          .Return (fieldInfo.FieldType);
-      _namedFieldArgumentMock
-          .Expect (x => x.Value)
-          .Return ("field");
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorInfo)
-          .Return (constructorInfo);
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorArguments)
-          .Return (constructorArguments);
-      _aspectDescriptorMock
-          .Expect (x => x.NamedArguments)
-          .Return (namedArgumentsCollection);
+    //  _namedPropertyArgumentMock
+    //      .Expect (x => x.MemberInfo)
+    //      .Return (propertyInfo);
+    //  _namedPropertyArgumentMock
+    //      .Expect (x => x.MemberType)
+    //      .Return (propertyInfo.PropertyType);
+    //  _namedPropertyArgumentMock
+    //      .Expect (x => x.Value)
+    //      .Return ("prop");
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.MemberInfo)
+    //      .Return (fieldInfo);
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.MemberType)
+    //      .Return (fieldInfo.FieldType);
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.Value)
+    //      .Return ("field");
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorInfo)
+    //      .Return (constructorInfo);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorArguments)
+    //      .Return (constructorArguments);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.NamedArguments)
+    //      .Return (namedArgumentsCollection);
 
-      var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
-      var expected = Expression.MemberInit (
-          Expression.New (constructorInfo),
-          Expression.Bind (propertyInfo, Expression.Constant ("prop", typeof (string))),
-          Expression.Bind (fieldInfo, Expression.Constant ("field", typeof (string)))
-          );
+    //  var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
+    //  var expected = Expression.MemberInit (
+    //      Expression.New (constructorInfo),
+    //      Expression.Bind (propertyInfo, Expression.Constant ("prop", typeof (string))),
+    //      Expression.Bind (fieldInfo, Expression.Constant ("field", typeof (string)))
+    //      );
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
+    //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+    //}
 
-    [Test]
-    public void NamedArrayArgument ()
-    {
-      var namedArgumentsCollection =
-          new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (
-              new[] { _namedFieldArgumentMock });
-      var constructorInfo = typeof (AspectAttribute).GetConstructor (Type.EmptyTypes);
-      var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
-      var fieldInfo = NormalizingMemberInfoFromExpressionUtility.GetField ((AspectAttribute obj) => obj.FieldArrayArg);
+    //[Test]
+    //public void NamedArrayArgument ()
+    //{
+    //  var namedArgumentsCollection =
+    //      new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (
+    //          new[] { _namedFieldArgumentMock });
+    //  var constructorInfo = typeof (AspectAttribute).GetConstructor (Type.EmptyTypes);
+    //  var constructorArguments = new ReadOnlyCollection<object> (new object[0]);
+    //  var fieldInfo = NormalizingMemberInfoFromExpressionUtility.GetField ((AspectAttribute obj) => obj.FieldArrayArg);
 
-      _namedFieldArgumentMock
-          .Expect (x => x.MemberInfo)
-          .Return (fieldInfo);
-      _namedFieldArgumentMock
-          .Expect (x => x.MemberType)
-          .Return (fieldInfo.FieldType);
-      _namedFieldArgumentMock
-          .Expect (x => x.Value)
-          .Return (new object[] { "str", 7 });
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorInfo)
-          .Return (constructorInfo);
-      _aspectDescriptorMock
-          .Expect (x => x.ConstructorArguments)
-          .Return (constructorArguments);
-      _aspectDescriptorMock
-          .Expect (x => x.NamedArguments)
-          .Return (namedArgumentsCollection);
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.MemberInfo)
+    //      .Return (fieldInfo);
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.MemberType)
+    //      .Return (fieldInfo.FieldType);
+    //  _namedFieldArgumentMock
+    //      .Expect (x => x.Value)
+    //      .Return (new object[] { "str", 7 });
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorInfo)
+    //      .Return (constructorInfo);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.ConstructorArguments)
+    //      .Return (constructorArguments);
+    //  _aspectDescriptorMock
+    //      .Expect (x => x.NamedArguments)
+    //      .Return (namedArgumentsCollection);
 
-      var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
-      var expected = Expression.MemberInit (
-          Expression.New (constructorInfo),
-          Expression.Bind (
-              fieldInfo,
-              Expression.NewArrayInit (typeof (object), Expression.Constant ("str", typeof (object)), Expression.Constant (7, typeof (object))))
-          );
+    //  var actual = _aspectInitExpressionHelper.CreateInitExpression (_aspectDescriptorMock);
+    //  var expected = Expression.MemberInit (
+    //      Expression.New (constructorInfo),
+    //      Expression.Bind (
+    //          fieldInfo,
+    //          Expression.NewArrayInit (typeof (object), Expression.Constant ("str", typeof (object)), Expression.Constant (7, typeof (object))))
+    //      );
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
-    }
+    //  ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+    //}
 
     [Test]
     [Ignore ("TODO")]

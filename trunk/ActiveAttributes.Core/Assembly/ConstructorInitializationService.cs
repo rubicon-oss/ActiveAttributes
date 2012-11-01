@@ -23,6 +23,7 @@ using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
@@ -36,6 +37,8 @@ namespace ActiveAttributes.Core.Assembly
   public interface IConstructorInitializationService
   {
     IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors);
+
+    IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo);
     
     IFieldWrapper AddMemberInfoInitialization (MutableMethodInfo method);
 
@@ -65,6 +68,14 @@ namespace ActiveAttributes.Core.Assembly
       AddInitialization (mutableType, expressionProvider);
 
       return aspectDescriptors.Select ((x, i) => new { Key = x, Value = Tuple.Create (field, i) }).ToDictionary (x => x.Key, x => x.Value);
+    }
+
+    public IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo)
+    {
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+
+      return null;
     }
 
     public IFieldWrapper AddMemberInfoInitialization (MutableMethodInfo method)

@@ -21,18 +21,18 @@ namespace ActiveAttributes.Core.Infrastructure
 {
   public class AspectDeclaration
   {
-    private readonly IConstructionInfo _constructionInfo;
+    private readonly IAspectConstructionInfo _aspectConstructionInfo;
     private readonly IEnumerable<Advice> _advices;
 
-    public AspectDeclaration (IConstructionInfo constructionInfo, IEnumerable<Advice> advices)
+    public AspectDeclaration (IAspectConstructionInfo aspectConstructionInfo, IEnumerable<Advice> advices)
     {
-      _constructionInfo = constructionInfo;
+      _aspectConstructionInfo = aspectConstructionInfo;
       _advices = advices;
     }
 
-    public IConstructionInfo ConstructionInfo
+    public IAspectConstructionInfo AspectConstructionInfo
     {
-      get { return _constructionInfo; }
+      get { return _aspectConstructionInfo; }
     }
 
     public IEnumerable<Advice> Advices

@@ -21,6 +21,8 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -59,6 +61,24 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (_expressionsHelperMock);
 
       _service = new ConstructorInitializationService (_fieldIntroducer2Mock, _expressionsHelperFactoryStub);
+    }
+
+    [Test]
+    public void AddAspectInitialization_ ()
+    {
+      var constructionInfo = ObjectMother2.GetAspectConstructionInfo();
+      var fakeField = ObjectMother.GetFieldWrapper();
+
+      _fieldIntroducer2Mock
+          .Expect (
+              x => x.AddField (
+                  Arg.Is (_mutableType),
+                  Arg.Is (typeof (IAspect)),
+                  Arg<string>.Is.Anything,
+                  Arg.Is (FieldAttributes.Private)))
+          .Return (fakeField);
+
+
     }
 
     [Test]
