@@ -13,36 +13,28 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Old;
-using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
-using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.Core.Assembly
 {
   [ConcreteImplementation (typeof (ConstructorInitializationService))]
   public interface IConstructorInitializationService
   {
-    IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors);
-
-    IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo);
-    
     IFieldWrapper AddMemberInfoInitialization (MutableMethodInfo method);
 
     IFieldWrapper AddDelegateInitialization (MutableMethodInfo method);
+
+    IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, Scope scope);
   }
 
   public class ConstructorInitializationService : IConstructorInitializationService
@@ -54,28 +46,6 @@ namespace ActiveAttributes.Core.Assembly
     {
       _fieldIntroducer2 = fieldIntroducer2;
       _expressionsHelperFactory = expressionsHelperFactory;
-    }
-
-    public IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors)
-    {
-      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
-
-      var attributes = FieldAttributes.Private | (aspectDescriptors.Any (x => x.Scope == Scope.Static) ? FieldAttributes.Static : 0);
-      var field = _fieldIntroducer2.AddField (mutableType, typeof (AspectAttribute[]), "Aspects", attributes);
-      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectDescriptors);
-
-      AddInitialization (mutableType, expressionProvider);
-
-      return aspectDescriptors.Select ((x, i) => new { Key = x, Value = Tuple.Create (field, i) }).ToDictionary (x => x.Key, x => x.Value);
-    }
-
-    public IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo)
-    {
-      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
-
-      return null;
     }
 
     public IFieldWrapper AddMemberInfoInitialization (MutableMethodInfo method)
@@ -113,6 +83,20 @@ namespace ActiveAttributes.Core.Assembly
       var field = _fieldIntroducer2.AddField (mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
       Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
 
+      AddInitialization (mutableType, expressionProvider);
+
+      return field;
+    }
+
+    public IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, Scope scope)
+    {
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+
+      var attributes = FieldAttributes.Private | (scope == Scope.Static ? FieldAttributes.Static : 0);
+      var field = _fieldIntroducer2.AddField (mutableType, typeof (IAspect), "TODO", attributes);
+
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectConstructionInfo);
       AddInitialization (mutableType, expressionProvider);
 
       return field;

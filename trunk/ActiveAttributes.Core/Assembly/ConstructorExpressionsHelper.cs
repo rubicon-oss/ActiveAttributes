@@ -24,6 +24,7 @@ using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
@@ -39,6 +40,7 @@ namespace ActiveAttributes.Core.Assembly
     BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
 
     BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IEnumerable<IAspectDescriptor> aspectDescriptors);
+    BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo);
   }
 
   public class ConstructorExpressionsHelper : IConstructorExpressionsHelper
@@ -84,6 +86,11 @@ namespace ActiveAttributes.Core.Assembly
           aspectDescriptors.Select (x => _aspectInitExpressionHelper.CreateInitExpression (x)).Cast<Expression> ());
 
       return GetAssignExpression (field, value);
+    }
+
+    public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo)
+    {
+      throw new NotImplementedException();
     }
 
 

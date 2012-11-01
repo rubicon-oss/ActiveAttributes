@@ -22,6 +22,7 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -44,7 +45,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private IConstructorExpressionsHelper _expressionsHelperMock;
     private IFieldIntroducer2 _fieldIntroducer2Mock;
 
-    private ConstructorInitializationService _service;
+    private ConstructorInitializationService _constructorInitializationService;
 
     [SetUp]
     public void SetUp ()
@@ -60,14 +61,15 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Stub (x => x.CreateConstructorExpressionHelper (Arg<BodyContextBase>.Is.Anything))
           .Return (_expressionsHelperMock);
 
-      _service = new ConstructorInitializationService (_fieldIntroducer2Mock, _expressionsHelperFactoryStub);
+      _constructorInitializationService = new ConstructorInitializationService (_fieldIntroducer2Mock, _expressionsHelperFactoryStub);
     }
 
     [Test]
-    public void AddAspectInitialization_ ()
+    public void AddAspectInitialization_Instance ()
     {
       var constructionInfo = ObjectMother2.GetAspectConstructionInfo();
-      var fakeField = ObjectMother.GetFieldWrapper();
+      var fakeField = ObjectMother2.GetFieldWrapper();
+      var fakeExpression = ObjectMother2.GetBinaryExpression();
 
       _fieldIntroducer2Mock
           .Expect (
@@ -77,52 +79,49 @@ namespace ActiveAttributes.UnitTests.Assembly
                   Arg<string>.Is.Anything,
                   Arg.Is (FieldAttributes.Private)))
           .Return (fakeField);
+      _expressionsHelperMock
+          .Expect (x => x.CreateAspectAssignExpression (fakeField, constructionInfo))
+          .Return (fakeExpression);
 
+      var previousBody = _firstConstructor.Body;
+      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, Scope.Instance);
 
+      _fieldIntroducer2Mock.VerifyAllExpectations();
+      _expressionsHelperMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeField));
+      var blockExpression = (BlockExpression) ((BlockExpression) _firstConstructor.Body).Expressions[0];
+      Assert.That (blockExpression.Expressions[0], Is.EqualTo (previousBody));
+      Assert.That (blockExpression.Expressions[1], Is.EqualTo (fakeExpression));
     }
 
     [Test]
-    public void AddAspectInitialization ()
+    public void AddAspectInitialization_Static ()
     {
-      var aspectDescriptor1 = ObjectMother.GetStaticAspectDescriptor();
-      var aspectDescriptor2 = ObjectMother.GetStaticAspectDescriptor();
-      var aspectDescriptors = new[] { aspectDescriptor1, aspectDescriptor2 };
-      var fakeField = ObjectMother.GetFieldWrapper ();
-      var fakeExpression = Expression.Assign (Expression.Parameter (typeof (int)), Expression.Constant (1));
+      var constructionInfo = ObjectMother2.GetAspectConstructionInfo();
+      var fakeField = ObjectMother2.GetFieldWrapper();
+      var fakeExpression = ObjectMother2.GetBinaryExpression();
 
       _fieldIntroducer2Mock
-          .Expect (x => x.AddField (_mutableType, typeof (AspectAttribute[]), "Aspects", FieldAttributes.Private | FieldAttributes.Static))
+          .Expect (
+              x => x.AddField (
+                  Arg.Is (_mutableType),
+                  Arg.Is (typeof (IAspect)),
+                  Arg<string>.Is.Anything,
+                  Arg.Is (FieldAttributes.Private | FieldAttributes.Static)))
           .Return (fakeField);
       _expressionsHelperMock
-          .Expect (x => x.CreateAspectAssignExpression (fakeField, aspectDescriptors))
+          .Expect (x => x.CreateAspectAssignExpression (fakeField, constructionInfo))
           .Return (fakeExpression);
+
       var previousBody = _firstConstructor.Body;
+      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, Scope.Static);
 
-      var result = _service.AddAspectInitialization (_mutableType, aspectDescriptors);
-
-      _fieldIntroducer2Mock.VerifyAllExpectations ();
-      _expressionsHelperMock.VerifyAllExpectations ();
-      var expectedExpression = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, _firstConstructor.Body);
-      var expectedDictionary = new Dictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>>()
-                     {
-                       { aspectDescriptor1, Tuple.Create(fakeField, 0) },
-                       { aspectDescriptor2, Tuple.Create(fakeField, 1) }
-                     };
-      Assert.That (result, Is.EquivalentTo (expectedDictionary));
-    }
-
-    [Test]
-    public void AddAspectInitialization_Instance ()
-    {
-      var aspectDescriptor1 = ObjectMother.GetInstanceAspectDescriptor();
-      var aspectDescriptors = new[] { aspectDescriptor1 };
-      var fakeExpression = Expression.Assign (Expression.Parameter (typeof (int)), Expression.Constant (1));
-
-      _fieldIntroducer2Mock.Expect (x => x.AddField (_mutableType, typeof (AspectAttribute[]), "Aspects", FieldAttributes.Private));
-      _expressionsHelperMock.Expect (x => x.CreateAspectAssignExpression (null, null)).IgnoreArguments().Return (fakeExpression);
-
-      _service.AddAspectInitialization (_mutableType, aspectDescriptors);
+      _fieldIntroducer2Mock.VerifyAllExpectations();
+      _expressionsHelperMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeField));
+      var blockExpression = (BlockExpression) ((BlockExpression) _firstConstructor.Body).Expressions[0];
+      Assert.That (blockExpression.Expressions[0], Is.EqualTo (previousBody));
+      Assert.That (blockExpression.Expressions[1], Is.EqualTo (fakeExpression));
     }
 
     [Test]
@@ -140,7 +139,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (fakeExpression);
       var previousBody = _firstConstructor.Body;
 
-      var result = _service.AddDelegateInitialization (method);
+      var result = _constructorInitializationService.AddDelegateInitialization (method);
 
       Assert.That (result, Is.SameAs (fakeField));
       var expected = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
@@ -177,7 +176,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (fakeExpression);
       var previousBody = _firstConstructor.Body;
 
-      var result = _service.AddMemberInfoInitialization (method);
+      var result = _constructorInitializationService.AddMemberInfoInitialization (method);
 
       _fieldIntroducer2Mock.VerifyAllExpectations ();
       _expressionsHelperMock.VerifyAllExpectations ();

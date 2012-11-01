@@ -23,8 +23,9 @@ namespace ActiveAttributes.UnitTests
   {
     public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
     {
-      var field = GetFieldInfo (type, attributes: attributes);
-      var thisExpression = field.IsStatic ? null : GetThisExpression();
+      var declaringType = GetDeclaringType();
+      var field = GetFieldInfo (declaringType, attributes: attributes, declaringType:declaringType);
+      var thisExpression = field.IsStatic ? null : GetThisExpression (declaringType);
       return Expression.Field (thisExpression, field);
     }
   }
