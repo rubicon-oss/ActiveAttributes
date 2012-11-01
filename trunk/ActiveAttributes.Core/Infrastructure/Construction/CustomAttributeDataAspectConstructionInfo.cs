@@ -23,13 +23,13 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Infrastructure.Construction
 {
-  public class CustomAttributeDataConstructionInfo : IConstructionInfo
+  public class CustomAttributeDataAspectConstructionInfo : IAspectConstructionInfo
   {
     private readonly ConstructorInfo _constructorInfo;
     private readonly ReadOnlyCollection<object> _constructorArguments;
     private readonly ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> _namedArguments;
 
-    public CustomAttributeDataConstructionInfo (ICustomAttributeData customAttributeData)
+    public CustomAttributeDataAspectConstructionInfo (ICustomAttributeData customAttributeData)
     {
       if (!typeof (AspectBaseAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new Exception ("TODO (low) exception text");

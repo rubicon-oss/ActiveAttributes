@@ -22,7 +22,7 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Infrastructure.Construction
 {
-  public interface IConstructionInfo
+  public interface IAspectConstructionInfo
   {
     ConstructorInfo ConstructorInfo { get; }
 

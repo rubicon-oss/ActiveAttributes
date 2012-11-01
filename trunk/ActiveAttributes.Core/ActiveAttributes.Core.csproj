@@ -122,9 +122,9 @@
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceNameAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceScopeAttribute.cs" />
-    <Compile Include="Infrastructure\Construction\CustomAttributeDataConstructionInfo.cs" />
-    <Compile Include="Infrastructure\Construction\IConstructionInfo.cs" />
-    <Compile Include="Infrastructure\Construction\TypeConstructionInfo.cs" />
+    <Compile Include="Infrastructure\Construction\CustomAttributeDataAspectConstructionInfo.cs" />
+    <Compile Include="Infrastructure\Construction\IAspectConstructionInfo.cs" />
+    <Compile Include="Infrastructure\Construction\TypeAspectConstructionInfo.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\EventInterceptionAspectBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\InterceptionAspectBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\MethodInterceptionAspectBaseAttribute.cs" />

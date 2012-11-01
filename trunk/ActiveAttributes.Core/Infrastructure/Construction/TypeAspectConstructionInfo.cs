@@ -23,13 +23,13 @@ using System.Linq;
 
 namespace ActiveAttributes.Core.Infrastructure.Construction
 {
-  public class TypeConstructionInfo : IConstructionInfo
+  public class TypeAspectConstructionInfo : IAspectConstructionInfo
   {
     private readonly ConstructorInfo _constructorInfo;
     private readonly ReadOnlyCollection<object> _constructorArguments;
     private readonly ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> _namedArguments;
 
-    public TypeConstructionInfo (Type aspectType)
+    public TypeAspectConstructionInfo (Type aspectType)
     {
       if (!typeof (IAspect).IsAssignableFrom (aspectType))
         throw new Exception ("TODO (low) exception text");
