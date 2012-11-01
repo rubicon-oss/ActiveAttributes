@@ -14,6 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Linq;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -21,6 +26,17 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class PointcutConverterTest
   {
-    
+    [Test]
+    public void Converts ()
+    {
+      Check<TypePointcut> (ObjectMother2.GetAspectAttribute (type: typeof (string)), "Type", typeof (string));
+      Check<MemberNamePointcut> (ObjectMother2.GetAspectAttribute (memberName: "Method"), "MemberName", "Method");
+    }
+
+    private void Check<TPointcut> (AspectBaseAttribute aspectAttribute, string property, object expected)
+    {
+      var result = new PointcutConverter().GetPointcuts (aspectAttribute).Single();
+      Assert.That (result, Is.TypeOf<TPointcut>().And.Property (property).EqualTo (expected));
+    }
   }
 }

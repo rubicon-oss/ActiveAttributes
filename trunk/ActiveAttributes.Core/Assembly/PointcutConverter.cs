@@ -13,11 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly
@@ -32,7 +32,11 @@ namespace ActiveAttributes.Core.Assembly
   {
     public IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute)
     {
-      throw new NotImplementedException();
+      if (aspectAttribute.Type != null)
+        yield return new TypePointcut (aspectAttribute.Type);
+
+      if (aspectAttribute.MemberName != null)
+        yield return new MemberNamePointcut (aspectAttribute.MemberName);
     }
   }
 }
