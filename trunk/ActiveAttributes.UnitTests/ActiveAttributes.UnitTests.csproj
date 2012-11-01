@@ -131,6 +131,7 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetBinaryExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetFieldWrapper.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetMemberExpression.cs" />
