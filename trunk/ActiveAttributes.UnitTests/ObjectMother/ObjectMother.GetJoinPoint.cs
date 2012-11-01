@@ -14,29 +14,23 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Linq;
 using System.Reflection;
-using Rhino.Mocks;
+using ActiveAttributes.Core.Infrastructure;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MethodInfo GetMethodInfo (string name = null,
-        Type returnType = null, MethodAttributes attributes = MethodAttributes.Private, Type declaringType = null)
+    public static JoinPoint GetJoinPoint (Type type = null)
     {
-      name = name ?? "";
-      returnType = returnType ?? GetType_();
-      //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
-      declaringType = declaringType ?? GetDeclaringType();
+      type = type ?? GetDeclaringType();
+      return new JoinPoint (type);
+    }
 
-      var stub = MockRepository.GenerateStub<MethodInfo>();
-
-      stub.Stub (x => x.Name).Return (name);
-      stub.Stub (x => x.ReturnType).Return (returnType);
-      stub.Stub (x => x.DeclaringType).Return (declaringType);
-
-      return stub;
+    public static JoinPoint GetJoinPoint (MethodInfo method = null)
+    {
+      method = method ?? GetMethodInfo();
+      return new JoinPoint (method);
     }
   }
 }

@@ -95,6 +95,7 @@
     <Compile Include="Assembly\Old\GiveItSomeNameTest.cs" />
     <Compile Include="Assembly\Old\MethodAssemblerTest.cs" />
     <Compile Include="Assembly\PointcutConverterTest.cs" />
+    <Compile Include="Assembly\PointcutVisitorTest.cs" />
     <Compile Include="ObjectMother.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Configuration2\AspectDescriptorProviders\EventBasedAspectDescriptorProviderTest.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetJoinPoint.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetDeclaringType.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetMethodInfo.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAspectAttribute.cs" />

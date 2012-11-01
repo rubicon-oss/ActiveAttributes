@@ -14,29 +14,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Linq;
-using System.Reflection;
-using Rhino.Mocks;
+using System.Text.RegularExpressions;
 
-namespace ActiveAttributes.UnitTests
+namespace ActiveAttributes.Core.Extensions
 {
-  public static partial class ObjectMother2
+  public static class StringExtensions
   {
-    public static MethodInfo GetMethodInfo (string name = null,
-        Type returnType = null, MethodAttributes attributes = MethodAttributes.Private, Type declaringType = null)
+    public static bool IsMatchRegex (this string input, string pattern, RegexOptions options = RegexOptions.None)
     {
-      name = name ?? "";
-      returnType = returnType ?? GetType_();
-      //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
-      declaringType = declaringType ?? GetDeclaringType();
+      return Regex.IsMatch (input, pattern, options);
+    }
 
-      var stub = MockRepository.GenerateStub<MethodInfo>();
-
-      stub.Stub (x => x.Name).Return (name);
-      stub.Stub (x => x.ReturnType).Return (returnType);
-      stub.Stub (x => x.DeclaringType).Return (declaringType);
-
-      return stub;
+    public static bool IsMatchWildcard (this string input, string pattern)
+    {
+      pattern = pattern.Replace ("*", ".*");
+      return input.IsMatchRegex (pattern);
     }
   }
 }

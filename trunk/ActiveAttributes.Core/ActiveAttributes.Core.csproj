@@ -118,6 +118,7 @@
     <Compile Include="Configuration2\ActiveAttributesesConfigurationProvider.cs" />
     <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceNameAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceScopeAttribute.cs" />

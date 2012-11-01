@@ -19,6 +19,7 @@ using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 using System.Linq;
+using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -45,31 +46,31 @@ namespace ActiveAttributes.Core.Assembly
     public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
     {
       if (pointcut is ITextPointcut)
-        VisitPointcut ((ITextPointcut) pointcut, joinPoint);
-      else if (pointcut is ITypePointcut)
-        VisitPointcut ((ITypePointcut) pointcut, joinPoint);
-      else if (pointcut is IMemberNamePointcut)
-        VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint);
-      else if (pointcut is IControlFlowPointcut)
-        VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint);
-
+        return VisitPointcut ((ITextPointcut) pointcut, joinPoint);
+      if (pointcut is ITypePointcut)
+        return VisitPointcut ((ITypePointcut) pointcut, joinPoint);
+      if (pointcut is IMemberNamePointcut)
+        return VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint);
+      if (pointcut is IControlFlowPointcut)
+        return VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint);
       throw new NotSupportedException();
     }
 
     public bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint)
     {
       // TODO: special treatment for && and ||
-      return _pointcutParser.GetPointcuts (pointcut.Text).All (x => x.MatchVisit (this, joinPoint));
+      var pointcuts = _pointcutParser.GetPointcuts (pointcut.Text);
+      return pointcuts.All (x => x.MatchVisit (this, joinPoint));
     }
 
     public bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint)
     {
-      return pointcut.Type == joinPoint.Type;
+      return pointcut.Type.IsAssignableFrom (joinPoint.Type);
     }
 
     public bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint)
     {
-      return pointcut.MemberName == joinPoint.Member.Name;
+      return joinPoint.Member.Name.IsMatchWildcard (pointcut.MemberName);
     }
 
     public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
