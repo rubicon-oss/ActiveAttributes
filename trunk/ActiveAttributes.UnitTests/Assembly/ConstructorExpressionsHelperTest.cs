@@ -14,13 +14,12 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
@@ -86,55 +85,42 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateDelegateAssignExpression_FieldWrapper ()
     {
-      var field = ObjectMother.GetFieldWrapper (typeof (Delegate), declaringType: _declaringType);
       var method = ObjectMother.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
+      var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper> ();
+      var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (Delegate));
 
-      var actual = _constructorExpressionsHelper.CreateDelegateAssignExpression (field, method);
-      var expected =
-          Expression.Assign (
-              Expression.Field (_thisExpression, field.Field),
-              Expression.NewDelegate (
-                  typeof (Func<int, string, string>),
-                  new ThisExpression(_declaringType),
-                  method));
+      fieldMock.Expect (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
 
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      var result = _constructorExpressionsHelper.CreateDelegateAssignExpression (fieldMock, method);
+
+      fieldMock.VerifyAllExpectations();
+      Assert.That (result.Left, Is.SameAs (fakeExpression1));
+      Assert.That (result.Right, Is.TypeOf<NewDelegateExpression> ());
+      var newDelegateExpression = (NewDelegateExpression) result.Right;
+      Assert.That (newDelegateExpression.Type, Is.EqualTo (typeof (Func<int, string, string>)));
+      Assert.That (newDelegateExpression.Target.Type, Is.EqualTo (_declaringType));
+      Assert.That (newDelegateExpression.Method, Is.SameAs (method));
     }
 
     [Test]
-    public void CreateAspectsAssignExpression ()
+    public void CreateAspectAssignExpression ()
     {
-      var field = ObjectMother.GetFieldWrapper (typeof (AspectAttribute[]), declaringType: _declaringType);
-      var aspectDescriptor1 = ObjectMother.GetInstanceAspectDescriptor (typeof (DomainAspect1Attribute));
-      var aspectDescriptor2 = ObjectMother.GetInstanceAspectDescriptor (typeof (DomainAspect2Attribute));
+      var constructionInfo = ObjectMother2.GetAspectConstructionInfo();
+      var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
+      var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (IAspect));
+      var fakeExpression2 = ObjectMother2.GetMemberInitExpression (typeof (DomainAspect));
 
-      var aspectDescriptors = new[] { aspectDescriptor1, aspectDescriptor2 };
+      fieldMock.Expect (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
+      _aspectInitExpressionHelperMock.Expect (x => x.CreateInitExpression (constructionInfo)).Return (fakeExpression2);
 
-      var mockRepository = _aspectInitExpressionHelperMock.GetMockRepository();
-      mockRepository.BackToRecordAll();
-      using (mockRepository.Ordered())
-      {
-        _aspectInitExpressionHelperMock
-            .Expect (x => x.CreateInitExpression (aspectDescriptor1))
-            .Return (Expression.MemberInit (Expression.New (typeof (DomainAspect1Attribute))));
-        _aspectInitExpressionHelperMock
-            .Expect (x => x.CreateInitExpression (aspectDescriptor2))
-            .Return (Expression.MemberInit (Expression.New (typeof (DomainAspect2Attribute))));
-      }
-      mockRepository.ReplayAll();
+      var result = _constructorExpressionsHelper.CreateAspectAssignExpression (fieldMock, constructionInfo);
 
-      var actual = _constructorExpressionsHelper.CreateAspectAssignExpression (field, aspectDescriptors);
-      var expected =
-          Expression.Assign (
-              Expression.Field (_thisExpression, field.Field),
-              Expression.NewArrayInit (
-                  typeof (AspectAttribute),
-                  Expression.MemberInit (Expression.New (typeof (DomainAspect1Attribute))),
-                  Expression.MemberInit (Expression.New (typeof (DomainAspect2Attribute)))));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      fieldMock.VerifyAllExpectations();
+      _aspectInitExpressionHelperMock.VerifyAllExpectations();
+      Assert.That (result.Left, Is.SameAs (fakeExpression1));
+      Assert.That (result.Right, Is.SameAs (fakeExpression2));
     }
 
-    private class DomainAspect1Attribute : AspectAttribute {}
-    private class DomainAspect2Attribute : AspectAttribute {}
+    class DomainAspect : IAspect {}
   }
 }

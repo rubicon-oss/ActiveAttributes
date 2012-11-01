@@ -14,21 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
+    public static MemberInitExpression GetMemberInitExpression (Type type = null)
     {
-      var declaringType = GetDeclaringType();
-
-      var field = GetFieldInfo (type, attributes: attributes, declaringType: declaringType);
-      var thisExpression = field.IsStatic ? null : GetThisExpression (declaringType);
-
-      return Expression.Field (thisExpression, field);
+      var newExpression = GetNewExpression (type);
+      return Expression.MemberInit (newExpression);
     }
   }
 }

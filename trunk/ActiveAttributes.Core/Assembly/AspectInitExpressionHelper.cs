@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
@@ -33,6 +34,7 @@ namespace ActiveAttributes.Core.Assembly
   public interface IAspectInitExpressionHelper
   {
     MemberInitExpression CreateInitExpression (IAspectDescriptor aspectDescriptor);
+    MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo);
   }
 
   public class AspectInitExpressionHelper : IAspectInitExpressionHelper
@@ -49,6 +51,11 @@ namespace ActiveAttributes.Core.Assembly
       var initExpression = Expression.MemberInit (createExpression, memberBindingExpressions);
 
       return initExpression;
+    }
+
+    public MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo)
+    {
+      throw new NotImplementedException();
     }
 
     private MemberBinding GetMemberBindingExpression (ICustomAttributeNamedArgument namedArgument)

@@ -13,16 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Old;
-using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
@@ -32,14 +29,13 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-
   [ConcreteImplementation (typeof (ConstructorExpressionsHelper))]
   public interface IConstructorExpressionsHelper
   {
     BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MemberInfo method);
+
     BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
 
-    BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IEnumerable<IAspectDescriptor> aspectDescriptors);
     BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo);
   }
 
@@ -62,35 +58,32 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("member", member);
 
+      if (member is MethodInfo)
+        return CreateMemberInfoAssignExpression (field, (MethodInfo) member);
       if (member is PropertyInfo)
         return CreateMemberInfoAssignExpression (field, (PropertyInfo) member);
-      
-      return CreateMemberInfoAssignExpression (field, (MethodInfo) member);
+
+      throw new NotSupportedException();
     }
 
     public BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method)
     {
-      var value = Expression.NewDelegate (method.GetDelegateType (), _context.This, method);
-
-      return GetAssignExpression(field, value);
-    }
-
-    public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IEnumerable<IAspectDescriptor> aspectDescriptors)
-    {
       ArgumentUtility.CheckNotNull ("field", field);
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
-      Assertion.IsTrue (field.Field.IsStatic == aspectDescriptors.All (x => x.Scope == Scope.Static));
+      ArgumentUtility.CheckNotNull ("method", method);
 
-      var value = Expression.NewArrayInit (
-          typeof (AspectAttribute),
-          aspectDescriptors.Select (x => _aspectInitExpressionHelper.CreateInitExpression (x)).Cast<Expression> ());
+      var value = Expression.NewDelegate (method.GetDelegateType(), _context.This, method);
 
       return GetAssignExpression (field, value);
     }
 
     public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("field", field);
+      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+
+      var value = _aspectInitExpressionHelper.CreateInitExpression (aspectConstructionInfo);
+
+      return GetAssignExpression (field, value);
     }
 
 
@@ -126,7 +119,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private BinaryExpression GetAssignExpression (IFieldWrapper field, Expression value)
     {
-      return Expression.Assign (GetFieldAccessExpression(field), value);
+      return Expression.Assign (GetFieldAccessExpression (field), value);
     }
 
     private MemberExpression GetFieldAccessExpression (IFieldWrapper fieldWrapper)

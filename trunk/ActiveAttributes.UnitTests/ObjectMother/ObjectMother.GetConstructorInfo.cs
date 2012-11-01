@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Linq;
 using System.Reflection;
 using Rhino.Mocks;
 
@@ -22,7 +21,8 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static ConstructorInfo GetConstructorInfo (Type[] parameterTypes = null, Type declaringType = null, MethodAttributes attributes = MethodAttributes.Private)
+    public static ConstructorInfo GetConstructorInfo (
+        Type[] parameterTypes = null, Type declaringType = null, MethodAttributes attributes = MethodAttributes.Private)
     {
       //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
       declaringType = declaringType ?? GetDeclaringType();
