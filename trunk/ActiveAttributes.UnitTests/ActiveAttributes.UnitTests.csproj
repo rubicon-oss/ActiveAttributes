@@ -131,6 +131,14 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetExpression.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetFieldWrapper.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetMemberExpression.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetThisExpression.cs" />
+    <Compile Include="ObjectMother\ObjectMother._.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetFieldInfo.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetConstructorInfo.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetConstructionInfo.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetJoinPoint.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetDeclaringType.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetMethodInfo.cs" />

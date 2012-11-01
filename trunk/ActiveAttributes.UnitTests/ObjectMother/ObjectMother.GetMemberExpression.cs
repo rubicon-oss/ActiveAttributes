@@ -15,31 +15,17 @@
 // under the License.
 using System;
 using System.Reflection;
-using Rhino.Mocks;
+using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MethodInfo GetMethodInfo (
-        string name = null,
-        Type returnType = null,
-        MethodAttributes attributes = MethodAttributes.Private,
-        Type declaringType = null)
+    public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
     {
-      name = name ?? "Method";
-      returnType = returnType ?? GetType_();
-      //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
-      declaringType = declaringType ?? GetDeclaringType();
-
-      var stub = MockRepository.GenerateStub<MethodInfo>();
-
-      stub.Stub (x => x.Name).Return (name);
-      stub.Stub (x => x.ReturnType).Return (returnType);
-      stub.Stub (x => x.Attributes).Return (attributes);
-      stub.Stub (x => x.DeclaringType).Return (declaringType);
-
-      return stub;
+      var field = GetFieldInfo (type, attributes: attributes);
+      var thisExpression = field.IsStatic ? null : GetThisExpression();
+      return Expression.Field (thisExpression, field);
     }
   }
 }

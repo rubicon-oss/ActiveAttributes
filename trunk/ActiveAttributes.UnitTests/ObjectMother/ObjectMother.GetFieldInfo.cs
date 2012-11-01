@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Linq;
 using System.Reflection;
 using Rhino.Mocks;
 
@@ -21,21 +22,17 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MethodInfo GetMethodInfo (
-        string name = null,
-        Type returnType = null,
-        MethodAttributes attributes = MethodAttributes.Private,
-        Type declaringType = null)
+    public static FieldInfo GetFieldInfo (
+        Type type = null, string name = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null)
     {
-      name = name ?? "Method";
-      returnType = returnType ?? GetType_();
-      //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
+      name = name ?? "_field";
+      type = type ?? GetDeclaringType ();
       declaringType = declaringType ?? GetDeclaringType();
 
-      var stub = MockRepository.GenerateStub<MethodInfo>();
+      var stub = MockRepository.GeneratePartialMock<FieldInfo>();
 
       stub.Stub (x => x.Name).Return (name);
-      stub.Stub (x => x.ReturnType).Return (returnType);
+      stub.Stub (x => x.FieldType).Return (type);
       stub.Stub (x => x.Attributes).Return (attributes);
       stub.Stub (x => x.DeclaringType).Return (declaringType);
 
