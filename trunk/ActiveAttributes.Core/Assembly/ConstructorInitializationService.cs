@@ -21,6 +21,8 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
@@ -33,11 +35,11 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (ConstructorInitializationService))]
   public interface IConstructorInitializationService
   {
+    IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors);
+    
     IFieldWrapper AddMemberInfoInitialization (MutableMethodInfo method);
 
     IFieldWrapper AddDelegateInitialization (MutableMethodInfo method);
-
-    IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> AddAspectInitialization (MutableType mutableType, IEnumerable<IAspectDescriptor> aspectDescriptors);
   }
 
   public class ConstructorInitializationService : IConstructorInitializationService

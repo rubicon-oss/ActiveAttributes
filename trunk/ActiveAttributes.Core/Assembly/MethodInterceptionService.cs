@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
@@ -25,7 +26,17 @@ using System.Linq;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class MethodInterceptionService
+  public interface IMethodInterceptionService
+  {
+    //void AddInterception (
+    //    MutableMethodInfo method,
+    //    IFieldWrapper delegateField,
+    //    IFieldWrapper memberInfoField,
+    //    IEnumerable<IAdvice> advices,
+    //    IDictionary<IAdvice, IFieldWrapper> adviceDictionary);
+  }
+
+  public class MethodInterceptionService : IMethodInterceptionService
   {
     private readonly IInvocationTypeProvider2 _invocationTypeProvider;
     private readonly IMethodExpressionHelperFactory _methodExpressionHelperFactory;
@@ -60,12 +71,12 @@ namespace ActiveAttributes.Core.Assembly
             var exps = helper.CreateInvocationExpressions (invocationType, invctxPar, delegateField, aspectDescriptorDictionary, aspectDescriptors);
             var invPars = exps.Select (x => x.Item1);
             var invAssigns = exps.Select (x => x.Item2);
-            var callExp = helper.CreateOutermostAspectCallExpression (aspectDescriptors.Last(), invPars.Last(), aspectDescriptorDictionary);
+            var callExp = helper.CreateOutermostAspectCallExpression (aspectDescriptors.Last (), invPars.Last (), aspectDescriptorDictionary);
 
             return Expression.Block (
                 new[] { invctxPar }.Concat (invPars),
                 invctxAssign,
-                Expression.Block (invAssigns.Cast<Expression>()),
+                Expression.Block (invAssigns.Cast<Expression> ()),
                 callExp);
           });
       // get invocationcontext type

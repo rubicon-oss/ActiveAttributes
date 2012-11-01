@@ -15,10 +15,7 @@
 // under the License.
 
 using System;
-using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using NUnit.Framework;
 using Remotion.FunctionalProgramming;
@@ -26,7 +23,7 @@ using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Old
 {
   [TestFixture]
   public class MethodCopierTest : TestBase

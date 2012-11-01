@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
@@ -36,7 +37,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       get { return _type; }
     }
 
-    public bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint)
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
       return visitor.VisitPointcut (this, joinPoint);
     }

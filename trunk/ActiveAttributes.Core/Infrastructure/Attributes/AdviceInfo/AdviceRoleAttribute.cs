@@ -13,16 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using System.Collections.Generic;
 
-namespace ActiveAttributes.Core.Infrastructure.Discovery
+using System;
+
+namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
-  public class AttributeAspectDeclarationDiscovery : AspectDeclarationDiscoveryBase
+  public class AdviceRoleAttribute : Attribute
   {
-    public override IEnumerable<AspectDeclaration> GetAspectDeclarations (Type type)
+    private readonly string _role;
+
+    public AdviceRoleAttribute (string role)
     {
-      throw new NotImplementedException();
+      _role = role;
+    }
+
+    public string Role
+    {
+      get { return _role; }
     }
   }
 }

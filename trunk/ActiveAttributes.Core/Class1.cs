@@ -1,43 +1,62 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
-//
-// See the NOTICE file distributed with this work for additional information
-// regarding copyright ownership.  rubicon licenses this file to you under 
-// the Apache License, Version 2.0 (the "License"); you may not use this 
-// file except in compliance with the License.  You may obtain a copy of the 
-// License at
-//
-//   http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software 
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-// License for the specific language governing permissions and limitations
-// under the License.
+﻿//// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+////
+//// See the NOTICE file distributed with this work for additional information
+//// regarding copyright ownership.  rubicon licenses this file to you under 
+//// the Apache License, Version 2.0 (the "License"); you may not use this 
+//// file except in compliance with the License.  You may obtain a copy of the 
+//// License at
+////
+////   http://www.apache.org/licenses/LICENSE-2.0
+////
+//// Unless required by applicable law or agreed to in writing, software 
+//// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+//// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+//// License for the specific language governing permissions and limitations
+//// under the License.
+//using System;
+//using System.Collections.Generic;
+//using ActiveAttributes.Core.Assembly;
+//using ActiveAttributes.Core.Infrastructure;
+//using Remotion.TypePipe.MutableReflection;
+//using System.Linq;
 
-using ActiveAttributes.Core.Infrastructure;
-using Remotion.TypePipe.MutableReflection;
-using System.Linq;
+//namespace ActiveAttributes.Core
+//{
+//  public interface IAspectDeclarationDiscovery
+//  {
+//    IEnumerable<AspectDeclaration> GetAspectDeclarations (object obj);
+//  }
 
-namespace ActiveAttributes.Core
-{
-  public class Class1
-  {
-     public void Method()
-     {
-       IAspectDeclarationDiscovery discovery = null;
+//  public class Class1
+//  {
+//    private IEnumerable<AspectDeclaration> _standAlones;
+//    private StandaloneAspectDeclarationDiscovery _disc;
+//    private IPointcutVisitor _visitor;
 
-       IPointcutVisitor visitor = null;
+//    public Class1 ()
+//    {
+//      _standAlones = _disc.GetAspectDeclarations (assemblies);
+//    }
 
-       MutableType type = null;
-       
-       var declarations = discovery.GetAspectDeclarations (type);
+//    public void Method ()
+//    {
 
-       foreach (var method in type.AllMutableMethods)
-       {
-         var joinpoint = new JoinPoint (method);
 
-         var matching = declarations.Where (x => x.Pointcuts.All (y => visitor.VisitPointcut (y, joinpoint))).Select (z => z.Advice);
-       }
-     }
-  }
-}
+//      MutableType type = null;
+
+//      var standAloneDecls = discovery.GetAspectDeclarations (type);
+
+//      var mutableMethodInfos = type.AllMutableMethods;
+
+//      var matchingStandalones =
+//          _standAlones.Where (
+//              d => d.Advices.Any (a => a.Pointcuts.Any (p => mutableMethodInfos.Any (m => _visitor.VisitPointcut (p, new JoinPoint (m))))));
+
+//      foreach (var method in mutableMethodInfos)
+//      {
+
+//        var joinpoint = new JoinPoint (method);
+//      }
+//    }
+//  }
+//}

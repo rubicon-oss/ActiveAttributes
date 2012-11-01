@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,15 +13,21 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using System.Collections.Generic;
 
-namespace ActiveAttributes.Core.Infrastructure
+using System;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using Remotion.Collections;
+using Remotion.TypePipe.MutableReflection;
+
+namespace ActiveAttributes.Core.Infrastructure.Construction
 {
-  public interface IAspectDeclarationDiscovery
+  public interface IConstructionInfo
   {
-    IEnumerable<AspectDeclaration> GetAspectDeclarations (IEnumerable<System.Reflection.Assembly> assemblies);
-    IEnumerable<AspectDeclaration> GetAspectDeclarations (IEnumerable<Type> types);
-    IEnumerable<AspectDeclaration> GetAspectDeclarations (Type type);
+    ConstructorInfo ConstructorInfo { get; }
+
+    ReadOnlyCollection<object> ConstructorArguments { get; }
+
+    ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments { get; }
   }
 }

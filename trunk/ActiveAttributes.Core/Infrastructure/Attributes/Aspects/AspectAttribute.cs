@@ -13,19 +13,27 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Aspects
 {
+  // TODO add interfaces for AdviceInfo ?
   public abstract class AspectBaseAttribute
       : Attribute,
+        //IAdviceScope,
+        //IAdviceExecution,
         IAspect,
         ITypePointcut,
         IMemberNamePointcut,
         IControlFlowPointcut
   {
+    public Scope Scope { get; set; }
+
+    public Execution Execution { get; set; }
+
     #region Pointcuts
 
     public Type Type { get; set; }
@@ -36,7 +44,7 @@ namespace ActiveAttributes.Core.Infrastructure.Attributes.Aspects
 
     #endregion
 
-    public bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint)
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
       throw new NotSupportedException();
     }

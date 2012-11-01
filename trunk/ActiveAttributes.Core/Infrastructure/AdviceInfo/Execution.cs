@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,15 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 
-namespace ActiveAttributes.Core.Infrastructure.Discovery
+namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
 {
-  public class StandaloneAspectDeclarationDiscovery : AspectDeclarationDiscoveryBase
+  public enum Execution
   {
-    public override IEnumerable<AspectDeclaration> GetAspectDeclarations (Type type)
-    {
-      throw new NotImplementedException();
-    }
+    Before,
+    After,
+    Around
   }
 }

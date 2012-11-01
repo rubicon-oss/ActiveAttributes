@@ -24,6 +24,8 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 

@@ -15,11 +15,22 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 
-namespace ActiveAttributes.Core.Infrastructure.Attributes
+namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
-  public class ExecutionAttribute : Attribute
+  public class AdviceExecutionAttribute : Attribute
   {
-    public Execution Execution { get; set; }
+    private readonly Execution _execution;
+
+    public AdviceExecutionAttribute (Execution execution)
+    {
+      _execution = execution;
+    }
+
+    public Execution Execution
+    {
+      get { return _execution; }
+    }
   }
 }

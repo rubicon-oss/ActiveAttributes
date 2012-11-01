@@ -22,6 +22,8 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Microsoft.Scripting.Ast;
 using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.Expressions;

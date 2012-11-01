@@ -22,7 +22,8 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
-using JetBrains.Annotations;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;
@@ -31,7 +32,7 @@ using Remotion.Utilities;
 using ActiveAttributes.Core.Extensions;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Old
 {
 
 

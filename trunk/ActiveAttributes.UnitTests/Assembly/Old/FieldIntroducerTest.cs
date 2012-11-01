@@ -18,14 +18,13 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Old
 {
   [TestFixture]
   public class FieldIntroducerTest

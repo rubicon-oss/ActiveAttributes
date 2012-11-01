@@ -19,6 +19,8 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 
@@ -41,7 +43,7 @@ namespace ActiveAttributes.Core.Assembly.Old
     int Priority { get; }
 
     /// <summary>
-    /// The <see cref="Configuration2.Scope" /> (or lifetime) of the <see cref="AspectAttribute" />.
+    /// The <see cref="Infrastructure.AdviceInfo.Scope" /> (or lifetime) of the <see cref="AspectAttribute" />.
     /// </summary>
     Scope Scope { get; }
 

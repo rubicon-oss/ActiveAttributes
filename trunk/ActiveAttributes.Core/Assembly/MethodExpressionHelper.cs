@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
@@ -44,10 +45,20 @@ namespace ActiveAttributes.Core.Assembly
         IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary,
         IEnumerable<IAspectDescriptor> aspectDescriptors);
 
+    //IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateInvocationExpressions2 (
+    //    Type innerInvocationType,
+    //    Expression invocationContext,
+    //    IFieldWrapper delegateField,
+    //    IEnumerable<IAdvice> sortedAdvices);
+
     MethodCallExpression CreateOutermostAspectCallExpression (
         IAspectDescriptor outermostAspectDescriptor,
         ParameterExpression outermostInvocation,
         IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary);
+
+    //MethodCallExpression CreateOutermostAspectCallExpression (
+    //    IAdvice outermostAdvice,
+    //    ParameterExpression outermostInvocation);
   }
 
   public class MethodExpressionHelper : IMethodExpressionHelper

@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
@@ -22,7 +23,7 @@ using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.UnitTests.MutableReflection;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Old
 {
   [TestFixture]
   public class GiveItSomeNameTest

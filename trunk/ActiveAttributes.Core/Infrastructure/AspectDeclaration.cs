@@ -15,37 +15,29 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Infrastructure.Construction;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
   public class AspectDeclaration
   {
-    private readonly IAdvice _advice;
-    private readonly Execution _execution;
-    private readonly IEnumerable<IPointcut> _pointcuts;
+    private readonly IConstructionInfo _constructionInfo;
+    private readonly IEnumerable<Advice> _advices;
 
-    public AspectDeclaration (IAdvice advice, Execution execution, IEnumerable<IPointcut> pointcuts)
+    public AspectDeclaration (IConstructionInfo constructionInfo, IEnumerable<Advice> advices)
     {
-      _advice = advice;
-      _execution = execution;
-      _pointcuts = pointcuts;
+      _constructionInfo = constructionInfo;
+      _advices = advices;
     }
 
-    public IAdvice Advice
+    public IConstructionInfo ConstructionInfo
     {
-      get { return _advice; }
+      get { return _constructionInfo; }
     }
 
-    public Execution Execution
+    public IEnumerable<Advice> Advices
     {
-      get { return _execution; }
+      get { return _advices; }
     }
-
-    public IEnumerable<IPointcut> Pointcuts
-    {
-      get { return _pointcuts; }
-    }
-
-    // TODO: ConstructionInfo
   }
 }

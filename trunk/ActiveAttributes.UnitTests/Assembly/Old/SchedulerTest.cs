@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Rules;
@@ -27,7 +26,7 @@ using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Old
 {
   [TestFixture]
   public class SchedulerTest

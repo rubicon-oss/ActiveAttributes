@@ -18,6 +18,8 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting.Reflection;

@@ -17,6 +17,8 @@
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly.Descriptors

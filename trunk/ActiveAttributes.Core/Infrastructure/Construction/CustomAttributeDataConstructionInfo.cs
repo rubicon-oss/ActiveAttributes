@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -20,7 +21,7 @@ using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Infrastructure.ConstructionInfo
+namespace ActiveAttributes.Core.Infrastructure.Construction
 {
   public class CustomAttributeDataConstructionInfo : IConstructionInfo
   {

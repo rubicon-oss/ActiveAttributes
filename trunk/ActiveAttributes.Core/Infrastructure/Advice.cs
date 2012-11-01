@@ -14,27 +14,60 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
-  public interface IAdvice
+  public class Advice
   {
-    MethodInfo Method { get; }
-  }
+    private readonly Execution _execution;
+    private readonly Scope _scope;
+    private readonly string _role;
+    private readonly string _name;
 
-  public class Advice : IAdvice
-  {
     private readonly MethodInfo _method;
+    private readonly IEnumerable<IPointcut> _pointcuts;
 
-    public Advice (MethodInfo method)
+    public Advice (Execution execution, Scope scope, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
     {
+      _execution = execution;
+      _scope = scope;
       _method = method;
+      _pointcuts = pointcuts;
+      _role = role;
+      _name = name;
+    }
+
+    public Execution Execution
+    {
+      get { return _execution; }
+    }
+
+    public Scope Scope
+    {
+      get { return _scope; }
+    }
+
+    public string Role
+    {
+      get { return _role; }
+    }
+
+    public string Name
+    {
+      get { return _name; }
     }
 
     public MethodInfo Method
     {
       get { return _method; }
+    }
+
+    public IEnumerable<IPointcut> Pointcuts
+    {
+      get { return _pointcuts; }
     }
   }
 }

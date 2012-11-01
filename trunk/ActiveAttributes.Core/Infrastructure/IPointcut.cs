@@ -15,11 +15,12 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
   public interface IPointcut
   {
-    bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint);
+    bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint);
   }
 }

@@ -22,6 +22,8 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Descriptors;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders

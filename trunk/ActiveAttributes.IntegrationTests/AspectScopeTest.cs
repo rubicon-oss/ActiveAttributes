@@ -19,6 +19,8 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 using TypePipe.IntegrationTests;

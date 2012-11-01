@@ -19,6 +19,8 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 

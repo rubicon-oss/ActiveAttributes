@@ -21,6 +21,8 @@ using System.Reflection;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;

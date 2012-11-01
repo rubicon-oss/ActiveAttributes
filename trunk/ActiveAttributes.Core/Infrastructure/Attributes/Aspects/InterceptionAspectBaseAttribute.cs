@@ -14,9 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Aspects
 {
-  [Execution (Execution = Execution.Around)]
+  [AdviceExecution (Execution.Around)]
   public abstract class InterceptionAspectBaseAttribute : AspectBaseAttribute {}
 }

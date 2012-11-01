@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using System.Linq;
+using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
@@ -37,7 +38,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       get { return _text; }
     }
 
-    public bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint)
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
       return visitor.VisitPointcut (this, joinPoint);
     }

@@ -76,6 +76,7 @@
     <Compile Include="Assembly\MethodExpressionHelper.cs" />
     <Compile Include="Assembly\MethodExpressionHelperFactory.cs" />
     <Compile Include="Assembly\MethodInterceptionService.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Configuration2\AspectDependencyMerger.cs" />
     <Compile Include="Assembly\Old\ExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\Old\FieldInfoContainer.cs" />
@@ -117,23 +118,25 @@
     <Compile Include="Configuration2\ActiveAttributesesConfigurationProvider.cs" />
     <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
-    <Compile Include="Infrastructure\Discovery\AspectDeclarationDiscoveryBase.cs" />
+    <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceNameAttribute.cs" />
+    <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
+    <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceScopeAttribute.cs" />
+    <Compile Include="Infrastructure\Construction\CustomAttributeDataConstructionInfo.cs" />
+    <Compile Include="Infrastructure\Construction\IConstructionInfo.cs" />
+    <Compile Include="Infrastructure\Construction\TypeConstructionInfo.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\EventInterceptionAspectBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\InterceptionAspectBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\MethodInterceptionAspectBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\PropertyInterceptionAspectBaseAttribute.cs" />
-    <Compile Include="Infrastructure\Attributes\ExecutionAttribute.cs" />
+    <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceExecutionAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\PointcutAttribute.cs" />
     <Compile Include="Infrastructure\AspectDeclaration.cs" />
     <Compile Include="Infrastructure\Advice.cs" />
-    <Compile Include="Infrastructure\Discovery\AttributeAspectDeclarationDiscovery.cs" />
-    <Compile Include="Infrastructure\Discovery\StandaloneAspectDeclarationDiscovery.cs" />
-    <Compile Include="Infrastructure\IAspectDeclarationDiscovery.cs" />
     <Compile Include="Infrastructure\Intertype\ImportAttribute.cs" />
     <Compile Include="Infrastructure\Intertype\IntertypeBaseAttribute.cs" />
     <Compile Include="Infrastructure\Intertype\IntroduceAttribute.cs" />
     <Compile Include="Infrastructure\Joinpoint.cs" />
-    <Compile Include="Infrastructure\PointcutConverter.cs" />
+    <Compile Include="Assembly\PointcutConverter.cs" />
     <Compile Include="Infrastructure\Pointcuts\AspectDefinedPointcut.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\AspectDefinedPointcutAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\MemberNamePointcutAttribute.cs" />
@@ -141,11 +144,11 @@
     <Compile Include="Infrastructure\Attributes\Pointcuts\TypePointcutAttribute.cs" />
     <Compile Include="Infrastructure\IPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\Pointcut.cs" />
-    <Compile Include="Infrastructure\PointcutParser.cs" />
-    <Compile Include="Infrastructure\PointcutVisitor.cs" />
+    <Compile Include="Assembly\PointcutParser.cs" />
+    <Compile Include="Assembly\PointcutVisitor.cs" />
     <Compile Include="IObjectFactory.cs" />
     <Compile Include="ObjectFactory.cs" />
-    <Compile Include="Configuration2\Scope.cs" />
+    <Compile Include="Infrastructure\AdviceInfo\Scope.cs" />
     <Compile Include="Configuration2\Visibility.cs" />
     <Compile Include="Configuration\TypeRuleCollection.cs" />
     <Compile Include="Configuration\TypeRuleElement.cs" />
@@ -212,7 +215,7 @@
     <Compile Include="Aspects\PropertyInterceptionAspectAttribute.cs" />
     <Compile Include="Configuration2\AspectDescriptorProviders\AspectDescriptorProviderUtility.cs" />
     <Compile Include="Infrastructure\Attributes\Aspects\AspectAttribute.cs" />
-    <Compile Include="Infrastructure\Execution.cs" />
+    <Compile Include="Infrastructure\AdviceInfo\Execution.cs" />
     <Compile Include="Infrastructure\IAspect.cs" />
     <Compile Include="Infrastructure\Pointcuts\ControlFlowPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\MemberNamePointcut.cs" />
@@ -234,7 +237,9 @@
     </None>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Infrastructure\Discovery\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /D /Y "$(SolutionDir)\..\..\Remotion2\Remotion\TypePipe\UnitTests\bin\Release\*" "$(SolutionDir)\prereq\"

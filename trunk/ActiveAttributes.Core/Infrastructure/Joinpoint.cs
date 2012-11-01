@@ -16,19 +16,10 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
-  public interface IJoinPoint
-  {
-    System.Reflection.Assembly Assembly { get; }
-    Type Type { get; }
-    MemberInfo Member { get; }
-    Expression Expression { get; }
-  }
-
-  public class JoinPoint : IJoinPoint
+  public class JoinPoint
   {
     private readonly System.Reflection.Assembly _assembly;
     private readonly Type _type;

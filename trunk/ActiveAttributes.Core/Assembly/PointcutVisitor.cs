@@ -13,22 +13,24 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
+using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 using System.Linq;
 
-namespace ActiveAttributes.Core.Infrastructure
+namespace ActiveAttributes.Core.Assembly
 {
   [ConcreteImplementation (typeof (PointcutVisitor))]
   public interface IPointcutVisitor
   {
-    bool VisitPointcut (IPointcut pointcut, IJoinPoint joinPoint);
+    bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint);
 
-    bool VisitPointcut (ITextPointcut pointcut, IJoinPoint joinPoint);
-    bool VisitPointcut (ITypePointcut pointcut, IJoinPoint joinPoint);
-    bool VisitPointcut (IMemberNamePointcut pointcut, IJoinPoint joinPoint);
-    bool VisitPointcut (IControlFlowPointcut pointcut, IJoinPoint joinPoint);
+    bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint);
   }
 
   public class PointcutVisitor : IPointcutVisitor
@@ -40,7 +42,7 @@ namespace ActiveAttributes.Core.Infrastructure
       _pointcutParser = pointcutParser;
     }
 
-    public bool VisitPointcut (IPointcut pointcut, IJoinPoint joinPoint)
+    public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
     {
       if (pointcut is ITextPointcut)
         VisitPointcut ((ITextPointcut) pointcut, joinPoint);
@@ -54,23 +56,23 @@ namespace ActiveAttributes.Core.Infrastructure
       throw new NotSupportedException();
     }
 
-    public bool VisitPointcut (ITextPointcut pointcut, IJoinPoint joinPoint)
+    public bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint)
     {
       // TODO: special treatment for && and ||
       return _pointcutParser.GetPointcuts (pointcut.Text).All (x => x.MatchVisit (this, joinPoint));
     }
 
-    public bool VisitPointcut (ITypePointcut pointcut, IJoinPoint joinPoint)
+    public bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint)
     {
       return pointcut.Type == joinPoint.Type;
     }
 
-    public bool VisitPointcut (IMemberNamePointcut pointcut, IJoinPoint joinPoint)
+    public bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint)
     {
       return pointcut.MemberName == joinPoint.Member.Name;
     }
 
-    public bool VisitPointcut (IControlFlowPointcut pointcut, IJoinPoint joinPoint)
+    public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
     }

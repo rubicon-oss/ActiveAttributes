@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,19 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using Remotion.Collections;
-using Remotion.TypePipe.MutableReflection;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Infrastructure.ConstructionInfo
+namespace ActiveAttributes.UnitTests.Assembly
 {
-  public interface IConstructionInfo
+  [TestFixture]
+  public class PointcutConverterTest
   {
-    ConstructorInfo ConstructorInfo { get; }
-
-    ReadOnlyCollection<object> ConstructorArguments { get; }
-
-    ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments { get; }
+    
   }
 }

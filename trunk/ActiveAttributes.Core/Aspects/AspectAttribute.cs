@@ -20,6 +20,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Aspects
@@ -31,7 +33,7 @@ namespace ActiveAttributes.Core.Aspects
   public abstract class AspectAttribute : Attribute
   {
     /// <summary>
-    ///   Scope of an aspect. It can be either <see cref = "Configuration2.Scope.Static" /> or <see cref = "Configuration2.Scope.Instance" />.
+    ///   Scope of an aspect. It can be either <see cref = "Infrastructure.AdviceInfo.Scope.Static" /> or <see cref = "Infrastructure.AdviceInfo.Scope.Instance" />.
     /// </summary>
     public Scope Scope { get; set; }
 

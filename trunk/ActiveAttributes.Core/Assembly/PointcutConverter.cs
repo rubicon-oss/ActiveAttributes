@@ -13,24 +13,26 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Aspects;
+using System.Collections.Generic;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
+using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Core.Assembly
 {
-  /// <summary>
-  /// Defines the scope of an <see cref="AspectAttribute"/>.
-  /// </summary>
-  public enum Scope
+  [ConcreteImplementation (typeof (PointcutConverter))]
+  public interface IPointcutConverter
   {
-    /// <summary>
-    /// The aspect is created once per attribute.
-    /// </summary>
-    Static,
+    IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute);
+  }
 
-    /// <summary>
-    /// The aspect is created for each new target object.
-    /// </summary>
-    Instance
+  public class PointcutConverter : IPointcutConverter
+  {
+    public IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

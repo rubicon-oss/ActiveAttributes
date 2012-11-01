@@ -15,6 +15,8 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
@@ -25,7 +27,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       get { throw new NotSupportedException(); }
     }
 
-    public bool MatchVisit (IPointcutVisitor visitor, IJoinPoint joinPoint)
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
       throw new NotSupportedException();
     }

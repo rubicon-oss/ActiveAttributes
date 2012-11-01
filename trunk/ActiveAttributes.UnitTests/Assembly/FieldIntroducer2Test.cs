@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -21,7 +22,7 @@ using ActiveAttributes.Core.Assembly.FieldWrapper;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.UnitTests.Assembly.Done
+namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
   public class FieldIntroducer2Test
