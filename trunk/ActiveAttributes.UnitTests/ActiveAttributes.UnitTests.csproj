@@ -130,6 +130,11 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetDeclaringType.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetMethodInfo.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetAspectAttribute.cs" />
+    <Compile Include="ObjectMother\ObjectMother.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetType.cs" />
     <Compile Include="RhinoMocksKernel.cs" />
     <Compile Include="RhinoMocksModule.cs" />
     <Compile Include="RhinoMocksStubProvider.cs" />
@@ -161,7 +166,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
