@@ -17,10 +17,12 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -30,7 +32,7 @@ namespace ActiveAttributes.Core.Assembly
     IMethodExpressionHelper CreateMethodExpressionHelper (
         MutableMethodInfo method,
         BodyContextBase context,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary);
+        IDictionary<Advice, IFieldWrapper> adviceDictionary);
   }
 
   public class MethodExpressionHelperFactory : IMethodExpressionHelperFactory
@@ -39,15 +41,18 @@ namespace ActiveAttributes.Core.Assembly
 
     public MethodExpressionHelperFactory (InvocationExpressionHelper invocationExpressionHelper)
     {
+      ArgumentUtility.CheckNotNull ("invocationExpressionHelper", invocationExpressionHelper);
+
       _invocationExpressionHelper = invocationExpressionHelper;
     }
 
-    public IMethodExpressionHelper CreateMethodExpressionHelper (
-        MutableMethodInfo method,
-        BodyContextBase context,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
+    public IMethodExpressionHelper CreateMethodExpressionHelper (MutableMethodInfo method, BodyContextBase context, IDictionary<Advice, IFieldWrapper> adviceDictionary)
     {
-      return new MethodExpressionHelper (method, context, aspectDescriptorDictionary, _invocationExpressionHelper);
+      ArgumentUtility.CheckNotNull ("method", method);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("adviceDictionary", adviceDictionary);
+
+      return new MethodExpressionHelper (context, adviceDictionary, _invocationExpressionHelper);
     }
   }
 }

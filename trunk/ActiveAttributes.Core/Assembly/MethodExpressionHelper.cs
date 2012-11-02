@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,45 +41,28 @@ namespace ActiveAttributes.Core.Assembly
         Type innerInvocationType,
         Expression invocationContext,
         IFieldWrapper delegateField,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary,
-        IEnumerable<IAspectDescriptor> aspectDescriptors);
+        IEnumerable<Advice> sortedAdvices);
 
-    //IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateInvocationExpressions2 (
-    //    Type innerInvocationType,
-    //    Expression invocationContext,
-    //    IFieldWrapper delegateField,
-    //    IEnumerable<IAdvice> sortedAdvices);
-
-    MethodCallExpression CreateOutermostAspectCallExpression (
-        IAspectDescriptor outermostAspectDescriptor,
-        ParameterExpression outermostInvocation,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary);
-
-    //MethodCallExpression CreateOutermostAspectCallExpression (
-    //    IAdvice outermostAdvice,
-    //    ParameterExpression outermostInvocation);
+    MethodCallExpression CreateOutermostAspectCallExpression (Advice outermostAdvice, ParameterExpression outermostInvocation);
   }
 
   public class MethodExpressionHelper : IMethodExpressionHelper
   {
-    private readonly MutableMethodInfo _method;
     private readonly BodyContextBase _context;
-    private readonly IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> _aspectDescriptorDictionary;
+    private readonly IDictionary<Advice, IFieldWrapper> _adviceDictionary;
     private readonly IInvocationExpressionHelper _invocationExpressionHelper;
 
     public MethodExpressionHelper (
-      MutableMethodInfo method,
         BodyContextBase context,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary,
+        IDictionary<Advice, IFieldWrapper> adviceDictionary,
         IInvocationExpressionHelper invocationExpressionHelper)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("aspectDescriptorDictionary", aspectDescriptorDictionary);
+      ArgumentUtility.CheckNotNull ("adviceDictionary", adviceDictionary);
       ArgumentUtility.CheckNotNull ("invocationExpressionHelper", invocationExpressionHelper);
 
-      _method = method;
       _context = context;
-      _aspectDescriptorDictionary = aspectDescriptorDictionary;
+      _adviceDictionary = adviceDictionary;
       _invocationExpressionHelper = invocationExpressionHelper;
     }
 
@@ -105,19 +87,17 @@ namespace ActiveAttributes.Core.Assembly
         Type innerInvocationType,
         Expression invocationContext,
         IFieldWrapper delegateField,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary,
-        IEnumerable<IAspectDescriptor> aspectDescriptors)
+        IEnumerable<Advice> advices)
     {
       ArgumentUtility.CheckNotNull ("innerInvocationType", innerInvocationType);
       ArgumentUtility.CheckNotNull ("invocationContext", invocationContext);
       ArgumentUtility.CheckNotNull ("delegateField", delegateField);
-      ArgumentUtility.CheckNotNull ("aspectDescriptorDictionary", aspectDescriptorDictionary);
-      ArgumentUtility.CheckNotNull ("aspectDescriptors", aspectDescriptors);
+      ArgumentUtility.CheckNotNull ("advices", advices);
 
-      var aspectDescriptorsAsList = aspectDescriptors.ToList ();
-      Assertion.IsTrue (aspectDescriptorsAsList.All (x => x.Scope == aspectDescriptorsAsList[0].Scope));
+      var advicesAsList = advices.ToList ();
+      Assertion.IsTrue (advicesAsList.All (x => x.Scope == advicesAsList[0].Scope));
 
-      var count = aspectDescriptorsAsList.Count;
+      var count = advicesAsList.Count;
       var invocations = new ParameterExpression[count];
       var invocationAssignExpression = new BinaryExpression[count];
 
@@ -134,7 +114,8 @@ namespace ActiveAttributes.Core.Assembly
         else
         {
           invocationType = typeof (OuterInvocation);
-          var previousAspect = CreateAspectExpression (aspectDescriptorsAsList[i - 1], aspectDescriptorDictionary);
+          var previousAdvice = advicesAsList[i - 1];
+          var previousAspect = CreateAspectExpression(previousAdvice);
           var previousInvocation = invocations[i - 1];
           newExpression = _invocationExpressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, null, invocationContext);
         }
@@ -146,37 +127,27 @@ namespace ActiveAttributes.Core.Assembly
       return invocations.Zip (invocationAssignExpression, Tuple.Create);
     }
 
-    public MethodCallExpression CreateOutermostAspectCallExpression (IAspectDescriptor outermostAspectDescriptor, ParameterExpression outermostInvocation, IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
+    public MethodCallExpression CreateOutermostAspectCallExpression (
+        IAspectDescriptor outermostAspectDescriptor,
+        ParameterExpression outermostInvocation,
+        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
     {
-      var aspect = CreateAspectExpression (outermostAspectDescriptor, aspectDescriptorDictionary);
-      var method = GetInterceptMethod(outermostAspectDescriptor);
-      var exp = Expression.Convert (aspect, method.DeclaringType);
-      var exp2 = Expression.Call (exp, method);
-      return exp2;
+      //var aspect = CreateAspectExpression (outermostAspectDescriptor, aspectDescriptorDictionary);
+      //var method = GetInterceptMethod (outermostAspectDescriptor);
+      //var exp = Expression.Convert (aspect, method.DeclaringType);
+      //var exp2 = Expression.Call (exp, method);
+      //return exp2;
+      return null;
     }
 
-    private MethodInfo GetInterceptMethod (IAspectDescriptor outermostAspectDescriptor)
+    public MethodCallExpression CreateOutermostAspectCallExpression (Advice outermostAdvice, ParameterExpression outermostInvocation)
     {
-      MethodInfo method;
-      if (typeof (MethodInterceptionAspectAttribute).IsAssignableFrom (outermostAspectDescriptor.Type))
-        method = typeof (MethodInterceptionAspectAttribute).GetMethod ("OnIntercept");
-      else
-      {
-        if (_method.Name.StartsWith ("set"))
-          method = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptSet");
-        else
-          method = typeof (PropertyInterceptionAspectAttribute).GetMethod ("OnInterceptGet");
-      }
-      return method;
+      return null;
     }
 
-    private IndexExpression CreateAspectExpression (
-        IAspectDescriptor aspectDescriptor, IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
+    private MemberExpression CreateAspectExpression (Advice previousAdvice)
     {
-      var tuple = aspectDescriptorDictionary[aspectDescriptor];
-      var array = tuple.Item1;
-      var index = tuple.Item2;
-      return Expression.ArrayAccess (array.GetAccessExpression(_context.This), Expression.Constant (index));
+      return _adviceDictionary[previousAdvice].GetAccessExpression (_context.This);
     }
   }
 }

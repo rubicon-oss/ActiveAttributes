@@ -58,7 +58,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _aspectDescriptorDictionaryMock = MockRepository.GenerateMock<IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>>>();
       var method = ObjectMother.GetMutableMethodInfo();
 
-      _expressionHelper = new MethodExpressionHelper (method, _bodyContext, _aspectDescriptorDictionaryMock, _invocationExpressionHelperMock);
+      _expressionHelper = new MethodExpressionHelper (_bodyContext, _aspectDescriptorDictionaryMock, _invocationExpressionHelperMock);
     }
 
     [Test]
@@ -152,6 +152,12 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (arguments[1], Is.SameAs (aspect1ActualParameterExpression));
       Assert.That (arguments[2], Is.EqualTo (method));
       Assert.That (arguments[3], Is.SameAs (invocationContext));
+    }
+
+    [Test]
+    public void CreateOutermostAspectCallExpression ()
+    {
+      
     }
   }
 }

@@ -77,6 +77,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public void GetInvocationTypes (MethodInfo method, out Type invocationType, out Type invocationContextType)
     {
+      ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsNotNull (method.DeclaringType);
 
       // TODO UNDERLYING

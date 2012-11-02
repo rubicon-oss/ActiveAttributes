@@ -13,16 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Old;
-using ActiveAttributes.Core.Infrastructure;
-using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -57,28 +53,28 @@ namespace ActiveAttributes.Core.Assembly
         IEnumerable<IAspectDescriptor> aspectDescriptors,
         IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
     {
-      method.SetBody (
-          ctx =>
-          {
-            var helper = _methodExpressionHelperFactory.CreateMethodExpressionHelper (method, ctx, aspectDescriptorDictionary);
-            Type invocationType;
-            Type invocationContextType;
-            _invocationTypeProvider.GetInvocationTypes (method, out invocationType, out invocationContextType);
+      //method.SetBody (
+      //    ctx =>
+      //    {
+      //      var helper = _methodExpressionHelperFactory.CreateMethodExpressionHelper (method, ctx, aspectDescriptorDictionary);
+      //      Type invocationType;
+      //      Type invocationContextType;
+      //      _invocationTypeProvider.GetInvocationTypes (method, out invocationType, out invocationContextType);
 
-            var invctx = helper.CreateInvocationContextExpressions (invocationContextType, memberInfoField);
-            var invctxPar = invctx.Item1;
-            var invctxAssign = invctx.Item2;
-            var exps = helper.CreateInvocationExpressions (invocationType, invctxPar, delegateField, aspectDescriptorDictionary, aspectDescriptors);
-            var invPars = exps.Select (x => x.Item1);
-            var invAssigns = exps.Select (x => x.Item2);
-            var callExp = helper.CreateOutermostAspectCallExpression (aspectDescriptors.Last (), invPars.Last (), aspectDescriptorDictionary);
+      //      var invctx = helper.CreateInvocationContextExpressions (invocationContextType, memberInfoField);
+      //      var invctxPar = invctx.Item1;
+      //      var invctxAssign = invctx.Item2;
+      //      var exps = helper.CreateInvocationExpressions (invocationType, invctxPar, delegateField, aspectDescriptorDictionary, aspectDescriptors);
+      //      var invPars = exps.Select (x => x.Item1);
+      //      var invAssigns = exps.Select (x => x.Item2);
+      //      var callExp = helper.CreateOutermostAspectCallExpression (aspectDescriptors.Last (), invPars.Last (), aspectDescriptorDictionary);
 
-            return Expression.Block (
-                new[] { invctxPar }.Concat (invPars),
-                invctxAssign,
-                Expression.Block (invAssigns.Cast<Expression> ()),
-                callExp);
-          });
+      //      return Expression.Block (
+      //          new[] { invctxPar }.Concat (invPars),
+      //          invctxAssign,
+      //          Expression.Block (invAssigns.Cast<Expression> ()),
+      //          callExp);
+      //    });
       // get invocationcontext type
       // create invocationcontext
       // create tuples of invocation variables and init expressions
