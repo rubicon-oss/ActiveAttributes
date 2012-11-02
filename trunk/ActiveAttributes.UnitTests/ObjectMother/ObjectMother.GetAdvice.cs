@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
@@ -22,9 +23,9 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static Advice GetAdvice(MethodInfo method = null, string role = null, string name = null)
+    public static Advice GetAdvice(IEnumerable<Type> methodParameterTypes = null, string role = null, string name = null)
     {
-      method = method ?? GetMethodInfo();
+      var method = GetMethodInfo (parameterTypes: methodParameterTypes);
       var pointcuts = new IPointcut[0];
       role = role ?? "Role";
       name = name ?? "Name";

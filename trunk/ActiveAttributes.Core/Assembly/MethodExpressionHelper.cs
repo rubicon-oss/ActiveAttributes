@@ -16,9 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
@@ -26,7 +23,6 @@ using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
-using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.Utilities;
 
@@ -94,7 +90,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("delegateField", delegateField);
       ArgumentUtility.CheckNotNull ("advices", advices);
 
-      var advicesAsList = advices.ToList ();
+      var advicesAsList = advices.ToList();
       Assertion.IsTrue (advicesAsList.All (x => x.Scope == advicesAsList[0].Scope));
 
       var count = advicesAsList.Count;
@@ -117,8 +113,7 @@ namespace ActiveAttributes.Core.Assembly
           var previousAdvice = advicesAsList[i - 1];
           var previousAspect = CreateAspectExpression (previousAdvice);
           var previousInvocation = invocations[i - 1];
-          newExpression = _invocationExpressionHelper.CreateOuterInvocation (
-              previousAspect, previousInvocation, previousAdvice.Method, invocationContext);
+          newExpression = _invocationExpressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, previousAdvice, invocationContext);
         }
 
         invocations[i] = Expression.Parameter (invocationType, "ivc" + i);

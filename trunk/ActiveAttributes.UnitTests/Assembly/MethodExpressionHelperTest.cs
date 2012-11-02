@@ -138,15 +138,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (binaryExpression2.Right, Is.SameAs (fakeExpression2));
 
       Assert.That (arguments[1], Is.SameAs (parameterExpression1));
-      Assert.That (arguments[2], Is.EqualTo (advice1.Method));
+      Assert.That (arguments[2], Is.EqualTo (advice1));
       Assert.That (arguments[3], Is.SameAs (invocationContext));
     }
 
     [Test]
     public void CreateOutermostAspectCallExpression ()
     {
-      var method = ObjectMother2.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
-      var advice = ObjectMother2.GetAdvice (method);
+      var advice = ObjectMother2.GetAdvice (new[] { typeof (IInvocation) });
       var invocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
       var fakeExpression = ObjectMother2.GetMemberExpression (advice.Method.DeclaringType, declaringType: _declaringType);
