@@ -21,9 +21,9 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
+    public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null)
     {
-      var declaringType = GetDeclaringType();
+      declaringType = declaringType ?? GetDeclaringType();
 
       var field = GetFieldInfo (type, attributes: attributes, declaringType: declaringType);
       var thisExpression = field.IsStatic ? null : GetThisExpression (declaringType);

@@ -115,9 +115,10 @@ namespace ActiveAttributes.Core.Assembly
         {
           invocationType = typeof (OuterInvocation);
           var previousAdvice = advicesAsList[i - 1];
-          var previousAspect = CreateAspectExpression(previousAdvice);
+          var previousAspect = CreateAspectExpression (previousAdvice);
           var previousInvocation = invocations[i - 1];
-          newExpression = _invocationExpressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, null, invocationContext);
+          newExpression = _invocationExpressionHelper.CreateOuterInvocation (
+              previousAspect, previousInvocation, previousAdvice.Method, invocationContext);
         }
 
         invocations[i] = Expression.Parameter (invocationType, "ivc" + i);
@@ -127,27 +128,18 @@ namespace ActiveAttributes.Core.Assembly
       return invocations.Zip (invocationAssignExpression, Tuple.Create);
     }
 
-    public MethodCallExpression CreateOutermostAspectCallExpression (
-        IAspectDescriptor outermostAspectDescriptor,
-        ParameterExpression outermostInvocation,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
-    {
-      //var aspect = CreateAspectExpression (outermostAspectDescriptor, aspectDescriptorDictionary);
-      //var method = GetInterceptMethod (outermostAspectDescriptor);
-      //var exp = Expression.Convert (aspect, method.DeclaringType);
-      //var exp2 = Expression.Call (exp, method);
-      //return exp2;
-      return null;
-    }
-
     public MethodCallExpression CreateOutermostAspectCallExpression (Advice outermostAdvice, ParameterExpression outermostInvocation)
     {
-      return null;
+      ArgumentUtility.CheckNotNull ("outermostAdvice", outermostAdvice);
+      ArgumentUtility.CheckNotNull ("outermostInvocation", outermostInvocation);
+
+      var aspect = CreateAspectExpression (outermostAdvice);
+      return Expression.Call (aspect, outermostAdvice.Method, new Expression[] { outermostInvocation });
     }
 
-    private MemberExpression CreateAspectExpression (Advice previousAdvice)
+    private MemberExpression CreateAspectExpression (Advice advice)
     {
-      return _adviceDictionary[previousAdvice].GetAccessExpression (_context.This);
+      return _adviceDictionary[advice].GetAccessExpression (_context.This);
     }
   }
 }

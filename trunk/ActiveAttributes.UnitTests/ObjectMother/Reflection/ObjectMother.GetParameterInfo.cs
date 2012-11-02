@@ -14,17 +14,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using Remotion.TypePipe.Expressions;
+using System.Reflection;
+using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static ThisExpression GetThisExpression (Type type = null)
+    public static ParameterInfo GetParameterInfo (Type type = null, string name = null)
     {
-      type = type ?? GetDeclaringType ();
+      type = type ?? GetDeclaringType();
+      name = name ?? "parameter";
 
-      return new ThisExpression (type);
+      var stub = MockRepository.GenerateStub<ParameterInfo>();
+
+      stub.Stub (x => x.ParameterType).Return (type);
+      stub.Stub (x => x.Name).Return (name);
+
+      return stub;
     }
   }
 }

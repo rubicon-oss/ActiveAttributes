@@ -14,6 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Rhino.Mocks;
 
@@ -24,18 +26,22 @@ namespace ActiveAttributes.UnitTests
     public static MethodInfo GetMethodInfo (
         string name = null,
         Type returnType = null,
+        IEnumerable<Type> parameterTypes = null,
         MethodAttributes attributes = MethodAttributes.Private,
         Type declaringType = null)
     {
       name = name ?? "Method";
       returnType = returnType ?? GetType_();
-      //parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType).ToArray();
+      parameterTypes = parameterTypes ?? GetMultiple (GetDeclaringType);
       declaringType = declaringType ?? GetDeclaringType();
+
+      var parameters = parameterTypes.Select ((x, i) => GetParameterInfo (x, "para" + i)).ToArray();
 
       var stub = MockRepository.GenerateStub<MethodInfo>();
 
       stub.Stub (x => x.Name).Return (name);
       stub.Stub (x => x.ReturnType).Return (returnType);
+      stub.Stub (x => x.GetParameters()).Return (parameters);
       stub.Stub (x => x.Attributes).Return (attributes);
       stub.Stub (x => x.DeclaringType).Return (declaringType);
 

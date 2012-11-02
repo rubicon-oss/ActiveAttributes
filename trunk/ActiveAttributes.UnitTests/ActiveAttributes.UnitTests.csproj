@@ -146,6 +146,7 @@
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMemberExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetThisExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother._.cs" />
+    <Compile Include="ObjectMother\Reflection\ObjectMother.GetParameterInfo.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetFieldInfo.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetConstructorInfo.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetConstructionInfo.cs" />
