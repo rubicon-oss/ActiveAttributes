@@ -13,18 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using ActiveAttributes.Core.Aspects;
-using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core
+using System;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe.TypeAssembly;
+
+namespace ActiveAttributes.Core.Assembly.Old
 {
-  /// <summary>
-  ///   Serves as a factory for objects with extended functionality through <see cref="AspectAttribute" />s.
-  /// </summary>
-  [ConcreteImplementation (typeof (ObjectFactory))]
-  public interface IObjectFactory
-  {
-    T Create<T> ();
-  }
+  [ConcreteImplementation(typeof(TypeAssembler))]
+  public interface IActiveAttributesTypeWeaver : ITypeAssemblyParticipant {}
 }

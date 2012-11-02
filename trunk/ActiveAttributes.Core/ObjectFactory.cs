@@ -14,56 +14,60 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Configuration2.Configurators;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
-using Castle.Components.DictionaryAdapter.Xml;
-using System.Linq;
 
 namespace ActiveAttributes.Core
 {
+  /// <summary>
+  ///   Serves as a factory for objects with extended functionality through <see cref="AspectAttribute" />s.
+  /// </summary>
+  [ConcreteImplementation (typeof (ObjectFactory))]
+  public interface IObjectFactory
+  {
+    T Create<T> ();
+  }
+
   public class ObjectFactory : IObjectFactory
   {
     private static IObjectFactory _factory;
 
     public static T Create<T> ()
     {
-
       _factory = _factory ?? ServiceLocator.Current.GetInstance<IObjectFactory>();
-      return _factory.Create<T> ();
+      return _factory.Create<T>();
     }
 
     private void Muh ()
     {
-
-      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider> ();
+      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
       var configuration = configurationProvider.GetConfiguration();
 
       var fieldIntroducer2 = new FieldIntroducer2();
       var aspectInitExpressionHelper = new AspectInitExpressionHelper();
-      var constructorExpressionHelperFactory = new ConstructorExpressionsHelperFactory(aspectInitExpressionHelper);
+      var constructorExpressionHelperFactory = new ConstructorExpressionsHelperFactory (aspectInitExpressionHelper);
       var constructorInitializationService = new ConstructorInitializationService (fieldIntroducer2, constructorExpressionHelperFactory);
 
       var invocationTypeProvider2 = new InvocationTypeProvider2();
       var invocationExpressionHelper = new InvocationExpressionHelper();
-      var methodExpressionHelperFactory = new MethodExpressionHelperFactory(invocationExpressionHelper);
+      var methodExpressionHelperFactory = new MethodExpressionHelperFactory (invocationExpressionHelper);
       var methodInterceptionService = new MethodInterceptionService (invocationTypeProvider2, methodExpressionHelperFactory);
-
-
-
     }
 
     T IObjectFactory.Create<T> ()
     {
-      IActiveAttributesConfigurationProvider configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
+      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
       var configuration = configurationProvider.GetConfiguration();
 
 

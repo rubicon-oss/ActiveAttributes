@@ -23,13 +23,13 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  [ConcreteImplementation (typeof (PointcutConverter))]
-  public interface IPointcutConverter
+  [ConcreteImplementation (typeof (AspectAttributeToPointcutConverter))]
+  public interface IAspectAttributeToPointcutConverter
   {
     IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute);
   }
 
-  public class PointcutConverter : IPointcutConverter
+  public class AspectAttributeToPointcutConverter : IAspectAttributeToPointcutConverter
   {
     public IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute)
     {

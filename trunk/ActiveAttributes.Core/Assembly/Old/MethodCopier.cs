@@ -18,11 +18,26 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly.Old
 {
+  /// <summary>
+  /// Copies a method.
+  /// </summary>
+  [ConcreteImplementation (typeof (MethodCopier))]
+  public interface IMethodCopier
+  {
+    /// <summary>
+    /// Copies the original body of a method to another method.
+    /// </summary>
+    /// <param name="mutableMethod">The original method.</param>
+    /// <returns>A copy of the original method.</returns>
+    MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod);
+  }
+
   /// <summary>
   /// Copies a method including signature and body.
   /// </summary>

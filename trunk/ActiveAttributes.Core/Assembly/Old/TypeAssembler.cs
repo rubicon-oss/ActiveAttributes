@@ -24,7 +24,7 @@ using Remotion.TypePipe.TypeAssembly;
 
 namespace ActiveAttributes.Core.Assembly.Old
 {
-  public class TypeAssembler : IActiveAttributesAssembler
+  public class TypeAssembler : IActiveAttributesTypeWeaver
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (TypeAssembler));
 

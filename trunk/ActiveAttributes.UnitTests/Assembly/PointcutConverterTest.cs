@@ -35,7 +35,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private void Check<TPointcut> (AspectBaseAttribute aspectAttribute, string property, object expected)
     {
-      var result = new PointcutConverter().GetPointcuts (aspectAttribute).Single();
+      var result = new AspectAttributeToPointcutConverter().GetPointcuts (aspectAttribute).Single();
       Assert.That (result, Is.TypeOf<TPointcut>().And.Property (property).EqualTo (expected));
     }
   }
