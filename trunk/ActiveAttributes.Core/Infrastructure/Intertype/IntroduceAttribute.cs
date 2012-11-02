@@ -14,12 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Intertype
 {
   public class IntroduceAttribute : IntertypeBaseAttribute
   {
     public IntroduceAttribute (string memberName)
-        : base (memberName) {}
+        : base (ArgumentUtility.CheckNotNullOrEmpty ("memberName", memberName)) {}
   }
 }

@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
@@ -30,6 +31,8 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
     public Pointcut (string text)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
       _text = text;
     }
 
@@ -40,6 +43,9 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       return visitor.VisitPointcut (this, joinPoint);
     }
   }

@@ -16,12 +16,24 @@
 
 using System;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public class TypePointcutAttribute : PointcutBaseAttribute
+  public class TypePointcutAttribute : Attribute, IPointcutAttribute
   {
+    private readonly IPointcut _pointcut;
+
     public TypePointcutAttribute (Type type)
-        : base (new TypePointcut (type)) {}
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      _pointcut = new TypePointcut (type);
+    }
+
+    public IPointcut Pointcut
+    {
+      get { return _pointcut; }
+    }
   }
 }

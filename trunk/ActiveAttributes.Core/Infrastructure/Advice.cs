@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
@@ -32,6 +33,11 @@ namespace ActiveAttributes.Core.Infrastructure
 
     public Advice (Execution execution, Scope scope, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
     {
+      ArgumentUtility.CheckNotNull ("method", method);
+      ArgumentUtility.CheckNotNull ("pointcuts", pointcuts);
+      ArgumentUtility.CheckNotNullOrEmpty ("role", role);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
       _execution = execution;
       _scope = scope;
       _method = method;

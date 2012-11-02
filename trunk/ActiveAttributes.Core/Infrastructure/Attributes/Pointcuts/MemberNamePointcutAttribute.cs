@@ -16,12 +16,24 @@
 
 using System;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public class MemberNamePointcutAttribute : PointcutBaseAttribute
+  public class MemberNamePointcutAttribute : Attribute, IPointcutAttribute
   {
+    private readonly IPointcut _pointcut;
+
     public MemberNamePointcutAttribute (string memberName)
-        : base (new MemberNamePointcut (memberName)) {}
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("memberName", memberName);
+
+      _pointcut = new MemberNamePointcut (memberName);
+    }
+
+    public IPointcut Pointcut
+    {
+      get { return _pointcut; }
+    }
   }
 }

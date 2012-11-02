@@ -16,6 +16,7 @@ ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\FuncInvocationContex
 ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\ActionInvocation.generated.cs
 ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\FuncInvocation.generated.cs
 ActiveAttributes.Core\ActiveAttributes.Core.csproj\Configuration
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Interception
 ActiveAttributes.IntegrationTests\ActiveAttributes.IntegrationTests.csproj
 ActiveAttributes.UseCases\ActiveAttributes.UseCases.csproj
 </MetricsExclusionList>

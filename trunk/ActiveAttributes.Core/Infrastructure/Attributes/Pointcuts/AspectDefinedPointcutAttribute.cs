@@ -13,15 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public class AspectDefinedPointcutAttribute : PointcutBaseAttribute
+  public class AspectDefinedPointcutAttribute : Attribute, IPointcutAttribute
   {
-    public AspectDefinedPointcutAttribute ()
-        : base (new AspectDefinedPointcut()) {}
+    public IPointcut Pointcut
+    {
+      get { throw new NotSupportedException(); }
+    }
   }
 }

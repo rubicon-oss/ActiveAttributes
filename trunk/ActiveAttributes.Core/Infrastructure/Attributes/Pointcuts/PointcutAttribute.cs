@@ -15,12 +15,24 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public class PointcutAttribute : PointcutBaseAttribute
+  public class PointcutAttribute : Attribute, IPointcutAttribute
   {
+    private readonly IPointcut _pointcut;
+
     public PointcutAttribute (string text)
-        : base (new Pointcut (text)) {}
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
+      _pointcut = new Pointcut (text);
+    }
+
+    public IPointcut Pointcut
+    {
+      get { return _pointcut; }
+    }
   }
 }

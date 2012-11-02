@@ -14,6 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Intertype
 {
@@ -24,6 +25,8 @@ namespace ActiveAttributes.Core.Infrastructure.Intertype
 
     protected IntertypeBaseAttribute (string memberName)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("memberName", memberName);
+
       _memberName = memberName;
     }
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -17,18 +17,8 @@ using System;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public abstract class PointcutBaseAttribute : Attribute
+  public interface IPointcutAttribute
   {
-    private readonly IPointcut _pointcut;
-
-    protected PointcutBaseAttribute (IPointcut pointcut)
-    {
-      _pointcut = pointcut;
-    }
-
-    public IPointcut Pointcut
-    {
-      get { return _pointcut; }
-    }
+    IPointcut Pointcut { get; }
   }
 }

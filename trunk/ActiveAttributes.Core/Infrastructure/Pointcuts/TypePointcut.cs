@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
@@ -29,6 +30,8 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
     public TypePointcut (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       _type = type;
     }
 
@@ -39,6 +42,9 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       return visitor.VisitPointcut (this, joinPoint);
     }
   }

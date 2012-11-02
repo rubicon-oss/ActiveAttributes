@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
@@ -28,24 +29,34 @@ namespace ActiveAttributes.Core.Infrastructure
 
     public JoinPoint (System.Reflection.Assembly assembly)
     {
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
       _assembly = assembly;
     }
 
     public JoinPoint (Type type)
-        : this (type.Assembly)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       _type = type;
+      _assembly = type.Assembly;
     }
 
     public JoinPoint (MemberInfo member)
-        : this (member.DeclaringType)
     {
+      ArgumentUtility.CheckNotNull ("member", member);
+      Assertion.IsNotNull (member.DeclaringType);
+
       _member = member;
+      _type = member.DeclaringType;
+      _assembly = _type.Assembly;
     }
 
     public JoinPoint (MemberInfo member, Expression expression)
-        : this (member)
+        : this (ArgumentUtility.CheckNotNull ("member", member))
     {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
       _expression = expression;
     }
 

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Infrastructure.Construction;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
@@ -26,6 +27,9 @@ namespace ActiveAttributes.Core.Infrastructure
 
     public AspectDeclaration (IAspectConstructionInfo aspectConstructionInfo, IEnumerable<Advice> advices)
     {
+      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+      ArgumentUtility.CheckNotNull ("advices", advices);
+
       _aspectConstructionInfo = aspectConstructionInfo;
       _advices = advices;
     }

@@ -123,6 +123,7 @@
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceNameAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\AdviceInfo\AdviceScopeAttribute.cs" />
+    <Compile Include="Infrastructure\Attributes\Pointcuts\IPointcutAttribute.cs" />
     <Compile Include="Infrastructure\Construction\CustomAttributeDataAspectConstructionInfo.cs" />
     <Compile Include="Infrastructure\Construction\IAspectConstructionInfo.cs" />
     <Compile Include="Infrastructure\Construction\TypeAspectConstructionInfo.cs" />
@@ -139,10 +140,8 @@
     <Compile Include="Infrastructure\Intertype\IntroduceAttribute.cs" />
     <Compile Include="Infrastructure\Joinpoint.cs" />
     <Compile Include="Assembly\PointcutConverter.cs" />
-    <Compile Include="Infrastructure\Pointcuts\AspectDefinedPointcut.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\AspectDefinedPointcutAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\MemberNamePointcutAttribute.cs" />
-    <Compile Include="Infrastructure\Attributes\Pointcuts\PointcutBaseAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\Pointcuts\TypePointcutAttribute.cs" />
     <Compile Include="Infrastructure\IPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\Pointcut.cs" />
@@ -239,9 +238,7 @@
     </None>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\Discovery\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>xcopy /D /Y "$(SolutionDir)\..\..\Remotion2\Remotion\TypePipe\UnitTests\bin\Release\*" "$(SolutionDir)\prereq\"
