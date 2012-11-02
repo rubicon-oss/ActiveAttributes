@@ -44,6 +44,9 @@ namespace ActiveAttributes.Core.Assembly
 
     public ConstructorInitializationService (IFieldIntroducer2 fieldIntroducer2, IConstructorExpressionsHelperFactory expressionsHelperFactory)
     {
+      ArgumentUtility.CheckNotNull ("fieldIntroducer2", fieldIntroducer2);
+      ArgumentUtility.CheckNotNull ("expressionsHelperFactory", expressionsHelperFactory);
+
       _fieldIntroducer2 = fieldIntroducer2;
       _expressionsHelperFactory = expressionsHelperFactory;
     }
@@ -81,8 +84,8 @@ namespace ActiveAttributes.Core.Assembly
 
       var mutableType = (MutableType) method.DeclaringType;
       var field = _fieldIntroducer2.AddField (mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
-      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
 
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
       AddInitialization (mutableType, expressionProvider);
 
       return field;

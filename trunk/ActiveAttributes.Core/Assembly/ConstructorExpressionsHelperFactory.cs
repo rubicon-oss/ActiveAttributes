@@ -17,6 +17,7 @@
 using System;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -32,11 +33,15 @@ namespace ActiveAttributes.Core.Assembly
 
     public ConstructorExpressionsHelperFactory (AspectInitExpressionHelper aspectInitExpressionHelper)
     {
+      ArgumentUtility.CheckNotNull ("aspectInitExpressionHelper", aspectInitExpressionHelper);
+
       _aspectInitExpressionHelper = aspectInitExpressionHelper;
     }
 
     public IConstructorExpressionsHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase)
     {
+      ArgumentUtility.CheckNotNull ("bodyContextBase", bodyContextBase);
+
       return new ConstructorExpressionsHelper (_aspectInitExpressionHelper, bodyContextBase);
     }
   }

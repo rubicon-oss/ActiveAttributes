@@ -19,6 +19,7 @@ using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -32,6 +33,8 @@ namespace ActiveAttributes.Core.Assembly
   {
     public IEnumerable<IPointcut> GetPointcuts (AspectBaseAttribute aspectAttribute)
     {
+      ArgumentUtility.CheckNotNull ("aspectAttribute", aspectAttribute);
+
       if (aspectAttribute.Type != null)
         yield return new TypePointcut (aspectAttribute.Type);
 

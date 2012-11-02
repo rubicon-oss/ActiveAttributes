@@ -15,9 +15,10 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Infrastructure
+namespace ActiveAttributes.Core.Assembly
 {
   [ConcreteImplementation (typeof (PointcutParser))]
   public interface IPointcutParser

@@ -23,6 +23,7 @@ using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -39,6 +40,8 @@ namespace ActiveAttributes.Core.Assembly
   {
     public MemberInitExpression CreateInitExpression (IAspectConstructionInfo aspectConstructionInfo)
     {
+      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+
       var constructorInfo = aspectConstructionInfo.ConstructorInfo;
       var constructorArguments = constructorInfo.GetParameters().Select (x => x.ParameterType).Zip (
           aspectConstructionInfo.ConstructorArguments, (type, value) => Expression.Constant (value, type)).Cast<Expression>();

@@ -20,6 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {

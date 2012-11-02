@@ -20,6 +20,7 @@ using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 using System.Linq;
 using ActiveAttributes.Core.Extensions;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -40,11 +41,16 @@ namespace ActiveAttributes.Core.Assembly
 
     public PointcutVisitor (IPointcutParser pointcutParser)
     {
+      ArgumentUtility.CheckNotNull ("pointcutParser", pointcutParser);
+
       _pointcutParser = pointcutParser;
     }
 
     public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       if (pointcut is ITextPointcut)
         return VisitPointcut ((ITextPointcut) pointcut, joinPoint);
       if (pointcut is ITypePointcut)
@@ -58,6 +64,9 @@ namespace ActiveAttributes.Core.Assembly
 
     public bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       // TODO: special treatment for && and ||
       var pointcuts = _pointcutParser.GetPointcuts (pointcut.Text);
       return pointcuts.All (x => x.MatchVisit (this, joinPoint));
@@ -65,11 +74,17 @@ namespace ActiveAttributes.Core.Assembly
 
     public bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       return pointcut.Type.IsAssignableFrom (joinPoint.Type);
     }
 
     public bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint)
     {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
       return joinPoint.Member.Name.IsMatchWildcard (pointcut.MemberName);
     }
 

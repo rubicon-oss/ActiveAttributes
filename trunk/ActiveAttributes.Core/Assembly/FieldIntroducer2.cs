@@ -20,6 +20,7 @@ using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Extensions;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -33,6 +34,10 @@ namespace ActiveAttributes.Core.Assembly
   {
     public IFieldWrapper AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes)
     {
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
       var field = mutableType.AddField (type, name, attributes);
       return attributes.HasFlags (FieldAttributes.Static)
                  ? (IFieldWrapper) new StaticFieldWrapper (field)
