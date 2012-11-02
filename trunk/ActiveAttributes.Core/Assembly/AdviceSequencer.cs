@@ -55,7 +55,7 @@ namespace ActiveAttributes.Core.Assembly
     public IEnumerable<Advice> Sort (IEnumerable<Advice> advices)
     {
       var advicesAsList = advices.ToList();
-      var dependencies = default (IEnumerable<Tuple<Advice, Advice>>);
+      IEnumerable<Tuple<Advice, Advice>> dependencies = new Tuple<Advice, Advice>[0];
 
       foreach (var dependencyProvider in _adviceDependencyProviders)
       {

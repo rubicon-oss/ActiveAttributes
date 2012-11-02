@@ -28,7 +28,6 @@ namespace ActiveAttributes.Core.Configuration2
   /// </summary>
   public interface IAdviceDependencyProvider
   {
-    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors);
     IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices);
   }
 }
