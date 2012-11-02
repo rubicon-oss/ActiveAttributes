@@ -18,13 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.AspectDependencyProviders
 {
-  public class RuleDependencyProvider : IAspectDependencyProvider
+  public class RuleDependencyProvider : IAdviceDependencyProvider
   {
     private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
 
@@ -59,6 +60,11 @@ namespace ActiveAttributes.Core.Configuration2.AspectDependencyProviders
         else if (compared == 1)
           yield return Tuple.Create (combination.Aspect2, combination.Aspect1);
       }
+    }
+
+    public IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices)
+    {
+      throw new NotImplementedException();
     }
   }
 }

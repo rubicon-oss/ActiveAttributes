@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,19 +14,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Old;
-using Remotion.Collections;
+using System.Reflection;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.UnitTests
 {
-  /// <summary>
-  /// Serves as a provider for dependencies between different <see cref="AspectAttribute"/>s.
-  /// </summary>
-  public interface IAspectDependencyProvider
+  public static partial class ObjectMother2
   {
-    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> GetDependencies (IEnumerable<IAspectDescriptor> aspectDescriptors);
+    public static Advice GetAdvice(MethodInfo method = null, string role = null, string name = null)
+    {
+      method = method ?? GetMethodInfo();
+      var pointcuts = new IPointcut[0];
+      role = role ?? "Role";
+      name = name ?? "Name";
+
+      return new Advice (Execution.Around, Scope.Static, method, pointcuts, role, name);
+    }
   }
 }

@@ -35,7 +35,7 @@ namespace ActiveAttributes.Core.Configuration2
     /// </summary>
     IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
 
-    IList<IAspectDependencyProvider> AspectDependencyProviders { get; }
+    IList<IAdviceDependencyProvider> AspectDependencyProviders { get; }
 
     /// <summary>
     /// A list of <see cref="IAspectOrderingRule"/>s used to sort aspects properly.
@@ -62,7 +62,7 @@ namespace ActiveAttributes.Core.Configuration2
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
     private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
-    private readonly IList<IAspectDependencyProvider> _aspectDependencyProviders;
+    private readonly IList<IAdviceDependencyProvider> _aspectDependencyProviders;
     private readonly IList<IAspectOrderingRule> _aspectOrderingRules;
     private readonly IDictionary<Type, string> _aspectRoles;
 
@@ -71,7 +71,7 @@ namespace ActiveAttributes.Core.Configuration2
     public ActiveAttributesConfiguration ()
     {
       _aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
-      _aspectDependencyProviders = new List<IAspectDependencyProvider>();
+      _aspectDependencyProviders = new List<IAdviceDependencyProvider>();
       _aspectOrderingRules = new List<IAspectOrderingRule>();
       _aspectRoles = new Dictionary<Type, string>();
     }
@@ -81,9 +81,9 @@ namespace ActiveAttributes.Core.Configuration2
       get { return !IsLocked ? _aspectDescriptorProviders : new ReadOnlyCollection<IAspectDescriptorProvider> (_aspectDescriptorProviders); }
     }
 
-    public IList<IAspectDependencyProvider> AspectDependencyProviders
+    public IList<IAdviceDependencyProvider> AspectDependencyProviders
     {
-      get { return !IsLocked ? _aspectDependencyProviders : new ReadOnlyCollection<IAspectDependencyProvider> (_aspectDependencyProviders); }
+      get { return !IsLocked ? _aspectDependencyProviders : new ReadOnlyCollection<IAdviceDependencyProvider> (_aspectDependencyProviders); }
     }
 
     public IList<IAspectOrderingRule> AspectOrderingRules

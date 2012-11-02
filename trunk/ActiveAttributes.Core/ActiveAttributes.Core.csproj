@@ -66,6 +66,7 @@
     <Compile Include="AspectInvocationException.cs" />
     <Compile Include="Aspects\CflowMethodInterceptionAspectAttribute.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttribute.cs" />
+    <Compile Include="Assembly\AdviceSequencer.cs" />
     <Compile Include="Assembly\AspectInitExpressionHelper.cs" />
     <Compile Include="Assembly\ConstructorExpressionsHelperFactory.cs" />
     <Compile Include="Assembly\ConstructorInitializationService.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Configuration2\AspectDependencyProviders\RuleDependencyProvider.cs" />
     <Compile Include="Configuration2\AspectDependencyProviders\PriorityDependencyProvider.cs" />
     <Compile Include="Configuration2\Configurators\AspectTypesProvider.cs" />
-    <Compile Include="Configuration2\IAspectDependencyProvider.cs" />
+    <Compile Include="Configuration2\IAdviceDependencyProvider.cs" />
     <Compile Include="Configuration2\IAspectDescriptorProvider.cs" />
     <Compile Include="Assembly\Old\IExpressionGeneratorFactory.cs" />
     <Compile Include="Assembly\Old\IGiveMeSomeName.cs" />

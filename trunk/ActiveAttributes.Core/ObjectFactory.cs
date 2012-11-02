@@ -57,9 +57,6 @@ namespace ActiveAttributes.Core
       var methodExpressionHelperFactory = new MethodExpressionHelperFactory(invocationExpressionHelper);
       var methodInterceptionService = new MethodInterceptionService (invocationTypeProvider2, methodExpressionHelperFactory);
 
-      var aspectDependencyMerger = new AspectDependencyMerger();
-      var aspectDependencyProviders = configuration.AspectDependencyProviders;
-      var aspectSorter = new AspectSorter (aspectDependencyMerger, aspectDependencyProviders);
 
 
     }

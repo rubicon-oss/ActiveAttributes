@@ -39,18 +39,7 @@ namespace ActiveAttributes.Core.Assembly.Old
 
   public class AspectSorter : IAspectSorter
   {
-    private readonly IAspectDependencyMerger _aspectDependencyMerger;
-    private readonly IEnumerable<IAspectDependencyProvider> _aspectDependencyProviders;
     private readonly IActiveAttributesConfiguration _activeAttributesConfiguration;
-
-    public AspectSorter (IAspectDependencyMerger aspectDependencyMerger, IEnumerable<IAspectDependencyProvider> aspectDependencyProviders)
-    {
-      ArgumentUtility.CheckNotNull ("aspectDependencyMerger", aspectDependencyMerger);
-      ArgumentUtility.CheckNotNull ("aspectDependencyProviders", aspectDependencyProviders);
-
-      _aspectDependencyMerger = aspectDependencyMerger;
-      _aspectDependencyProviders = aspectDependencyProviders;
-    }
 
     public AspectSorter (IActiveAttributesConfiguration activeAttributesConfiguration)
     {

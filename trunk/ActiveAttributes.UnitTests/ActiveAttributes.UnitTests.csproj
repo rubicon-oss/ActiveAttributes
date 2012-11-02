@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Aspects\AspectAttributeTest.cs" />
     <Compile Include="Aspects\CflowMethodInterceptionAspectAttributeTest.cs" />
+    <Compile Include="Assembly\AdviceSequencerTest.cs" />
     <Compile Include="Assembly\AspectInitExpressionHelperTest.cs" />
     <Compile Include="Assembly\ConstructorInitializationServiceTest.cs" />
     <Compile Include="Assembly\FieldIntroducer2Test.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetAdvice.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetNewExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetMemberInitExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetBinaryExpression.cs" />

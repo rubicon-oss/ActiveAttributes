@@ -38,15 +38,15 @@ namespace ActiveAttributes.Core.Configuration2
 
     public ActiveAttributesesConfigurationProvider ()
     {
-      _configurators = ServiceLocator.Current.GetAllInstances<IActiveAttributesConfigurator> ();
+      var configurators = ServiceLocator.Current.GetAllInstances<IActiveAttributesConfigurator>();
+      _configurators = configurators.BringToFront (x => x is AppConfigConfigurator);
     }
 
     public IActiveAttributesConfiguration GetConfiguration ()
     {
       var configuration = new ActiveAttributesConfiguration ();
 
-      var sortedConfigurators = _configurators.BringToFront (x => x is AppConfigConfigurator);
-      foreach (var configurator in sortedConfigurators)
+      foreach (var configurator in _configurators)
       {
         configurator.Initialize (configuration);
         if (configuration.IsLocked)
