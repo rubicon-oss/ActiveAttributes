@@ -34,7 +34,7 @@ namespace ActiveAttributes.Core.Assembly
 
     IFieldWrapper AddDelegateInitialization (MutableMethodInfo method);
 
-    IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, Scope scope);
+    IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, AdviceScope adviceScope);
   }
 
   public class ConstructorInitializationService : IConstructorInitializationService
@@ -91,12 +91,12 @@ namespace ActiveAttributes.Core.Assembly
       return field;
     }
 
-    public IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, Scope scope)
+    public IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, AdviceScope adviceScope)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
       ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
 
-      var attributes = FieldAttributes.Private | (scope == Scope.Static ? FieldAttributes.Static : 0);
+      var attributes = FieldAttributes.Private | (adviceScope == AdviceScope.Static ? FieldAttributes.Static : 0);
       var field = _fieldIntroducer2.AddField (mutableType, typeof (IAspect), "TODO", attributes);
 
       Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectConstructionInfo);

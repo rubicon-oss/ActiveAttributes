@@ -54,8 +54,8 @@ namespace ActiveAttributes.UnitTests.Assembly.Old
       var descriptor1 = MockRepository.GenerateMock<IAspectDescriptor>();
       var descriptor2 = MockRepository.GenerateMock<IAspectDescriptor>();
 
-      descriptor1.Expect (x => x.Scope).Return (Scope.Instance);
-      descriptor2.Expect (x => x.Scope).Return (Scope.Static);
+      descriptor1.Expect (x => x.AdviceScope).Return (AdviceScope.Instance);
+      descriptor2.Expect (x => x.AdviceScope).Return (AdviceScope.Static);
 
       generator1.Expect (x => x.AspectDescriptor).Return (descriptor1);
       generator2.Expect (x => x.AspectDescriptor).Return (descriptor2);
@@ -309,8 +309,8 @@ namespace ActiveAttributes.UnitTests.Assembly.Old
                 instanceAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, instanceField));
                 staticAccessor.Expect (x => x.GetAccessExpression (null)).IgnoreArguments().Return (Expression.Field (null, staticField));
 
-                var instanceAspects = aspects.Where (x => x.AspectDescriptor.Scope == Scope.Instance);
-                var staticAspects = aspects.Where (x => x.AspectDescriptor.Scope == Scope.Static);
+                var instanceAspects = aspects.Where (x => x.AspectDescriptor.AdviceScope == AdviceScope.Instance);
+                var staticAspects = aspects.Where (x => x.AspectDescriptor.AdviceScope == AdviceScope.Static);
 
                 patcher.AddAspectInitialization (mutableType, staticAccessor, instanceAccessor, staticAspects.Concat (instanceAspects));
 

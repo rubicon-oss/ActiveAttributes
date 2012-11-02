@@ -38,7 +38,7 @@ namespace ActiveAttributes.Core.Configuration2.AspectDescriptorProviders
       var parameterAspects = parameters.SelectMany (x => x.GetCustomAttributes (true)).OfType<AspectAttribute>();
       var appliedAspects = parameterAspects.SelectMany (x => x.GetType().GetCustomAttributes (true)).OfType<ApplyAspectAttribute>();
       var distinctAspects = appliedAspects.Select (x => x.AspectType).Distinct();
-      return distinctAspects.Select (x => new TypeAspectDescriptor (x, Scope.Static, 0)).Cast<IAspectDescriptor>();
+      return distinctAspects.Select (x => new TypeAspectDescriptor (x, AdviceScope.Static, 0)).Cast<IAspectDescriptor>();
     }
   }
 }

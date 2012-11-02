@@ -19,6 +19,6 @@ using ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Aspects
 {
-  [AdviceExecution (Execution.Around)]
+  [AdviceExecution (AdviceExecution.Around)]
   public abstract class InterceptionAspectBaseAttribute : AspectBaseAttribute {}
 }

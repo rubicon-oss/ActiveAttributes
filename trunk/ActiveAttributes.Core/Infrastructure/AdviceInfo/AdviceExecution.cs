@@ -14,23 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 
-namespace ActiveAttributes.UnitTests
+namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
 {
-  public static partial class ObjectMother2
+  public enum AdviceExecution
   {
-    public static Advice GetAdvice(IEnumerable<Type> methodParameterTypes = null, string role = null, string name = null)
-    {
-      var method = GetMethodInfo (parameterTypes: methodParameterTypes);
-      var pointcuts = new IPointcut[0];
-      role = role ?? "Role";
-      name = name ?? "Name";
-
-      return new Advice (AdviceExecution.Around, AdviceScope.Static, 0, method, pointcuts, role, name);
-    }
+    Before,
+    After,
+    Around
   }
 }

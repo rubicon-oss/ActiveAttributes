@@ -82,7 +82,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
         Assert.That (descriptor.ConstructorInfo, Is.SameAs (customAttributeDataMock.Constructor));
         Assert.That (descriptor.ConstructorArguments, Is.SameAs (customAttributeDataMock.ConstructorArguments));
         Assert.That (descriptor.NamedArguments, Is.SameAs (customAttributeDataMock.NamedArguments));
-        Assert.That (descriptor.Scope, Is.EqualTo (Scope.Static));
+        Assert.That (descriptor.AdviceScope, Is.EqualTo (AdviceScope.Static));
         Assert.That (descriptor.Priority, Is.EqualTo (0));
         customAttributeDataMock.VerifyAllExpectations();
       }
@@ -99,7 +99,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
       }
 
       [Test]
-      [Aspect (Scope = Scope.Instance, Priority = 5)]
+      [Aspect (AdviceScope = AdviceScope.Instance, Priority = 5)]
       public void SetsScopeAndPriority ()
       {
         var method = MethodInfo.GetCurrentMethod ();
@@ -107,7 +107,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
 
         var descriptor = new CustomAttributeDataAspectDescriptor (customAttributeDataMock);
 
-        Assert.That (descriptor.Scope, Is.EqualTo (Scope.Instance));
+        Assert.That (descriptor.AdviceScope, Is.EqualTo (AdviceScope.Instance));
         Assert.That (descriptor.Priority, Is.EqualTo (5));
       }
     }
@@ -154,7 +154,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
       }
 
       [Test]
-      [Aspect (Scope = Scope.Instance, Priority = 5)]
+      [Aspect (AdviceScope = AdviceScope.Instance, Priority = 5)]
       public void ContainsScopeAndPriorityOnlyOnce ()
       {
         var method = MethodInfo.GetCurrentMethod ();

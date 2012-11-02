@@ -21,16 +21,16 @@ namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
   public class AdviceExecutionAttribute : Attribute
   {
-    private readonly Execution _execution;
+    private readonly AdviceExecution _adviceExecution;
 
-    public AdviceExecutionAttribute (Execution execution)
+    public AdviceExecutionAttribute (AdviceExecution adviceExecution)
     {
-      _execution = execution;
+      _adviceExecution = adviceExecution;
     }
 
-    public Execution Execution
+    public AdviceExecution AdviceExecution
     {
-      get { return _execution; }
+      get { return _adviceExecution; }
     }
   }
 }

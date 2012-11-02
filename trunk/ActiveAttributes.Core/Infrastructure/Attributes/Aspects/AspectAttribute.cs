@@ -15,38 +15,41 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.Aspects
 {
-  // TODO add interfaces for AdviceInfo ?
-  public abstract class AspectBaseAttribute
-      : Attribute,
-        //IAdviceScope,
-        //IAdviceExecution,
-        IAspect,
-        ITypePointcut,
-        IMemberNamePointcut,
-        IControlFlowPointcut
+  public abstract class AspectBaseAttribute : Attribute, IAspect
   {
-    public Scope Scope { get; set; }
+    #region AdviceInfo
 
-    public Execution Execution { get; set; }
+    public AdviceScope AdviceScope { get; set; }
 
-    #region Pointcuts
+    public AdviceExecution AdviceExecution { get; set; }
 
-    public Type Type { get; set; }
-
-    public string MemberName { get; set; }
-
-    public string ControlFlow { set; get; }
+    public int AdvicePriority { get; set; }
 
     #endregion
 
-    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
-    {
-      throw new NotSupportedException();
-    }
+    #region Pointcuts
+
+    public string ApplyToNamespace { get; set; }
+
+    public string ApplyToTypeName { get; set; }
+
+    public Type ApplyToType { get; set; }
+
+    public string MemberNameFilter { get; set; }
+
+    public Type MemberReturnTypeFilter { get; set; }
+
+    public Type[] MemberArgumentsFilter { get; set; }
+
+    public Visibility MemberVisibilityFilter { get; set; }
+
+    public Type MemberCustomAttributeFilter { get; set; }
+
+    #endregion
   }
 }

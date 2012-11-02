@@ -13,26 +13,38 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Configuration2;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public class AdviceRoleAttribute : Attribute
+  public interface IVisibilityPointcut : IPointcut
   {
-    private readonly string _role;
+    Visibility Visibility { get; }
+  }
 
-    public AdviceRoleAttribute (string role)
+  public class VisibilityPointcut : IVisibilityPointcut
+  {
+    private readonly Visibility _visibility;
+
+    public VisibilityPointcut (Visibility visibility)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("role", role);
-
-      _role = role;
+      _visibility = visibility;
     }
 
-    public string Role
+    public Visibility Visibility
     {
-      get { return _role; }
+      get { return _visibility; }
+    }
+
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return visitor.VisitPointcut (this, joinPoint);
     }
   }
 }

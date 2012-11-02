@@ -127,8 +127,8 @@ namespace ActiveAttributes.Core.Assembly.Old
       var aspectsAsCollection = aspects.ConvertToCollection();
       Func<BodyContextBase, Expression> mutation =
           ctx => Expression.Block (
-              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.Scope == Scope.Instance)),
-              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.Scope == Scope.Static)));
+              GeAspectsArrayAssignExpression (instanceAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.AdviceScope == AdviceScope.Instance)),
+              GeAspectsArrayAssignExpression (staticAccessor, ctx, aspectsAsCollection.Where (x => x.AspectDescriptor.AdviceScope == AdviceScope.Static)));
 
       AddMutation (mutableType, mutation);
     }

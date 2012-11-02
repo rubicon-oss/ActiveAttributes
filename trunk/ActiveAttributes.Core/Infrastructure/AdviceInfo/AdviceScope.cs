@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,23 +14,25 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Aspects;
 
-namespace ActiveAttributes.UnitTests
+namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
 {
-  public static partial class ObjectMother2
+  /// <summary>
+  /// Defines the scope of an <see cref="AspectAttribute"/>.
+  /// </summary>
+  public enum AdviceScope
   {
-    public static Advice GetAdvice(IEnumerable<Type> methodParameterTypes = null, string role = null, string name = null)
-    {
-      var method = GetMethodInfo (parameterTypes: methodParameterTypes);
-      var pointcuts = new IPointcut[0];
-      role = role ?? "Role";
-      name = name ?? "Name";
+    Undefined,
 
-      return new Advice (AdviceExecution.Around, AdviceScope.Static, 0, method, pointcuts, role, name);
-    }
+    /// <summary>
+    /// The aspect is created once per attribute.
+    /// </summary>
+    Static,
+
+    /// <summary>
+    /// The aspect is created for each new target object.
+    /// </summary>
+    Instance
   }
 }

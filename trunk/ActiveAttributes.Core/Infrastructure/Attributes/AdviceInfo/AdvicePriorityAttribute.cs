@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,12 +15,20 @@
 // under the License.
 using System;
 
-namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
+namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
-  public enum Execution
+  public class AdvicePriorityAttribute : Attribute
   {
-    Before,
-    After,
-    Around
+    private readonly int _priority;
+
+    public AdvicePriorityAttribute (int priority)
+    {
+      _priority = priority;
+    }
+
+    public int Priority
+    {
+      get { return _priority; }
+    }
   }
 }

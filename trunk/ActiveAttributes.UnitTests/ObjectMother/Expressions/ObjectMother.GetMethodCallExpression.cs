@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,25 +14,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Aspects;
+using System.Reflection;
+using Microsoft.Scripting.Ast;
+using System.Linq;
 
-namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
+namespace ActiveAttributes.UnitTests
 {
-  /// <summary>
-  /// Defines the scope of an <see cref="AspectAttribute"/>.
-  /// </summary>
-  public enum Scope
+  public static partial class ObjectMother2
   {
-    Undefined,
+    public static MethodCallExpression GetMethodCallExpression (MethodInfo method = null)
+    {
+      method = method ?? GetMethodInfo();
+      var thisExpression = method.IsStatic ? null : GetThisExpression (method.DeclaringType);
+      var arguments = method.GetParameters().Select (x => GetParameterExpression (x.ParameterType)).Cast<Expression>();
 
-    /// <summary>
-    /// The aspect is created once per attribute.
-    /// </summary>
-    Static,
-
-    /// <summary>
-    /// The aspect is created for each new target object.
-    /// </summary>
-    Instance
+      return Expression.Call (thisExpression, method, arguments);
+    }
   }
 }

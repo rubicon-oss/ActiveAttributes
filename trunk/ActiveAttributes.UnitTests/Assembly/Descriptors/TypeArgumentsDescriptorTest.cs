@@ -32,12 +32,12 @@ namespace ActiveAttributes.UnitTests.Assembly.Descriptors
       public void SetsInformation ()
       {
         var aspectType = typeof (AspectAttribute);
-        var scope = Scope.Instance;
+        var scope = AdviceScope.Instance;
         var priority = 5;
         var descriptor = new TypeAspectDescriptor (aspectType, scope, priority);
 
         Assert.That (descriptor.Type, Is.EqualTo (aspectType));
-        Assert.That (descriptor.Scope, Is.EqualTo (scope));
+        Assert.That (descriptor.AdviceScope, Is.EqualTo (scope));
         Assert.That (descriptor.Priority, Is.EqualTo (priority));
       }
     } 

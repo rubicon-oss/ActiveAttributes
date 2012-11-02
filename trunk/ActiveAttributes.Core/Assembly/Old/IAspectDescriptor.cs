@@ -43,9 +43,9 @@ namespace ActiveAttributes.Core.Assembly.Old
     int Priority { get; }
 
     /// <summary>
-    /// The <see cref="Infrastructure.AdviceInfo.Scope" /> (or lifetime) of the <see cref="AspectAttribute" />.
+    /// The <see cref="AdviceScope" /> (or lifetime) of the <see cref="AspectAttribute" />.
     /// </summary>
-    Scope Scope { get; }
+    AdviceScope AdviceScope { get; }
 
     /// <summary>
     /// The <see cref="ConstructorInfo" /> used to create the <see cref="AspectAttribute" />.

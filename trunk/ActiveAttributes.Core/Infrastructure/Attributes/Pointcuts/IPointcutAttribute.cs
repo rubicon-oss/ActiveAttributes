@@ -19,6 +19,7 @@ namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
   public interface IPointcutAttribute
   {
+    // TODO consider changing to IEnumerable<> ?
     IPointcut Pointcut { get; }
   }
 }

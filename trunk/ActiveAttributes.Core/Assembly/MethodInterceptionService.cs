@@ -16,20 +16,24 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure;
+using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace ActiveAttributes.Core.Assembly
 {
   public interface IMethodInterceptionService
   {
-    //void AddInterception (
-    //    MutableMethodInfo method,
-    //    IFieldWrapper delegateField,
-    //    IFieldWrapper memberInfoField,
-    //    IEnumerable<IAdvice> advices,
-    //    IDictionary<IAdvice, IFieldWrapper> adviceDictionary);
+    void AddInterception (
+        MutableMethodInfo method,
+        IFieldWrapper delegateField,
+        IFieldWrapper memberInfoField,
+        IEnumerable<Advice> advices,
+        IDictionary<Advice, IFieldWrapper> adviceDictionary);
   }
 
   public class MethodInterceptionService : IMethodInterceptionService
@@ -79,6 +83,57 @@ namespace ActiveAttributes.Core.Assembly
       // create invocationcontext
       // create tuples of invocation variables and init expressions
       // 
+    }
+
+    public void AddInterception (
+        MutableMethodInfo method,
+        IFieldWrapper delegateField,
+        IFieldWrapper memberInfoField,
+        IEnumerable<Advice> advices,
+        IDictionary<Advice, IFieldWrapper> adviceDictionary)
+    {
+      ArgumentUtility.CheckNotNull ("method", method);
+      ArgumentUtility.CheckNotNull ("delegateField", delegateField);
+      ArgumentUtility.CheckNotNull ("memberInfoField", memberInfoField);
+      ArgumentUtility.CheckNotNull ("advices", advices);
+      ArgumentUtility.CheckNotNull ("adviceDictionary", adviceDictionary);
+
+      method.SetBody (ctx => CreateNewBody(method, delegateField, memberInfoField, advices, adviceDictionary, ctx));
+    }
+
+    private Expression CreateNewBody (
+        MutableMethodInfo method,
+        IFieldWrapper delegateField,
+        IFieldWrapper memberInfoField,
+        IEnumerable<Advice> advices,
+        IDictionary<Advice, IFieldWrapper> adviceDictionary,
+        BodyContextBase ctx)
+    {
+      var advicesAsList = advices.ToList();
+
+      Type invocationType;
+      Type invocationContextType;
+      _invocationTypeProvider.GetInvocationTypes (method, out invocationType, out invocationContextType);
+
+      var expressionHelper = _methodExpressionHelperFactory.CreateMethodExpressionHelper (method, ctx, adviceDictionary);
+
+      var contextTuple = expressionHelper.CreateInvocationContextExpressions (invocationContextType, memberInfoField);
+      var context = contextTuple.Item1;
+      var contextAssign = contextTuple.Item2;
+
+      var invocationTuples = expressionHelper.CreateInvocationExpressions (invocationType, context, delegateField, advicesAsList).ToList();
+      var invocations = invocationTuples.Select (x => x.Item1).ToList();
+      var invocationAssigns = invocationTuples.Select (x => x.Item2).Cast<Expression>();
+
+      var outermostCall = expressionHelper.CreateOutermostAspectCallExpression (advicesAsList.Last(), invocations.Last());
+
+      // TODO context.ReturnValue
+      return Expression.Block (
+          new[] { context }.Concat (invocations),
+          contextAssign,
+          Expression.Block (invocationAssigns),
+          outermostCall,
+          Expression.Convert (Expression.Property (context, "ReturnValue"), method.ReturnType));
     }
   }
 }

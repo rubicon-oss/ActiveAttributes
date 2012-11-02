@@ -15,6 +15,7 @@
 // under the License.
 
 using System;
+using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
@@ -32,6 +33,11 @@ namespace ActiveAttributes.Core.Assembly
     bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (ITypeNamePointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IVisibilityPointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IReturnTypePointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IArgumentsPointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (INamespacePointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint);
   }
 
@@ -57,6 +63,14 @@ namespace ActiveAttributes.Core.Assembly
         return VisitPointcut ((ITypePointcut) pointcut, joinPoint);
       if (pointcut is IMemberNamePointcut)
         return VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint);
+      if (pointcut is ITypeNamePointcut)
+        return VisitPointcut ((ITypeNamePointcut) pointcut, joinPoint);
+      if (pointcut is IReturnTypePointcut)
+        return VisitPointcut ((IReturnTypePointcut) pointcut, joinPoint);
+      if (pointcut is IArgumentsPointcut)
+        return VisitPointcut ((IArgumentsPointcut) pointcut, joinPoint);
+      if (pointcut is INamespacePointcut)
+        return VisitPointcut ((INamespacePointcut) pointcut, joinPoint);
       if (pointcut is IControlFlowPointcut)
         return VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint);
       throw new NotSupportedException();
@@ -88,9 +102,40 @@ namespace ActiveAttributes.Core.Assembly
       return joinPoint.Member.Name.IsMatchWildcard (pointcut.MemberName);
     }
 
-    public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitPointcut (ITypeNamePointcut pointcut, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return joinPoint.Type.Name.IsMatchWildcard (pointcut.TypeName);
+    }
+
+    public bool VisitPointcut (IVisibilityPointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
+    }
+
+    public bool VisitPointcut (IReturnTypePointcut pointcut, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return pointcut.ReturnType.IsAssignableFrom (((MethodInfo) joinPoint.Member).ReturnType);
+    }
+
+    public bool VisitPointcut (IArgumentsPointcut pointcut, JoinPoint joinPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool VisitPointcut (INamespacePointcut pointcut, JoinPoint joinPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
+    {
+      throw new NotSupportedException();
     }
   }
 }

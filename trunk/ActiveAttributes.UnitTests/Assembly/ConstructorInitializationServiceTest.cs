@@ -84,7 +84,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (fakeExpression);
 
       var previousBody = _firstConstructor.Body;
-      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, Scope.Instance);
+      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, AdviceScope.Instance);
 
       _fieldIntroducer2Mock.VerifyAllExpectations();
       _expressionsHelperMock.VerifyAllExpectations();
@@ -114,7 +114,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Return (fakeExpression);
 
       var previousBody = _firstConstructor.Body;
-      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, Scope.Static);
+      var result = _constructorInitializationService.AddAspectInitialization (_mutableType, constructionInfo, AdviceScope.Static);
 
       _fieldIntroducer2Mock.VerifyAllExpectations();
       _expressionsHelperMock.VerifyAllExpectations();

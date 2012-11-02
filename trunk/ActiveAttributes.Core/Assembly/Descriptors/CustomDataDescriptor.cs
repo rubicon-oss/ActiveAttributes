@@ -53,9 +53,9 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
       get { return _aspectAttribute.Priority; }
     }
 
-    public Scope Scope
+    public AdviceScope AdviceScope
     {
-      get { return _aspectAttribute.Scope; }
+      get { return _aspectAttribute.AdviceScope; }
     }
 
     public Type Type
@@ -96,7 +96,7 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
 
       var arguments = new List<string>();
       arguments.AddRange (_customAttributeData.ConstructorArguments.Select (x => "{" + x.ToString() + "}"));
-      arguments.Add ("Scope = " + Scope);
+      arguments.Add ("Scope = " + AdviceScope);
       arguments.Add ("Priority = " + Priority);
       arguments.AddRange (namedWithoutScopeAndPriority.Select (x => x.MemberInfo.Name + " = {" + x.Value + "}"));
       arguments.ForEach (x => stringBuilder.Append (x).Append (", "));

@@ -14,16 +14,35 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
-using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static AspectBaseAttribute GetAspectAttribute (Type type = null, string memberName = null)
+    public static AspectBaseAttribute GetAspectAttribute (
+        object dummy = null,
+        Type applyToType = null,
+        string memberName = null,
+        string applyToNamespace = null,
+        string applyToTypeName = null,
+        Type memberReturnType = null,
+        Visibility memberVisibility = Visibility.None,
+        Type[] memberArguments = null,
+        Type memberCustomAttributes = null)
     {
-      return new TestableAspectAttribute { Type = type, MemberName = memberName };
+      return new TestableAspectAttribute
+             {
+                 ApplyToType = applyToType,
+                 MemberNameFilter = memberName,
+                 ApplyToNamespace = applyToNamespace,
+                 ApplyToTypeName = applyToTypeName,
+                 MemberReturnTypeFilter = memberReturnType,
+                 MemberVisibilityFilter = memberVisibility,
+                 MemberArgumentsFilter = memberArguments,
+                 MemberCustomAttributeFilter = memberCustomAttributes
+             };
     }
 
     private class TestableAspectAttribute : AspectBaseAttribute {}

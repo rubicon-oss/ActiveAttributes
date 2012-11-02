@@ -37,15 +37,15 @@ namespace ActiveAttributes.Core.Assembly.Old
       Assertion.IsTrue (staticAccessor.IsStatic);
 
       var aspectsAsCollection = descriptors.ConvertToCollection();
-      var instanceGenerators = GetExpressionGenerators (instanceAccessor, aspectsAsCollection, Scope.Instance);
-      var staticGenerators = GetExpressionGenerators (staticAccessor, aspectsAsCollection, Scope.Static);
+      var instanceGenerators = GetExpressionGenerators (instanceAccessor, aspectsAsCollection, AdviceScope.Instance);
+      var staticGenerators = GetExpressionGenerators (staticAccessor, aspectsAsCollection, AdviceScope.Static);
 
       return instanceGenerators.Concat (staticGenerators);
     }
 
-    private IEnumerable<IExpressionGenerator> GetExpressionGenerators (IFieldWrapper accessor, IEnumerable<IAspectDescriptor> aspects, Scope scope)
+    private IEnumerable<IExpressionGenerator> GetExpressionGenerators (IFieldWrapper accessor, IEnumerable<IAspectDescriptor> aspects, AdviceScope adviceScope)
     {
-      return aspects.Where (x => x.Scope == scope).Select ((x, i) => new ExpressionGenerator (accessor, i, x)).Cast<IExpressionGenerator>();
+      return aspects.Where (x => x.AdviceScope == adviceScope).Select ((x, i) => new ExpressionGenerator (accessor, i, x)).Cast<IExpressionGenerator>();
     }
   }
 }

@@ -16,7 +16,6 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using NUnit.Framework;
@@ -29,8 +28,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Converts ()
     {
-      Check<TypePointcut> (ObjectMother2.GetAspectAttribute (type: typeof (string)), "Type", typeof (string));
+      Check<TypePointcut> (ObjectMother2.GetAspectAttribute (applyToType: typeof (string)), "Type", typeof (string));
       Check<MemberNamePointcut> (ObjectMother2.GetAspectAttribute (memberName: "Method"), "MemberName", "Method");
+      Check<TypeNamePointcut> (ObjectMother2.GetAspectAttribute (applyToTypeName: "Type"), "TypeName", "Type");
     }
 
     private void Check<TPointcut> (AspectBaseAttribute aspectAttribute, string property, object expected)

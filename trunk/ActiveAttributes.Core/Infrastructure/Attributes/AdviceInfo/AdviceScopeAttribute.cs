@@ -21,16 +21,16 @@ namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
   public class AdviceScopeAttribute : Attribute
   {
-    private readonly Scope _scope;
+    private readonly AdviceScope _adviceScope;
 
-    public AdviceScopeAttribute (Scope scope)
+    public AdviceScopeAttribute (AdviceScope adviceScope)
     {
-      _scope = scope;
+      _adviceScope = adviceScope;
     }
 
-    public Scope Scope
+    public AdviceScope AdviceScope
     {
-      get { return _scope; }
+      get { return _adviceScope; }
     }
   }
 }

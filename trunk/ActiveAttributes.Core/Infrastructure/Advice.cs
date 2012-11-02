@@ -23,15 +23,16 @@ namespace ActiveAttributes.Core.Infrastructure
 {
   public class Advice
   {
-    private readonly Execution _execution;
-    private readonly Scope _scope;
+    private readonly AdviceExecution _execution;
+    private readonly AdviceScope _scope;
+    private readonly int _priority;
     private readonly string _role;
     private readonly string _name;
 
     private readonly MethodInfo _method;
     private readonly IEnumerable<IPointcut> _pointcuts;
 
-    public Advice (Execution execution, Scope scope, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
+    public Advice (AdviceExecution execution, AdviceScope scope, int priority, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       ArgumentUtility.CheckNotNull ("pointcuts", pointcuts);
@@ -40,18 +41,19 @@ namespace ActiveAttributes.Core.Infrastructure
 
       _execution = execution;
       _scope = scope;
+      _priority = priority;
       _method = method;
       _pointcuts = pointcuts;
       _role = role;
       _name = name;
     }
 
-    public Execution Execution
+    public AdviceExecution Execution
     {
       get { return _execution; }
     }
 
-    public Scope Scope
+    public AdviceScope Scope
     {
       get { return _scope; }
     }
@@ -74,6 +76,11 @@ namespace ActiveAttributes.Core.Infrastructure
     public IEnumerable<IPointcut> Pointcuts
     {
       get { return _pointcuts; }
+    }
+
+    public int Priority
+    {
+      get { return _priority; }
     }
   }
 }

@@ -15,6 +15,7 @@
 // under the License.
 
 using System;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 {
@@ -24,6 +25,8 @@ namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
 
     public AdviceNameAttribute (string name)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
       _name = name;
     }
 

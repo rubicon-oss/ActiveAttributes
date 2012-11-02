@@ -75,6 +75,28 @@ namespace ActiveAttributes.UnitTests.Assembly
       CheckNotMatching(joinPoint, pointcut);
     }
 
+    [Test]
+    public void TypeNamePointcut ()
+    {
+      var joinPoint = new JoinPoint (typeof (string));
+
+      CheckMatching (joinPoint, new TypeNamePointcut ("String"));
+      CheckNotMatching (joinPoint, new TypeNamePointcut ("int"));
+      CheckMatching (joinPoint, new TypeNamePointcut ("Str*"));
+    }
+
+    [Test]
+    public void ReturnTypePointcut ()
+    {
+      var method = ObjectMother2.GetMethodInfo (returnType: typeof (DomainType));
+      var joinPoint = new JoinPoint (method);
+
+      CheckMatching (joinPoint, new ReturnTypePointcut (typeof(DomainType)));
+      CheckNotMatching (joinPoint, new ReturnTypePointcut (typeof(int)));
+      CheckMatching (joinPoint, new ReturnTypePointcut (typeof(DomainTypeBase)));
+      CheckMatching (joinPoint, new ReturnTypePointcut (typeof(IDomainInterface)));
+    }
+
     private void SetupPointcutParser (JoinPoint joinPoint, bool first, bool second)
     {
       var pointcutMock1 = MockRepository.GenerateStrictMock<IPointcut> ();
@@ -86,14 +108,12 @@ namespace ActiveAttributes.UnitTests.Assembly
       pointcutMock2.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (second);
     }
 
-    private void CheckMatching<T> (JoinPoint joinPoint, T pointcut)
-      where T : IPointcut
+    private void CheckMatching (JoinPoint joinPoint, IPointcut pointcut)
     {
       Assert.That (_pointcutVisitor.VisitPointcut (pointcut, joinPoint), Is.True);
     }
 
-    private void CheckNotMatching<T> (JoinPoint joinPoint, T pointcut)
-      where T : IPointcut
+    private void CheckNotMatching (JoinPoint joinPoint, IPointcut pointcut)
     {
       Assert.That (_pointcutVisitor.VisitPointcut (pointcut, joinPoint), Is.False);
     }

@@ -13,26 +13,39 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using ActiveAttributes.Core.Assembly;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Attributes.AdviceInfo
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public class AdviceRoleAttribute : Attribute
+  public interface INamespacePointcut : IPointcut
   {
-    private readonly string _role;
+    string Namespace { get; }
+  }
 
-    public AdviceRoleAttribute (string role)
+  public class NamespacePointcut : INamespacePointcut
+  {
+    private readonly string _namespace;
+
+    public NamespacePointcut (string namespace_)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("role", role);
+      ArgumentUtility.CheckNotNullOrEmpty ("namespace_", namespace_);
 
-      _role = role;
+      _namespace = namespace_;
     }
 
-    public string Role
+    public string Namespace
     {
-      get { return _role; }
+      get { return _namespace; }
+    }
+
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return visitor.VisitPointcut (this, joinPoint);
     }
   }
 }

@@ -33,9 +33,9 @@ namespace ActiveAttributes.Core.Aspects
   public abstract class AspectAttribute : Attribute
   {
     /// <summary>
-    ///   Scope of an aspect. It can be either <see cref = "Infrastructure.AdviceInfo.Scope.Static" /> or <see cref = "Infrastructure.AdviceInfo.Scope.Instance" />.
+    ///   Scope of an aspect. It can be either <see cref = "AdviceScope.Static" /> or <see cref = "AdviceScope.Instance" />.
     /// </summary>
-    public Scope Scope { get; set; }
+    public AdviceScope AdviceScope { get; set; }
 
     /// <summary>
     ///   Gets or sets the priority of an aspect. Priorities can define the order of aspects applied to a target element. 

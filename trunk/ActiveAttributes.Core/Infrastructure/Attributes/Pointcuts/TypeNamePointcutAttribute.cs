@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,23 +14,25 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests
+namespace ActiveAttributes.Core.Infrastructure.Attributes.Pointcuts
 {
-  public static partial class ObjectMother2
+  public class TypeNamePointcutAttribute : Attribute, IPointcutAttribute
   {
-    public static Advice GetAdvice(IEnumerable<Type> methodParameterTypes = null, string role = null, string name = null)
-    {
-      var method = GetMethodInfo (parameterTypes: methodParameterTypes);
-      var pointcuts = new IPointcut[0];
-      role = role ?? "Role";
-      name = name ?? "Name";
+    private readonly IPointcut _pointcut;
 
-      return new Advice (AdviceExecution.Around, AdviceScope.Static, 0, method, pointcuts, role, name);
+    public TypeNamePointcutAttribute (string typeName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
+
+      _pointcut = new TypeNamePointcut (typeName);
+    }
+
+    public IPointcut Pointcut
+    {
+      get { return _pointcut; }
     }
   }
 }

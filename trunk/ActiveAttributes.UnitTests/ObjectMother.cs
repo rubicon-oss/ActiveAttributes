@@ -171,7 +171,7 @@ namespace ActiveAttributes.UnitTests
       return Expression.Field (null, field);
     }
 
-    public static IAspectDescriptor GetAspectDescriptor (Type aspectType = null, Scope scope = Scope.Static)
+    public static IAspectDescriptor GetAspectDescriptor (Type aspectType = null, AdviceScope adviceScope = AdviceScope.Static)
     {
       aspectType = GetAssignableType (typeof (AspectAttribute), aspectType);
 
@@ -181,8 +181,8 @@ namespace ActiveAttributes.UnitTests
           .Stub (x => x.Type)
           .Return (aspectType);
       mock
-          .Stub (x => x.Scope)
-          .Return (scope);
+          .Stub (x => x.AdviceScope)
+          .Return (adviceScope);
 
       return mock;
     }
@@ -197,12 +197,12 @@ namespace ActiveAttributes.UnitTests
 
     public static IAspectDescriptor GetInstanceAspectDescriptor (Type aspectType = null)
     {
-      return GetAspectDescriptor (aspectType, Scope.Instance);
+      return GetAspectDescriptor (aspectType, AdviceScope.Instance);
     }
 
     public static IAspectDescriptor GetStaticAspectDescriptor (Type aspectType = null)
     {
-      return GetAspectDescriptor (aspectType, Scope.Static);
+      return GetAspectDescriptor (aspectType, AdviceScope.Static);
     }
 
     public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null, ThisExpression thisExpression = null)

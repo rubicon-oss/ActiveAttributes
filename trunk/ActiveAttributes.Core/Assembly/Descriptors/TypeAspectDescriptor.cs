@@ -31,16 +31,16 @@ namespace ActiveAttributes.Core.Assembly.Descriptors
   /// </summary>
   public class TypeAspectDescriptor : IAspectDescriptor
   {
-    public TypeAspectDescriptor (Type aspectType, Scope scope, int priority)
+    public TypeAspectDescriptor (Type aspectType, AdviceScope adviceScope, int priority)
     {
       Type = aspectType;
-      Scope = scope;
+      AdviceScope = adviceScope;
       Priority = priority;
     }
 
     public int Priority { get; private set; }
 
-    public Scope Scope { get; private set; }
+    public AdviceScope AdviceScope { get; private set; }
 
     public Type Type { get; private set; }
 

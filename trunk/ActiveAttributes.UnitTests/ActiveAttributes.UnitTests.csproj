@@ -89,6 +89,7 @@
     <Compile Include="Assembly\InvocationExpressionHelperTest.cs" />
     <Compile Include="Assembly\InvocationTypeProvider2Test.cs" />
     <Compile Include="Assembly\MethodExpressionHelperTest.cs" />
+    <Compile Include="Assembly\MethodInterceptionServiceTest.cs" />
     <Compile Include="Assembly\Old\ExpressionGeneratorTest.cs" />
     <Compile Include="Assembly\ConstructorExpressionsHelperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\Expressions\ObjectMother.GetMethodCallExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetVariableExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetParameterExpression.cs" />
     <Compile Include="ObjectMother\Mutable\ObjectMother.GetBodyContext.cs" />

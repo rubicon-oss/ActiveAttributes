@@ -53,10 +53,10 @@ namespace ActiveAttributes.IntegrationTests
 
     public class DomainType
     {
-      [DomainAspect (Scope = Scope.Instance)]
+      [DomainAspect (AdviceScope = AdviceScope.Instance)]
       public virtual Guid InstanceMethod () { return Guid.Empty; }
 
-      [DomainAspect (Scope = Scope.Static)]
+      [DomainAspect (AdviceScope = AdviceScope.Static)]
       public virtual Guid StaticMethod () { return Guid.Empty; }
     }
 

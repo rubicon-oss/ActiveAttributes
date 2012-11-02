@@ -35,11 +35,14 @@ namespace ActiveAttributes.Core.Assembly
     {
       ArgumentUtility.CheckNotNull ("aspectAttribute", aspectAttribute);
 
-      if (aspectAttribute.Type != null)
-        yield return new TypePointcut (aspectAttribute.Type);
+      if (aspectAttribute.ApplyToType != null)
+        yield return new TypePointcut (aspectAttribute.ApplyToType);
 
-      if (aspectAttribute.MemberName != null)
-        yield return new MemberNamePointcut (aspectAttribute.MemberName);
+      if (aspectAttribute.ApplyToTypeName != null)
+        yield return new TypeNamePointcut (aspectAttribute.ApplyToTypeName);
+
+      if (aspectAttribute.MemberNameFilter != null)
+        yield return new MemberNamePointcut (aspectAttribute.MemberNameFilter);
     }
   }
 }
