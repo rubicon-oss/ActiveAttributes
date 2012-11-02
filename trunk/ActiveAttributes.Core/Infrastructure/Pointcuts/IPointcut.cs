@@ -17,7 +17,7 @@
 using System;
 using ActiveAttributes.Core.Assembly;
 
-namespace ActiveAttributes.Core.Infrastructure
+namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
   public interface IPointcut
   {

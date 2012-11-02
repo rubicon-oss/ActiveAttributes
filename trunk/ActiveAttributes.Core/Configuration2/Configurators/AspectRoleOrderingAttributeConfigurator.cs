@@ -18,15 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
-using ActiveAttributes.Core.Configuration2.Rules;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
 {
   /// <summary>
-  /// Serves as a configurator, which adds <see cref="RoleOrderingRule"/>s through <see cref="AspectRoleOrderingAttribute"/>s.
+  /// Serves as a configurator, which adds <see cref="RoleOrdering"/>s through <see cref="AspectRoleOrderingAttribute"/>s.
   /// </summary>
   public class AspectRoleOrderingAttributeConfigurator : IActiveAttributesConfigurator
   {
@@ -68,7 +68,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
             var afterRole = roleOrderingAttribute.Position == Position.Before
                                 ? otherAspectRole
                                 : aspectRole;
-            var typeOrderingRule = new RoleOrderingRule (GetType().Name, beforeRole, afterRole, activeAttributesConfiguration);
+            var typeOrderingRule = new RoleOrdering (GetType().Name, beforeRole, afterRole, activeAttributesConfiguration);
             activeAttributesConfiguration.AspectOrderingRules.Add (typeOrderingRule);
           }
         }

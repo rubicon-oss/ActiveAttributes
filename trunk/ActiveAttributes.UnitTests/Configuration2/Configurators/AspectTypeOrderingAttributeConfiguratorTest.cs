@@ -19,7 +19,7 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
-using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -32,7 +32,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
     public void ConvertsAttributesToRules ()
     {
       var activeAttributesConfigurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration>();
-      var aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAspectOrderingRule>>();
+      var aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAdviceOrdering>>();
       activeAttributesConfigurationStub
           .Stub (x => x.AspectOrderingRules)
           .Return (aspectOrderingRulesMock);
@@ -40,9 +40,9 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
       var aspectType = typeof (Domain1AspectAttribute);
       new AspectTypeOrderingAttributeConfigurator (new[] { aspectType }).Initialize (activeAttributesConfigurationStub);
 
-      var expectedRule1 = new TypeOrderingRule (
+      var expectedRule1 = new TypeOrdering (
           "AspectTypeOrderingAttributeConfigurator", typeof (Domain1AspectAttribute), typeof (Domain2AspectAttribute));
-      var expectedRule2 = new TypeOrderingRule (
+      var expectedRule2 = new TypeOrdering (
           "AspectTypeOrderingAttributeConfigurator", typeof (Domain1AspectAttribute), typeof (Domain3AspectAttribute));
       aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule1));
       aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule2));
@@ -52,7 +52,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
     public void RespectsOrderPosition ()
     {
       var activeAttributesConfigurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration> ();
-      var aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAspectOrderingRule>> ();
+      var aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAdviceOrdering>> ();
       activeAttributesConfigurationStub
           .Stub (x => x.AspectOrderingRules)
           .Return (aspectOrderingRulesMock);
@@ -60,7 +60,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
       var aspectType = typeof (Domain2AspectAttribute);
       new AspectTypeOrderingAttributeConfigurator (new[] { aspectType }).Initialize (activeAttributesConfigurationStub);
 
-      var expectedRule = new TypeOrderingRule (
+      var expectedRule = new TypeOrdering (
           "AspectTypeOrderingAttributeConfigurator", typeof (Domain1AspectAttribute), typeof (Domain2AspectAttribute));
       aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule));
       

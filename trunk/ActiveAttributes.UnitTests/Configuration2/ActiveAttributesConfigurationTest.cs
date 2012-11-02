@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using NUnit.Framework;
 using Remotion.Collections;
 
@@ -30,8 +31,8 @@ namespace ActiveAttributes.UnitTests.Configuration2
     {
       var configuration = new ActiveAttributesConfiguration ();
 
-      Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<List<IAspectDescriptorProvider>>());
-      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<List<IAspectOrderingRule>> ());
+      //Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<List<IAspectDescriptorProvider>>());
+      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<List<IAdviceOrdering>> ());
       Assert.That (configuration.AspectRoles, Is.TypeOf<Dictionary<Type, string>> ());
     }
 
@@ -42,8 +43,8 @@ namespace ActiveAttributes.UnitTests.Configuration2
       configuration.Lock();
 
       Assert.That (configuration.IsLocked, Is.True);
-      Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<ReadOnlyCollection<IAspectDescriptorProvider>> ());
-      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<ReadOnlyCollection<IAspectOrderingRule>> ());
+      //Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<ReadOnlyCollection<IAspectDescriptorProvider>> ());
+      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<ReadOnlyCollection<IAdviceOrdering>> ());
       Assert.That (configuration.AspectRoles, Is.TypeOf<ReadOnlyDictionary<Type, string>> ());
     }
 

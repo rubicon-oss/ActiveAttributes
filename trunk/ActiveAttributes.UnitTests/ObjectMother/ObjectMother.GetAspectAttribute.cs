@@ -14,8 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 
 namespace ActiveAttributes.UnitTests
 {

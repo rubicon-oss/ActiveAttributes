@@ -16,7 +16,7 @@
 using System;
 using System.Configuration;
 using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
 {
@@ -33,9 +33,9 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
       {
         var beforeType = Type.GetType (item.BeforeType, true);
         var afterType = Type.GetType (item.AfterType, true);
-        var rule = new TypeOrderingRule (GetType().Name, beforeType, afterType);
+        //var rule = new TypeOrdering (GetType().Name, beforeType, afterType);
 
-        activeAttributesConfiguration.AspectOrderingRules.Add (rule);
+        //activeAttributesConfiguration.AspectOrderingRules.Add (rule);
       }
     }
   }

@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using NUnit.Framework;
 

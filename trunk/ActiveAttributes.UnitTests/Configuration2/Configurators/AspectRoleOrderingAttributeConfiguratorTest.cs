@@ -19,7 +19,7 @@ using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
-using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -29,14 +29,14 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
   public class AspectRoleOrderingAttributeConfiguratorTest
   {
     private IActiveAttributesConfiguration _activeAttributesConfigurationStub;
-    private IList<IAspectOrderingRule> _aspectOrderingRulesMock;
+    private IList<IAdviceOrdering> _aspectOrderingRulesMock;
     private IDictionary<Type, string> _aspectRolesMock;
 
     [SetUp]
     public void SetUp ()
     {
       _activeAttributesConfigurationStub = MockRepository.GenerateStub<IActiveAttributesConfiguration> ();
-      _aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAspectOrderingRule>> ();
+      _aspectOrderingRulesMock = MockRepository.GenerateMock<IList<IAdviceOrdering>> ();
       _aspectRolesMock = MockRepository.GenerateStrictMock<IDictionary<Type, string>> ();
       _activeAttributesConfigurationStub
           .Stub (x => x.AspectOrderingRules)
@@ -58,8 +58,8 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
 
       new AspectRoleOrderingAttributeConfigurator (new[] { aspectType }).Initialize (_activeAttributesConfigurationStub);
 
-      var expectedRule1 = new RoleOrderingRule ("AspectTypeOrderingAttributeConfigurator", "Role0", "Role1", _activeAttributesConfigurationStub);
-      var expectedRule2 = new RoleOrderingRule ("AspectTypeOrderingAttributeConfigurator", "Role0", "Role2", _activeAttributesConfigurationStub);
+      var expectedRule1 = new RoleOrdering ("AspectTypeOrderingAttributeConfigurator", "Role0", "Role1", _activeAttributesConfigurationStub);
+      var expectedRule2 = new RoleOrdering ("AspectTypeOrderingAttributeConfigurator", "Role0", "Role2", _activeAttributesConfigurationStub);
       _aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule1));
       _aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule2));
     }
@@ -76,7 +76,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Configurators
 
       new AspectRoleOrderingAttributeConfigurator (new[] { aspectType }).Initialize (_activeAttributesConfigurationStub);
 
-      var expectedRule = new RoleOrderingRule ("AspectTypeOrderingAttributeConfigurator", "Role1", "Role0", _activeAttributesConfigurationStub);
+      var expectedRule = new RoleOrdering ("AspectTypeOrderingAttributeConfigurator", "Role1", "Role0", _activeAttributesConfigurationStub);
       _aspectOrderingRulesMock.AssertWasCalled (x => x.Add (expectedRule));
     }
 

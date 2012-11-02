@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
 
@@ -33,14 +34,14 @@ namespace ActiveAttributes.Core.Configuration2
     /// <summary>
     /// A list of <see cref="IAspectDescriptorProvider"/>s used to get <see cref="IAspectDescriptor"/>s for a certain join-point.
     /// </summary>
-    IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
+    //TODO IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
 
     IList<IAdviceDependencyProvider> AspectDependencyProviders { get; }
 
     /// <summary>
-    /// A list of <see cref="IAspectOrderingRule"/>s used to sort aspects properly.
+    /// A list of <see cref="IAdviceOrdering"/>s used to sort aspects properly.
     /// </summary>
-    IList<IAspectOrderingRule> AspectOrderingRules { get; }
+    IList<IAdviceOrdering> AspectOrderingRules { get; }
 
     /// <summary>
     /// A dictionary of aspect types and their corresponding rules.
@@ -61,24 +62,19 @@ namespace ActiveAttributes.Core.Configuration2
 
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
-    private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
+    //private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
     private readonly IList<IAdviceDependencyProvider> _aspectDependencyProviders;
-    private readonly IList<IAspectOrderingRule> _aspectOrderingRules;
+    private readonly IList<IAdviceOrdering> _aspectOrderingRules;
     private readonly IDictionary<Type, string> _aspectRoles;
 
     private bool _isLocked;
 
     public ActiveAttributesConfiguration ()
     {
-      _aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
+      //_aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
       _aspectDependencyProviders = new List<IAdviceDependencyProvider>();
-      _aspectOrderingRules = new List<IAspectOrderingRule>();
+      _aspectOrderingRules = new List<IAdviceOrdering>();
       _aspectRoles = new Dictionary<Type, string>();
-    }
-
-    public IList<IAspectDescriptorProvider> AspectDescriptorProviders
-    {
-      get { return !IsLocked ? _aspectDescriptorProviders : new ReadOnlyCollection<IAspectDescriptorProvider> (_aspectDescriptorProviders); }
     }
 
     public IList<IAdviceDependencyProvider> AspectDependencyProviders
@@ -86,9 +82,9 @@ namespace ActiveAttributes.Core.Configuration2
       get { return !IsLocked ? _aspectDependencyProviders : new ReadOnlyCollection<IAdviceDependencyProvider> (_aspectDependencyProviders); }
     }
 
-    public IList<IAspectOrderingRule> AspectOrderingRules
+    public IList<IAdviceOrdering> AspectOrderingRules
     {
-      get { return !IsLocked ? _aspectOrderingRules : new ReadOnlyCollection<IAspectOrderingRule> (_aspectOrderingRules); }
+      get { return !IsLocked ? _aspectOrderingRules : new ReadOnlyCollection<IAdviceOrdering> (_aspectOrderingRules); }
     }
 
     public IDictionary<Type, string> AspectRoles

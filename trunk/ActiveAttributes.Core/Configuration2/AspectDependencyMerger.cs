@@ -35,27 +35,23 @@ namespace ActiveAttributes.Core.Configuration2
   [ConcreteImplementation (typeof (AdviceDependencyMerger))]
   public interface IAdviceDependencyMerger
   {
-    //IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
-    //    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
-    //    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies);
-
     IEnumerable<Tuple<Advice, Advice>> MergeDependencies (
         IEnumerable<Tuple<Advice, Advice>> previousDependencies, IEnumerable<Tuple<Advice, Advice>> newDependencies);
   }
 
   public class AdviceDependencyMerger : IAdviceDependencyMerger
   {
-    public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
-        IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies)
-    {
-      ArgumentUtility.CheckNotNull ("previousDependencies", previousDependencies);
-      ArgumentUtility.CheckNotNull ("newDependencies", newDependencies);
+    //public IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> MergeDependencies (
+    //    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> previousDependencies,
+    //    IEnumerable<Tuple<IAspectDescriptor, IAspectDescriptor>> newDependencies)
+    //{
+    //  ArgumentUtility.CheckNotNull ("previousDependencies", previousDependencies);
+    //  ArgumentUtility.CheckNotNull ("newDependencies", newDependencies);
 
-      var previousRulesAsCollection = previousDependencies.ConvertToCollection();
-      var forbiddenRules = previousRulesAsCollection.Select (x => Tuple.Create (x.Item2, x.Item1));
-      return previousRulesAsCollection.Concat (newDependencies.Where (x => !forbiddenRules.Contains (x)));
-    }
+    //  var previousRulesAsCollection = previousDependencies.ConvertToCollection();
+    //  var forbiddenRules = previousRulesAsCollection.Select (x => Tuple.Create (x.Item2, x.Item1));
+    //  return previousRulesAsCollection.Concat (newDependencies.Where (x => !forbiddenRules.Contains (x)));
+    //}
 
     public IEnumerable<Tuple<Advice, Advice>> MergeDependencies (IEnumerable<Tuple<Advice, Advice>> previousDependencies, IEnumerable<Tuple<Advice, Advice>> newDependencies)
     {

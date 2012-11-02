@@ -171,38 +171,12 @@ namespace ActiveAttributes.UnitTests
       return Expression.Field (null, field);
     }
 
-    public static IAspectDescriptor GetAspectDescriptor (Type aspectType = null, AdviceScope adviceScope = AdviceScope.Static)
-    {
-      aspectType = GetAssignableType (typeof (AspectAttribute), aspectType);
-
-      var mock = MockRepository.GenerateStub<IAspectDescriptor>();
-
-      mock
-          .Stub (x => x.Type)
-          .Return (aspectType);
-      mock
-          .Stub (x => x.AdviceScope)
-          .Return (adviceScope);
-
-      return mock;
-    }
-
     public static ParameterExpression GetParameterExpression (Type type = null, string name = null)
     {
       type = GetInstantiatableType (type);
       name = name ?? "parameter" + s_random.Next (0, 100);
 
       return Expression.Parameter (type, name);
-    }
-
-    public static IAspectDescriptor GetInstanceAspectDescriptor (Type aspectType = null)
-    {
-      return GetAspectDescriptor (aspectType, AdviceScope.Instance);
-    }
-
-    public static IAspectDescriptor GetStaticAspectDescriptor (Type aspectType = null)
-    {
-      return GetAspectDescriptor (aspectType, AdviceScope.Static);
     }
 
     public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null, ThisExpression thisExpression = null)

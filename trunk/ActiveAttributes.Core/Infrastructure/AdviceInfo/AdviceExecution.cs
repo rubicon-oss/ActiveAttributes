@@ -19,6 +19,7 @@ namespace ActiveAttributes.Core.Infrastructure.AdviceInfo
 {
   public enum AdviceExecution
   {
+    Undefined,
     Before,
     After,
     Around

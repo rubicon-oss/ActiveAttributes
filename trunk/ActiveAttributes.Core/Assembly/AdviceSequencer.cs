@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Configuration2.AspectDependencyProviders;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Utilities;
@@ -49,7 +48,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("adviceDependencyProviders", adviceDependencyProviders);
 
       _adviceDependencyMerger = adviceDependencyMerger;
-      _adviceDependencyProviders = adviceDependencyProviders.BringToFront (x => x is PriorityDependencyProvider);
+      //_adviceDependencyProviders = adviceDependencyProviders.BringToFront (x => x is PriorityDependencyProvider);
     }
 
     public IEnumerable<Advice> Sort (IEnumerable<Advice> advices)

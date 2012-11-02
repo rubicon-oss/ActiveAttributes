@@ -50,7 +50,7 @@ namespace ActiveAttributes.Core.Infrastructure.Construction
 
     public ReadOnlyCollection<object> ConstructorArguments
     {
-      get { return new ReadOnlyCollection<object> (new object[0]); }
+      get { return _constructorArguments; }
     }
 
     public ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> NamedArguments

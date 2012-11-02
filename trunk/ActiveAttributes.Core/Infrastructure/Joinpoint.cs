@@ -35,21 +35,19 @@ namespace ActiveAttributes.Core.Infrastructure
     }
 
     public JoinPoint (Type type)
+        : this (ArgumentUtility.CheckNotNull ("type", type).Assembly)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
       _type = type;
-      _assembly = type.Assembly;
     }
 
     public JoinPoint (MemberInfo member)
+        : this (ArgumentUtility.CheckNotNull ("member", member).DeclaringType)
     {
-      ArgumentUtility.CheckNotNull ("member", member);
       Assertion.IsNotNull (member.DeclaringType);
 
       _member = member;
-      _type = member.DeclaringType;
-      _assembly = _type.Assembly;
     }
 
     public JoinPoint (MemberInfo member, Expression expression)

@@ -23,7 +23,6 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;

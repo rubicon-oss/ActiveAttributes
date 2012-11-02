@@ -71,7 +71,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
                   };
       _activeAttributesConfiguration.Expect (x => x.AspectRoles).Return (roles);
 
-      var rule = new RoleOrderingRule ("source", "Role2", "Role1", _activeAttributesConfiguration);
+      var rule = new RoleOrdering ("source", "Role2", "Role1", _activeAttributesConfiguration);
 
       var resultGreater = rule.Compare (_descriptor1, _descriptor2);
       var resultLess = rule.Compare (_descriptor2, _descriptor1);
@@ -87,7 +87,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
     [Test]
     public void ToString_ ()
     {
-      var rule = new RoleOrderingRule ("source", "role1", "role2", _activeAttributesConfiguration);
+      var rule = new RoleOrdering ("source", "role1", "role2", _activeAttributesConfiguration);
 
       var result = rule.ToString();
 
@@ -102,9 +102,9 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
       var type2 = "role2";
       var type3 = "role3";
 
-      var rule1 = new RoleOrderingRule (mySource, type1, type2, _activeAttributesConfiguration);
-      var rule2 = new RoleOrderingRule (mySource, type1, type2, _activeAttributesConfiguration);
-      var rule3 = new RoleOrderingRule (mySource, type2, type3, _activeAttributesConfiguration);
+      var rule1 = new RoleOrdering (mySource, type1, type2, _activeAttributesConfiguration);
+      var rule2 = new RoleOrdering (mySource, type1, type2, _activeAttributesConfiguration);
+      var rule3 = new RoleOrdering (mySource, type2, type3, _activeAttributesConfiguration);
 
       Assert.That (rule1, Is.EqualTo (rule2));
       Assert.That (rule1, Is.Not.EqualTo (rule3));

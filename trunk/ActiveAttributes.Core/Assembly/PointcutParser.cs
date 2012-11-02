@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly

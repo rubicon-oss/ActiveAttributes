@@ -81,7 +81,7 @@ namespace ActiveAttributes.UseCases
       var activeAttributesConfiguration = SafeServiceLocator.Current.GetInstance<IActiveAttributesConfiguration>();
       activeAttributesConfiguration.AspectOrderingRules.Clear();
       activeAttributesConfiguration.AspectOrderingRules.Add (
-          new TypeOrderingRule ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
+          new TypeOrdering ("", typeof (OrderedAspect2Attribute), typeof (OrderedAspect1Attribute)));
       var obj = ObjectFactory.Create<DomainClass>();
       obj.Method();
     }
@@ -91,7 +91,7 @@ namespace ActiveAttributes.UseCases
       var activeAttributesConfiguration = SafeServiceLocator.Current.GetInstance<IActiveAttributesConfiguration>();
       activeAttributesConfiguration.AspectOrderingRules.Clear();
       activeAttributesConfiguration.AspectOrderingRules.Add (
-          new TypeOrderingRule ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
+          new TypeOrdering ("", typeof (OrderedAspect1Attribute), typeof (OrderedAspect2Attribute)));
       var obj = ObjectFactory.Create<DomainClass>();
       obj.Method();
     }

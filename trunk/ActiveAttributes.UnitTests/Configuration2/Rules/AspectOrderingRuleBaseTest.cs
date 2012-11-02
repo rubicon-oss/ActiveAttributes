@@ -18,6 +18,7 @@ using System;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2.Rules;
+using ActiveAttributes.Core.Infrastructure;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Configuration2.Rules
@@ -29,25 +30,25 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
     public void Initialization ()
     {
       var source = "my source";
-      var rule = new TestableAspectOrderingRule (source, "A", "B");
+      var rule = new TestableAdviceOrdering (source, "A", "B");
 
       Assert.That (rule.Source, Is.EqualTo (source));
       Assert.That (rule.ToString(), Is.EqualTo ("TestableAspectOrderingRule [my source]: A -> B"));
     }
 
-    private class TestableAspectOrderingRule : AspectOrderingRuleBase
+    private class TestableAdviceOrdering : AdviceOrderingBase
     {
       private readonly string _before;
       private readonly string _after;
 
-      public TestableAspectOrderingRule (string source, string before, string after)
+      public TestableAdviceOrdering (string source, string before, string after)
           : base (source)
       {
         _before = before;
         _after = after;
       }
 
-      public override int Compare (IAspectDescriptor x, IAspectDescriptor y)
+      public override int Compare (Advice x, Advice y)
       {
         throw new NotImplementedException();
       }

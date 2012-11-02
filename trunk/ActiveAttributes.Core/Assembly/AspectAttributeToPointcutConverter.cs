@@ -15,8 +15,8 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;

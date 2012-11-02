@@ -23,11 +23,12 @@ using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public interface IAspectAttributeDiscovery
-  {
-    IEnumerable<AspectDeclaration> GetDeclaredByAttributes (ICustomAttributeProvider customAttributeProvider);
-    IEnumerable<AspectDeclaration> GetDeclaredByTypes (params System.Reflection.Assembly[] assemblies);
-  }
+
+  //public interface IAspectDeclarationDiscovery
+  //{
+  //  IEnumerable<AspectDeclaration> GetDeclaredByAttributes (ICustomAttributeProvider customAttributeProvider);
+  //  IEnumerable<AspectDeclaration> GetDeclaredByTypes (params System.Reflection.Assembly[] assemblies);
+  //}
 
   public class TypeWeaver : IActiveAttributesTypeWeaver
   {

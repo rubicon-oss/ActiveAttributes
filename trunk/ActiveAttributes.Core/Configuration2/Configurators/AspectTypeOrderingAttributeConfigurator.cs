@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Configuration2.CustomAttributes;
-using ActiveAttributes.Core.Configuration2.Rules;
 using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
@@ -28,7 +28,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
   // TODO Pro are the three foreach's they have in common
   // TODO Con is that AspectRoleOrderingAttributeConfigurator needs to get the role of the aspect type from the configuration
   /// <summary>
-  /// Serves as a configurator, which adds <see cref="TypeOrderingRule"/>s through <see cref="AspectTypeOrderingAttribute"/>s.
+  /// Serves as a configurator, which adds <see cref="TypeOrdering"/>s through <see cref="AspectTypeOrderingAttribute"/>s.
   /// </summary>
   public class AspectTypeOrderingAttributeConfigurator : IActiveAttributesConfigurator
   {
@@ -58,7 +58,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
             var afterType = typeOrderingAttribute.Position == Position.Before
                                 ? otherAspectType
                                 : aspectType;
-            var typeOrderingRule = new TypeOrderingRule (GetType().Name, beforeType, afterType);
+            var typeOrderingRule = new TypeOrdering (GetType().Name, beforeType, afterType);
             activeAttributesConfiguration.AspectOrderingRules.Add (typeOrderingRule);
           }
         }

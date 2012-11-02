@@ -85,46 +85,21 @@
     <Compile Include="Assembly\AdviceSequencerTest.cs" />
     <Compile Include="Assembly\AspectInitExpressionHelperTest.cs" />
     <Compile Include="Assembly\ConstructorInitializationServiceTest.cs" />
+    <Compile Include="Assembly\DiscoveryTest.cs" />
     <Compile Include="Assembly\FieldIntroducer2Test.cs" />
     <Compile Include="Assembly\InvocationExpressionHelperTest.cs" />
     <Compile Include="Assembly\InvocationTypeProvider2Test.cs" />
     <Compile Include="Assembly\MethodExpressionHelperTest.cs" />
     <Compile Include="Assembly\MethodInterceptionServiceTest.cs" />
-    <Compile Include="Assembly\Old\ExpressionGeneratorTest.cs" />
     <Compile Include="Assembly\ConstructorExpressionsHelperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
-    <Compile Include="Assembly\Old\GiveItSomeNameTest.cs" />
-    <Compile Include="Assembly\Old\MethodAssemblerTest.cs" />
     <Compile Include="Assembly\PointcutConverterTest.cs" />
     <Compile Include="Assembly\PointcutVisitorTest.cs" />
     <Compile Include="ObjectMother.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\EventBasedAspectDescriptorProviderTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\InterfaceMethodBasedAspectDescriptorProviderTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\MethodBasedAspectDescriptorProviderTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\ParameterBasedAspectDescriptorProviderTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\PropertyBasedAspectDescriptorProviderTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\TypeBasedAspectDescriptorProviderTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
-    <Compile Include="Configuration2\Configurators\AspectRoleAttributeConfiguratorTest.cs" />
-    <Compile Include="Configuration2\Configurators\AspectRoleOrderingAttributeConfiguratorTest.cs" />
-    <Compile Include="Configuration2\Configurators\AspectTypeOrderingAttributeConfiguratorTest.cs" />
-    <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfiguratorTest.cs" />
-    <Compile Include="Configuration2\AspectDescriptorProviders\AspectDescriptorProviderUtilityTest.cs" />
-    <Compile Include="Assembly\Old\SchedulerTest.cs" />
-    <Compile Include="Assembly\Descriptors\CustomDataDescriptorTest.cs" />
-    <Compile Include="Assembly\Old\ConstructorPatcherTest.cs" />
-    <Compile Include="Assembly\Descriptors\TypeArgumentsDescriptorTest.cs" />
-    <Compile Include="Assembly\Old\FieldIntroducerTest.cs" />
     <Compile Include="Assembly\Old\MethodCopierTest.cs" />
-    <Compile Include="Assembly\Old\MethodPatcherTest.cs" />
-    <Compile Include="Configuration2\Rules\AspectOrderingRuleBaseTest.cs" />
-    <Compile Include="Configuration2\Rules\RoleOrderingRuleTest.cs" />
-    <Compile Include="Configuration2\Rules\TypeOrderingRuleTest.cs" />
-    <Compile Include="Assembly\Old\TypeAssemblerTest.cs" />
-    <Compile Include="Assembly\Old\InvocationTypeProviderTest.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Configuration2\CustomAttributes\ApplyAspectAttributeTest.cs" />
     <Compile Include="Extensions\EnumExtensionsTest.cs" />
     <Compile Include="Extensions\IEnumerableExtensionsTest.cs" />
@@ -190,6 +165,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Configuration2\AspectDescriptorProviders\" />
+    <Folder Include="Configuration2\Configurators\" />
+    <Folder Include="Configuration2\Rules\" />
     <Folder Include="Infrastructure\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

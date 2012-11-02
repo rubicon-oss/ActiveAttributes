@@ -63,7 +63,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void Pointcut ()
     {
       var joinPoint = new JoinPoint (typeof (int));
-      var pointcut = new Pointcut ("test");
+      var pointcut = new PointcutExpression ("test");
 
       SetupPointcutParser (joinPoint, true, true);
       CheckMatching (joinPoint, pointcut);

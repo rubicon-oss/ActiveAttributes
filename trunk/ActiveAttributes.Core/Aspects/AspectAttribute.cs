@@ -22,6 +22,7 @@ using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Aspects
@@ -39,7 +40,7 @@ namespace ActiveAttributes.Core.Aspects
 
     /// <summary>
     ///   Gets or sets the priority of an aspect. Priorities can define the order of aspects applied to a target element. 
-    ///   Priorities are superior to <see cref = "IAspectOrderingRule" />.
+    ///   Priorities are superior to <see cref = "IAdviceOrdering" />.
     /// </summary>
     public int Priority { get; set; }
 

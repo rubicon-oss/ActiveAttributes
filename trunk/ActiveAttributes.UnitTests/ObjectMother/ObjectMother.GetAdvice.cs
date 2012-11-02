@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
 namespace ActiveAttributes.UnitTests
 {

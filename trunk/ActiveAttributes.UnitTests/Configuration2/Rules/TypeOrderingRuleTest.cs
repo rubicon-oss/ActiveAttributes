@@ -54,7 +54,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
     [Test]
     public void Compare ()
     {
-      var rule = new TypeOrderingRule ("source", typeof (Aspect1Attribute), typeof (Aspect2Attribute));
+      var rule = new TypeOrdering ("source", typeof (Aspect1Attribute), typeof (Aspect2Attribute));
 
       var resultGreater = rule.Compare (_descriptor2, _descriptor1);
       var resultLess = rule.Compare (_descriptor1, _descriptor2);
@@ -68,7 +68,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
     [Test]
     public void Compare_Subtype ()
     {
-      var rule = new TypeOrderingRule ("source", typeof (Aspect1Attribute), typeof (Aspect2Attribute));
+      var rule = new TypeOrdering ("source", typeof (Aspect1Attribute), typeof (Aspect2Attribute));
 
       var result = rule.Compare (_descriptor2, _descriptor4);
 
@@ -80,7 +80,7 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
     {
       var type1 = typeof(Aspect1Attribute);
       var type2 = typeof(Aspect2Attribute);
-      var rule = new TypeOrderingRule ("source", type1, type2);
+      var rule = new TypeOrdering ("source", type1, type2);
 
       var result = rule.ToString ();
 
@@ -95,9 +95,9 @@ namespace ActiveAttributes.UnitTests.Configuration2.Rules
       var type2 = typeof (Aspect2Attribute);
       var type3 = typeof (Aspect3Attribute);
 
-      var rule1 = new TypeOrderingRule (mySource, type1, type2);
-      var rule2 = new TypeOrderingRule (mySource, type1, type2);
-      var rule3 = new TypeOrderingRule (mySource, type2, type3);
+      var rule1 = new TypeOrdering (mySource, type1, type2);
+      var rule2 = new TypeOrdering (mySource, type1, type2);
+      var rule3 = new TypeOrdering (mySource, type2, type3);
 
       Assert.That (rule1, Is.EqualTo (rule2));
       Assert.That (rule1, Is.Not.EqualTo (rule3));

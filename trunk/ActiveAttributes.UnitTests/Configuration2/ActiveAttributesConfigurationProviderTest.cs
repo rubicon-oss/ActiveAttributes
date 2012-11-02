@@ -27,8 +27,6 @@ namespace ActiveAttributes.UnitTests.Configuration2
   [TestFixture]
   public class ActiveAttributesConfigurationProviderTest
   {
-
-
     [Test]
     public void CallsConfigurators ()
     {

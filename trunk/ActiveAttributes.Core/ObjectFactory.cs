@@ -67,30 +67,12 @@ namespace ActiveAttributes.Core
 
     T IObjectFactory.Create<T> ()
     {
-      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
-      var configuration = configurationProvider.GetConfiguration();
+      throw new NotImplementedException();
+      //var typeAssembler = new Remotion.TypePipe.TypeAssembly.TypeAssembler (
+      //    new[] { typeAssembler_ }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
+      //var assembledType = typeAssembler.AssembleType (typeof (T));
 
-
-      var constructorPatcher = new ConstructorPatcher();
-      var factory = new Factory();
-      var giveMeSomeName = new GiveItSomeName (factory, new ExpressionGeneratorFactory(), constructorPatcher);
-      var fieldIntroducer = new FieldIntroducer();
-      var methodAssembler = new MethodAssembler (
-          configuration.AspectDescriptorProviders.OfType<IMethodLevelAspectDescriptorProvider>(),
-          fieldIntroducer,
-          giveMeSomeName,
-          new AspectSorter (configuration),
-          new MethodCopier(),
-          constructorPatcher,
-          factory);
-      var typeAssembler_ = new TypeAssembler (
-          configuration.AspectDescriptorProviders.OfType<ITypeLevelAspectDescriptorProvider>(), fieldIntroducer, giveMeSomeName, methodAssembler);
-
-      var typeAssembler = new Remotion.TypePipe.TypeAssembly.TypeAssembler (
-          new[] { typeAssembler_ }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
-      var assembledType = typeAssembler.AssembleType (typeof (T));
-
-      return (T) Activator.CreateInstance (assembledType);
+      //return (T) Activator.CreateInstance (assembledType);
     }
 
     private ITypeModifier CreateReflectionEmitTypeModifier (string testName)

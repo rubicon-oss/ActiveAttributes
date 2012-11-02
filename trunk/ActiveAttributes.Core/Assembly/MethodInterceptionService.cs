@@ -54,41 +54,6 @@ namespace ActiveAttributes.Core.Assembly
         MutableMethodInfo method,
         IFieldWrapper delegateField,
         IFieldWrapper memberInfoField,
-        IEnumerable<IAspectDescriptor> aspectDescriptors,
-        IDictionary<IAspectDescriptor, Tuple<IFieldWrapper, int>> aspectDescriptorDictionary)
-    {
-      //method.SetBody (
-      //    ctx =>
-      //    {
-      //      var helper = _methodExpressionHelperFactory.CreateMethodExpressionHelper (method, ctx, aspectDescriptorDictionary);
-      //      Type invocationType;
-      //      Type invocationContextType;
-      //      _invocationTypeProvider.GetInvocationTypes (method, out invocationType, out invocationContextType);
-
-      //      var invctx = helper.CreateInvocationContextExpressions (invocationContextType, memberInfoField);
-      //      var invctxPar = invctx.Item1;
-      //      var invctxAssign = invctx.Item2;
-      //      var exps = helper.CreateInvocationExpressions (invocationType, invctxPar, delegateField, aspectDescriptorDictionary, aspectDescriptors);
-      //      var invPars = exps.Select (x => x.Item1);
-      //      var invAssigns = exps.Select (x => x.Item2);
-      //      var callExp = helper.CreateOutermostAspectCallExpression (aspectDescriptors.Last (), invPars.Last (), aspectDescriptorDictionary);
-
-      //      return Expression.Block (
-      //          new[] { invctxPar }.Concat (invPars),
-      //          invctxAssign,
-      //          Expression.Block (invAssigns.Cast<Expression> ()),
-      //          callExp);
-      //    });
-      // get invocationcontext type
-      // create invocationcontext
-      // create tuples of invocation variables and init expressions
-      // 
-    }
-
-    public void AddInterception (
-        MutableMethodInfo method,
-        IFieldWrapper delegateField,
-        IFieldWrapper memberInfoField,
         IEnumerable<Advice> advices,
         IDictionary<Advice, IFieldWrapper> adviceDictionary)
     {
