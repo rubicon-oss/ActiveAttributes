@@ -62,7 +62,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var previousAspect = ObjectMother2.GetParameterExpression (typeof (IAspect)); // TODO change to IAspect
       var previousInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var previousAdvice = ObjectMother2.GetAdvice (new[] { typeof (IInvocation) });
+      var previousAdvice = ObjectMother2.GetInvocationAdvice();
       var invocationContext = ObjectMother2.GetParameterExpression (typeof (IInvocationContext));
 
       var result = _expressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, previousAdvice, invocationContext);

@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Extensions;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -264,7 +264,7 @@ namespace ActiveAttributes.UnitTests.Extensions
       }
     }
 
-    class DomainAttribute : AspectAttribute
+    class DomainAttribute : AspectAttributeBase
     {
       public string[] Field;
 

@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using Microsoft.Scripting.Ast;
 using Rhino.Mocks;
 

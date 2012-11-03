@@ -14,7 +14,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using ActiveAttributes.Core.Extensions;
 using JetBrains.Annotations;
@@ -25,13 +27,12 @@ namespace ActiveAttributes.Core.Utilities
   /// <summary>
   /// Exception that is thrown when sorting a set of items is not possible due to a circular dependency.
   /// </summary>
-  /// <typeparam name="T"></typeparam>
-  public class CircularDependencyException<T> : Exception
+  public class CircularDependencyException : Exception
   {
     private const string c_message = "Circular dependencies detected:\r\n";
 
     // TODO change to IEnumerable
-    public CircularDependencyException (IEnumerable<IEnumerable<T>> cycles)
+    public CircularDependencyException (IEnumerable<IEnumerable> cycles)
     {
       Cycles = cycles;
     }
@@ -40,11 +41,11 @@ namespace ActiveAttributes.Core.Utilities
     protected CircularDependencyException (SerializationInfo info, StreamingContext context)
       : base (info, context) { }
 
-    public IEnumerable<IEnumerable<T>> Cycles { get; private set; }
+    public IEnumerable<IEnumerable> Cycles { get; private set; }
 
     public override string Message
     {
-      get { return c_message + Cycles.ToString (x => x.ToString (" -> "), "\r\n"); }
+      get { return c_message + Cycles.ToString (x => x.Cast<object>().ToString (" -> "), "\r\n"); }
     }
   }
 }

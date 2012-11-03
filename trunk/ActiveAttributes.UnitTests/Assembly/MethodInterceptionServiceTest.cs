@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;

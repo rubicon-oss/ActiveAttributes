@@ -18,7 +18,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Configuration2;
@@ -51,18 +50,18 @@ namespace ActiveAttributes.Core
 
     private void Muh ()
     {
-      var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
-      var configuration = configurationProvider.GetConfiguration();
+      //var configurationProvider = ServiceLocator.Current.GetInstance<IActiveAttributesConfigurationProvider>();
+      //var configuration = configurationProvider.GetConfiguration();
 
-      var fieldIntroducer2 = new FieldIntroducer2();
-      var aspectInitExpressionHelper = new AspectInitExpressionHelper();
-      var constructorExpressionHelperFactory = new ConstructorExpressionsHelperFactory (aspectInitExpressionHelper);
-      var constructorInitializationService = new ConstructorInitializationService (fieldIntroducer2, constructorExpressionHelperFactory);
+      //var fieldIntroducer2 = new FieldIntroducer2();
+      //var aspectInitExpressionHelper = new AspectInitExpressionHelper();
+      //var constructorExpressionHelperFactory = new ConstructorExpressionsHelperFactory (aspectInitExpressionHelper);
+      //var constructorInitializationService = new ConstructorInitializationService (fieldIntroducer2, constructorExpressionHelperFactory);
 
-      var invocationTypeProvider2 = new InvocationTypeProvider2();
-      var invocationExpressionHelper = new InvocationExpressionHelper();
-      var methodExpressionHelperFactory = new MethodExpressionHelperFactory (invocationExpressionHelper);
-      var methodInterceptionService = new MethodInterceptionService (invocationTypeProvider2, methodExpressionHelperFactory);
+      //var invocationTypeProvider2 = new InvocationTypeProvider2();
+      //var invocationExpressionHelper = new InvocationExpressionHelper();
+      //var methodExpressionHelperFactory = new MethodExpressionHelperFactory (invocationExpressionHelper);
+      //var methodInterceptionService = new MethodInterceptionService (invocationTypeProvider2, methodExpressionHelperFactory);
     }
 
     T IObjectFactory.Create<T> ()

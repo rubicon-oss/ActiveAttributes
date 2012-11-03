@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ActiveAttributes.Core.Infrastructure.Construction;
 using Remotion.Utilities;
 
@@ -31,9 +32,10 @@ namespace ActiveAttributes.Core.Infrastructure
       ArgumentUtility.CheckNotNull ("advices", advices);
 
       _aspectConstructionInfo = aspectConstructionInfo;
-      _advices = advices;
+      _advices = advices.ToList();
     }
 
+    // TODO rename to ConstructionInfo
     public IAspectConstructionInfo AspectConstructionInfo
     {
       get { return _aspectConstructionInfo; }

@@ -25,13 +25,13 @@ namespace ActiveAttributes.UnitTests.Utilities
     [Test]
     public void Normal ()
     {
-      object[][] dependencies = new[]
-                                {
-                                    new object[] { 1, 2, 3 },
-                                    new object[] { 2, 3, 4 }
-                                };
+      var dependencies = new[]
+                         {
+                             new object[] { 1, 2, 3 },
+                             new object[] { 2, 3, 4 }
+                         };
 
-      var exception = new CircularDependencyException<object> (dependencies);
+      var exception = new CircularDependencyException (dependencies);
 
       var expected = "Circular dependencies detected:\r\n" +
                      "1 -> 2 -> 3\r\n" +

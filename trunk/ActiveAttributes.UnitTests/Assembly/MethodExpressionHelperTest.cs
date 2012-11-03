@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
@@ -145,7 +146,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateOutermostAspectCallExpression ()
     {
-      var advice = ObjectMother2.GetAdvice (new[] { typeof (IInvocation) });
+      var advice = ObjectMother2.GetInvocationAdvice();
       var invocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
       var fakeExpression = ObjectMother2.GetMemberExpression (advice.Method.DeclaringType, declaringType: _declaringType);

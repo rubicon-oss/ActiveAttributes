@@ -18,6 +18,6 @@ using System;
 
 namespace ActiveAttributes.Core.Attributes
 {
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
   public class AdviceAttribute : Attribute {}
 }

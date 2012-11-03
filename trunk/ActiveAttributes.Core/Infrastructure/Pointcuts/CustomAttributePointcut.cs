@@ -30,8 +30,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
     public CustomAttributePointcut (Type customAttributeType)
     {
-      ArgumentUtility.CheckNotNull ("customAttributeType", customAttributeType);
-      Assertion.IsTrue (typeof (Attribute).IsAssignableFrom (customAttributeType));
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("customAttributeType", customAttributeType, typeof (Attribute));
 
       _customAttributeType = customAttributeType;
     }

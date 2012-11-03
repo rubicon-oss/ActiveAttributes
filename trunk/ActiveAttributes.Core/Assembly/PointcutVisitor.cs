@@ -57,23 +57,24 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      if (pointcut is ITextPointcut)
-        return VisitPointcut ((ITextPointcut) pointcut, joinPoint);
-      if (pointcut is ITypePointcut)
-        return VisitPointcut ((ITypePointcut) pointcut, joinPoint);
-      if (pointcut is IMemberNamePointcut)
-        return VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint);
-      if (pointcut is ITypeNamePointcut)
-        return VisitPointcut ((ITypeNamePointcut) pointcut, joinPoint);
-      if (pointcut is IReturnTypePointcut)
-        return VisitPointcut ((IReturnTypePointcut) pointcut, joinPoint);
-      if (pointcut is IArgumentsPointcut)
-        return VisitPointcut ((IArgumentsPointcut) pointcut, joinPoint);
-      if (pointcut is INamespacePointcut)
-        return VisitPointcut ((INamespacePointcut) pointcut, joinPoint);
-      if (pointcut is IControlFlowPointcut)
-        return VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint);
-      throw new NotSupportedException();
+      if (pointcut is ITextPointcut && !VisitPointcut ((ITextPointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is ITypePointcut && !VisitPointcut ((ITypePointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is IMemberNamePointcut && !VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is ITypeNamePointcut && !VisitPointcut ((ITypeNamePointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is IReturnTypePointcut && !VisitPointcut ((IReturnTypePointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is IArgumentsPointcut && !VisitPointcut ((IArgumentsPointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is INamespacePointcut && !VisitPointcut ((INamespacePointcut) pointcut, joinPoint))
+        return false;
+      if (pointcut is IControlFlowPointcut && !VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint))
+        return false;
+
+      return true;
     }
 
     public bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint)

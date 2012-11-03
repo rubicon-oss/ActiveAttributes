@@ -13,25 +13,38 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Interception.Invocations;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static Advice GetAdvice(IEnumerable<Type> methodParameterTypes = null, string role = null, string name = null)
+    public static Advice GetAdvice (
+        MethodInfo method = null,
+        string role = null,
+        string name = null,
+        IEnumerable<IPointcut> pointcuts = null,
+        int priority = 0,
+        AdviceExecution execution = 0,
+        AdviceScope scope = 0)
     {
-      var method = GetMethodInfo (parameterTypes: methodParameterTypes);
-      var pointcuts = new IPointcut[0];
-      role = role ?? "Role";
-      name = name ?? "Name";
+      method = method ?? GetMethodInfo();
+      pointcuts = pointcuts ?? new IPointcut[0];
 
-      return new Advice (AdviceExecution.Around, AdviceScope.Static, 0, method, pointcuts, role, name);
+      return new Advice (execution, scope, priority, method, pointcuts, role, name);
+    }
+
+    public static Advice GetInvocationAdvice ()
+    {
+      var method = GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
+      return GetAdvice (method);
     }
   }
 }

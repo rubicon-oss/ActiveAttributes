@@ -16,11 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Infrastructure.Orderings;
-using Remotion.Collections;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2
@@ -31,65 +28,36 @@ namespace ActiveAttributes.Core.Configuration2
   [ConcreteImplementation (typeof (ActiveAttributesConfiguration))]
   public interface IActiveAttributesConfiguration
   {
-    /// <summary>
-    /// A list of <see cref="IAspectDescriptorProvider"/>s used to get <see cref="IAspectDescriptor"/>s for a certain join-point.
-    /// </summary>
-    //TODO IList<IAspectDescriptorProvider> AspectDescriptorProviders { get; }
+    IList<IAspectDeclarationProvider> AspectDeclarationProviders { get; }
 
-    IList<IAdviceDependencyProvider> AspectDependencyProviders { get; }
+    IList<AdviceOrderingBase> AdviceOrderings { get; }
 
-    /// <summary>
-    /// A list of <see cref="IAdviceOrdering"/>s used to sort aspects properly.
-    /// </summary>
-    IList<IAdviceOrdering> AspectOrderingRules { get; }
-
-    /// <summary>
-    /// A dictionary of aspect types and their corresponding rules.
-    /// </summary>
-    IDictionary<Type, string> AspectRoles { get; }
-
-    /// <summary>
-    /// Gets whether the configuration is locked. This is of remarkable importance when <see cref="IActiveAttributesConfigurator"/>s behave
-    /// inconsistently, giving the opportunity to lock the configuration within the .appConfig file.
-    /// </summary>
     bool IsLocked { get; }
 
-    /// <summary>
-    /// Locks the configuration for further modification.
-    /// </summary>
     void Lock ();
   }
 
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
-    //private readonly IList<IAspectDescriptorProvider> _aspectDescriptorProviders;
-    private readonly IList<IAdviceDependencyProvider> _aspectDependencyProviders;
-    private readonly IList<IAdviceOrdering> _aspectOrderingRules;
-    private readonly IDictionary<Type, string> _aspectRoles;
+    private readonly IList<IAspectDeclarationProvider> _aspectDeclarationProviders;
+    private readonly IList<AdviceOrderingBase> _adviceOrderings;
 
     private bool _isLocked;
 
     public ActiveAttributesConfiguration ()
     {
-      //_aspectDescriptorProviders = new List<IAspectDescriptorProvider>();
-      _aspectDependencyProviders = new List<IAdviceDependencyProvider>();
-      _aspectOrderingRules = new List<IAdviceOrdering>();
-      _aspectRoles = new Dictionary<Type, string>();
+      _aspectDeclarationProviders = new List<IAspectDeclarationProvider>();
+      _adviceOrderings = new List<AdviceOrderingBase>();
     }
 
-    public IList<IAdviceDependencyProvider> AspectDependencyProviders
+    public IList<IAspectDeclarationProvider> AspectDeclarationProviders
     {
-      get { return !IsLocked ? _aspectDependencyProviders : new ReadOnlyCollection<IAdviceDependencyProvider> (_aspectDependencyProviders); }
+      get { return !IsLocked ? _aspectDeclarationProviders : new ReadOnlyCollection<IAspectDeclarationProvider> (_aspectDeclarationProviders); }
     }
 
-    public IList<IAdviceOrdering> AspectOrderingRules
+    public IList<AdviceOrderingBase> AdviceOrderings
     {
-      get { return !IsLocked ? _aspectOrderingRules : new ReadOnlyCollection<IAdviceOrdering> (_aspectOrderingRules); }
-    }
-
-    public IDictionary<Type, string> AspectRoles
-    {
-      get { return !IsLocked ? _aspectRoles : new ReadOnlyDictionary<Type, string> (_aspectRoles); }
+      get { return !IsLocked ? _adviceOrderings : new ReadOnlyCollection<AdviceOrderingBase> (_adviceOrderings); }
     }
 
     public bool IsLocked

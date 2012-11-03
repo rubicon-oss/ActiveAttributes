@@ -65,7 +65,7 @@ namespace ActiveAttributes.UnitTests.Utilities
 
       Assert.That (
           () => _enumerable.TopologicalSort (dependencies),
-          Throws.Exception.Matches<CircularDependencyException<object>> (
+          Throws.Exception.Matches<CircularDependencyException> (
               exception =>
               {
                 var expected = new[] { _obj1, _obj2, _obj3 };

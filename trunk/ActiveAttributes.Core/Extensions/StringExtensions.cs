@@ -30,5 +30,10 @@ namespace ActiveAttributes.Core.Extensions
       pattern = pattern.Replace ("*", ".*");
       return input.IsMatchRegex (pattern);
     }
+
+    public static bool IsNullOrEmpty (this string input)
+    {
+      return string.IsNullOrEmpty (input);
+    }
   }
 }

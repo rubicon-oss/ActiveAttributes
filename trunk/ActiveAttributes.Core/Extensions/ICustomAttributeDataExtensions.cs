@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Attributes.Aspects;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Configuration2.Configurators;
 
 namespace ActiveAttributes.Core.Extensions
 {
@@ -58,7 +57,7 @@ namespace ActiveAttributes.Core.Extensions
     /// </summary>
     public static bool IsAspectAttribute (this ICustomAttributeData customAttributeData)
     {
-      return typeof (AspectAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
+      return typeof (AspectAttributeBase).IsAssignableFrom (customAttributeData.Constructor.DeclaringType);
     }
 
     /// <summary>

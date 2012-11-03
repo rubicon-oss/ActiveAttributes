@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Infrastructure.Construction
 
     public CustomAttributeDataAspectConstructionInfo (ICustomAttributeData customAttributeData)
     {
-      if (!typeof (AspectBaseAttribute).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
+      if (!typeof (AspectAttributeBase).IsAssignableFrom (customAttributeData.Constructor.DeclaringType))
         throw new Exception ("TODO (low) exception text");
 
       _constructorInfo = customAttributeData.Constructor;

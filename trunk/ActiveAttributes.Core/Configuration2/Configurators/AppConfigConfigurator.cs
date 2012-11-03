@@ -33,9 +33,9 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
       {
         var beforeType = Type.GetType (item.BeforeType, true);
         var afterType = Type.GetType (item.AfterType, true);
-        //var rule = new TypeOrdering (GetType().Name, beforeType, afterType);
+        var rule = new AdviceTypeOrdering (beforeType, afterType, GetType().Name);
 
-        //activeAttributesConfiguration.AspectOrderingRules.Add (rule);
+        activeAttributesConfiguration.AdviceOrderings.Add (rule);
       }
     }
   }

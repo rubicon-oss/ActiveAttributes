@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;

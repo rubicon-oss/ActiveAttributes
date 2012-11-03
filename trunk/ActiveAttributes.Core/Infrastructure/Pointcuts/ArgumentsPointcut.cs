@@ -21,7 +21,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
   public interface IArgumentsPointcut : IPointcut
   {
-    Type[] ArgumentsType { get; }
+    Type[] ArgumentTypes { get; }
   }
 
   public class ArgumentsPointcut : IArgumentsPointcut
@@ -35,7 +35,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       _argumentTypes = argumentTypes;
     }
 
-    public Type[] ArgumentsType
+    public Type[] ArgumentTypes
     {
       get { return _argumentTypes; }
     }

@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Infrastructure.Orderings;
 using NUnit.Framework;
-using Remotion.Collections;
 
 namespace ActiveAttributes.UnitTests.Configuration2
 {
@@ -29,11 +29,10 @@ namespace ActiveAttributes.UnitTests.Configuration2
     [Test]
     public void Initialization ()
     {
-      var configuration = new ActiveAttributesConfiguration ();
+      var configuration = new ActiveAttributesConfiguration();
 
-      //Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<List<IAspectDescriptorProvider>>());
-      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<List<IAdviceOrdering>> ());
-      Assert.That (configuration.AspectRoles, Is.TypeOf<Dictionary<Type, string>> ());
+      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<List<IAspectDeclarationProvider>>());
+      Assert.That (configuration.AdviceOrderings, Is.TypeOf<List<AdviceOrderingBase>>());
     }
 
     [Test]
@@ -43,18 +42,17 @@ namespace ActiveAttributes.UnitTests.Configuration2
       configuration.Lock();
 
       Assert.That (configuration.IsLocked, Is.True);
-      //Assert.That (configuration.AspectDescriptorProviders, Is.TypeOf<ReadOnlyCollection<IAspectDescriptorProvider>> ());
-      Assert.That (configuration.AspectOrderingRules, Is.TypeOf<ReadOnlyCollection<IAdviceOrdering>> ());
-      Assert.That (configuration.AspectRoles, Is.TypeOf<ReadOnlyDictionary<Type, string>> ());
+      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<ReadOnlyCollection<IAspectDeclarationProvider>>());
+      Assert.That (configuration.AdviceOrderings, Is.TypeOf<ReadOnlyCollection<AdviceOrderingBase>>());
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Configuration is already locked.")]
     public void ThrowsForMultipleLock ()
     {
-      var configuration = new ActiveAttributesConfiguration ();
-      configuration.Lock ();
-      configuration.Lock ();
+      var configuration = new ActiveAttributesConfiguration();
+      configuration.Lock();
+      configuration.Lock();
     }
   }
 }

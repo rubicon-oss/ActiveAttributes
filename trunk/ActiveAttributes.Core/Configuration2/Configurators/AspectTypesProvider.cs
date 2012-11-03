@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Aspects;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators

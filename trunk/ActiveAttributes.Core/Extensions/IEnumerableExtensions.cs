@@ -53,5 +53,10 @@ namespace ActiveAttributes.Core.Extensions
       }
       return stringBuilder.ToString (0, Math.Max (0, stringBuilder.Length - separator.Length));
     }
+
+    public static IEnumerable<TSelection> Distinct<T, TSelection> (this IEnumerable<T> enumerable, Func<T, TSelection> selector)
+    {
+      return enumerable.Select (selector).Distinct ();
+    } 
   }
 }

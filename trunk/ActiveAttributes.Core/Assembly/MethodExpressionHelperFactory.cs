@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Infrastructure;
 using Remotion.Collections;

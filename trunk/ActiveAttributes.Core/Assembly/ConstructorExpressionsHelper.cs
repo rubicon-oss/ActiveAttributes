@@ -14,13 +14,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;

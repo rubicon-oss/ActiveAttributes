@@ -80,8 +80,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aspects\AspectAttributeTest.cs" />
-    <Compile Include="Aspects\CflowMethodInterceptionAspectAttributeTest.cs" />
     <Compile Include="Assembly\AdviceSequencerTest.cs" />
     <Compile Include="Assembly\AspectInitExpressionHelperTest.cs" />
     <Compile Include="Assembly\ConstructorInitializationServiceTest.cs" />
@@ -94,26 +92,34 @@
     <Compile Include="Assembly\ConstructorExpressionsHelperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
-    <Compile Include="Assembly\PointcutConverterTest.cs" />
-    <Compile Include="Assembly\PointcutVisitorTest.cs" />
-    <Compile Include="ObjectMother.cs" />
-    <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
+    <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
+    <Compile Include="Discovery\AdviceMergerTest.cs" />
+    <Compile Include="Assembly\PointcutVisitorTest.cs" />
+    <Compile Include="Discovery\AspectDeclarationProviderHelperTest.cs" />
+    <Compile Include="Discovery\AttributedAspectDeclarationProviders\MethodAttributedAspectDeclarationProviderTest.cs" />
+    <Compile Include="Discovery\AttributedAspectDeclarationProviders\PropertyAttributedAspectDeclarationProviderTest.cs" />
+    <Compile Include="Discovery\CustomAttributeDataToAdviceConverterTest.cs" />
+    <Compile Include="Discovery\CustomAttributeProviderToAdviceConverterTest.cs" />
+    <Compile Include="Discovery\StandaloneAdviceProviderTest.cs" />
+    <Compile Include="Discovery\StandaloneAspectDeclarationProviderTest.cs" />
+    <Compile Include="ObjectMother.cs" />
     <Compile Include="Assembly\Old\MethodCopierTest.cs" />
-    <Compile Include="Configuration2\CustomAttributes\ApplyAspectAttributeTest.cs" />
-    <Compile Include="Extensions\EnumExtensionsTest.cs" />
     <Compile Include="Extensions\IEnumerableExtensionsTest.cs" />
     <Compile Include="Invocations\IndexerGetInvocationTest.cs" />
     <Compile Include="Invocations\IndexerSetInvocationTest.cs" />
     <Compile Include="Invocations\OuterInvocationTest.cs" />
     <Compile Include="Invocations\PropertyGetInvocationTest.cs" />
     <Compile Include="Invocations\PropertySetInvocationTest.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetAspectDeclaration.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMethodCallExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetVariableExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetParameterExpression.cs" />
-    <Compile Include="ObjectMother\Mutable\ObjectMother.GetBodyContext.cs" />
-    <Compile Include="ObjectMother\Mutable\ObjectMother.GetMutableMethodInfo.cs" />
-    <Compile Include="ObjectMother\Mutable\ObjectMother.GetMutableType.cs" />
+    <Compile Include="ObjectMother\Reflection\ObjectMother.GetPropertyInfo.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetCustomAttributeNamedArgument.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetBodyContext.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetMutableMethodInfo.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetMutableType.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAdvice.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetNewExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMemberInitExpression.cs" />
@@ -126,24 +132,23 @@
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetParameterInfo.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetFieldInfo.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetConstructorInfo.cs" />
-    <Compile Include="ObjectMother\ObjectMother.GetConstructionInfo.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetAspectConstructionInfo.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetJoinPoint.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetDeclaringType.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetMethodInfo.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAspectAttribute.cs" />
     <Compile Include="ObjectMother\ObjectMother.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetType.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetCustomAttributeData.cs" />
     <Compile Include="RhinoMocksKernel.cs" />
     <Compile Include="RhinoMocksModule.cs" />
     <Compile Include="RhinoMocksStubProvider.cs" />
-    <Compile Include="TypeExtensions.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\ICustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />
     <Compile Include="Invocations\InvocationTest.cs" />
-    <Compile Include="Aspects\MethodBoundaryAspectAttributeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestBase.cs" />
@@ -165,10 +170,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configuration2\AspectDescriptorProviders\" />
-    <Folder Include="Configuration2\Configurators\" />
-    <Folder Include="Configuration2\Rules\" />
-    <Folder Include="Infrastructure\" />
+    <Folder Include="Attributes\Aspects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

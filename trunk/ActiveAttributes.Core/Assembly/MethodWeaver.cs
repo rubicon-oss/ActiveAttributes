@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Old;
 using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Ordering;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Assembly

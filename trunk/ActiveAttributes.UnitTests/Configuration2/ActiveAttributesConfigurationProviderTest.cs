@@ -13,14 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using System.Linq;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Configuration2.Configurators;
-using ActiveAttributes.Core.Extensions;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace ActiveAttributes.UnitTests.Configuration2
 {
@@ -31,53 +31,57 @@ namespace ActiveAttributes.UnitTests.Configuration2
     public void CallsConfigurators ()
     {
       var configuratorMock = MockRepository.GenerateMock<IActiveAttributesConfigurator>();
-      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
+      SetupServiceLocator (configuratorMock);
 
-      var result = configurationProvider.GetConfiguration();
+      var result = new ActiveAttributesConfigurationProvider().GetConfiguration();
 
       configuratorMock.AssertWasCalled (x => x.Initialize (result));
+      Assert.That (result, Is.TypeOf<ActiveAttributesConfiguration>().And.Not.Null);
     }
 
     [Test]
     public void CallsAppConfigConfiguratorFirst ()
     {
       var mockRepository = new MockRepository();
+      var firstConfiguratorMock = mockRepository.StrictMock<IActiveAttributesConfigurator>();
       var appConfigConfiguratorMock = mockRepository.StrictMock<AppConfigConfigurator>();
-      var otherConfiguratorMock = mockRepository.StrictMock<IActiveAttributesConfigurator>();
+      var lastConfiguratorMock = mockRepository.StrictMock<IActiveAttributesConfigurator>();
+      SetupServiceLocator (firstConfiguratorMock, appConfigConfiguratorMock, lastConfiguratorMock);
 
-      // Arrange
       using (mockRepository.Ordered())
       {
-        appConfigConfiguratorMock
-            .Expect (x => x.Initialize (null))
-            .IgnoreArguments();
-        otherConfiguratorMock
-            .Expect (x => x.Initialize (null))
-            .IgnoreArguments();
+        appConfigConfiguratorMock.Expect (x => x.Initialize (null)).IgnoreArguments();
+        firstConfiguratorMock.Expect (x => x.Initialize (null)).IgnoreArguments();
+        lastConfiguratorMock.Expect (x => x.Initialize (null)).IgnoreArguments();
       }
       mockRepository.ReplayAll();
 
-      // Act
-      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
+      var configurationProvider = new ActiveAttributesConfigurationProvider();
       configurationProvider.GetConfiguration();
 
-      // Assert
       mockRepository.VerifyAll();
     }
 
     [Test]
-    public void CallOnlyIfConfigIsNotLocked ()
+    public void DontConfigureIfLocked ()
     {
       var firstConfiguratorMock = MockRepository.GenerateStrictMock<IActiveAttributesConfigurator>();
       var secondConfiguratorMock = MockRepository.GenerateStrictMock<IActiveAttributesConfigurator>();
+      SetupServiceLocator (firstConfiguratorMock, secondConfiguratorMock);
 
       firstConfiguratorMock
-          .Expect (x => x.Initialize (null))
-          .IgnoreArguments()
+          .Expect (x => x.Initialize (Arg<IActiveAttributesConfiguration>.Is.Anything))
           .WhenCalled (x => ((IActiveAttributesConfiguration) x.Arguments[0]).Lock());
 
-      var configurationProvider = new ActiveAttributesesConfigurationProvider ();
-      configurationProvider.GetConfiguration();
+      Assert.That (() => new ActiveAttributesConfigurationProvider().GetConfiguration(), Throws.Nothing);
+      firstConfiguratorMock.VerifyAllExpectations();
+    }
+
+    private void SetupServiceLocator (params IActiveAttributesConfigurator[] configurators)
+    {
+      var locator = new DefaultServiceLocator();
+      locator.Register (typeof (IActiveAttributesConfigurator), configurators.Select (x => new Func<object> (() => x)));
+      ServiceLocator.SetLocatorProvider (() => locator);
     }
   }
 }

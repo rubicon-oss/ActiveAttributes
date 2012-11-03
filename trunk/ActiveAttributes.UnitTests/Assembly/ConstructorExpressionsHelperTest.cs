@@ -15,8 +15,8 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Infrastructure;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -85,7 +85,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateDelegateAssignExpression_FieldWrapper ()
     {
-      var method = ObjectMother.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
+      var method = ObjectMother2.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper> ();
       var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (Delegate));
 

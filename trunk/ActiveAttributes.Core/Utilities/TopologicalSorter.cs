@@ -15,6 +15,7 @@
 // under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
@@ -54,7 +55,7 @@ namespace ActiveAttributes.Core.Utilities
         {
           var scc = new StronglyConnectedComponentFinder<T>();
           var enumerable = scc.DetectCycle (graphAsList).Select (x => x.Select (y => y.Value));
-          throw new CircularDependencyException<T> (enumerable);
+          throw new CircularDependencyException (enumerable.Cast<IEnumerable>());
         }
 
         graphAsList.Remove (independent);

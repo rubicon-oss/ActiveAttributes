@@ -14,37 +14,20 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Attributes.Aspects;
-using ActiveAttributes.Core.Configuration2;
+using System.Collections.Generic;
+using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Infrastructure.Construction;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static AspectBaseAttribute GetAspectAttribute (
-        object dummy = null,
-        Type applyToType = null,
-        string memberName = null,
-        string applyToNamespace = null,
-        string applyToTypeName = null,
-        Type memberReturnType = null,
-        Visibility memberVisibility = Visibility.None,
-        Type[] memberArguments = null,
-        Type memberCustomAttributes = null)
+    public static AspectDeclaration GetAspectDeclaration (IAspectConstructionInfo constructionInfo = null, IEnumerable<Advice> advices = null)
     {
-      return new TestableAspectAttribute
-             {
-                 ApplyToType = applyToType,
-                 MemberNameFilter = memberName,
-                 ApplyToNamespace = applyToNamespace,
-                 ApplyToTypeName = applyToTypeName,
-                 MemberReturnTypeFilter = memberReturnType,
-                 MemberVisibilityFilter = memberVisibility,
-                 MemberArgumentsFilter = memberArguments,
-                 MemberCustomAttributeFilter = memberCustomAttributes
-             };
-    }
+      constructionInfo = constructionInfo ?? GetAspectConstructionInfo();
+      advices = advices ?? new Advice[0];
 
-    private class TestableAspectAttribute : AspectBaseAttribute {}
+      return new AspectDeclaration (constructionInfo, advices);
+    }
   }
 }

@@ -13,13 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Attributes.Aspects;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -63,7 +62,7 @@ namespace ActiveAttributes.UnitTests
 
       CopyModuleToOutputDirectory (GetType().Assembly.ManifestModule);
       CopyModuleToOutputDirectory (typeof (MutableType).Assembly.ManifestModule);
-      CopyModuleToOutputDirectory (typeof (MethodInterceptionAspectAttribute).Assembly.ManifestModule);
+      CopyModuleToOutputDirectory (typeof (AspectAttributeBase).Assembly.ManifestModule);
     }
 
     private void CopyModuleToOutputDirectory (Module copiedModule)

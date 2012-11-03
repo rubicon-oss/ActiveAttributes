@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
+  // TODO rename to AdviceInfo
   public class Advice
   {
     private readonly AdviceExecution _execution;
@@ -29,11 +29,11 @@ namespace ActiveAttributes.Core.Infrastructure
     private readonly int _priority;
     private readonly string _role;
     private readonly string _name;
-
     private readonly MethodInfo _method;
     private readonly IEnumerable<IPointcut> _pointcuts;
 
-    public Advice (AdviceExecution execution, AdviceScope scope, int priority, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
+    public Advice (
+        AdviceExecution execution, AdviceScope scope, int priority, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
     {
       _execution = execution;
       _scope = scope;

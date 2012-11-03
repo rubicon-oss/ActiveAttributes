@@ -13,9 +13,8 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Configuration2;
+using ActiveAttributes.Core.Infrastructure.Orderings;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Attributes.Orderings
@@ -23,8 +22,7 @@ namespace ActiveAttributes.Core.Attributes.Orderings
   /// <summary>
   /// Defines an ordering by type.
   /// </summary>
-  [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
-  public class AdviceTypeOrderingAttribute : Attribute
+  public class AdviceTypeOrderingAttribute : AdviceOrderingAttributeBase
   {
     private readonly Position _position;
     private readonly Type[] _aspectTypes;
