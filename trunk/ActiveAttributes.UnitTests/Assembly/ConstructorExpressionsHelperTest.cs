@@ -85,9 +85,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateDelegateAssignExpression_FieldWrapper ()
     {
-      var method = ObjectMother2.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
+      var method = ObjectMother.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper> ();
-      var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (Delegate));
+      var fakeExpression1 = ObjectMother.GetMemberExpression (typeof (Delegate));
 
       fieldMock.Expect (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
 

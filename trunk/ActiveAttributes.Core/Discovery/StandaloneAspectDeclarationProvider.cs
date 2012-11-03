@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Discovery
       return from Type aspectType in _typeDiscoveryService.GetTypes (typeof (IAspect), false)
              where !typeof (AspectAttributeBase).IsAssignableFrom (aspectType)
              let advices = _standaloneAdviceProvider.GetAdvices (aspectType)
-             select new AspectDeclaration (new TypeAspectConstructionInfo (aspectType), advices);
+             select new AspectDeclaration (null, new TypeAspectConstructionInfo (aspectType), advices);
     }
   }
 }

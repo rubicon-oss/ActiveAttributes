@@ -23,22 +23,28 @@ namespace ActiveAttributes.Core.Infrastructure
 {
   public class AspectDeclaration
   {
-    private readonly IAspectConstructionInfo _aspectConstructionInfo;
+    private readonly Type _targetType;
+    private readonly IAspectConstructionInfo _constructionInfo;
     private readonly IEnumerable<Advice> _advices;
 
-    public AspectDeclaration (IAspectConstructionInfo aspectConstructionInfo, IEnumerable<Advice> advices)
+    public AspectDeclaration (Type targetType, IAspectConstructionInfo constructionInfo, IEnumerable<Advice> advices)
     {
-      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+      ArgumentUtility.CheckNotNull ("constructionInfo", constructionInfo);
       ArgumentUtility.CheckNotNull ("advices", advices);
 
-      _aspectConstructionInfo = aspectConstructionInfo;
-      _advices = advices.ToList();
+      _targetType = targetType;
+      _constructionInfo = constructionInfo;
+      _advices = advices.ToList().AsReadOnly();
     }
 
-    // TODO rename to ConstructionInfo
-    public IAspectConstructionInfo AspectConstructionInfo
+    public Type TargetType
     {
-      get { return _aspectConstructionInfo; }
+      get { return _targetType; }
+    }
+
+    public IAspectConstructionInfo ConstructionInfo
+    {
+      get { return _constructionInfo; }
     }
 
     public IEnumerable<Advice> Advices

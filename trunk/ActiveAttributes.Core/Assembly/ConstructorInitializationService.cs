@@ -28,6 +28,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
+  // TODO rename to InitializationService
   [ConcreteImplementation (typeof (ConstructorInitializationService))]
   public interface IConstructorInitializationService
   {
@@ -35,7 +36,13 @@ namespace ActiveAttributes.Core.Assembly
 
     IFieldWrapper AddDelegateInitialization (MutableMethodInfo method);
 
+    // TODO AddStaticAspectInitialization + AddInstanceAspectInitialization
     IFieldWrapper AddAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, AdviceScope adviceScope);
+    //IFieldWrapper AddStaticAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo);
+    //IFieldWrapper AddInstanceAspectInitialization (MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo);
+
+    // TODO AddGlobalAspectInitialization
+    //IFieldWrapper AddGlobalAspectInitialization (IAspectConstructionInfo aspectConstructionInfo);
   }
 
   public class ConstructorInitializationService : IConstructorInitializationService
@@ -98,6 +105,12 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
 
       var attributes = FieldAttributes.Private | (adviceScope == AdviceScope.Static ? FieldAttributes.Static : 0);
+      return AddTypeAspectInitialization (mutableType, aspectConstructionInfo, attributes);
+    }
+
+    private IFieldWrapper AddTypeAspectInitialization (
+        MutableType mutableType, IAspectConstructionInfo aspectConstructionInfo, FieldAttributes attributes)
+    {
       var field = _fieldIntroducer2.AddField (mutableType, typeof (IAspect), "TODO", attributes);
 
       Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateAspectAssignExpression (field, aspectConstructionInfo);

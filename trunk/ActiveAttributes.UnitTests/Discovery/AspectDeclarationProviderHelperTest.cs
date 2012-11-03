@@ -97,9 +97,9 @@ namespace ActiveAttributes.UnitTests.Discovery
       _adviceMergerMock.VerifyAllExpectations();
 
       Assert.That (result, Has.Count.EqualTo (2));
-      Assert.That (result[0].AspectConstructionInfo.ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect1Attribute)));
+      Assert.That (result[0].ConstructionInfo.ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect1Attribute)));
       Assert.That (result[0].Advices, Is.EqualTo (new[] { fakeMergedAdvice1, fakeMergedAdvice2 }));
-      Assert.That (result[1].AspectConstructionInfo.ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect2Attribute)));
+      Assert.That (result[1].ConstructionInfo.ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect2Attribute)));
       Assert.That (result[1].Advices, Is.EqualTo (new[] { fakeMergedAdvice3 }));
     }
 

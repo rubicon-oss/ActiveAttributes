@@ -67,7 +67,7 @@ namespace ActiveAttributes.Core.Discovery
         var mergedAdvices = aspectTypeAdvices.Select (x => _adviceMerger.Merge (x, attributeAdvice));
 
         var aspectConstructionInfo = new CustomAttributeDataAspectConstructionInfo (customAttributeData);
-        yield return new AspectDeclaration (aspectConstructionInfo, mergedAdvices);
+        yield return new AspectDeclaration (null, aspectConstructionInfo, mergedAdvices);
       }
     }
   }

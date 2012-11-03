@@ -13,43 +13,32 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration2.AspectDescriptorProviders;
+using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Core.Discovery.AttributedAspectDeclarationProviders;
+using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
 {
-  /// <summary>
-  /// Serves as a configurator, which adds the default <see cref="IAspectDescriptorProvider"/>s to the <see cref="IActiveAttributesConfiguration"/>.
-  /// </summary>
-  /// <remarks>
-  /// Default <see cref="IAspectDescriptorProvider"/> are:
-  /// - <see cref="EventBasedAspectDescriptorProvider"/>
-  /// - <see cref="InterfaceMethodBasedAspectDescriptorProvider"/>
-  /// - <see cref="MethodBasedAspectDescriptorProvider"/>
-  /// - <see cref="ParameterBasedAspectDescriptorProvider"/>
-  /// - <see cref="PropertyBasedAspectDescriptorProvider"/>
-  /// - <see cref="TypeBasedAspectDescriptorProvider"/>
-  /// </remarks>
   public class DefaultAspectDescriptorProvidersConfigurator : IActiveAttributesConfigurator
   {
     public void Initialize (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
-      var aspectDescriptorProviders =
-          new List<IAspectDescriptorProvider>
+      var adviceMerger = new AdviceMerger();
+      var customAttributeProviderToAdviceConverter = new CustomAttributeProviderToAdviceConverter();
+      var standaloneAdviceProvider = new StandaloneAdviceProvider (adviceMerger, customAttributeProviderToAdviceConverter);
+      var customAttributeDataToAdviceConverter = new CustomAttributeDataToAdviceConverter();
+      var aspectDeclarationProviderHelper = new AspectDeclarationProviderHelper (
+          standaloneAdviceProvider, customAttributeDataToAdviceConverter, adviceMerger);
+      var aspectDeclarationProviders =
+          new IAspectDeclarationProvider[]
           {
-              new EventBasedAspectDescriptorProvider(),
-              new InterfaceMethodBasedAspectDescriptorProvider(),
-              new MethodBasedAspectDescriptorProvider(),
-              new ParameterBasedAspectDescriptorProvider(),
-              new PropertyBasedAspectDescriptorProvider(),
-              new TypeBasedAspectDescriptorProvider()
+              new MethodAttributedAspectDeclarationProvider (aspectDeclarationProviderHelper, new RelatedMethodFinder()),
+              new PropertyAttributedAspectDeclarationProvider (aspectDeclarationProviderHelper, new RelatedPropertyFinder())
           };
 
-      foreach (var aspectDescriptorProvider in aspectDescriptorProviders)
-        activeAttributesConfiguration.AspectDescriptorProviders.Add (aspectDescriptorProvider);
+      foreach (var aspectDeclarationProvider in aspectDeclarationProviders)
+        activeAttributesConfiguration.AspectDeclarationProviders.Add (aspectDeclarationProvider);
     }
   }
 }

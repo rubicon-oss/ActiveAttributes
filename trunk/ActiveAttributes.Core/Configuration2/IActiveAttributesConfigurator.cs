@@ -22,8 +22,8 @@ namespace ActiveAttributes.Core.Configuration2
   /// <summary>
   /// Serves as a configurator for a <see cref="IActiveAttributesConfiguration"/>.
   /// </summary>
-  // TODO [ConcreteImplementation (typeof (AppConfigConfigurator), Position = 1)]
-  // TODO [ConcreteImplementation (typeof (DefaultAspectDescriptorProvidersConfigurator), Position = 2)]
+  [ConcreteImplementation (typeof (AppConfigConfigurator), Position = 1)]
+  [ConcreteImplementation (typeof (DefaultAspectDescriptorProvidersConfigurator), Position = 2)]
   public interface IActiveAttributesConfigurator
   {
     /// <summary>

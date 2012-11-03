@@ -71,6 +71,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration2\Configurators\AppConfigConfigurator.cs" />
+    <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
     <Compile Include="Configuration2\IActiveAttributesConfigurator.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -27,7 +27,7 @@ namespace ActiveAttributes.UnitTests
       constructionInfo = constructionInfo ?? GetAspectConstructionInfo();
       advices = advices ?? new Advice[0];
 
-      return new AspectDeclaration (constructionInfo, advices);
+      return new AspectDeclaration (null, constructionInfo, advices);
     }
   }
 }

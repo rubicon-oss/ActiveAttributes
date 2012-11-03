@@ -55,7 +55,7 @@ namespace ActiveAttributes.UnitTests.Discovery
 
       _typeDiscoveryServiceMock.VerifyAllExpectations();
       _standaloneAdviceProviderMock.VerifyAllExpectations();
-      var constructionInfo = result.AspectConstructionInfo;
+      var constructionInfo = result.ConstructionInfo;
       Assert.That (constructionInfo, Is.TypeOf<TypeAspectConstructionInfo>());
       Assert.That (constructionInfo.ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
       Assert.That (result.Advices, Is.EqualTo (fakeAdvices));
