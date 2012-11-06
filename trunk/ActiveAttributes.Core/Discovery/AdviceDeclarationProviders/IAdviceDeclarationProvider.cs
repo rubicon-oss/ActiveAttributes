@@ -19,5 +19,7 @@ using System;
 namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
 {
   public interface IAdviceDeclarationProvider
-      : IAssemblyLevelAdviceDeclarationProvider, ITypeLevelAdviceDeclarationProvider, IMethodLevelAdviceDeclarationProvider {}
+      : IAssemblyLevelAdviceDeclarationProvider,
+        ITypeLevelAdviceDeclarationProvider,
+        IMethodLevelAdviceDeclarationProvider {}
 }
