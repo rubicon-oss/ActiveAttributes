@@ -14,11 +14,18 @@
   <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
   <DefaultTestTimeout>60000</DefaultTestTimeout>
   <UseBuildConfiguration></UseBuildConfiguration>
+  <UseBuildPlatform></UseBuildPlatform>
   <ProxyProcessPath></ProxyProcessPath>
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <IgnoredTests>
     <NamedTestSelector>
       <TestName>ActiveAttributes.UnitTests.Assembly.ConstructorPatcherTest.AssignDelegate</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>ActiveAttributes.UnitTests.Discovery.AttributedAspectDeclarationProviders.MethodAttributedAspectDeclarationProviderTest.GetDeclarations</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>ActiveAttributes.UnitTests.Discovery.AttributedAspectDeclarationProviders.PropertyAttributedAspectDeclarationProviderTest.GetDeclarations</TestName>
     </NamedTestSelector>
   </IgnoredTests>
 </ProjectConfiguration>

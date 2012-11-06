@@ -21,6 +21,7 @@ using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -33,7 +34,7 @@ namespace ActiveAttributes.Core.Assembly
     NewExpression CreateOuterInvocation (
         Expression previousAspect,
         Expression previousInvocation,
-        Advice previousAdvice,
+        MethodInfo previousAdvice,
         Expression invocationContext);
   }
 
@@ -43,22 +44,24 @@ namespace ActiveAttributes.Core.Assembly
         Expression thisExpression, Type innerInvocationType, Expression invocationContext, IFieldWrapper delegateField)
     {
       var constructor = innerInvocationType.GetConstructors().Single();
-      var arguments = new[] { invocationContext, delegateField.GetAccessExpression (thisExpression) };
+      var arguments = new[] { invocationContext, delegateField.GetMemberExpression (thisExpression) };
 
       return Expression.New (constructor, arguments);
     }
 
     public NewExpression CreateOuterInvocation (
-        Expression previousAspect,
-        Expression previousInvocation,
-        Advice previousAdvice,
-        Expression invocationContext)
+        Expression previousAspect, Expression previousInvocation, MethodInfo previousAdvice, Expression invocationContext)
     {
+      ArgumentUtility.CheckNotNull ("previousAspect", previousAspect);
+      ArgumentUtility.CheckNotNull ("previousInvocation", previousInvocation);
+      ArgumentUtility.CheckNotNull ("previousAdvice", previousAdvice);
+      ArgumentUtility.CheckNotNull ("invocationContext", invocationContext);
+
       var constructor = typeof (OuterInvocation).GetConstructors().Single();
       var arguments = new[]
                       {
                           invocationContext,
-                          GetAdviceDelegate (previousAspect, previousAdvice.Method),
+                          GetAdviceDelegate (previousAspect, previousAdvice),
                           previousInvocation
                       };
 

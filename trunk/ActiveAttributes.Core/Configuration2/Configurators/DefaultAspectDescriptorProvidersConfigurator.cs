@@ -15,7 +15,6 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AttributedAspectDeclarationProviders;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
@@ -24,21 +23,20 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
   {
     public void Initialize (IActiveAttributesConfiguration activeAttributesConfiguration)
     {
-      var adviceMerger = new AdviceMerger();
-      var customAttributeProviderToAdviceConverter = new CustomAttributeProviderToAdviceConverter();
-      var standaloneAdviceProvider = new StandaloneAdviceProvider (adviceMerger, customAttributeProviderToAdviceConverter);
-      var customAttributeDataToAdviceConverter = new CustomAttributeDataToAdviceConverter();
-      var aspectDeclarationProviderHelper = new AspectDeclarationProviderHelper (
-          standaloneAdviceProvider, customAttributeDataToAdviceConverter, adviceMerger);
-      var aspectDeclarationProviders =
-          new IAspectDeclarationProvider[]
-          {
-              new MethodAttributedAspectDeclarationProvider (aspectDeclarationProviderHelper, new RelatedMethodFinder()),
-              new PropertyAttributedAspectDeclarationProvider (aspectDeclarationProviderHelper, new RelatedPropertyFinder())
-          };
+      var customAttributeProviderToAdviceConverter = new CustomAttributeProviderTransform (null);
+      //var standaloneAdviceProvider = new ClassDeclarationProvider (null, customAttributeProviderToAdviceConverter);
+      var customAttributeDataToAdviceConverter = new CustomAttributeDataTransform (null);
+      //var aspectDeclarationProviderHelper = new AttributeDeclarationProvider (
+      //    //standaloneAdviceProvider, customAttributeDataToAdviceConverter, adviceMerger);
+      //var aspectDeclarationProviders =
+      //    new IAdviceDeclarationProvider[]
+      //    {
+      //        new MethodAttributedAdviceDeclarationProvider (aspectDeclarationProviderHelper, new RelatedMethodFinder()),
+      //        new PropertyAttributedAdviceDeclarationProvider (aspectDeclarationProviderHelper, new RelatedPropertyFinder())
+      //    };
 
-      foreach (var aspectDeclarationProvider in aspectDeclarationProviders)
-        activeAttributesConfiguration.AspectDeclarationProviders.Add (aspectDeclarationProvider);
+      //foreach (var aspectDeclarationProvider in aspectDeclarationProviders)
+      //  activeAttributesConfiguration.AspectDeclarationProviders.Add (aspectDeclarationProvider);
     }
   }
 }

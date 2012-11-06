@@ -50,7 +50,7 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
       var fieldWrapper = new StaticFieldWrapper (_fieldInfo);
 
       var expected = Expression.Field (null, _fieldInfo);
-      var actual = fieldWrapper.GetAccessExpression (_thisExpression);
+      var actual = fieldWrapper.GetMemberExpression (_thisExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }

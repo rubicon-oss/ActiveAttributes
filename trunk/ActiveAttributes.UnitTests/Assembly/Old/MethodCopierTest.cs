@@ -16,7 +16,7 @@
 
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Assembly;
 using NUnit.Framework;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Construction;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 using ActiveAttributes.Core.Interception.Invocations;
 
@@ -27,6 +28,7 @@ namespace ActiveAttributes.UnitTests
   public static partial class ObjectMother2
   {
     public static Advice GetAdvice (
+        IConstruction construction = null,
         MethodInfo method = null,
         string role = null,
         string name = null,
@@ -35,16 +37,22 @@ namespace ActiveAttributes.UnitTests
         AdviceExecution execution = 0,
         AdviceScope scope = 0)
     {
+      construction = construction ?? GetConstruction();
       method = method ?? GetMethodInfo();
       pointcuts = pointcuts ?? new IPointcut[0];
 
-      return new Advice (execution, scope, priority, method, pointcuts, role, name);
+      return new Advice (construction, method, name, role, execution, scope, priority, pointcuts);
     }
 
     public static Advice GetInvocationAdvice ()
     {
       var method = GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
-      return GetAdvice (method);
+      return GetAdvice (method: method);
+    }
+
+    public static Advice GetAroundAdvice ()
+    {
+      return GetAdvice (execution: AdviceExecution.Around);
     }
   }
 }

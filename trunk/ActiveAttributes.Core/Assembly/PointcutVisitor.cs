@@ -39,6 +39,7 @@ namespace ActiveAttributes.Core.Assembly
     bool VisitPointcut (IArgumentsPointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (INamespacePointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IMethodPointcut pointcut, JoinPoint joinPoint);
   }
 
   public class PointcutVisitor : IPointcutVisitor
@@ -137,6 +138,11 @@ namespace ActiveAttributes.Core.Assembly
     public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotSupportedException();
+    }
+
+    public bool VisitPointcut (IMethodPointcut pointcut, JoinPoint joinPoint)
+    {
+      throw new NotImplementedException();
     }
   }
 }

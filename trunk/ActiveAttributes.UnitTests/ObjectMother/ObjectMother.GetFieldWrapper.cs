@@ -30,7 +30,7 @@ namespace ActiveAttributes.UnitTests
 
       var stub = MockRepository.GenerateStub<IFieldWrapper>();
 
-      stub.Stub (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (memberExpression);
+      stub.Stub (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (memberExpression);
 
       return stub;
     }

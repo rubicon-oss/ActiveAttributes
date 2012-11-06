@@ -41,7 +41,7 @@ namespace ActiveAttributes.Core.Assembly.FieldWrapper
       get { return _field; }
     }
 
-    public MemberExpression GetAccessExpression (Expression thisExpression)
+    public MemberExpression GetMemberExpression (Expression thisExpression)
     {
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
 

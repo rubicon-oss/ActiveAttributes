@@ -14,15 +14,12 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Ordering;
 using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting.Enumerables;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -32,9 +29,7 @@ namespace ActiveAttributes.UnitTests.Assembly
   {
     private AdviceSequencer _adviceSequencer;
 
-    private IAdviceDependencyMerger _dependencyMergerMock;
-    private IAdviceDependencyProvider _dependencyProviderMock1;
-    private IAdviceDependencyProvider _dependencyProviderMock2;
+    private IAdviceDependencyProvider _dependencyProviderMock;
 
     private Advice _advice1;
     private Advice _advice2;
@@ -47,61 +42,39 @@ namespace ActiveAttributes.UnitTests.Assembly
       _advice2 = ObjectMother2.GetAdvice();
       _advice3 = ObjectMother2.GetAdvice();
 
-      _dependencyMergerMock = MockRepository.GenerateStrictMock<IAdviceDependencyMerger>();
-      _dependencyProviderMock1 = MockRepository.GenerateStrictMock<IAdviceDependencyProvider>();
-      _dependencyProviderMock2 = MockRepository.GenerateStrictMock<IAdviceDependencyProvider>();
-
-      _adviceSequencer = new AdviceSequencer (_dependencyMergerMock, new[] { _dependencyProviderMock1, _dependencyProviderMock2 });
+      _dependencyProviderMock = MockRepository.GenerateStrictMock<IAdviceDependencyProvider>();
+      _adviceSequencer = new AdviceSequencer (_dependencyProviderMock);
     }
 
     [Test]
-    public void UsesProviders ()
+    public void Sort ()
     {
       var advices = new[] { _advice1, _advice2, _advice3 };
 
-      var fakeDependencies1 = new Tuple<Advice, Advice>[0];
-      var fakeDependencies2 = new Tuple<Advice, Advice>[0];
-      var fakeDependencies3 = new Tuple<Advice, Advice>[0];
       var dependencies = new[] { Tuple.Create (_advice3, _advice2), Tuple.Create (_advice2, _advice1) };
 
-      _dependencyProviderMock1
+      _dependencyProviderMock
           .Expect (x => x.GetDependencies (advices))
-          .Return (fakeDependencies1);
-      _dependencyMergerMock
-          .Expect (x => x.MergeDependencies (Arg<IEnumerable<Tuple<Advice, Advice>>>.Matches (y => !y.Any()), Arg.Is (fakeDependencies1)))
-          .Return (fakeDependencies2);
-      _dependencyProviderMock2
-          .Expect (x => x.GetDependencies (advices))
-          .Return (fakeDependencies3);
-      _dependencyMergerMock
-          .Expect (x => x.MergeDependencies (fakeDependencies2, fakeDependencies3))
-          .Return (dependencies);
+          .Return (dependencies.AsOneTime());
 
-      var result = _adviceSequencer.Sort (advices);
+      var result = _adviceSequencer.Sort (advices.AsOneTime());
 
       Assert.That (result, Is.EqualTo (new[] { _advice3, _advice2, _advice1 }));
     }
 
     [Test]
-    [Ignore ("TODO")]
-    public void UsesPriorityFirst () {}
-
-    [Test]
-    public void ThrowsForUndefinedOrder ()
+    public void Sort_ThrowsForUndefinedOrder ()
     {
       var advices = new[] { _advice1, _advice2, _advice3 };
 
       var dependencies = new[] { Tuple.Create (_advice3, _advice2) };
-      _dependencyProviderMock1.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
-      _dependencyMergerMock.Expect (x => x.MergeDependencies (null, null)).IgnoreArguments().Return (dependencies);
+      _dependencyProviderMock.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
 
-      var adviceSequencer = new AdviceSequencer (_dependencyMergerMock, new[] { _dependencyProviderMock1 });
-
-      Assert.That (() => adviceSequencer.Sort (advices), Throws.TypeOf<UndefinedOrderException>());
+      Assert.That (() => _adviceSequencer.Sort (advices), Throws.TypeOf<UndefinedOrderException>());
     }
 
     [Test]
-    public void ThrowsForCircularDependencies ()
+    public void Sort_ThrowsForCircularDependencies ()
     {
       var advices = new[] { _advice1, _advice2, _advice3 };
 
@@ -112,12 +85,9 @@ namespace ActiveAttributes.UnitTests.Assembly
               Tuple.Create (_advice2, _advice1),
               Tuple.Create (_advice1, _advice3)
           };
-      _dependencyProviderMock1.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
-      _dependencyMergerMock.Expect (x => x.MergeDependencies (null, null)).IgnoreArguments().Return (dependencies);
+      _dependencyProviderMock.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
 
-      var adviceSequencer = new AdviceSequencer (_dependencyMergerMock, new[] { _dependencyProviderMock1 });
-
-      Assert.That (() => adviceSequencer.Sort (advices), Throws.TypeOf<CircularDependencyException>());
+      Assert.That (() => _adviceSequencer.Sort (advices), Throws.TypeOf<CircularDependencyException>());
     }
   }
 }

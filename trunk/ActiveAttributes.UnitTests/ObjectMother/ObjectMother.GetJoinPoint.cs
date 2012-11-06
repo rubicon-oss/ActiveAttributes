@@ -26,11 +26,5 @@ namespace ActiveAttributes.UnitTests
       type = type ?? GetDeclaringType();
       return new JoinPoint (type);
     }
-
-    public static JoinPoint GetJoinPoint (MethodInfo method = null)
-    {
-      method = method ?? GetMethodInfo();
-      return new JoinPoint (method);
-    }
   }
 }

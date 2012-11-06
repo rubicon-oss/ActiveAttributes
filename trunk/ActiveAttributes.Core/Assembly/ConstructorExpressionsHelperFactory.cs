@@ -29,20 +29,20 @@ namespace ActiveAttributes.Core.Assembly
 
   public class ConstructorExpressionsHelperFactory : IConstructorExpressionsHelperFactory
   {
-    private readonly AspectInitExpressionHelper _aspectInitExpressionHelper;
+    private readonly AspectInitializationExpressionHelper _aspectInitializationExpressionHelper;
 
-    public ConstructorExpressionsHelperFactory (AspectInitExpressionHelper aspectInitExpressionHelper)
+    public ConstructorExpressionsHelperFactory (AspectInitializationExpressionHelper aspectInitializationExpressionHelper)
     {
-      ArgumentUtility.CheckNotNull ("aspectInitExpressionHelper", aspectInitExpressionHelper);
+      ArgumentUtility.CheckNotNull ("aspectInitializationExpressionHelper", aspectInitializationExpressionHelper);
 
-      _aspectInitExpressionHelper = aspectInitExpressionHelper;
+      _aspectInitializationExpressionHelper = aspectInitializationExpressionHelper;
     }
 
     public IConstructorExpressionsHelper CreateConstructorExpressionHelper (BodyContextBase bodyContextBase)
     {
       ArgumentUtility.CheckNotNull ("bodyContextBase", bodyContextBase);
 
-      return new ConstructorExpressionsHelper (_aspectInitExpressionHelper, bodyContextBase);
+      return new ConstructorExpressionsHelper (_aspectInitializationExpressionHelper, bodyContextBase);
     }
   }
 }

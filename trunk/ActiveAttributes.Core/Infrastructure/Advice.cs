@@ -17,13 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Infrastructure.Construction;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
 
 namespace ActiveAttributes.Core.Infrastructure
 {
-  // TODO rename to AdviceInfo
   public class Advice
   {
+    private readonly IConstruction _construction;
     private readonly AdviceExecution _execution;
     private readonly AdviceScope _scope;
     private readonly int _priority;
@@ -33,8 +34,16 @@ namespace ActiveAttributes.Core.Infrastructure
     private readonly IEnumerable<IPointcut> _pointcuts;
 
     public Advice (
-        AdviceExecution execution, AdviceScope scope, int priority, MethodInfo method, IEnumerable<IPointcut> pointcuts, string role, string name)
+        IConstruction construction,
+        MethodInfo method,
+        string name,
+        string role,
+        AdviceExecution execution,
+        AdviceScope scope,
+        int priority,
+        IEnumerable<IPointcut> pointcuts)
     {
+      _construction = construction;
       _execution = execution;
       _scope = scope;
       _priority = priority;
@@ -42,6 +51,31 @@ namespace ActiveAttributes.Core.Infrastructure
       _pointcuts = pointcuts;
       _role = role;
       _name = name;
+    }
+
+    public IConstruction Construction
+    {
+      get { return _construction; }
+    }
+
+    public Type DeclaringType
+    {
+      get { return _method.DeclaringType; }
+    }
+
+    public MethodInfo Method
+    {
+      get { return _method; }
+    }
+
+    public string Name
+    {
+      get { return _name; }
+    }
+
+    public string Role
+    {
+      get { return _role; }
     }
 
     public AdviceExecution Execution
@@ -54,29 +88,14 @@ namespace ActiveAttributes.Core.Infrastructure
       get { return _scope; }
     }
 
-    public string Role
+    public int Priority
     {
-      get { return _role; }
-    }
-
-    public string Name
-    {
-      get { return _name; }
-    }
-
-    public MethodInfo Method
-    {
-      get { return _method; }
+      get { return _priority; }
     }
 
     public IEnumerable<IPointcut> Pointcuts
     {
       get { return _pointcuts; }
-    }
-
-    public int Priority
-    {
-      get { return _priority; }
     }
   }
 }

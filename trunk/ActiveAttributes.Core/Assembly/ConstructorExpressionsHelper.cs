@@ -32,20 +32,20 @@ namespace ActiveAttributes.Core.Assembly
 
     BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
 
-    BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo);
+    BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IConstruction construction);
   }
 
   public class ConstructorExpressionsHelper : IConstructorExpressionsHelper
   {
-    private readonly IAspectInitExpressionHelper _aspectInitExpressionHelper;
+    private readonly IAspectInitializationExpressionHelper _aspectInitializationExpressionHelper;
     private readonly BodyContextBase _context;
 
-    public ConstructorExpressionsHelper (IAspectInitExpressionHelper aspectInitExpressionHelper, BodyContextBase context)
+    public ConstructorExpressionsHelper (IAspectInitializationExpressionHelper aspectInitializationExpressionHelper, BodyContextBase context)
     {
-      ArgumentUtility.CheckNotNull ("aspectInitExpressionHelper", aspectInitExpressionHelper);
+      ArgumentUtility.CheckNotNull ("aspectInitializationExpressionHelper", aspectInitializationExpressionHelper);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      _aspectInitExpressionHelper = aspectInitExpressionHelper;
+      _aspectInitializationExpressionHelper = aspectInitializationExpressionHelper;
       _context = context;
     }
 
@@ -72,12 +72,12 @@ namespace ActiveAttributes.Core.Assembly
       return GetAssignExpression (field, value);
     }
 
-    public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IAspectConstructionInfo aspectConstructionInfo)
+    public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IConstruction construction)
     {
       ArgumentUtility.CheckNotNull ("field", field);
-      ArgumentUtility.CheckNotNull ("aspectConstructionInfo", aspectConstructionInfo);
+      ArgumentUtility.CheckNotNull ("construction", construction);
 
-      var value = _aspectInitExpressionHelper.CreateInitExpression (aspectConstructionInfo);
+      var value = _aspectInitializationExpressionHelper.CreateInitExpression (construction);
 
       return GetAssignExpression (field, value);
     }
@@ -120,7 +120,7 @@ namespace ActiveAttributes.Core.Assembly
 
     private MemberExpression GetFieldAccessExpression (IFieldWrapper fieldWrapper)
     {
-      return fieldWrapper.GetAccessExpression (_context.This);
+      return fieldWrapper.GetMemberExpression (_context.This);
     }
   }
 }

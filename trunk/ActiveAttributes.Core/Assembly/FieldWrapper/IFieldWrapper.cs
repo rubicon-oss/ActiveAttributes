@@ -27,8 +27,6 @@ namespace ActiveAttributes.Core.Assembly.FieldWrapper
   {
     FieldInfo Field { get; }
 
-    MemberExpression GetAccessExpression (Expression thisExpression);
-
-    bool IsStatic { get; }
+    MemberExpression GetMemberExpression (Expression thisExpression);
   }
 }

@@ -16,7 +16,7 @@
 
 using System;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
@@ -43,7 +43,7 @@ namespace ActiveAttributes.IntegrationTests
       public virtual int Multiply (int a, int b) { return a * b; }
     }
 
-    public class IncrementArgumentsAspectAttribute : MethodInterceptionAspectAttribute
+    public class IncrementArgumentsAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {

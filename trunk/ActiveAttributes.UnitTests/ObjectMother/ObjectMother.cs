@@ -29,13 +29,13 @@ namespace ActiveAttributes.UnitTests
       return collection[s_random.Next (0, collection.Count)];
     }
 
-    private static IEnumerable<T> GetMultiple<T> (Func<T> factory, int count = -1)
+    public static IEnumerable<T> GetMultiple<T> (Func<T> factory, int count = -1)
     {
       count = count >= 0 ? count : s_random.Next (0, 5);
       return Enumerable.Range (0, count).Select (x => factory());
     }
 
-    private static IEnumerable<T> GetMultiple<T> (Func<int, T> factory, int count = -1)
+    public static IEnumerable<T> GetMultiple<T> (Func<int, T> factory, int count = -1)
     {
       count = count >= 0 ? count : s_random.Next (0, 5);
       return Enumerable.Range (0, count).Select (factory);

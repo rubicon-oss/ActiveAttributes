@@ -191,7 +191,7 @@ namespace ActiveAttributes.UnitTests
           .Stub (x => x.Field)
           .Return (field);
       mock
-          .Stub (x => x.GetAccessExpression (Arg<Expression>.Is.Anything))
+          .Stub (x => x.GetMemberExpression (Arg<Expression>.Is.Anything))
           .Return (Expression.Field (thisExpression, field));
 
       return mock;

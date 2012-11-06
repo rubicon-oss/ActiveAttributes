@@ -36,7 +36,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     private BodyContextBase _bodyContext;
     private ConstructorExpressionsHelper _constructorExpressionsHelper;
 
-    private IAspectInitExpressionHelper _aspectInitExpressionHelperMock;
+    private IAspectInitializationExpressionHelper _aspectInitializationExpressionHelperMock;
 
     [SetUp]
     public void SetUp ()
@@ -44,8 +44,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       _declaringType = ObjectMother.GetMutableType();
       _thisExpression = new ThisExpression (_declaringType);
       _bodyContext = ObjectMother.GetBodyContextBase (_declaringType);
-      _aspectInitExpressionHelperMock = MockRepository.GenerateStrictMock<IAspectInitExpressionHelper>();
-      _constructorExpressionsHelper = new ConstructorExpressionsHelper (_aspectInitExpressionHelperMock, _bodyContext);
+      _aspectInitializationExpressionHelperMock = MockRepository.GenerateStrictMock<IAspectInitializationExpressionHelper>();
+      _constructorExpressionsHelper = new ConstructorExpressionsHelper (_aspectInitializationExpressionHelperMock, _bodyContext);
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper> ();
       var fakeExpression1 = ObjectMother.GetMemberExpression (typeof (Delegate));
 
-      fieldMock.Expect (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
+      fieldMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
 
       var result = _constructorExpressionsHelper.CreateDelegateAssignExpression (fieldMock, method);
 
@@ -105,18 +105,18 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateAspectAssignExpression ()
     {
-      var constructionInfo = ObjectMother2.GetAspectConstructionInfo();
+      var constructionInfo = ObjectMother2.GetConstruction();
       var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
       var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (IAspect));
       var fakeExpression2 = ObjectMother2.GetMemberInitExpression (typeof (DomainAspect));
 
-      fieldMock.Expect (x => x.GetAccessExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
-      _aspectInitExpressionHelperMock.Expect (x => x.CreateInitExpression (constructionInfo)).Return (fakeExpression2);
+      fieldMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
+      _aspectInitializationExpressionHelperMock.Expect (x => x.CreateInitExpression (constructionInfo)).Return (fakeExpression2);
 
       var result = _constructorExpressionsHelper.CreateAspectAssignExpression (fieldMock, constructionInfo);
 
       fieldMock.VerifyAllExpectations();
-      _aspectInitExpressionHelperMock.VerifyAllExpectations();
+      _aspectInitializationExpressionHelperMock.VerifyAllExpectations();
       Assert.That (result.Left, Is.SameAs (fakeExpression1));
       Assert.That (result.Right, Is.SameAs (fakeExpression2));
     }

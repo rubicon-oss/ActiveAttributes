@@ -52,7 +52,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var expected =
           Expression.New (
               typeof (FuncInvocation<object, int, string>).GetConstructors().Single(),
-              new Expression[] { invocationContext, delegateFieldStub.GetAccessExpression (_thisExpression) });
+              new Expression[] { invocationContext, delegateFieldStub.GetMemberExpression (_thisExpression) });
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }
@@ -62,7 +62,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var previousAspect = ObjectMother2.GetParameterExpression (typeof (IAspect));
       var previousInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var previousAdvice = ObjectMother2.GetInvocationAdvice();
+      var previousAdvice = ObjectMother2.GetMethodInfo();
       var invocationContext = ObjectMother2.GetParameterExpression (typeof (IInvocationContext));
 
       var result = _expressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, previousAdvice, invocationContext);
@@ -79,7 +79,7 @@ namespace ActiveAttributes.UnitTests.Assembly
                   typeof (Delegate).GetMethod ("CreateDelegate", new[] { typeof (Type), typeof (object), typeof (MethodInfo) }),
                   Expression.Constant (typeof (Action<IInvocation>)),
                   previousAspect,
-                  Expression.Constant (previousAdvice.Method)),
+                  Expression.Constant (previousAdvice)),
               typeof (Action<IInvocation>));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedExpression, result.Arguments[1]);
     }

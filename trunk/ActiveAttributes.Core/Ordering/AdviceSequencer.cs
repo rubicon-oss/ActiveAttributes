@@ -13,14 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Utilities;
-using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -38,29 +36,21 @@ namespace ActiveAttributes.Core.Ordering
 
   public class AdviceSequencer : IAdviceSequencer
   {
-    private readonly IAdviceDependencyMerger _adviceDependencyMerger;
-    private readonly IEnumerable<IAdviceDependencyProvider> _adviceDependencyProviders;
+    private readonly IAdviceDependencyProvider _adviceDependencyProvider;
 
-    public AdviceSequencer (IAdviceDependencyMerger adviceDependencyMerger, IEnumerable<IAdviceDependencyProvider> adviceDependencyProviders)
+    public AdviceSequencer (IAdviceDependencyProvider adviceDependencyProvider)
     {
-      ArgumentUtility.CheckNotNull ("adviceDependencyMerger", adviceDependencyMerger);
-      ArgumentUtility.CheckNotNull ("adviceDependencyProviders", adviceDependencyProviders);
+      ArgumentUtility.CheckNotNull ("adviceDependencyProvider", adviceDependencyProvider);
 
-      _adviceDependencyMerger = adviceDependencyMerger;
-      _adviceDependencyProviders = adviceDependencyProviders; //.BringToFront (x => x is PriorityDependencyProvider);
+      _adviceDependencyProvider = adviceDependencyProvider;
     }
 
     public IEnumerable<Advice> Sort (IEnumerable<Advice> advices)
     {
       var advicesAsList = advices.ToList();
-      IEnumerable<Tuple<Advice, Advice>> dependencies = new Tuple<Advice, Advice>[0];
+      ArgumentUtility.CheckNotNull ("advices", advicesAsList);
 
-      foreach (var dependencyProvider in _adviceDependencyProviders)
-      {
-        var newDependencies = dependencyProvider.GetDependencies (advicesAsList);
-        dependencies = _adviceDependencyMerger.MergeDependencies (dependencies, newDependencies);
-      }
-
+      var dependencies = _adviceDependencyProvider.GetDependencies (advicesAsList);
       return advicesAsList.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
     }
   }
