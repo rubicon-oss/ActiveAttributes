@@ -93,11 +93,5 @@ namespace ActiveAttributes.Core.Discovery
       if (namedArgument.MemberInfo.Name == memberName)
         set ((T) namedArgument.Value);
     }
-
-    private void TryGetValue<T> (ICustomAttributeNamedArgument argument, string memberName, ref T value)
-    {
-      if (argument.MemberInfo.Name == memberName)
-        value = (T) argument.Value;
-    }
   }
 }
