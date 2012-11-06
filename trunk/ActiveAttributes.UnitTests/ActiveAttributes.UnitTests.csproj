@@ -104,6 +104,8 @@
     <Compile Include="Discovery\CustomAttributeProviderTransformTest.cs" />
     <Compile Include="Discovery\ClassDeclarationProviderTest.cs" />
     <Compile Include="Discovery\StandaloneAspectDeclarationProviderTest.cs" />
+    <Compile Include="Interception\Contexts\ActionInvocationContextTest.cs" />
+    <Compile Include="Interception\Contexts\FuncInvocationContextTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperTest.cs" />
     <Compile Include="Interception\InterceptionTypeProviderTest.cs" />
