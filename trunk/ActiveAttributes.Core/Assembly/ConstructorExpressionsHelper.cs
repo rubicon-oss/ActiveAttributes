@@ -31,8 +31,6 @@ namespace ActiveAttributes.Core.Assembly
     BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MemberInfo method);
 
     BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
-
-    BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IConstruction construction);
   }
 
   public class ConstructorExpressionsHelper : IConstructorExpressionsHelper
@@ -68,16 +66,6 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("method", method);
 
       var value = Expression.NewDelegate (method.GetDelegateType(), _context.This, method);
-
-      return GetAssignExpression (field, value);
-    }
-
-    public BinaryExpression CreateAspectAssignExpression (IFieldWrapper field, IConstruction construction)
-    {
-      ArgumentUtility.CheckNotNull ("field", field);
-      ArgumentUtility.CheckNotNull ("construction", construction);
-
-      var value = _aspectInitializationExpressionHelper.CreateInitExpression (construction);
 
       return GetAssignExpression (field, value);
     }

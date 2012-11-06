@@ -102,25 +102,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (newDelegateExpression.Method, Is.SameAs (method));
     }
 
-    [Test]
-    public void CreateAspectAssignExpression ()
-    {
-      var constructionInfo = ObjectMother2.GetConstruction();
-      var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
-      var fakeExpression1 = ObjectMother2.GetMemberExpression (typeof (IAspect));
-      var fakeExpression2 = ObjectMother2.GetMemberInitExpression (typeof (DomainAspect));
-
-      fieldMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
-      _aspectInitializationExpressionHelperMock.Expect (x => x.CreateInitExpression (constructionInfo)).Return (fakeExpression2);
-
-      var result = _constructorExpressionsHelper.CreateAspectAssignExpression (fieldMock, constructionInfo);
-
-      fieldMock.VerifyAllExpectations();
-      _aspectInitializationExpressionHelperMock.VerifyAllExpectations();
-      Assert.That (result.Left, Is.SameAs (fakeExpression1));
-      Assert.That (result.Right, Is.SameAs (fakeExpression2));
-    }
-
     class DomainAspect : IAspect {}
   }
 }
