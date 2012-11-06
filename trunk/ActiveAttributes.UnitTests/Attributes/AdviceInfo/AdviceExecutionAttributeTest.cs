@@ -13,27 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using ActiveAttributes.Core.Attributes.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using Remotion.Utilities;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Attributes.AdviceInfo
+namespace ActiveAttributes.UnitTests.Attributes.AdviceInfo
 {
-  public sealed class AdviceExecutionAttribute : AdviceAttribute
+  [TestFixture]
+  public class AdviceExecutionAttributeTest
   {
-    private readonly AdviceExecution _execution;
-
-    public AdviceExecutionAttribute (AdviceExecution execution)
+    [Test]
+    public void Initialization ()
     {
-      Assertion.IsTrue (execution != AdviceExecution.Undefined);
+      var execution = AdviceExecution.Around;
+      var attribute = new AdviceExecutionAttribute (execution);
 
-      _execution = execution;
-    }
-
-    public AdviceExecution Execution
-    {
-      get { return _execution; }
+      Assert.That (attribute.Execution, Is.EqualTo (execution));
     }
   }
 }

@@ -93,6 +93,11 @@
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
     <Compile Include="Assembly\AspectStorageServiceTest.cs" />
+    <Compile Include="Attributes\AdviceInfo\AdviceExecutionAttributeTest.cs" />
+    <Compile Include="Attributes\AdviceInfo\AdviceNameAttributeTest.cs" />
+    <Compile Include="Attributes\AdviceInfo\AdvicePriorityAttributeTest.cs" />
+    <Compile Include="Attributes\AdviceInfo\AdviceRoleAttributeTest.cs" />
+    <Compile Include="Attributes\AdviceInfo\AdviceScopeAttributeTest.cs" />
     <Compile Include="Attributes\Pointcuts\MemberNamePointcutAttributeTest.cs" />
     <Compile Include="Attributes\Pointcuts\NamespacePointcutAttributeTest.cs" />
     <Compile Include="Attributes\Pointcuts\PointcutAttributeBaseTest.cs" />
