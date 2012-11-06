@@ -23,7 +23,7 @@ using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.UnitTests.Expressions;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Assembly.Old
+namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
   public class MethodCopyServiceTest : TestBase

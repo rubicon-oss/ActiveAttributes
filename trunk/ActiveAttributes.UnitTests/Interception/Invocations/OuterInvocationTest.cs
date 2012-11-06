@@ -13,13 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Invocations
+namespace ActiveAttributes.UnitTests.Interception.Invocations
 {
   [TestFixture]
   public class OuterInvocationTest

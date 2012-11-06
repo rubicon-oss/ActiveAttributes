@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Intertype
+namespace ActiveAttributes.Core.Attributes.Intertype
 {
   public class ImportAttribute : IntertypeBaseAttribute
   {

@@ -19,7 +19,7 @@ using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Invocations
+namespace ActiveAttributes.UnitTests.Interception.Invocations
 {
   [TestFixture]
   public class InvocationTest
