@@ -109,6 +109,7 @@
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Assembly\PointcutVisitorTest.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\AspectClassDeclarationProviderTest.cs" />
+    <Compile Include="Discovery\AdviceDeclarationProviders\CompositeAdviceDeclarationProviderTest.cs" />
     <Compile Include="Discovery\AttributeDeclarationProviderTest.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\MethodAttributeAdviceDeclarationProviderTest.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\PropertyAttributedAspectDeclarationProviderTest.cs" />
