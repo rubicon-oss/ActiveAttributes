@@ -109,7 +109,7 @@
     <Compile Include="Interception\InterceptionTypeProviderTest.cs" />
     <Compile Include="Interception\InterceptionWeaverTest.cs" />
     <Compile Include="ObjectMother.cs" />
-    <Compile Include="Assembly\Old\MethodCopierTest.cs" />
+    <Compile Include="Assembly\MethodCopyServiceTest.cs" />
     <Compile Include="Extensions\IEnumerableExtensionsTest.cs" />
     <Compile Include="Invocations\IndexerGetInvocationTest.cs" />
     <Compile Include="Invocations\IndexerSetInvocationTest.cs" />
@@ -175,6 +175,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assembly\Old\" />
     <Folder Include="Attributes\Aspects\" />
     <Folder Include="Infrastructure\" />
   </ItemGroup>

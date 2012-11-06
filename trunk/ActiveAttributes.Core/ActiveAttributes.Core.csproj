@@ -190,7 +190,7 @@
     <Compile Include="Interception\Contexts\EventInvocationContext.template.cs" />
     <Compile Include="Assembly\FieldWrapper\IFieldWrapper.cs" />
     <Compile Include="Assembly\FieldWrapper\InstanceFieldWrapper.cs" />
-    <Compile Include="Assembly\MethodCopier.cs" />
+    <Compile Include="Assembly\MethodCopyService.cs" />
     <Compile Include="Assembly\FieldWrapper\StaticFieldWrapper.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.template.cs" />

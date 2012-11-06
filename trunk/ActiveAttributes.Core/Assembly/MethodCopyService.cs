@@ -26,8 +26,8 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Copies a method.
   /// </summary>
-  [ConcreteImplementation (typeof (MethodCopier))]
-  public interface IMethodCopier
+  [ConcreteImplementation (typeof (MethodCopyService))]
+  public interface IMethodCopyService
   {
     /// <summary>
     /// Copies the original body of a method to another method.
@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Assembly
   /// <summary>
   /// Copies a method including signature and body.
   /// </summary>
-  public class MethodCopier : IMethodCopier
+  public class MethodCopyService : IMethodCopyService
   {
     public MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod)
     {

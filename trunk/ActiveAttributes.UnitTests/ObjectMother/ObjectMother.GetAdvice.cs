@@ -21,7 +21,6 @@ using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using ActiveAttributes.Core.Interception.Invocations;
 
 namespace ActiveAttributes.UnitTests
 {
@@ -42,17 +41,6 @@ namespace ActiveAttributes.UnitTests
       pointcuts = pointcuts ?? new IPointcut[0];
 
       return new Advice (construction, method, name, role, execution, scope, priority, pointcuts);
-    }
-
-    public static Advice GetInvocationAdvice ()
-    {
-      var method = GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
-      return GetAdvice (method: method);
-    }
-
-    public static Advice GetAroundAdvice ()
-    {
-      return GetAdvice (execution: AdviceExecution.Around);
     }
   }
 }

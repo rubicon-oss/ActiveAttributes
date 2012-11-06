@@ -26,15 +26,15 @@ using Remotion.Utilities;
 namespace ActiveAttributes.UnitTests.Assembly.Old
 {
   [TestFixture]
-  public class MethodCopierTest : TestBase
+  public class MethodCopyServiceTest : TestBase
   {
-    private MethodCopier _copier;
+    private MethodCopyService _copyService;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
-      _copier = new MethodCopier();
+      _copyService = new MethodCopyService();
     }
 
     [Test]
@@ -99,7 +99,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Old
           {
             var mutableMethod = mutableType.GetOrAddMutableMethod (methodInfo);
 
-            var copiedMethod = _copier.GetCopy (mutableMethod);
+            var copiedMethod = _copyService.GetCopy (mutableMethod);
 
             test (mutableMethod, copiedMethod);
           });

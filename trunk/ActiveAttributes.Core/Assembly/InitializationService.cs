@@ -54,10 +54,12 @@ namespace ActiveAttributes.Core.Assembly
       Assertion.IsTrue (method.DeclaringType is MutableType);
 
       var mutableType = (MutableType) method.DeclaringType;
+      var mutableMethod = (MutableMethodInfo) method;
       IFieldWrapper field;
       Func<IConstructorExpressionsHelper, Expression> expressionProvider;
 
-      var property = method.GetRelatedPropertyInfo ();
+      // TODO UnderlyingSystemMethodInfo
+      var property = mutableMethod.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo ();
       if (property != null)
       {
         field = _fieldService.AddField (mutableType, typeof (PropertyInfo), method.Name, FieldAttributes.Private | FieldAttributes.Static);
