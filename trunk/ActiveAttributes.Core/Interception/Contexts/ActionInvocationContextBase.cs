@@ -38,7 +38,11 @@ namespace ActiveAttributes.Core.Interception.Contexts
     public virtual MethodInfo MethodInfo { get; private set; }
     public TInstance Instance { get; private set; }
 
-    public object ReturnValue { get; set; }
+    public object ReturnValue
+    {
+      get { throw new NotSupportedException(); }
+      set { throw new NotSupportedException(); }
+    }
 
     public abstract int Count { get; }
     public abstract object this [int idx] { get; set; }

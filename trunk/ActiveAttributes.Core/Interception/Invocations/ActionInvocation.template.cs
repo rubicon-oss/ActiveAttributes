@@ -15,6 +15,7 @@
 // under the License.
 
 using System;
+using System.Reflection;
 using ActiveAttributes.Core.Interception.Contexts;
 // ReSharper disable RedundantUsingDirective
 using Remotion;
@@ -26,7 +27,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
   // @replace ", TA<n>"
   // @replace "TA<n>" ", " "<" ">"
   // @replace "_context.Arg<n>" ", "
-  public class ActionInvocation<TInstance, TA1> : Invocation
+  public class ActionInvocation<TInstance, TA1> : Invocation, IInvocationContext
   {
     private readonly ActionInvocationContext<TInstance, TA1> _context;
     private readonly Action<TA1> _action;
@@ -45,6 +46,27 @@ namespace ActiveAttributes.Core.Interception.Invocations
     public override void Proceed ()
     {
       _action (_context.Arg1);
+    }
+
+    public MethodInfo MethodInfo
+    {
+      get { return _context.MethodInfo; }
+    }
+
+    public object Instance
+    {
+      get { return _context.Instance; }
+    }
+
+    public IArgumentCollection Arguments
+    {
+      get { return _context; }
+    }
+
+    public object ReturnValue
+    {
+      get { throw new NotSupportedException (); }
+      set { throw new NotSupportedException (); }
     }
   }
   // @end-template

@@ -22,35 +22,40 @@ using NUnit.Framework;
 namespace ActiveAttributes.UnitTests.Interception.Invocations
 {
   [TestFixture]
-  public class InvocationTest
+  public class ActionInvocationTest
   {
     [Test]
-    public void NestedInvocation ()
+    public void Initialization ()
     {
-      var obj = new DomainType();
-      var context = new ActionInvocationContext<object> (null, null);
-      var outerCalled = false;
-      var innerInvocation = new ActionInvocation<object> (context, obj.Method);
-      var outerInvocation = new OuterInvocation (
-          context,
-          invocation =>
-          {
-            outerCalled = true;
-            invocation.Proceed();
-          },
-          innerInvocation);
+      var method = ObjectMother2.GetMethodInfo();
+      var instance = new DomainType();
+      var context = new ActionInvocationContext<object, object> (method, instance, null);
+      var invocation = new ActionInvocation<object, object> (context, instance.Method);
+      invocation.Proceed ();
 
-      outerInvocation.Proceed();
-
-      Assert.That (obj.MethodExecutionCounter, Is.EqualTo (1));
-      Assert.That (outerCalled, Is.True);
+      Assert.That (invocation.Context, Is.SameAs (context));
+      Assert.That (instance.MethodExecutionCounter, Is.EqualTo (1));
     }
 
-    public class DomainType
+    [Test]
+    public void DelegatesContext ()
+    {
+      var method = ObjectMother2.GetMethodInfo();
+      var instance = new DomainType();
+      var arg1 = new object();
+      var context = new ActionInvocationContext<object, object> (method, instance, arg1);
+      var invocation = new ActionInvocation<object, object> (context, instance.Method);
+
+      Assert.That (invocation.MethodInfo, Is.SameAs (method));
+      Assert.That (invocation.Instance, Is.SameAs (instance));
+      Assert.That (invocation.Arguments, Is.EqualTo (new[] { arg1 }));
+    }
+
+    class DomainType
     {
       public int MethodExecutionCounter { get; private set; }
 
-      public void Method ()
+      public void Method (object arg)
       {
         MethodExecutionCounter++;
       }

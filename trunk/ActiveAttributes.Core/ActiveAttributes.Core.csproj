@@ -101,6 +101,9 @@
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
     <Compile Include="Interception\InterceptionWeaver.cs" />
+    <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Ordering\IAdviceDependencyProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -206,7 +209,6 @@
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocation.generated.cs" />
     <Compile Include="Interception\Invocations\ActionInvocation.template.cs" />
     <Compile Include="Interception\Invocations\FuncInvocation.generated.cs" />
     <Compile Include="Interception\Invocations\FuncInvocation.template.cs" />
