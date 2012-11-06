@@ -93,6 +93,13 @@
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
     <Compile Include="Assembly\AspectStorageServiceTest.cs" />
+    <Compile Include="Attributes\Pointcuts\MemberNamePointcutAttributeTest.cs" />
+    <Compile Include="Attributes\Pointcuts\NamespacePointcutAttributeTest.cs" />
+    <Compile Include="Attributes\Pointcuts\PointcutAttributeBaseTest.cs" />
+    <Compile Include="Attributes\Pointcuts\PointcutExpressionAttributeTest.cs" />
+    <Compile Include="Attributes\Pointcuts\ReturnTypePointcutAttributeTest.cs" />
+    <Compile Include="Attributes\Pointcuts\TypeNamePointcutAttributeTest.cs" />
+    <Compile Include="Attributes\Pointcuts\TypePointcutAttributeTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Assembly\PointcutVisitorTest.cs" />

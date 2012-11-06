@@ -63,11 +63,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   // @end-template
 }

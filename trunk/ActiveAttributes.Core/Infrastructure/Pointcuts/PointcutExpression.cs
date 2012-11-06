@@ -21,23 +21,23 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
   public interface ITextPointcut : IPointcut
   {
-    string Text { get; }
+    string Expression { get; }
   }
 
   public class PointcutExpression : ITextPointcut
   {
-    private readonly string _text;
+    private readonly string _expression;
 
-    public PointcutExpression (string text)
+    public PointcutExpression (string expression)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("expression", expression);
 
-      _text = text;
+      _expression = expression;
     }
 
-    public string Text
+    public string Expression
     {
-      get { return _text; }
+      get { return _expression; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)

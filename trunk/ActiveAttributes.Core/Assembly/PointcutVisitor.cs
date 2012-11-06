@@ -84,7 +84,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
       // TODO: special treatment for && and ||
-      var pointcuts = _pointcutParser.GetPointcuts (pointcut.Text);
+      var pointcuts = _pointcutParser.GetPointcuts (pointcut.Expression);
       return pointcuts.All (x => x.MatchVisit (this, joinPoint));
     }
 

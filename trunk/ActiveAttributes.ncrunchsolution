@@ -15,8 +15,8 @@ ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\ActionInvocationCont
 ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\FuncInvocationContext.generated.cs
 ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\ActionInvocation.generated.cs
 ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\FuncInvocation.generated.cs
-ActiveAttributes.Core\ActiveAttributes.Core.csproj\Configuration
-ActiveAttributes.Core\ActiveAttributes.Core.csproj\Interception
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Interception\Contexts
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Interception\Invocations
 ActiveAttributes.IntegrationTests\ActiveAttributes.IntegrationTests.csproj
 ActiveAttributes.UseCases\ActiveAttributes.UseCases.csproj
 </MetricsExclusionList>
