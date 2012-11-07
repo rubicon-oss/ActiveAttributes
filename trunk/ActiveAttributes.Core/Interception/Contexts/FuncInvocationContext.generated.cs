@@ -56,7 +56,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -99,7 +99,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -146,7 +146,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -197,7 +197,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -252,7 +252,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -311,7 +311,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -374,7 +374,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -441,7 +441,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }

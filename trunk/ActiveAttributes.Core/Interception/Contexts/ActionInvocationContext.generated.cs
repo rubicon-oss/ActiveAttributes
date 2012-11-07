@@ -51,13 +51,12 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -93,15 +92,14 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -140,16 +138,15 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -191,17 +188,16 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
-          case 4: Arg4 = (TA4) value; arg = "Arg4"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -246,18 +242,17 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
-          case 4: Arg4 = (TA4) value; arg = "Arg4"; break;
-          case 5: Arg5 = (TA5) value; arg = "Arg5"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -305,19 +300,18 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
-          case 4: Arg4 = (TA4) value; arg = "Arg4"; break;
-          case 5: Arg5 = (TA5) value; arg = "Arg5"; break;
-          case 6: Arg6 = (TA6) value; arg = "Arg6"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -368,20 +362,19 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
-          case 4: Arg4 = (TA4) value; arg = "Arg4"; break;
-          case 5: Arg5 = (TA5) value; arg = "Arg5"; break;
-          case 6: Arg6 = (TA6) value; arg = "Arg6"; break;
-          case 7: Arg7 = (TA7) value; arg = "Arg7"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }
@@ -435,21 +428,20 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
-          case 2: Arg2 = (TA2) value; arg = "Arg2"; break;
-          case 3: Arg3 = (TA3) value; arg = "Arg3"; break;
-          case 4: Arg4 = (TA4) value; arg = "Arg4"; break;
-          case 5: Arg5 = (TA5) value; arg = "Arg5"; break;
-          case 6: Arg6 = (TA6) value; arg = "Arg6"; break;
-          case 7: Arg7 = (TA7) value; arg = "Arg7"; break;
-          case 8: Arg8 = (TA8) value; arg = "Arg8"; break;
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
+          case 8: Arg8 = (TA8) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }

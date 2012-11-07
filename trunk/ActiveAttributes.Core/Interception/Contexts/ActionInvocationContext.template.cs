@@ -60,17 +60,16 @@ namespace ActiveAttributes.Core.Interception.Contexts
       }
       set
       {
-        string arg;
         switch (idx + 1)
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: Arg1 = (TA1) value; arg = "Arg1"; break;
+          case 1: Arg1 = (TA1) value; break;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
 #if DEBUG
-        Log.DebugFormat ("Set '{0}' of method '{1}' to '{2}'.", arg, MethodInfo, value);
+        Log.DebugFormat ("Set 'arg{0}' of method '{1}' to '{2}'.", idx + 1, MethodInfo, value);
 #endif
       }
     }

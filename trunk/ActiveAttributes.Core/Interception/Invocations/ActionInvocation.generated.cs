@@ -66,11 +66,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2> : Invocation, IInvocationContext
   {
@@ -108,11 +104,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3> : Invocation, IInvocationContext
   {
@@ -150,11 +142,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4> : Invocation, IInvocationContext
   {
@@ -192,11 +180,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5> : Invocation, IInvocationContext
   {
@@ -234,11 +218,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> : Invocation, IInvocationContext
   {
@@ -276,11 +256,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : Invocation, IInvocationContext
   {
@@ -318,11 +294,7 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
   public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : Invocation, IInvocationContext
   {
@@ -360,10 +332,6 @@ namespace ActiveAttributes.Core.Interception.Invocations
       get { return _context; }
     }
 
-    public object ReturnValue
-    {
-      get { throw new NotSupportedException (); }
-      set { throw new NotSupportedException (); }
-    }
+    public object ReturnValue { get; set; }
   }
 }
