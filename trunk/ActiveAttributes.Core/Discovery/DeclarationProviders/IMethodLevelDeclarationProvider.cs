@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,11 +15,13 @@
 // under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
-namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 {
-  public interface IAdviceDeclarationProvider
-      : IAssemblyLevelAdviceDeclarationProvider,
-        ITypeLevelAdviceDeclarationProvider,
-        IMethodLevelAdviceDeclarationProvider {}
+  public interface IMethodLevelDeclarationProvider
+  {
+    IEnumerable<IAdviceBuilder> GetDeclarations (MethodInfo method);
+  }
 }

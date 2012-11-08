@@ -13,18 +13,18 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery.Construction;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 {
-  public class AspectClassDeclarationProvider : IAssemblyLevelAdviceDeclarationProvider
+  public class AspectClassDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;
     private readonly IClassDeclarationProvider _classDeclarationProvider;

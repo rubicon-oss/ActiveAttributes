@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
@@ -26,36 +26,36 @@ namespace ActiveAttributes.Core.Assembly
 {
   public class Assembler : ITypeAssemblyParticipant
   {
-    private readonly IAdviceDeclarationProvider _adviceDeclarationProvider;
+    private readonly IDeclarationProvider _declarationProvider;
     private readonly IAdviceComposer _adviceComposer;
     private readonly IWeaver _weaver;
 
     private readonly IEnumerable<IAdviceBuilder> _globalAdvices;
 
     public Assembler (
-        IAdviceDeclarationProvider adviceDeclarationProvider, IAdviceComposer adviceComposer, IWeaver weaver)
+        IDeclarationProvider declarationProvider, IAdviceComposer adviceComposer, IWeaver weaver)
     {
-      ArgumentUtility.CheckNotNull ("adviceDeclarationProvider", adviceDeclarationProvider);
+      ArgumentUtility.CheckNotNull ("declarationProvider", declarationProvider);
       ArgumentUtility.CheckNotNull ("adviceComposer", adviceComposer);
       ArgumentUtility.CheckNotNull ("weaver", weaver);
 
-      _adviceDeclarationProvider = adviceDeclarationProvider;
+      _declarationProvider = declarationProvider;
       _adviceComposer = adviceComposer;
       _weaver = weaver;
 
-      _globalAdvices = adviceDeclarationProvider.GetDeclarations().ToList();
+      _globalAdvices = declarationProvider.GetDeclarations().ToList();
     }
 
     public void ModifyType (MutableType mutableType)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
-      var typeAdvices = _adviceDeclarationProvider.GetDeclarations (mutableType).ToList();
+      var typeAdvices = _declarationProvider.GetDeclarations (mutableType).ToList();
 
       foreach (var method in mutableType.GetMethods())
       {
         var method1 = method;
-        var methodAdvices = _adviceDeclarationProvider.GetDeclarations (method1);
+        var methodAdvices = _declarationProvider.GetDeclarations (method1);
         var joinPoint = new JoinPoint (method);
         var allAdvices = ConcatAdvices (_globalAdvices, typeAdvices, methodAdvices);
         var sortedAdvices = _adviceComposer.Compose (allAdvices, joinPoint).ToList ();

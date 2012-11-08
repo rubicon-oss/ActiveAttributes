@@ -80,21 +80,21 @@
     <Compile Include="Configuration2\IActiveAttributesConfigurator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\AdviceDeclarationProviders\CompositeAdviceDeclarationProvider.cs" />
-    <Compile Include="Discovery\AdviceDeclarationProviders\IAdviceDeclarationProvider.cs">
+    <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProvider.cs" />
+    <Compile Include="Discovery\DeclarationProviders\IDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\AdviceDeclarationProviders\IAssemblyLevelAdviceDeclarationProvider.cs">
+    <Compile Include="Discovery\DeclarationProviders\IAssemblyLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\AdviceDeclarationProviders\IMethodLevelAdviceDeclarationProvider.cs">
+    <Compile Include="Discovery\DeclarationProviders\IMethodLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\AdviceDeclarationProviders\ITypeLevelAdviceDeclarationProvider.cs">
+    <Compile Include="Discovery\DeclarationProviders\ITypeLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\AdviceDeclarationProviders\AspectClassDeclarationProvider.cs" />
-    <Compile Include="Discovery\AdviceDeclarationProviders\MethodAttributeAdviceDeclarationProvider.cs" />
+    <Compile Include="Discovery\DeclarationProviders\AspectClassDeclarationProvider.cs" />
+    <Compile Include="Discovery\DeclarationProviders\MethodAttributeDeclarationProvider.cs" />
     <Compile Include="Interception\InvocationsNew\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -17,16 +17,16 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
-namespace ActiveAttributes.UnitTests.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
 {
   [TestFixture]
-  public class MethodAttributeAdviceDeclarationProviderTest
+  public class MethodAttributeDeclarationProviderTest
   {
     [Test]
     public void GetDeclarations ()
@@ -44,7 +44,7 @@ namespace ActiveAttributes.UnitTests.Discovery.AdviceDeclarationProviders
       aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (method)).Return (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }.AsOneTime());
       aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (fakeMethod)).Return (new[] { fakeAdviceBuilder3 }.AsOneTime());
 
-      var provider = new MethodAttributeAdviceDeclarationProvider (aspectDeclarationHelperMock, relatedMethodFinderMock);
+      var provider = new MethodAttributeDeclarationProvider (aspectDeclarationHelperMock, relatedMethodFinderMock);
       var result = provider.GetDeclarations (method).ToArray ();
 
       relatedMethodFinderMock.VerifyAllExpectations ();

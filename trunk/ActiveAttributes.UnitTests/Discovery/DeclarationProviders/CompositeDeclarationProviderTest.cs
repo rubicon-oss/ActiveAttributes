@@ -13,32 +13,32 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
 {
   [TestFixture]
-  public class CompositeAdviceDeclarationProviderTest
+  public class CompositeDeclarationProviderTest
   {
     [Test]
     public void GetDeclarations ()
     {
       var mockRepository = new MockRepository();
 
-      var assemblyLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<IAssemblyLevelAdviceDeclarationProvider>();
-      var assemblyLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<IAssemblyLevelAdviceDeclarationProvider>();
-      var typeLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<ITypeLevelAdviceDeclarationProvider>();
-      var typeLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<ITypeLevelAdviceDeclarationProvider>();
-      var methodLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<IMethodLevelAdviceDeclarationProvider>();
-      var methodLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<IMethodLevelAdviceDeclarationProvider>();
+      var assemblyLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<IAssemblyLevelDeclarationProvider>();
+      var assemblyLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<IAssemblyLevelDeclarationProvider>();
+      var typeLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<ITypeLevelDeclarationProvider>();
+      var typeLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<ITypeLevelDeclarationProvider>();
+      var methodLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<IMethodLevelDeclarationProvider>();
+      var methodLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<IMethodLevelDeclarationProvider>();
 
       var fakeDeclarations1 = new[] { ObjectMother2.GetAdviceBuilder() };
       var fakeDeclarations2 = new[] { ObjectMother2.GetAdviceBuilder() };
@@ -58,7 +58,7 @@ namespace ActiveAttributes.UnitTests.Discovery.AdviceDeclarationProviders
       methodLevelAdviceDeclarationProviderMock2.Expect (x => x.GetDeclarations (method)).Return (fakeDeclarations6);
       mockRepository.ReplayAll();
 
-      var composite = new CompositeAdviceDeclarationProvider (
+      var composite = new CompositeDeclarationProvider (
           new[] { assemblyLevelAdviceDeclarationProviderMock1, assemblyLevelAdviceDeclarationProviderMock2 }.AsOneTime(),
           new[] { typeLevelAdviceDeclarationProviderMock1, typeLevelAdviceDeclarationProviderMock2 }.AsOneTime(),
           new[] { methodLevelAdviceDeclarationProviderMock1, methodLevelAdviceDeclarationProviderMock2 }.AsOneTime());

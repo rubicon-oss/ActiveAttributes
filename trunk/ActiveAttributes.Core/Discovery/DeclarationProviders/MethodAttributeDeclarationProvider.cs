@@ -13,23 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 {
-  public class MethodAttributeAdviceDeclarationProvider : IMethodLevelAdviceDeclarationProvider
+  public class MethodAttributeDeclarationProvider : IMethodLevelDeclarationProvider
   {
     private readonly IAttributeDeclarationProvider _attributeDeclarationProvider;
     private readonly IRelatedMethodFinder _relatedMethodFinder;
 
-    public MethodAttributeAdviceDeclarationProvider (
+    public MethodAttributeDeclarationProvider (
         IAttributeDeclarationProvider attributeDeclarationProvider, IRelatedMethodFinder relatedMethodFinder)
     {
       ArgumentUtility.CheckNotNull ("attributeDeclarationProvider", attributeDeclarationProvider);

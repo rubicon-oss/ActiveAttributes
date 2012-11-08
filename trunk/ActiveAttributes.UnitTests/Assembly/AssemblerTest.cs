@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Rhino.Mocks;
@@ -31,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ModifyType ()
     {
-      var adviceDeclarationProviderMock = MockRepository.GenerateStrictMock<IAdviceDeclarationProvider>();
+      var adviceDeclarationProviderMock = MockRepository.GenerateStrictMock<IDeclarationProvider>();
       var weaverMock = MockRepository.GenerateStrictMock<IWeaver>();
       var adviceComposerMock = MockRepository.GenerateStrictMock<IAdviceComposer>();
       var mutableType = ObjectMother2.GetMutableType();

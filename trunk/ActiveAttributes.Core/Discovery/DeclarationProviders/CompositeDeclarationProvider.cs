@@ -13,25 +13,25 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 {
-  public class CompositeAdviceDeclarationProvider : IAdviceDeclarationProvider
+  public class CompositeDeclarationProvider : IDeclarationProvider
   {
-    private readonly IEnumerable<IAssemblyLevelAdviceDeclarationProvider> _assemblyLevelAdviceDeclarationProviders;
-    private readonly IEnumerable<ITypeLevelAdviceDeclarationProvider> _typeLevelAdviceDeclarationProviders;
-    private readonly IEnumerable<IMethodLevelAdviceDeclarationProvider> _methodLevelAdviceDeclarationProviders;
+    private readonly IEnumerable<IAssemblyLevelDeclarationProvider> _assemblyLevelAdviceDeclarationProviders;
+    private readonly IEnumerable<ITypeLevelDeclarationProvider> _typeLevelAdviceDeclarationProviders;
+    private readonly IEnumerable<IMethodLevelDeclarationProvider> _methodLevelAdviceDeclarationProviders;
 
-    public CompositeAdviceDeclarationProvider (
-        IEnumerable<IAssemblyLevelAdviceDeclarationProvider> assemblyLevelAdviceDeclarationProviders,
-        IEnumerable<ITypeLevelAdviceDeclarationProvider> typeLevelAdviceDeclarationProviders,
-        IEnumerable<IMethodLevelAdviceDeclarationProvider> methodLevelAdviceDeclarationProviders)
+    public CompositeDeclarationProvider (
+        IEnumerable<IAssemblyLevelDeclarationProvider> assemblyLevelAdviceDeclarationProviders,
+        IEnumerable<ITypeLevelDeclarationProvider> typeLevelAdviceDeclarationProviders,
+        IEnumerable<IMethodLevelDeclarationProvider> methodLevelAdviceDeclarationProviders)
     {
       ArgumentUtility.CheckNotNull ("assemblyLevelAdviceDeclarationProviders", assemblyLevelAdviceDeclarationProviders);
       ArgumentUtility.CheckNotNull ("typeLevelAdviceDeclarationProviders", typeLevelAdviceDeclarationProviders);

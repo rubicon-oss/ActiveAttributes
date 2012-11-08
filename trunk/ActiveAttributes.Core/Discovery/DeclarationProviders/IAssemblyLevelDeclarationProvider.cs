@@ -16,11 +16,10 @@
 
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
 
-namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 {
-  public interface IAssemblyLevelAdviceDeclarationProvider
+  public interface IAssemblyLevelDeclarationProvider
   {
     IEnumerable<IAdviceBuilder> GetDeclarations ();
   }

@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using ActiveAttributes.Core.Ordering;
 using Remotion.ServiceLocation;
 
@@ -29,7 +29,7 @@ namespace ActiveAttributes.Core.Configuration2
   [ConcreteImplementation (typeof (ActiveAttributesConfiguration))]
   public interface IActiveAttributesConfiguration
   {
-    IList<IAdviceDeclarationProvider> AspectDeclarationProviders { get; }
+    IList<IDeclarationProvider> AspectDeclarationProviders { get; }
 
     IList<AdviceOrderingBase> AdviceOrderings { get; }
 
@@ -40,20 +40,20 @@ namespace ActiveAttributes.Core.Configuration2
 
   public class ActiveAttributesConfiguration : IActiveAttributesConfiguration
   {
-    private readonly IList<IAdviceDeclarationProvider> _aspectDeclarationProviders;
+    private readonly IList<IDeclarationProvider> _aspectDeclarationProviders;
     private readonly IList<AdviceOrderingBase> _adviceOrderings;
 
     private bool _isLocked;
 
     public ActiveAttributesConfiguration ()
     {
-      _aspectDeclarationProviders = new List<IAdviceDeclarationProvider>();
+      _aspectDeclarationProviders = new List<IDeclarationProvider>();
       _adviceOrderings = new List<AdviceOrderingBase>();
     }
 
-    public IList<IAdviceDeclarationProvider> AspectDeclarationProviders
+    public IList<IDeclarationProvider> AspectDeclarationProviders
     {
-      get { return !IsLocked ? _aspectDeclarationProviders : new ReadOnlyCollection<IAdviceDeclarationProvider> (_aspectDeclarationProviders); }
+      get { return !IsLocked ? _aspectDeclarationProviders : new ReadOnlyCollection<IDeclarationProvider> (_aspectDeclarationProviders); }
     }
 
     public IList<AdviceOrderingBase> AdviceOrderings

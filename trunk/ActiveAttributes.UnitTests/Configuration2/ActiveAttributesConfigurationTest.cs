@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using ActiveAttributes.Core.Ordering;
 using NUnit.Framework;
 
@@ -31,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Configuration2
     {
       var configuration = new ActiveAttributesConfiguration();
 
-      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<List<IAdviceDeclarationProvider>>());
+      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<List<IDeclarationProvider>>());
       Assert.That (configuration.AdviceOrderings, Is.TypeOf<List<AdviceOrderingBase>>());
     }
 
@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Configuration2
       configuration.Lock();
 
       Assert.That (configuration.IsLocked, Is.True);
-      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<ReadOnlyCollection<IAdviceDeclarationProvider>>());
+      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<ReadOnlyCollection<IDeclarationProvider>>());
       Assert.That (configuration.AdviceOrderings, Is.TypeOf<ReadOnlyCollection<AdviceOrderingBase>>());
     }
 

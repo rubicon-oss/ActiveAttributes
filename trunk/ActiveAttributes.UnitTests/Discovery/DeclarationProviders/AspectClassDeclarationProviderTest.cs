@@ -13,19 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using ActiveAttributes.Core;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
 using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
-namespace ActiveAttributes.UnitTests.Discovery.AdviceDeclarationProviders
+namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
 {
   [TestFixture]
   public class AspectClassDeclarationProviderTest
