@@ -13,23 +13,24 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Attributes.Pointcuts;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  [TestFixture]
-  public class ReturnTypePointcutAttributeTest
+  [Flags]
+  public enum Visibility
   {
-    [Test]
-    public void Initialization ()
-    {
-      var type = ObjectMother2.GetDeclaringType();
-      var attribute = new ReturnTypePointcutAttribute (type);
-
-      Assert.That (attribute.Pointcut, Is.TypeOf<ReturnTypePointcut>().With.Property ("ReturnType").EqualTo (type));
-    }
+    None = 0,
+    Assembly = 1,
+    Public = 2,
+    Family = 4,
+    Private = 8,
+    FamilyAndAssembly = 16,
+    FamilyOrAssembly = 32,
+    NonPublic = Assembly | Family | Private | FamilyAndAssembly | FamilyOrAssembly,
+    AllFamily = Family | FamilyOrAssembly,
+    AllAssembly = Assembly | FamilyOrAssembly,
+    All = Public | NonPublic
   }
 }

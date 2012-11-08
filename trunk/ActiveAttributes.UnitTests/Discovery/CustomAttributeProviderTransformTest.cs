@@ -16,12 +16,11 @@
 using System;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Attributes.AdviceInfo;
-using ActiveAttributes.Core.Attributes.Pointcuts;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Rhino.Mocks;

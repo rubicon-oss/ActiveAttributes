@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using Remotion.Utilities;
 using System.Linq;
 

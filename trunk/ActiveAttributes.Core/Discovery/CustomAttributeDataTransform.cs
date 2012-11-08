@@ -21,7 +21,7 @@ using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 

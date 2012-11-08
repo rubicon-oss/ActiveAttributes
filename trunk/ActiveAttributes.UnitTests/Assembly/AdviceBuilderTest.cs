@@ -18,7 +18,7 @@ using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using System.Linq;
 

@@ -13,15 +13,39 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public sealed class NamespacePointcutAttribute : PointcutAttributeBase
+  public interface IVisibilityPointcut : IPointcut
   {
-    public NamespacePointcutAttribute (string namespace_)
-        : base (new NamespacePointcut (ArgumentUtility.CheckNotNull ("namespace_", namespace_))) {}
+    Visibility Visibility { get; }
+  }
+
+  public class VisibilityPointcut : IVisibilityPointcut
+  {
+    private readonly Visibility _visibility;
+
+    public VisibilityPointcut (Visibility visibility)
+    {
+      _visibility = visibility;
+    }
+
+    public Visibility Visibility
+    {
+      get { return _visibility; }
+    }
+
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return visitor.VisitVisibility (this, joinPoint);
+    }
   }
 }

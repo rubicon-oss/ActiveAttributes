@@ -15,14 +15,22 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using Remotion.Utilities;
+using ActiveAttributes.Core.Pointcuts;
+using NUnit.Framework;
+using Rhino.Mocks;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
-  public sealed class TypePointcutAttribute : PointcutAttributeBase
+  [TestFixture]
+  public class PointcutAttributeBaseTest
   {
-    public TypePointcutAttribute (Type type)
-        : base (new TypePointcut (ArgumentUtility.CheckNotNull ("type", type))) {}
+    [Test]
+    public void Initialization ()
+    {
+      var pointcut = ObjectMother2.GetPointcut();
+      var attribute = MockRepository.GeneratePartialMock<PointcutAttributeBase> (pointcut);
+
+      Assert.That (attribute.Pointcut, Is.SameAs (pointcut));
+    }
   }
 }

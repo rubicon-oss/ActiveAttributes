@@ -15,9 +15,10 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
   public interface IMemberNamePointcut : IPointcut
   {
@@ -47,5 +48,11 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 
       return visitor.VisitMemberName (this, joinPoint);
     }
+  }
+
+  public sealed class MemberNamePointcutAttribute : PointcutAttributeBase
+  {
+    public MemberNamePointcutAttribute (string memberName)
+        : base (new MemberNamePointcut (ArgumentUtility.CheckNotNullOrEmpty ("memberName", memberName))) {}
   }
 }

@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Assembly

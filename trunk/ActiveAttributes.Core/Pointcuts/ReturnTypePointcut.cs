@@ -13,13 +13,43 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
+  public interface IReturnTypePointcut : IPointcut
+  {
+    Type ReturnType { get; }
+  }
+
+  public class ReturnTypePointcut : IReturnTypePointcut
+  {
+    private readonly Type _returnType;
+
+    public ReturnTypePointcut (Type returnType)
+    {
+      ArgumentUtility.CheckNotNull ("returnType", returnType);
+
+      _returnType = returnType;
+    }
+
+    public Type ReturnType
+    {
+      get { return _returnType; }
+    }
+
+    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return visitor.VisitReturnType (this, joinPoint);
+    }
+  }
+
   public sealed class ReturnTypePointcutAttribute : PointcutAttributeBase
   {
     public ReturnTypePointcutAttribute (Type returnType)

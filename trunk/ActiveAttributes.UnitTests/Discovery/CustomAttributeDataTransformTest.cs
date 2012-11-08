@@ -19,7 +19,7 @@ using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Infrastructure.Construction;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;
 using System.Linq;

@@ -15,22 +15,13 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  [Flags]
-  public enum Visibility
+  public interface IPointcut
   {
-    None = 0,
-    Assembly = 1,
-    Public = 2,
-    Family = 4,
-    Private = 8,
-    FamilyAndAssembly = 16,
-    FamilyOrAssembly = 32,
-    NonPublic = Assembly | Family | Private | FamilyAndAssembly | FamilyOrAssembly,
-    AllFamily = Family | FamilyOrAssembly,
-    AllAssembly = Assembly | FamilyOrAssembly,
-    All = Public | NonPublic
+    bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint);
   }
 }

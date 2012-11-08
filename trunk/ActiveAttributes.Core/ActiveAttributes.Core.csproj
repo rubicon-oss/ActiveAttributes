@@ -69,8 +69,6 @@
     <Compile Include="Assembly\AspectStorageService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
     <Compile Include="Attributes\Aspects\MethodBoundaryAspectAttributeBase.cs" />
-    <Compile Include="Attributes\Pointcuts\ArgumentPointcut.cs" />
-    <Compile Include="Attributes\Pointcuts\NamespacePointcutAttribute.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,7 +96,7 @@
     <Compile Include="Discovery\AdviceDeclarationProviders\AspectClassDeclarationProvider.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\MethodAttributeAdviceDeclarationProvider.cs" />
     <Compile Include="Infrastructure\Intertype\MemberImport.cs" />
-    <Compile Include="Infrastructure\Pointcuts\MethodPointcut.cs" />
+    <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
@@ -137,13 +135,13 @@
     <Compile Include="Assembly\InvocationExpressionHelper.cs" />
     <Compile Include="Attributes\Orderings\AdviceOrderingAttributeBase.cs" />
     <Compile Include="Attributes\Orderings\AdviceRoleOrderingAttribute.cs" />
-    <Compile Include="Infrastructure\Pointcuts\MemberFlags.cs">
+    <Compile Include="Pointcuts\MemberFlags.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\Orderings\Position.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\Pointcuts\Visibility.cs">
+    <Compile Include="Pointcuts\Visibility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
@@ -153,9 +151,7 @@
     <Compile Include="Attributes\AdviceInfo\AdvicePriorityAttribute.cs" />
     <Compile Include="Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
     <Compile Include="Attributes\AdviceInfo\AdviceScopeAttribute.cs" />
-    <Compile Include="Attributes\Pointcuts\PointcutAttributeBase.cs" />
-    <Compile Include="Attributes\Pointcuts\ReturnTypePointcutAttribute.cs" />
-    <Compile Include="Attributes\Pointcuts\TypeNamePointcutAttribute.cs" />
+    <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
     <Compile Include="Infrastructure\Construction\CustomAttributeDataConstruction.cs" />
     <Compile Include="Infrastructure\Construction\IConstruction.cs" />
     <Compile Include="Infrastructure\Construction\TypeConstruction.cs" />
@@ -164,24 +160,21 @@
     <Compile Include="Attributes\Aspects\MethodInterceptionAspectAttributeBase.cs" />
     <Compile Include="Attributes\Aspects\PropertyInterceptionAspectAttributeBase.cs" />
     <Compile Include="Attributes\AdviceInfo\AdviceExecutionAttribute.cs" />
-    <Compile Include="Attributes\Pointcuts\ExpressionPointcutAttribute.cs" />
     <Compile Include="Infrastructure\Advice.cs" />
     <Compile Include="Attributes\Intertype\ImportAttribute.cs" />
     <Compile Include="Attributes\Intertype\IntertypeBaseAttribute.cs" />
     <Compile Include="Attributes\Intertype\IntroduceAttribute.cs" />
     <Compile Include="Infrastructure\Joinpoint.cs" />
-    <Compile Include="Attributes\Pointcuts\MemberNamePointcutAttribute.cs" />
-    <Compile Include="Attributes\Pointcuts\TypePointcutAttribute.cs" />
-    <Compile Include="Infrastructure\Pointcuts\IPointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\ArgumentTypePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\CustomAttributePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\NamespacePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\ExpressionPointcut.cs" />
+    <Compile Include="Pointcuts\IPointcut.cs" />
+    <Compile Include="Pointcuts\ArgumentTypePointcut.cs" />
+    <Compile Include="Pointcuts\CustomAttributePointcut.cs" />
+    <Compile Include="Pointcuts\NamespacePointcut.cs" />
+    <Compile Include="Pointcuts\ExpressionPointcut.cs" />
     <Compile Include="Assembly\PointcutParser.cs" />
     <Compile Include="Assembly\PointcutVisitor.cs" />
-    <Compile Include="Infrastructure\Pointcuts\ReturnTypePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\TypeNamePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\VisibilityPointcut.cs" />
+    <Compile Include="Pointcuts\ReturnTypePointcut.cs" />
+    <Compile Include="Pointcuts\TypeNamePointcut.cs" />
+    <Compile Include="Pointcuts\VisibilityPointcut.cs" />
     <Compile Include="Assembly\ObjectFactory.cs" />
     <Compile Include="Infrastructure\AdviceInfo\AdviceScope.cs" />
     <Compile Include="Configuration\TypeRuleCollection.cs" />
@@ -233,9 +226,9 @@
     <Compile Include="Attributes\Aspects\AspectAttributeBase.cs" />
     <Compile Include="Infrastructure\AdviceInfo\AdviceExecution.cs" />
     <Compile Include="Infrastructure\IAspect.cs" />
-    <Compile Include="Infrastructure\Pointcuts\ControlFlowPointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\MemberNamePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\TypePointcut.cs" />
+    <Compile Include="Pointcuts\ControlFlowPointcut.cs" />
+    <Compile Include="Pointcuts\MemberNamePointcut.cs" />
+    <Compile Include="Pointcuts\TypePointcut.cs" />
     <Compile Include="Utilities\CircularDependencyException.cs" />
     <Compile Include="Utilities\StronglyConnectedComponent.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentFinder.cs" />

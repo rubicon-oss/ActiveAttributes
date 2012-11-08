@@ -15,22 +15,21 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Pointcuts;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
-  [Flags]
-  public enum MemberFlags
+  [TestFixture]
+  public class ReturnTypePointcutTest
   {
-    Static = 1,
-    NonStatic = 2,
-    Final = 4,
-    NonFinal = 8,
-    Virtual = 16,
-    NonVirtual = 32,
-    NewSlot = 64,
-    NonNewSlot = 128,
-    Overridable = NonStatic | NonFinal | Virtual, // default
-    All = ~0,
-    None = 0,
+    [Test]
+    public void Initialization ()
+    {
+      var type = ObjectMother2.GetDeclaringType();
+      var attribute = new ReturnTypePointcutAttribute (type);
+
+      Assert.That (attribute.Pointcut, Is.TypeOf<ReturnTypePointcut>().With.Property ("ReturnType").EqualTo (type));
+    }
   }
 }

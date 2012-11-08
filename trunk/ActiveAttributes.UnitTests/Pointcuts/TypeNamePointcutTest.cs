@@ -15,22 +15,21 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Attributes.Pointcuts;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
   [TestFixture]
-  public class NamespacePointcutAttributeTest
+  public class TypeNamePointcutTest
   {
     [Test]
     public void Initialization ()
     {
-      var namespace_ = "namespace";
-      var attribute = new NamespacePointcutAttribute (namespace_);
+      var typename = "typename";
+      var attribute = new TypeNamePointcutAttribute (typename);
 
-      Assert.That (attribute.Pointcut, Is.TypeOf<NamespacePointcut>().With.Property ("Namespace").EqualTo (namespace_));
+      Assert.That (attribute.Pointcut, Is.TypeOf<TypeNamePointcut> ().With.Property ("TypeName").EqualTo (typename));
     }
   }
 }

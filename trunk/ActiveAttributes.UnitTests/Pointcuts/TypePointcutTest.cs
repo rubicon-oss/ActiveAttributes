@@ -13,23 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Attributes.Pointcuts;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
   [TestFixture]
-  public class TypeNamePointcutAttributeTest
+  public class TypePointcutTest
   {
     [Test]
     public void Initialization ()
     {
-      var typename = "typename";
-      var attribute = new TypeNamePointcutAttribute (typename);
+      var type = ObjectMother2.GetDeclaringType();
+      var attribute = new TypePointcutAttribute (type);
 
-      Assert.That (attribute.Pointcut, Is.TypeOf<TypeNamePointcut> ().With.Property ("TypeName").EqualTo (typename));
+      Assert.That (attribute.Pointcut, Is.TypeOf<TypePointcut>().With.Property ("Type").EqualTo (type));
     }
   }
 }

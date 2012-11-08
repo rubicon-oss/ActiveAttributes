@@ -15,29 +15,30 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface IControlFlowPointcut : IPointcut
+  public interface ITypeNamePointcut : IPointcut
   {
-    string ControlFlow { get; }
+    string TypeName { get; }
   }
 
-  public class ControlFlowPointcut : IControlFlowPointcut
+  public class TypeNamePointcut : ITypeNamePointcut
   {
-    private readonly string _controlFlow;
+    private readonly string _typeName;
 
-    public ControlFlowPointcut (string controlFlow)
+    public TypeNamePointcut (string typeName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("controlFlow", controlFlow);
+      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
 
-      _controlFlow = controlFlow;
+      _typeName = typeName;
     }
 
-    public string ControlFlow
+    public string TypeName
     {
-      get { return _controlFlow; }
+      get { return _typeName; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +46,13 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitControlFlow (this, joinPoint);
+      return visitor.VisitTypeName (this, joinPoint);
     }
+  }
+
+  public sealed class TypeNamePointcutAttribute : PointcutAttributeBase
+  {
+    public TypeNamePointcutAttribute (string typeName)
+        : base (new TypeNamePointcut (ArgumentUtility.CheckNotNull ("typeName", typeName))) {}
   }
 }

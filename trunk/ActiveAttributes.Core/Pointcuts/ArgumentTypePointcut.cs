@@ -13,31 +13,31 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface INamespacePointcut : IPointcut
+  public interface IArgumentTypePointcut : IPointcut
   {
-    string Namespace { get; }
+    Type ArgumentType { get; }
   }
 
-  public class NamespacePointcut : INamespacePointcut
+  public class ArgumentTypePointcut : IArgumentTypePointcut
   {
-    private readonly string _namespace;
+    private readonly Type _argumentType;
 
-    public NamespacePointcut (string namespace_)
+    public ArgumentTypePointcut (Type argumentType)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("namespace_", namespace_);
-
-      _namespace = namespace_;
+      _argumentType = argumentType;
     }
 
-    public string Namespace
+    public Type ArgumentType
     {
-      get { return _namespace; }
+      get { return _argumentType; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +45,13 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitNamespace (this, joinPoint);
+      return visitor.VisitArgumentType (this, joinPoint);
     }
+  }
+
+  public class ArgumentTypePointcutAttribute : PointcutAttributeBase
+  {
+    public ArgumentTypePointcutAttribute (Type argumentType)
+        : base (new ArgumentTypePointcut (argumentType)) {}
   }
 }

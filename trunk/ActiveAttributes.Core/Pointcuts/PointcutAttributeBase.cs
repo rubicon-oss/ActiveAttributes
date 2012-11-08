@@ -13,23 +13,27 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Attributes.Pointcuts;
-using NUnit.Framework;
-using Rhino.Mocks;
+using ActiveAttributes.Core.Attributes;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  [TestFixture]
-  public class PointcutAttributeBaseTest
+  public abstract class PointcutAttributeBase : AdviceAttribute
   {
-    [Test]
-    public void Initialization ()
-    {
-      var pointcut = ObjectMother2.GetPointcut();
-      var attribute = MockRepository.GeneratePartialMock<PointcutAttributeBase> (pointcut);
+    private readonly IPointcut _pointcut;
 
-      Assert.That (attribute.Pointcut, Is.SameAs (pointcut));
+    protected PointcutAttributeBase (IPointcut pointcut)
+    {
+      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+
+      _pointcut = pointcut;
+    }
+
+    public IPointcut Pointcut
+    {
+      get { return _pointcut; }
     }
   }
 }

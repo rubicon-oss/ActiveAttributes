@@ -13,31 +13,33 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface IMethodPointcut : IPointcut
+  public interface ICustomAttributePointcut : IPointcut
   {
-    string MethodName { get; }
+    Type CustomAttributeType { get; }
   }
 
-  public class MethodPointcut : IMethodPointcut
+  public class CustomAttributePointcut : ICustomAttributePointcut
   {
-    private readonly string _methodName;
+    private readonly Type _customAttributeType;
 
-    public MethodPointcut (string methodName)
+    public CustomAttributePointcut (Type customAttributeType)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("customAttributeType", customAttributeType, typeof (Attribute));
 
-      _methodName = methodName;
+      _customAttributeType = customAttributeType;
     }
 
-    public string MethodName
+    public Type CustomAttributeType
     {
-      get { return _methodName; }
+      get { return _customAttributeType; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +47,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitMethod (this, joinPoint);
+      return visitor.VisitCustomAttribute (this, joinPoint);
     }
   }
 }

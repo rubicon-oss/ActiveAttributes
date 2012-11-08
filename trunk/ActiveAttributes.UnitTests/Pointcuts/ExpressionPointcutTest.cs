@@ -15,12 +15,21 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Pointcuts;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
-  public interface IPointcut
+  [TestFixture]
+  public class ExpressionPointcutTest
   {
-    bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint);
+    [Test]
+    public void Initialization ()
+    {
+      var expression = "expression";
+      var attribute = new Core.Pointcuts.ExpressionPointcutAttribute (expression);
+
+      Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut>().With.Property ("Expression").EqualTo (expression));
+    }
   }
 }

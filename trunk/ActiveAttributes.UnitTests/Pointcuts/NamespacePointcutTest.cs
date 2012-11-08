@@ -13,22 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Pointcuts
 {
   [TestFixture]
-  public class ExpressionPointcutAttribute
+  public class NamespacePointcutTest
   {
     [Test]
     public void Initialization ()
     {
-      var expression = "expression";
-      var attribute = new Core.Attributes.Pointcuts.ExpressionPointcutAttribute (expression);
+      var namespace_ = "namespace";
+      var attribute = new NamespacePointcutAttribute (namespace_);
 
-      Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut>().With.Property ("Expression").EqualTo (expression));
+      Assert.That (attribute.Pointcut, Is.TypeOf<NamespacePointcut>().With.Property ("Namespace").EqualTo (namespace_));
     }
   }
 }

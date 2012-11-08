@@ -13,31 +13,33 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface ICustomAttributePointcut : IPointcut
+  public interface IControlFlowPointcut : IPointcut
   {
-    Type CustomAttributeType { get; }
+    string ControlFlow { get; }
   }
 
-  public class CustomAttributePointcut : ICustomAttributePointcut
+  public class ControlFlowPointcut : IControlFlowPointcut
   {
-    private readonly Type _customAttributeType;
+    private readonly string _controlFlow;
 
-    public CustomAttributePointcut (Type customAttributeType)
+    public ControlFlowPointcut (string controlFlow)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("customAttributeType", customAttributeType, typeof (Attribute));
+      ArgumentUtility.CheckNotNullOrEmpty ("controlFlow", controlFlow);
 
-      _customAttributeType = customAttributeType;
+      _controlFlow = controlFlow;
     }
 
-    public Type CustomAttributeType
+    public string ControlFlow
     {
-      get { return _customAttributeType; }
+      get { return _controlFlow; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +47,13 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitCustomAttribute (this, joinPoint);
+      return visitor.VisitControlFlow (this, joinPoint);
     }
+  }
+
+  public class ControlFlowPointcutAttribute : PointcutAttributeBase
+  {
+    public ControlFlowPointcutAttribute (string controlFlow)
+        : base (new ControlFlowPointcut (controlFlow)) {}
   }
 }

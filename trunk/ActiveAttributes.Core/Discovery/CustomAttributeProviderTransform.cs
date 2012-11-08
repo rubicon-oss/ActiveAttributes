@@ -18,9 +18,9 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Attributes.AdviceInfo;
-using ActiveAttributes.Core.Attributes.Pointcuts;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Pointcuts;
 using Castle.Core.Internal;
 using Remotion.Utilities;
 

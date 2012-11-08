@@ -15,29 +15,30 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface IReturnTypePointcut : IPointcut
+  public interface INamespacePointcut : IPointcut
   {
-    Type ReturnType { get; }
+    string Namespace { get; }
   }
 
-  public class ReturnTypePointcut : IReturnTypePointcut
+  public class NamespacePointcut : INamespacePointcut
   {
-    private readonly Type _returnType;
+    private readonly string _namespace;
 
-    public ReturnTypePointcut (Type returnType)
+    public NamespacePointcut (string namespace_)
     {
-      ArgumentUtility.CheckNotNull ("returnType", returnType);
+      ArgumentUtility.CheckNotNullOrEmpty ("namespace_", namespace_);
 
-      _returnType = returnType;
+      _namespace = namespace_;
     }
 
-    public Type ReturnType
+    public string Namespace
     {
-      get { return _returnType; }
+      get { return _namespace; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +46,13 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitReturnType (this, joinPoint);
+      return visitor.VisitNamespace (this, joinPoint);
     }
+  }
+
+  public sealed class NamespacePointcutAttribute : PointcutAttributeBase
+  {
+    public NamespacePointcutAttribute (string namespace_)
+        : base (new NamespacePointcut (ArgumentUtility.CheckNotNull ("namespace_", namespace_))) {}
   }
 }

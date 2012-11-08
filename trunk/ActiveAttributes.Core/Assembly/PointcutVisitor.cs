@@ -17,7 +17,7 @@
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using Remotion.ServiceLocation;
 using System.Linq;
 using ActiveAttributes.Core.Extensions;

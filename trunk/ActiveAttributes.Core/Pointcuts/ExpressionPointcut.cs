@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,27 +15,30 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public interface IArgumentTypePointcut : IPointcut
+  public interface IExpressionPointcut : IPointcut
   {
-    Type ArgumentType { get; }
+    string Expression { get; }
   }
 
-  public class ArgumentTypePointcut : IArgumentTypePointcut
+  public class ExpressionPointcut : IExpressionPointcut
   {
-    private readonly Type _argumentType;
+    private readonly string _expression;
 
-    public ArgumentTypePointcut (Type argumentType)
+    public ExpressionPointcut (string expression)
     {
-      _argumentType = argumentType;
+      ArgumentUtility.CheckNotNullOrEmpty ("expression", expression);
+
+      _expression = expression;
     }
 
-    public Type ArgumentType
+    public string Expression
     {
-      get { return _argumentType; }
+      get { return _expression; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -43,7 +46,13 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitArgumentType (this, joinPoint);
+      return visitor.VisitExpression (this, joinPoint);
     }
+  }
+
+  public sealed class ExpressionPointcutAttribute : PointcutAttributeBase
+  {
+    public ExpressionPointcutAttribute (string text)
+        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
   }
 }

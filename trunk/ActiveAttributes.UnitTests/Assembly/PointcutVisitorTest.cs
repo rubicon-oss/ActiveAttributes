@@ -16,7 +16,7 @@
 using System;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;
 

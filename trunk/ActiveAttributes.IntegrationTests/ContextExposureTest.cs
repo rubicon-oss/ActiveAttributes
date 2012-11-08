@@ -14,8 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Attributes.Pointcuts;
 using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
@@ -78,13 +78,13 @@ namespace ActiveAttributes.IntegrationTests
 
       public static string Argument { get; set; }
 
-      [ArgumentPointcut (typeof (string))]
+      [ArgumentTypePointcut (typeof (string))]
       public void Method2Advice (string argument)
       {
         Argument = argument;
       }
 
-      [ArgumentPointcut (typeof (string))]
+      [ArgumentTypePointcut (typeof (string))]
       public void Method3Advice (out string argument)
       {
         argument = "advice";

@@ -16,7 +16,7 @@
 using System;
 using ActiveAttributes.Core.Infrastructure;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using ActiveAttributes.Core.Pointcuts;
 
 namespace ActiveAttributes.Core.Attributes.Aspects
 {

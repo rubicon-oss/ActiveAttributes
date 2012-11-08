@@ -13,15 +13,24 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+using System;
+
+namespace ActiveAttributes.Core.Pointcuts
 {
-  public sealed class ExpressionPointcutAttribute : PointcutAttributeBase
+  [Flags]
+  public enum MemberFlags
   {
-    public ExpressionPointcutAttribute (string text)
-        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
+    Static = 1,
+    NonStatic = 2,
+    Final = 4,
+    NonFinal = 8,
+    Virtual = 16,
+    NonVirtual = 32,
+    NewSlot = 64,
+    NonNewSlot = 128,
+    Overridable = NonStatic | NonFinal | Virtual, // default
+    All = ~0,
+    None = 0,
   }
 }
