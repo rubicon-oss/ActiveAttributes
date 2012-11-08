@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
       var expression = "expression";
       var attribute = new PointcutExpressionAttribute (expression);
 
-      Assert.That (attribute.Pointcut, Is.TypeOf<PointcutExpression> ().With.Property ("Expression").EqualTo (expression));
+      Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut> ().With.Property ("Expression").EqualTo (expression));
     }
   }
 }

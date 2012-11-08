@@ -102,6 +102,17 @@
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
     <Compile Include="Interception\InterceptionWeaver.cs" />
+    <Compile Include="Interception\InvocationsNew\ActionInvocation.cs" />
+    <Compile Include="Interception\InvocationsNew\ActionInvocationBase.cs" />
+    <Compile Include="Interception\InvocationsNew\ArgumentCollectionBase.cs" />
+    <Compile Include="Interception\InvocationsNew\FuncInvocation.cs" />
+    <Compile Include="Interception\InvocationsNew\FuncInvocationBase.cs" />
+    <Compile Include="Interception\InvocationsNew\IArgumentCollection.cs" />
+    <Compile Include="Interception\InvocationsNew\IInvocation.cs" />
+    <Compile Include="Interception\InvocationsNew\IInvocationContext.cs" />
+    <Compile Include="Interception\InvocationsNew\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Interception\InvocationsNew\IReadOnlyInvocationContext.cs" />
+    <Compile Include="Interception\InvocationsNew\OuterInvocation.cs" />
     <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -164,7 +175,7 @@
     <Compile Include="Infrastructure\Pointcuts\ArgumentsPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\CustomAttributePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\NamespacePointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\PointcutExpression.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ExpressionPointcut.cs" />
     <Compile Include="Assembly\PointcutParser.cs" />
     <Compile Include="Assembly\PointcutVisitor.cs" />
     <Compile Include="Infrastructure\Pointcuts\ReturnTypePointcut.cs" />

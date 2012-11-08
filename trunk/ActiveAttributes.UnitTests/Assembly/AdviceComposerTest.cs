@@ -31,42 +31,34 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Compose ()
     {
-      var pointcut1Mock = MockRepository.GenerateStrictMock<IPointcut>();
-      var pointcut2Mock = MockRepository.GenerateStrictMock<IPointcut>();
-      var pointcut3Mock = MockRepository.GenerateStrictMock<IPointcut>();
-
       var adviceBuilder1Mock = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var adviceBuilder2Mock = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var adviceBuilders = new[] { adviceBuilder1Mock, adviceBuilder2Mock };
 
-      var advice1 = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut1Mock, pointcut2Mock }.AsOneTime());
-      var advice2 = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut3Mock }.AsOneTime());
+      var advice1 = ObjectMother2.GetAdvice();
+      var advice2 = ObjectMother2.GetAdvice();
 
       adviceBuilder1Mock.Expect (x => x.Build()).Return (advice1);
       adviceBuilder2Mock.Expect (x => x.Build()).Return (advice2);
 
       var joinPoint = ObjectMother2.GetJoinPoint();
 
-      var pointcutVisitorStub = MockRepository.GenerateStrictMock<IPointcutVisitor>();
+      var pointcutVisitorMock = MockRepository.GenerateStrictMock<IPointcutVisitor>();
       var adviceSequencerMock = MockRepository.GenerateStrictMock<IAdviceSequencer>();
 
       var fakeAdvices = new Advice[0];
 
-      pointcut1Mock.Expect (x => x.MatchVisit (pointcutVisitorStub, joinPoint)).Return (true);
-      pointcut2Mock.Expect (x => x.MatchVisit (pointcutVisitorStub, joinPoint)).Return (false);
-      pointcut3Mock.Expect (x => x.MatchVisit (pointcutVisitorStub, joinPoint)).Return (true);
-
+      pointcutVisitorMock.Expect (x => x.Matches (advice1, joinPoint)).Return (false);
+      pointcutVisitorMock.Expect (x => x.Matches (advice2, joinPoint)).Return (true);
       adviceSequencerMock.Expect (x => x.Sort (Arg<IEnumerable<Advice>>.List.Equal (new[] { advice2 }))).Return (fakeAdvices);
 
-      var composer = new AdviceComposer (adviceSequencerMock, pointcutVisitorStub);
+      var composer = new AdviceComposer (adviceSequencerMock, pointcutVisitorMock);
       var result = composer.Compose (adviceBuilders.AsOneTime(), joinPoint);
 
       adviceBuilder1Mock.VerifyAllExpectations();
       adviceBuilder2Mock.VerifyAllExpectations();
-      pointcut1Mock.VerifyAllExpectations();
-      pointcut2Mock.VerifyAllExpectations();
-      pointcut3Mock.VerifyAllExpectations();
-      adviceSequencerMock.VerifyAllExpectations();
+      pointcutVisitorMock.VerifyAllExpectations ();
+      adviceSequencerMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeAdvices));
     }
   }

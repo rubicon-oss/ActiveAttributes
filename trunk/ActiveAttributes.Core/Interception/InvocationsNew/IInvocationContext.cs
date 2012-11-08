@@ -14,14 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
-  public sealed class PointcutExpressionAttribute : PointcutAttributeBase
+  public interface IInvocationContext : IReadOnlyInvocationContext
   {
-    public PointcutExpressionAttribute (string text)
-        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
+    new IArgumentCollection Arguments { get; }
+
+    new object ReturnValue { get; set; }
   }
 }

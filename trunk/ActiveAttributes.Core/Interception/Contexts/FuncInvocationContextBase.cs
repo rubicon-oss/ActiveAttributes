@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
 
     public virtual MethodInfo MethodInfo { get; private set; }
     public TInstance Instance { get; private set; }
-    public virtual TR ReturnValue { get; set; }
+    public TR ReturnValue { get; set; }
 
     public abstract int Count { get; }
     public abstract object this [int idx] { get; set; }

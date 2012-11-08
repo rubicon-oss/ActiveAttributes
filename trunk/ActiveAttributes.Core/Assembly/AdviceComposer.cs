@@ -47,7 +47,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
       var advices = adviceBuilders.Select (x => x.Build());
-      var matchingAdvices = advices.Where (x => x.Pointcuts.All (y => y.MatchVisit (_pointcutVisitor, joinPoint)));
+      var matchingAdvices = advices.Where (x => _pointcutVisitor.Matches (x, joinPoint));
       var sortedAdvices = _adviceSequencer.Sort (matchingAdvices);
       return sortedAdvices;
     }

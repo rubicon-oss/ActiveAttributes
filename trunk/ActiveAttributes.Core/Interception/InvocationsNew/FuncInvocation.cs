@@ -14,14 +14,39 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Infrastructure.Pointcuts;
+using System.Reflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
-  public sealed class PointcutExpressionAttribute : PointcutAttributeBase
+  public class FuncInvocation<TA1, TReturn> : FuncInvocationBase<TReturn>
   {
-    public PointcutExpressionAttribute (string text)
-        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
+    private readonly TA1 _arg1;
+    private readonly Func<TA1, TReturn> _func;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Func<TA1, TReturn> func)
+        : base (memberInfo, instance)
+    {
+      ArgumentUtility.CheckNotNull ("func", func);
+
+      _arg1 = arg1;
+      _func = func;
+    }
+
+    public override int Count
+    {
+      get { return 1; }
+    }
+
+    public override object this [int idx]
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
+
+    public override void Proceed ()
+    {
+      ReturnValue = _func (_arg1);
+    }
   }
 }

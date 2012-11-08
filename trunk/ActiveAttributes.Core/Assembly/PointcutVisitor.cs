@@ -28,9 +28,11 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (PointcutVisitor))]
   public interface IPointcutVisitor
   {
+    bool Matches (Advice advice, JoinPoint joinPoint);
+
     bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint);
 
-    bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint);
+    bool VisitPointcut (IExpressionPointcut expressionPointcut, JoinPoint joinPoint);
     bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint);
     bool VisitPointcut (ITypeNamePointcut pointcut, JoinPoint joinPoint);
@@ -53,12 +55,17 @@ namespace ActiveAttributes.Core.Assembly
       _pointcutParser = pointcutParser;
     }
 
+    public bool Matches (Advice advice, JoinPoint joinPoint)
+    {
+      return advice.Pointcuts.All (x => x.MatchVisit (this, joinPoint));
+    }
+
     public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      if (pointcut is ITextPointcut && !VisitPointcut ((ITextPointcut) pointcut, joinPoint))
+      if (pointcut is IExpressionPointcut && !VisitPointcut ((IExpressionPointcut) pointcut, joinPoint))
         return false;
       if (pointcut is ITypePointcut && !VisitPointcut ((ITypePointcut) pointcut, joinPoint))
         return false;
@@ -78,13 +85,13 @@ namespace ActiveAttributes.Core.Assembly
       return true;
     }
 
-    public bool VisitPointcut (ITextPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitPointcut (IExpressionPointcut expressionPointcut, JoinPoint joinPoint)
     {
-      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+      ArgumentUtility.CheckNotNull ("expressionPointcut", expressionPointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
       // TODO: special treatment for && and ||
-      var pointcuts = _pointcutParser.GetPointcuts (pointcut.Expression);
+      var pointcuts = _pointcutParser.GetPointcuts (expressionPointcut.Expression);
       return pointcuts.All (x => x.MatchVisit (this, joinPoint));
     }
 

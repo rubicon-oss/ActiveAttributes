@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,38 +14,39 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly;
+using System.Reflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Infrastructure.Pointcuts
+namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
-  public interface ITextPointcut : IPointcut
+  public class ActionInvocation<TA1> : ActionInvocationBase
   {
-    string Expression { get; }
-  }
+    private readonly TA1 _arg1;
+    private readonly Action<TA1> _action;
 
-  public class PointcutExpression : ITextPointcut
-  {
-    private readonly string _expression;
-
-    public PointcutExpression (string expression)
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Action<TA1> action)
+        : base (memberInfo, instance)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("expression", expression);
+      ArgumentUtility.CheckNotNull ("action", action);
 
-      _expression = expression;
+      _arg1 = arg1;
+      _action = action;
     }
 
-    public string Expression
+    public override int Count
     {
-      get { return _expression; }
+      get { return 0; }
     }
 
-    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    public override object this [int idx]
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
 
-      return visitor.VisitPointcut (this, joinPoint);
+    public override void Proceed ()
+    {
+      _action (_arg1);
     }
   }
 }
