@@ -21,16 +21,17 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
   public class FuncInvocation<TA1, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly TA1 _arg1;
     private readonly Func<TA1, TReturn> _func;
+
+    private TA1 Arg1;
 
     public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Func<TA1, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
 
-      _arg1 = arg1;
       _func = func;
+      Arg1 = arg1;
     }
 
     public override int Count
@@ -40,13 +41,32 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     public override object this [int idx]
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1:
+            return Arg1;
+          default:
+            throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1:
+            Arg1 = (TA1) value;
+            break;
+          default:
+            throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      ReturnValue = _func (_arg1);
+      ReturnValue = _func (Arg1);
     }
   }
 }

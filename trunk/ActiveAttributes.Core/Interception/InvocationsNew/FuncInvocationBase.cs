@@ -24,7 +24,7 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
     private readonly MemberInfo _memberInfo;
     private readonly object _instance;
 
-    private TReturn _returnValue;
+    public TReturn TypedReturnValue;
 
     protected FuncInvocationBase (MemberInfo memberInfo, object instance)
     {
@@ -52,8 +52,8 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     public object ReturnValue
     {
-      get { return _returnValue; }
-      set { _returnValue = (TReturn) value; }
+      get { return TypedReturnValue; }
+      set { TypedReturnValue = (TReturn) value; }
     }
 
     IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
@@ -63,7 +63,7 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     object IReadOnlyInvocationContext.ReturnValue
     {
-      get { return _returnValue; }
+      get { return TypedReturnValue; }
     }
 
     public abstract void Proceed ();

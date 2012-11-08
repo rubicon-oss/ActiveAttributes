@@ -21,32 +21,47 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
   public class ActionInvocation<TA1> : ActionInvocationBase
   {
-    private readonly TA1 _arg1;
     private readonly Action<TA1> _action;
+
+    public TA1 Arg1;
 
     public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Action<TA1> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
 
-      _arg1 = arg1;
       _action = action;
+      Arg1 = arg1;
     }
 
     public override int Count
     {
-      get { return 0; }
+      get { return 1; }
     }
 
     public override object this [int idx]
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_arg1);
+      _action (Arg1);
     }
   }
 }
