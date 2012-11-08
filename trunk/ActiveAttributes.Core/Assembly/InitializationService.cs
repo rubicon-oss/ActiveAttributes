@@ -25,7 +25,6 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  // TODO rename to InitializationService
   [ConcreteImplementation (typeof (InitializationService))]
   public interface IInitializationService
   {
@@ -39,6 +38,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IFieldService _fieldService;
     private readonly IConstructorExpressionsHelperFactory _expressionsHelperFactory;
 
+    // TODO MethodCopyService?
     public InitializationService (IFieldService fieldService, IConstructorExpressionsHelperFactory expressionsHelperFactory)
     {
       ArgumentUtility.CheckNotNull ("fieldService", fieldService);

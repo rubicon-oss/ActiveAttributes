@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
 using Remotion.Utilities;
@@ -51,8 +50,8 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     public object ReturnValue
     {
-      get { throw new NotImplementedException(); }
-      set { throw new NotImplementedException(); }
+      get { throw new NotImplementedException (); }
+      set { throw new NotImplementedException (); }
     }
 
     IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
@@ -62,7 +61,7 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     object IReadOnlyInvocationContext.ReturnValue
     {
-      get { throw new NotImplementedException(); }
+      get { throw new NotImplementedException (); }
     }
 
     public abstract void Proceed ();

@@ -45,6 +45,8 @@ namespace ActiveAttributes.Core.Ordering
 
     public IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices)
     {
+      ArgumentUtility.CheckNotNull ("advices", advices);
+
       var advicesAsCollection = advices.ConvertToCollection();
 
       var dependencies = from advice1 in advicesAsCollection

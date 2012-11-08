@@ -14,7 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using System.Runtime.Serialization;
 using ActiveAttributes.Core.Extensions;
 using JetBrains.Annotations;
@@ -28,21 +29,19 @@ namespace ActiveAttributes.Core.Utilities
   {
     private const string c_message = "Undefined order for items:\r\n";
 
-    // TODO (low) change to IEnumerable
-    public UndefinedOrderException (IEnumerable<object> items)
+    public UndefinedOrderException (IEnumerable items)
     {
       Items = items;
     }
 
-    [UsedImplicitly]
     protected UndefinedOrderException (SerializationInfo info, StreamingContext context)
         : base (info, context) {}
 
-    public IEnumerable<object> Items { get; private set; }
+    public IEnumerable Items { get; private set; }
 
     public override string Message
     {
-      get { return c_message + Items.ToString<object> (); }
+      get { return c_message + Items.Cast<object>().ToString<object> (); }
     }
   }
 }

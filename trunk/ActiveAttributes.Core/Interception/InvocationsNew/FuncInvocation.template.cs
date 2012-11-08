@@ -16,14 +16,25 @@
 using System;
 using System.Reflection;
 using Remotion.Utilities;
+// ReSharper disable RedundantUsingDirective
+using Remotion;
+// ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
+  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
+  // @replace ", TA<n> arg<n>"
+  // @replace ", TA<n>"
+  // @replace "TA<n>, "
+  // @replace "Arg<n>" ", "
   public class FuncInvocation<TA1, TReturn> : FuncInvocationBase<TReturn>
   {
     private readonly Func<TA1, TReturn> _func;
 
-    private TA1 Arg1;
+    // @begin-repeat
+    // @replace-one "<n>"
+    public TA1 Arg1;
+    // @end-repeat
 
     public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Func<TA1, TReturn> func)
         : base (memberInfo, instance)
@@ -31,11 +42,15 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       ArgumentUtility.CheckNotNull ("func", func);
 
       _func = func;
+      // @begin-repeat
+      // @replace-one "<n>"
       Arg1 = arg1;
+      // @end-repeat
     }
 
     public override int Count
     {
+      // @replace-one "<n>"
       get { return 1; }
     }
 
@@ -45,21 +60,22 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       {
         switch (idx + 1)
         {
-          case 1:
-            return Arg1;
-          default:
-            throw new IndexOutOfRangeException ("idx");
+          // @begin-repeat
+          // @replace-one "<n>"
+          case 1: return Arg1;
+          // @end-repeat
+          default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
         switch (idx + 1)
         {
-          case 1:
-            Arg1 = (TA1) value;
-            break;
-          default:
-            throw new IndexOutOfRangeException ("idx");
+          // @begin-repeat
+          // @replace-one "<n>"
+          case 1: Arg1 = (TA1) value; break;
+          // @end-repeat
+          default: throw new IndexOutOfRangeException ("idx");
         }
       }
     }
@@ -69,4 +85,5 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       ReturnValue = _func (Arg1);
     }
   }
+  // @end-template
 }

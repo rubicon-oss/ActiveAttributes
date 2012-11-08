@@ -16,14 +16,25 @@
 using System;
 using System.Reflection;
 using Remotion.Utilities;
+// ReSharper disable RedundantUsingDirective
+using Remotion;
+// ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Core.Interception.InvocationsNew
 {
+  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
+  // @replace ", TA<n> arg<n>"
+  // @replace "TA<n>" ", " "<" ">"
+  // @replace "TA<n>, "
+  // @replace "Arg<n>" ", "
   public class ActionInvocation<TA1> : ActionInvocationBase
   {
     private readonly Action<TA1> _action;
 
+    // @begin-repeat
+    // @replace-one "<n>"
     public TA1 Arg1;
+    // @end-repeat
 
     public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Action<TA1> action)
         : base (memberInfo, instance)
@@ -31,11 +42,15 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      // @begin-repeat
+      // @replace-one "<n>"
       Arg1 = arg1;
+      // @end-repeat
     }
 
     public override int Count
     {
+      // @replace-one "<n>"
       get { return 1; }
     }
 
@@ -45,7 +60,10 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       {
         switch (idx + 1)
         {
+          // @begin-repeat
+          // @replace-one "<n>"
           case 1: return Arg1;
+          // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -53,7 +71,10 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       {
         switch (idx + 1)
         {
+          // @begin-repeat
+          // @replace-one "<n>"
           case 1: Arg1 = (TA1) value; break;
+          // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -64,4 +85,5 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
       _action (Arg1);
     }
   }
+  // @end-template
 }

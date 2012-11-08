@@ -95,16 +95,22 @@
     </Compile>
     <Compile Include="Discovery\AdviceDeclarationProviders\AspectClassDeclarationProvider.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\MethodAttributeAdviceDeclarationProvider.cs" />
+    <Compile Include="Interception\InvocationsNew\ActionInvocation.generated.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interception\InvocationsNew\ActionInvocationBase.cs" />
+    <Compile Include="Interception\InvocationsNew\FuncInvocation.generated.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interception\InvocationsNew\FuncInvocationBase.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
     <Compile Include="Interception\InterceptionWeaver.cs" />
-    <Compile Include="Interception\InvocationsNew\ActionInvocation.cs" />
-    <Compile Include="Interception\InvocationsNew\ActionInvocationBase.cs" />
+    <Compile Include="Interception\InvocationsNew\ActionInvocation.template.cs" />
     <Compile Include="Interception\InvocationsNew\ArgumentCollectionBase.cs" />
-    <Compile Include="Interception\InvocationsNew\FuncInvocation.cs" />
-    <Compile Include="Interception\InvocationsNew\FuncInvocationBase.cs" />
+    <Compile Include="Interception\InvocationsNew\FuncInvocation.template.cs" />
     <Compile Include="Interception\InvocationsNew\IArgumentCollection.cs" />
     <Compile Include="Interception\InvocationsNew\IInvocation.cs" />
     <Compile Include="Interception\InvocationsNew\IInvocationContext.cs" />

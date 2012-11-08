@@ -17,7 +17,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using Castle.Core.Internal;
@@ -51,8 +50,10 @@ namespace ActiveAttributes.Core.Discovery
 
       var adviceBuilder = parentAdviceBuilder != null ? parentAdviceBuilder.Copy() : _adviceBuilderFactory.Create();
 
-      if (customAttributeProvider is Type)
-        adviceBuilder.SetConstruction (new TypeConstruction ((Type) customAttributeProvider));
+      var type = customAttributeProvider as Type;
+      if (type != null)
+        adviceBuilder.SetConstruction (new TypeConstruction (type));
+      // TODO adviceBuilder.SetConstruction (new TypeConstruction (customAttributeProvider as Type));
 
       adviceBuilder.SetMethod (customAttributeProvider as MethodInfo);
       

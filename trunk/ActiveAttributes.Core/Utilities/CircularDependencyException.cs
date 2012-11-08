@@ -23,7 +23,6 @@ using JetBrains.Annotations;
 
 namespace ActiveAttributes.Core.Utilities
 {
-  // TODO remove generic parameter
   /// <summary>
   /// Exception that is thrown when sorting a set of items is not possible due to a circular dependency.
   /// </summary>
@@ -31,7 +30,6 @@ namespace ActiveAttributes.Core.Utilities
   {
     private const string c_message = "Circular dependencies detected:\r\n";
 
-    // TODO change to IEnumerable
     public CircularDependencyException (IEnumerable<IEnumerable> cycles)
     {
       Cycles = cycles;

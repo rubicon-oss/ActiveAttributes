@@ -19,7 +19,7 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    private static readonly Type[] s_types = new[] { typeof (object), typeof (int), typeof(void) };
+    private static readonly Type[] s_types = new[] { typeof (object), typeof (int), typeof(void), typeof(Type) };
 
     public static Type GetType_ ()
     {
