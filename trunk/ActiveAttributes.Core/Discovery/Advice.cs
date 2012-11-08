@@ -98,5 +98,10 @@ namespace ActiveAttributes.Core.Discovery
     {
       get { return _pointcuts; }
     }
+
+    public override string ToString ()
+    {
+      return _name ?? base.ToString();
+    }
   }
 }

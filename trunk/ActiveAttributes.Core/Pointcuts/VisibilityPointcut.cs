@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitVisibility (this, joinPoint);
+      return visitor.MatchesVisibility (this, joinPoint);
     }
   }
 }

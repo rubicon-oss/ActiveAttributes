@@ -98,6 +98,7 @@
     <Compile Include="AdviceInfo\AdvicePriorityAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceRoleAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceScopeAttributeTest.cs" />
+    <Compile Include="Ordering\AdviceDependencyProviderTest.cs" />
     <Compile Include="Pointcuts\MemberNamePointcutTest.cs" />
     <Compile Include="Pointcuts\NamespacePointcutTest.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBaseTest.cs" />

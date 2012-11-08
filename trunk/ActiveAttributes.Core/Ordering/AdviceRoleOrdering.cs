@@ -15,11 +15,19 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.Discovery;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Ordering
 {
-  public class AdviceRoleOrdering : AdviceOrderingBase
+  public interface IAdviceRoleOrdering : IAdviceOrdering
+  {
+    string BeforeRole { get; }
+    string AfterRole { get; }
+  }
+
+  public class AdviceRoleOrdering : AdviceOrderingBase, IAdviceRoleOrdering
   {
     private readonly string _beforeRole;
     private readonly string _afterRole;
@@ -42,6 +50,11 @@ namespace ActiveAttributes.Core.Ordering
     public string AfterRole
     {
       get { return _afterRole; }
+    }
+
+    public override bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2)
+    {
+      return provider.DependsRole (advice1, advice2, this);
     }
   }
 

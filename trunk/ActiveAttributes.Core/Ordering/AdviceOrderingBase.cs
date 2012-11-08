@@ -13,13 +13,21 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using ActiveAttributes.Core.Discovery;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Ordering
 {
-  public abstract class AdviceOrderingBase
+  public interface IAdviceOrdering
+  {
+    string Source { get; }
+
+    bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
+  }
+
+  public abstract class AdviceOrderingBase : IAdviceOrdering
   {
     private readonly string _source;
 
@@ -34,5 +42,7 @@ namespace ActiveAttributes.Core.Ordering
     {
       get { return _source; }
     }
+
+    public abstract bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
   }
 }

@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitControlFlow (this, joinPoint);
+      return visitor.MatchesControlFlow (this, joinPoint);
     }
   }
 
