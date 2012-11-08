@@ -13,45 +13,44 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core;
+using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
+  [Ignore]
   [TestFixture]
-  public class ArgumentManipulationTest : TestBase
+  public class ControlFlowTest : TestBase
   {
     [Test]
-    public void IncrementArguments ()
+    public void ConditionalCatch ()
     {
       var instance = ObjectFactory.Create<DomainType>();
-      var a = 10;
-      var b = 20;
-      var actual = instance.Multiply (a, b);
-      var expected = (a + 1) * (b + 1);
 
-      Assert.That (actual, Is.EqualTo (expected));
+      Assert.That (() => instance.ThrowingMethod(), Throws.Exception);
+      Assert.That (() => instance.ThrowingMethodWrapper(), Throws.Nothing);
     }
 
     public class DomainType
     {
-      [IncrementArgumentsAspect]
-      public virtual int Multiply (int a, int b) { return a * b; }
+      [CatchingAspect (ControlFlow = "*ThrowingMethodWrapper")]
+      public virtual void ThrowingMethod () { throw new Exception (); }
+
+      public virtual void ThrowingMethodWrapper () { ThrowingMethod (); }
     }
 
-    public class IncrementArgumentsAspectAttribute : MethodInterceptionAspectAttributeBase
+    public class CatchingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        var arguments = invocation.Context.Arguments;
-        for (var i = 0; i < arguments.Count; i++)
-          arguments[i] = (int) arguments[i] + 1;
-
-        invocation.Proceed();
+        try
+        {
+          invocation.Proceed ();
+        }
+        catch (Exception) { }
       }
     }
   }

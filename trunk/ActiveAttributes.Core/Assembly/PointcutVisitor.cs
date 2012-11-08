@@ -30,18 +30,19 @@ namespace ActiveAttributes.Core.Assembly
   {
     bool Matches (Advice advice, JoinPoint joinPoint);
 
-    bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint);
+    //bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint);
 
-    bool VisitPointcut (IExpressionPointcut expressionPointcut, JoinPoint joinPoint);
-    bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (ITypeNamePointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IVisibilityPointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IReturnTypePointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IArgumentsPointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (INamespacePointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint);
-    bool VisitPointcut (IMethodPointcut pointcut, JoinPoint joinPoint);
+    bool VisitExpression (IExpressionPointcut expressionPointcut, JoinPoint joinPoint);
+    bool VisitType (ITypePointcut pointcut, JoinPoint joinPoint);
+    bool VisitMemberName (IMemberNamePointcut pointcut, JoinPoint joinPoint);
+    bool VisitTypeName (ITypeNamePointcut pointcut, JoinPoint joinPoint);
+    bool VisitVisibility (IVisibilityPointcut pointcut, JoinPoint joinPoint);
+    bool VisitReturnType (IReturnTypePointcut pointcut, JoinPoint joinPoint);
+    bool VisitArgumentType (IArgumentTypePointcut pointcut, JoinPoint joinPoint);
+    bool VisitNamespace (INamespacePointcut pointcut, JoinPoint joinPoint);
+    bool VisitControlFlow (IControlFlowPointcut pointcut, JoinPoint joinPoint);
+    bool VisitMethod (IMethodPointcut pointcut, JoinPoint joinPoint);
+    bool VisitCustomAttribute (ICustomAttributePointcut pointcut, JoinPoint joinPoint);
   }
 
   public class PointcutVisitor : IPointcutVisitor
@@ -60,32 +61,32 @@ namespace ActiveAttributes.Core.Assembly
       return advice.Pointcuts.All (x => x.MatchVisit (this, joinPoint));
     }
 
-    public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
-    {
-      ArgumentUtility.CheckNotNull ("pointcut", pointcut);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+    //public bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint)
+    //{
+    //  ArgumentUtility.CheckNotNull ("pointcut", pointcut);
+    //  ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      if (pointcut is IExpressionPointcut && !VisitPointcut ((IExpressionPointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is ITypePointcut && !VisitPointcut ((ITypePointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is IMemberNamePointcut && !VisitPointcut ((IMemberNamePointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is ITypeNamePointcut && !VisitPointcut ((ITypeNamePointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is IReturnTypePointcut && !VisitPointcut ((IReturnTypePointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is IArgumentsPointcut && !VisitPointcut ((IArgumentsPointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is INamespacePointcut && !VisitPointcut ((INamespacePointcut) pointcut, joinPoint))
-        return false;
-      if (pointcut is IControlFlowPointcut && !VisitPointcut ((IControlFlowPointcut) pointcut, joinPoint))
-        return false;
+    //  if (pointcut is IExpressionPointcut && !VisitExpression ((IExpressionPointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is ITypePointcut && !VisitType ((ITypePointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is IMemberNamePointcut && !VisitMemberName ((IMemberNamePointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is ITypeNamePointcut && !VisitTypeName ((ITypeNamePointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is IReturnTypePointcut && !VisitReturnType ((IReturnTypePointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is IArgumentTypesPointcut && !VisitArgumentTypes ((IArgumentTypesPointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is INamespacePointcut && !VisitNamespace ((INamespacePointcut) pointcut, joinPoint))
+    //    return false;
+    //  if (pointcut is IControlFlowPointcut && !VisitControlFlow ((IControlFlowPointcut) pointcut, joinPoint))
+    //    return false;
 
-      return true;
-    }
+    //  return true;
+    //}
 
-    public bool VisitPointcut (IExpressionPointcut expressionPointcut, JoinPoint joinPoint)
+    public bool VisitExpression (IExpressionPointcut expressionPointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("expressionPointcut", expressionPointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
@@ -95,7 +96,7 @@ namespace ActiveAttributes.Core.Assembly
       return pointcuts.All (x => x.MatchVisit (this, joinPoint));
     }
 
-    public bool VisitPointcut (ITypePointcut pointcut, JoinPoint joinPoint)
+    public bool VisitType (ITypePointcut pointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
@@ -103,7 +104,7 @@ namespace ActiveAttributes.Core.Assembly
       return pointcut.Type.IsAssignableFrom (joinPoint.Type);
     }
 
-    public bool VisitPointcut (IMemberNamePointcut pointcut, JoinPoint joinPoint)
+    public bool VisitMemberName (IMemberNamePointcut pointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
@@ -111,7 +112,7 @@ namespace ActiveAttributes.Core.Assembly
       return joinPoint.Member.Name.IsMatchWildcard (pointcut.MemberName);
     }
 
-    public bool VisitPointcut (ITypeNamePointcut pointcut, JoinPoint joinPoint)
+    public bool VisitTypeName (ITypeNamePointcut pointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
@@ -119,12 +120,12 @@ namespace ActiveAttributes.Core.Assembly
       return joinPoint.Type.Name.IsMatchWildcard (pointcut.TypeName);
     }
 
-    public bool VisitPointcut (IVisibilityPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitVisibility (IVisibilityPointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
     }
 
-    public bool VisitPointcut (IReturnTypePointcut pointcut, JoinPoint joinPoint)
+    public bool VisitReturnType (IReturnTypePointcut pointcut, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("pointcut", pointcut);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
@@ -132,22 +133,27 @@ namespace ActiveAttributes.Core.Assembly
       return pointcut.ReturnType.IsAssignableFrom (((MethodInfo) joinPoint.Member).ReturnType);
     }
 
-    public bool VisitPointcut (IArgumentsPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitArgumentType (IArgumentTypePointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
     }
 
-    public bool VisitPointcut (INamespacePointcut pointcut, JoinPoint joinPoint)
+    public bool VisitNamespace (INamespacePointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
     }
 
-    public bool VisitPointcut (IControlFlowPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitControlFlow (IControlFlowPointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotSupportedException();
     }
 
-    public bool VisitPointcut (IMethodPointcut pointcut, JoinPoint joinPoint)
+    public bool VisitMethod (IMethodPointcut pointcut, JoinPoint joinPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool VisitCustomAttribute (ICustomAttributePointcut pointcut, JoinPoint joinPoint)
     {
       throw new NotImplementedException();
     }

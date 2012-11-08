@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,14 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
-using ActiveAttributes.Core.Interception.Invocations;
 
-namespace ActiveAttributes.Core.Attributes.Aspects
+using System;
+using ActiveAttributes.Core.Infrastructure.Pointcuts;
+
+namespace ActiveAttributes.Core.Attributes.Pointcuts
 {
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-  public abstract class MethodInterceptionAspectAttributeBase : InterceptionAspectAttributeBase
+  public class ArgumentPointcutAttribute : PointcutAttributeBase
   {
-    public abstract void OnIntercept (IInvocation invocation);
+    public ArgumentPointcutAttribute (Type argumentType)
+        : base(new ArgumentTypePointcut(argumentType)) {}
   }
 }

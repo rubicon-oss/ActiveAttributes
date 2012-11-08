@@ -50,6 +50,8 @@ namespace ActiveAttributes.Core.Attributes.Aspects
 
     public Type MemberCustomAttributeFilter { get; set; }
 
+    public string ControlFlow { get; set; }
+
     #endregion
-  }
+    }
 }

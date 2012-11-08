@@ -69,6 +69,7 @@
     <Compile Include="Assembly\AspectStorageService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
     <Compile Include="Attributes\Aspects\MethodBoundaryAspectAttributeBase.cs" />
+    <Compile Include="Attributes\Pointcuts\ArgumentPointcut.cs" />
     <Compile Include="Attributes\Pointcuts\NamespacePointcutAttribute.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
       <SubType>Code</SubType>
@@ -163,7 +164,7 @@
     <Compile Include="Attributes\Aspects\MethodInterceptionAspectAttributeBase.cs" />
     <Compile Include="Attributes\Aspects\PropertyInterceptionAspectAttributeBase.cs" />
     <Compile Include="Attributes\AdviceInfo\AdviceExecutionAttribute.cs" />
-    <Compile Include="Attributes\Pointcuts\PointcutExpressionAttribute.cs" />
+    <Compile Include="Attributes\Pointcuts\ExpressionPointcutAttribute.cs" />
     <Compile Include="Infrastructure\Advice.cs" />
     <Compile Include="Attributes\Intertype\ImportAttribute.cs" />
     <Compile Include="Attributes\Intertype\IntertypeBaseAttribute.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="Attributes\Pointcuts\MemberNamePointcutAttribute.cs" />
     <Compile Include="Attributes\Pointcuts\TypePointcutAttribute.cs" />
     <Compile Include="Infrastructure\Pointcuts\IPointcut.cs" />
-    <Compile Include="Infrastructure\Pointcuts\ArgumentsPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ArgumentTypePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\CustomAttributePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\NamespacePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\ExpressionPointcut.cs" />

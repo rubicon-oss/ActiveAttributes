@@ -51,7 +51,7 @@ namespace ActiveAttributes.UnitTests.Discovery
               //
               ObjectMother2.GetCustomAttributeNamedArgument ("MemberNameFilter", "memberName"),
               ObjectMother2.GetCustomAttributeNamedArgument ("MemberReturnTypeFilter", typeof (int)),
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberArgumentsFilter", new[] { typeof (string), typeof (int) }),
+              ObjectMother2.GetCustomAttributeNamedArgument ("MemberArgumentFilter", typeof (string)),
               ObjectMother2.GetCustomAttributeNamedArgument ("MemberVisibilityFilter", Visibility.Family),
               ObjectMother2.GetCustomAttributeNamedArgument ("MemberCustomAttributeFilter", typeof(Attribute)),
           };
@@ -76,7 +76,7 @@ namespace ActiveAttributes.UnitTests.Discovery
 
       Assert.That (pointcuts, Has.Some.TypeOf<MemberNamePointcut>().With.Property ("MemberName").EqualTo ("memberName"));
       Assert.That (pointcuts, Has.Some.TypeOf<ReturnTypePointcut>().With.Property ("ReturnType").EqualTo (typeof (int)));
-      Assert.That (pointcuts, Has.Some.TypeOf<ArgumentsPointcut>().With.Property ("ArgumentTypes").EqualTo (new[] { typeof (string), typeof (int) }));
+      Assert.That (pointcuts, Has.Some.TypeOf<ArgumentTypePointcut>().With.Property ("ArgumentType").EqualTo (typeof (string)));
       Assert.That (pointcuts, Has.Some.TypeOf<VisibilityPointcut>().With.Property ("Visibility").EqualTo (Visibility.Family));
       Assert.That (pointcuts, Has.Some.TypeOf<CustomAttributePointcut>().With.Property ("CustomAttributeType").EqualTo (typeof (Attribute)));
 

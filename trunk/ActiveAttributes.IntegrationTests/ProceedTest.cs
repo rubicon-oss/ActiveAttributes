@@ -15,225 +15,48 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly.Old;
+using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
-using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.IntegrationTests
 {
+  [Ignore]
   [TestFixture]
   public class ProceedTest : TestBase
   {
     [Test]
-    public void ProceedMethod ()
+    public void Proceed ()
     {
-      var type = AssembleType<DomainType1> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType1> ();
+      var instance = ObjectFactory.Create<DomainType>();
 
-      instance.Method1();
-
-      Assert.That (instance.Method1Called, Is.True);
+      Assert.That (() => instance.ThrowingMethod1(), Throws.Nothing);
+      Assert.That (() => instance.ThrowingMethod2(), Throws.Exception);
     }
 
-    [Test]
-    public void NotProceedMethod ()
+    public class DomainType
     {
-      var type = AssembleType<DomainType1> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType1> ();
+      [ProceedingAspect]
+      public virtual void ThrowingMethod1 () { throw new Exception (); }
 
-      instance.Method2();
-
-      Assert.That (instance.Method2Called, Is.False);
+      [NotProceedingAspect]
+      public virtual void ThrowingMethod2 () { throw new Exception (); }
     }
 
-    [Test]
-    public void ProceedProperty ()
-    {
-      var type = AssembleType<DomainType3> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType3> ();
-      SkipDeletion();
-      
-      instance.Property1 = "test";
-
-      Assert.That (instance.Property1Called, Is.True);
-      instance.Property1Called = false;
-
-      var x = instance.Property1;
-
-      Assert.That (instance.Property1Called, Is.True);
-    }
-
-    [Test]
-    public void NotProceedProperty ()
-    {
-      var type = AssembleType<DomainType3> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType3>();
-
-      instance.Property2 = "test";
-
-      Assert.That (instance.Property2Called, Is.False);
-      instance.Property2Called = false;
-
-      var x = instance.Property2;
-
-      Assert.That (instance.Property2Called, Is.False);
-    }
-
-
-    [Test]
-    public void ProceedPropertyAsMethod ()
-    {
-      var type = AssembleType<DomainType2> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType2> ();
-
-      instance.Property3 = "test";
-
-      Assert.That (instance.Property3Called, Is.True);
-      instance.Property3Called = false;
-
-      var x = instance.Property3;
-
-      Assert.That (instance.Property3Called, Is.True);
-    }
-
-    [Test]
-    public void NotProceedPropertyAsMethod ()
-    {
-      var type = AssembleType<DomainType2> (TypeAssembler.Singleton.ModifyType);
-      var instance = type.CreateInstance<DomainType2> ();
-
-      instance.Property4 = "test";
-
-      Assert.That (instance.Property4Called, Is.False);
-      instance.Property4Called = false;
-
-      var x = instance.Property4;
-
-      Assert.That (instance.Property4Called, Is.False);
-    }
-
-    public class DomainType1
-    {
-      public bool Method1Called { get; set; }
-      public bool Method2Called { get; set; }
-
-      [ProceedMethodAspect]
-      public virtual void Method1 ()
-      {
-        Method1Called = true;
-      }
-
-      [NoProceedMethodAspect]
-      public virtual void Method2 ()
-      {
-        Method2Called = true;
-      }
-
-    }
-
-    public class DomainType2
-    {
-      public bool Property3Called { get; set; }
-      public bool Property4Called { get; set; }
-
-      public virtual string Property3
-      {
-        [ProceedMethodAspect]
-        get
-        {
-          Property3Called = true;
-          return "test";
-        }
-        [ProceedMethodAspect]
-        set { Property3Called = true; }
-      }
-
-      public virtual string Property4
-      {
-        [NoProceedMethodAspect]
-        get
-        {
-          Property4Called = true;
-          return "test";
-        }
-        [NoProceedMethodAspect]
-        set { Property4Called = true; }
-      }
-    }
-
-    public class DomainType3
-    {
-      public virtual bool Property1Called { get; set; }
-      public virtual bool Property2Called { get; set; }
-
-      [ProceedPropertyAspect]
-      public virtual string Property1
-      {
-        get
-        {
-          Property1Called = true;
-          return "test";
-        }
-        set { Property1Called = true; }
-      }
-
-      [NoProceedPropertyAspect]
-      public virtual string Property2
-      {
-        get
-        {
-          Property2Called = true;
-          return "test";
-        }
-        set { Property2Called = true; }
-      }
-       
-    }
-
-    public class DT4 : DomainType3
-    {
-       
-    }
-
-    public class ProceedMethodAspectAttribute : MethodInterceptionAspectAttribute
+    public class ProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Proceed ();
+        invocation.Proceed();
       }
     }
-
-    public class NoProceedMethodAspectAttribute : MethodInterceptionAspectAttribute
+    
+    public class NotProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {
-      }
-    }
-
-    public class ProceedPropertyAspectAttribute : PropertyInterceptionAspectAttribute
-    {
-      public override void OnInterceptGet (IPropertyInvocation invocation)
-      {
-        Assert.That (invocation.Context.PropertyInfo, Is.Not.Null);
-        invocation.Proceed ();
-      }
-
-      public override void OnInterceptSet (IPropertyInvocation invocation)
-      {
-        invocation.Proceed ();
-      }
-    }
-
-    public class NoProceedPropertyAspectAttribute : PropertyInterceptionAspectAttribute
-    {
-      public override void OnInterceptGet (IPropertyInvocation invocation)
-      {
-      }
-
-      public override void OnInterceptSet (IPropertyInvocation invocation)
-      {
+        invocation.Proceed();
       }
     }
   }

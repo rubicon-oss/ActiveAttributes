@@ -64,25 +64,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentManipulationTest.cs" />
-    <Compile Include="AspectScopeTest.cs" />
-    <Compile Include="CachingAspectTest.cs" />
-    <Compile Include="CflowTest.cs" />
-    <Compile Include="InterfaceAspectsTest.cs" />
-    <Compile Include="MethodBoundaryTest.cs" />
-    <Compile Include="ProceedTest.cs" />
+    <Compile Include="ControlFlowTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ContextExposureTest.cs" />
+    <Compile Include="ContextTest.cs" />
+    <Compile Include="ProceedTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnValueManipulationTest.cs" />
+    <Compile Include="ScopeTest.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="TypeLevelAspectTest.cs" />
+    <Compile Include="TypeLevelAspectTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActiveAttributes.Common\ActiveAttributes.Common.csproj">
-      <Project>{6E268C4B-A875-4071-8108-44E2FDFF864C}</Project>
-      <Name>ActiveAttributes.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">
       <Project>{24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1}</Project>
       <Name>ActiveAttributes.Core</Name>

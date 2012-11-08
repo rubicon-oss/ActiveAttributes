@@ -14,22 +14,14 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Attributes.Pointcuts;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using NUnit.Framework;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
+namespace ActiveAttributes.Core.Attributes.Pointcuts
 {
-  [TestFixture]
-  public class PointcutExpressionAttributeTest
+  public sealed class ExpressionPointcutAttribute : PointcutAttributeBase
   {
-    [Test]
-    public void Initialization ()
-    {
-      var expression = "expression";
-      var attribute = new PointcutExpressionAttribute (expression);
-
-      Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut> ().With.Property ("Expression").EqualTo (expression));
-    }
+    public ExpressionPointcutAttribute (string text)
+        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
   }
 }

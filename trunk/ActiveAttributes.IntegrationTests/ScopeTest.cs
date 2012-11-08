@@ -13,60 +13,62 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
-using System;
-using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Old;
-using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Infrastructure.AdviceInfo;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
-using TypePipe.IntegrationTests;
 
 namespace ActiveAttributes.IntegrationTests
 {
+  [Ignore]
   [TestFixture]
-  public class AspectScopeTest : TestBase
+  public class ScopeTest
   {
-    [Test]
-    public void InstanceScope ()
-    {
-      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
-      var instance1 = type.CreateInstance<DomainType>();
-      var instance2 = type.CreateInstance<DomainType>();
+    private DomainType _instance1;
+    private DomainType _instance2;
 
-      Assert.That (instance1.InstanceMethod(), Is.Not.EqualTo (instance2.InstanceMethod()));
+    [SetUp]
+    public void SetUp ()
+    {
+      _instance1 = ObjectFactory.Create<DomainType>();
+      _instance2 = ObjectFactory.Create<DomainType>();
     }
 
     [Test]
-    public void StaticScope ()
+    public void InstanceAdviced ()
     {
-      var type = AssembleType<DomainType> (TypeAssembler.Singleton.ModifyType);
-      var instance1 = type.CreateInstance<DomainType> ();
-      var instance2 = type.CreateInstance<DomainType>();
+      var result1 = _instance1.InstanceAdvicedMethod();
+      var result2 = _instance2.InstanceAdvicedMethod();
 
-      Assert.That (instance1.StaticMethod(), Is.Not.EqualTo (Guid.Empty));
-      Assert.That (instance1.StaticMethod(), Is.EqualTo (instance2.StaticMethod()));
+      Assert.That (result1, Is.Not.EqualTo (result2));
+    }
+
+    [Test]
+    public void StaticAdviced ()
+    {
+      var result1 = _instance1.StaticAdvicedMethod ();
+      var result2 = _instance2.StaticAdvicedMethod ();
+
+      Assert.That (result1, Is.EqualTo (result2));
     }
 
     public class DomainType
     {
       [DomainAspect (AdviceScope = AdviceScope.Instance)]
-      public virtual Guid InstanceMethod () { return Guid.Empty; }
+      public virtual int InstanceAdvicedMethod () { return 0; }
 
       [DomainAspect (AdviceScope = AdviceScope.Static)]
-      public virtual Guid StaticMethod () { return Guid.Empty; }
+      public virtual int StaticAdvicedMethod () { return 0; }
     }
 
-    public class DomainAspectAttribute : MethodInterceptionAspectAttribute
+    public class DomainAspectAttribute : MethodInterceptionAspectAttributeBase
     {
-      private readonly Guid _guid = Guid.NewGuid();
+      private int _counter;
 
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Context.ReturnValue = _guid;
+        invocation.Context.ReturnValue = _counter++;
       }
     }
   }

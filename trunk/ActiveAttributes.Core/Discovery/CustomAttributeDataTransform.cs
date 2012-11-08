@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Discovery
               //
               { "MemberNameFilter", typeof (MemberNamePointcut) },
               { "MemberReturnTypeFilter", typeof (ReturnTypePointcut) },
-              { "MemberArgumentsFilter", typeof (ArgumentsPointcut) },
+              { "MemberArgumentFilter", typeof (ArgumentTypePointcut) },
               { "MemberVisibilityFilter", typeof (VisibilityPointcut) },
               { "MemberCustomAttributeFilter", typeof (CustomAttributePointcut) }
           };

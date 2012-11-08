@@ -14,14 +14,12 @@
   <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
   <DefaultTestTimeout>60000</DefaultTestTimeout>
   <UseBuildConfiguration></UseBuildConfiguration>
+  <UseBuildPlatform />
   <ProxyProcessPath></ProxyProcessPath>
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <IgnoredTests>
     <RegexTestSelector>
       <RegularExpression>ActiveAttributes\.IntegrationTests\.InterfaceAspectsTest\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>ActiveAttributes\.IntegrationTests\.ProceedTest\..*</RegularExpression>
     </RegexTestSelector>
   </IgnoredTests>
 </ProjectConfiguration>

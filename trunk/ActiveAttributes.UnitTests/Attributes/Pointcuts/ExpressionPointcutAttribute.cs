@@ -15,13 +15,20 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Infrastructure.Pointcuts;
-using Remotion.Utilities;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Core.Attributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Attributes.Pointcuts
 {
-  public sealed class PointcutExpressionAttribute : PointcutAttributeBase
+  [TestFixture]
+  public class ExpressionPointcutAttribute
   {
-    public PointcutExpressionAttribute (string text)
-        : base (new ExpressionPointcut (ArgumentUtility.CheckNotNullOrEmpty ("text", text))) {}
+    [Test]
+    public void Initialization ()
+    {
+      var expression = "expression";
+      var attribute = new Core.Attributes.Pointcuts.ExpressionPointcutAttribute (expression);
+
+      Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut>().With.Property ("Expression").EqualTo (expression));
+    }
   }
 }

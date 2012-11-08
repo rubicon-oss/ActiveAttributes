@@ -19,25 +19,23 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Infrastructure.Pointcuts
 {
-  public interface IArgumentsPointcut : IPointcut
+  public interface IArgumentTypePointcut : IPointcut
   {
-    Type[] ArgumentTypes { get; }
+    Type ArgumentType { get; }
   }
 
-  public class ArgumentsPointcut : IArgumentsPointcut
+  public class ArgumentTypePointcut : IArgumentTypePointcut
   {
-    private readonly Type[] _argumentTypes;
+    private readonly Type _argumentType;
 
-    public ArgumentsPointcut (Type[] argumentTypes)
+    public ArgumentTypePointcut (Type argumentType)
     {
-      ArgumentUtility.CheckNotNull ("argumentTypes", argumentTypes);
-
-      _argumentTypes = argumentTypes;
+      _argumentType = argumentType;
     }
 
-    public Type[] ArgumentTypes
+    public Type ArgumentType
     {
-      get { return _argumentTypes; }
+      get { return _argumentType; }
     }
 
     public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
@@ -45,7 +43,7 @@ namespace ActiveAttributes.Core.Infrastructure.Pointcuts
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.VisitPointcut (this, joinPoint);
+      return visitor.VisitArgumentType (this, joinPoint);
     }
   }
 }

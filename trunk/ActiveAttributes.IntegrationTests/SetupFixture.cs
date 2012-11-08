@@ -19,8 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Common;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Core.Infrastructure;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -64,8 +63,7 @@ namespace ActiveAttributes.IntegrationTests
 
       CopyModuleToOutputDirectory (GetType().Assembly.ManifestModule);
       CopyModuleToOutputDirectory (typeof (MutableType).Assembly.ManifestModule);
-      CopyModuleToOutputDirectory (typeof (MethodInterceptionAspectAttribute).Assembly.ManifestModule);
-      CopyModuleToOutputDirectory (typeof (ValidationAspectAttribute).Assembly.ManifestModule);
+      CopyModuleToOutputDirectory (typeof (IAspect).Assembly.ManifestModule);
     }
 
     private void CopyModuleToOutputDirectory (Module copiedModule)
