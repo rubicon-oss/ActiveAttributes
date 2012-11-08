@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.AdviceInfo;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;

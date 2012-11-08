@@ -14,8 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Attributes.Aspects;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 

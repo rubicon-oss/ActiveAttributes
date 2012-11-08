@@ -17,10 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Attributes.Aspects;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Discovery.Construction;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Discovery.AdviceDeclarationProviders

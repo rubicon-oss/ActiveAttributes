@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Utilities;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;

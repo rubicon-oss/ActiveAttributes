@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;

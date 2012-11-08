@@ -15,8 +15,8 @@
 // under the License.
 using System;
 using System.Linq;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Infrastructure;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Rhino.Mocks;

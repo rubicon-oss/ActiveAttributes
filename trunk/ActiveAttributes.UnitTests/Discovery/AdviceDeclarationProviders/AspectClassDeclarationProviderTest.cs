@@ -16,11 +16,11 @@
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Discovery.Construction;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;

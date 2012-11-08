@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Ordering;
 using NUnit.Framework;
 using Rhino.Mocks;

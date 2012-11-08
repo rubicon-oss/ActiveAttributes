@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Attributes;
+using ActiveAttributes.Core.AdviceInfo;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Pointcuts

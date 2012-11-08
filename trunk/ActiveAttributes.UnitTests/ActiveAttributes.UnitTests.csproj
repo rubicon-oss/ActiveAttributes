@@ -93,11 +93,11 @@
     <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
     <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
     <Compile Include="Assembly\AspectStorageServiceTest.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceExecutionAttributeTest.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceNameAttributeTest.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdvicePriorityAttributeTest.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceRoleAttributeTest.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceScopeAttributeTest.cs" />
+    <Compile Include="AdviceInfo\AdviceExecutionAttributeTest.cs" />
+    <Compile Include="AdviceInfo\AdviceNameAttributeTest.cs" />
+    <Compile Include="AdviceInfo\AdvicePriorityAttributeTest.cs" />
+    <Compile Include="AdviceInfo\AdviceRoleAttributeTest.cs" />
+    <Compile Include="AdviceInfo\AdviceScopeAttributeTest.cs" />
     <Compile Include="Pointcuts\MemberNamePointcutTest.cs" />
     <Compile Include="Pointcuts\NamespacePointcutTest.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBaseTest.cs" />
@@ -105,7 +105,6 @@
     <Compile Include="Pointcuts\ReturnTypePointcutTest.cs" />
     <Compile Include="Pointcuts\TypeNamePointcutTest.cs" />
     <Compile Include="Pointcuts\TypePointcutTest.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Assembly\PointcutVisitorTest.cs" />
@@ -161,9 +160,6 @@
     <Compile Include="ObjectMother\ObjectMother.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetType.cs" />
     <Compile Include="ObjectMother\TypePipe\ObjectMother.GetCustomAttributeData.cs" />
-    <Compile Include="RhinoMocksKernel.cs" />
-    <Compile Include="RhinoMocksModule.cs" />
-    <Compile Include="RhinoMocksStubProvider.cs" />
     <Compile Include="ExpressionTreeComparer2.cs" />
     <Compile Include="Extensions\ICustomAttributeDataExtensionsTest.cs" />
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
@@ -190,10 +186,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Attributes\Aspects\" />
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

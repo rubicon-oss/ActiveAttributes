@@ -16,7 +16,6 @@
 
 using System;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure;
 
 namespace ActiveAttributes.Core.Pointcuts
 {

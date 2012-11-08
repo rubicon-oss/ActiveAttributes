@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Assembly;
 
 namespace ActiveAttributes.UnitTests
 {

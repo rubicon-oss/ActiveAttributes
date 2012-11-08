@@ -15,9 +15,10 @@
 // under the License.
 using System;
 using System.Reflection;
+using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
 using System.Linq;

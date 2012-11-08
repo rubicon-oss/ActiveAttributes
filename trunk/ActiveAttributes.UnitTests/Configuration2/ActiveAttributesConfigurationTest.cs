@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Configuration2;
 using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
-using ActiveAttributes.Core.Infrastructure.Orderings;
+using ActiveAttributes.Core.Ordering;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Configuration2

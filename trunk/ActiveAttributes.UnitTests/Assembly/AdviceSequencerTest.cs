@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Ordering;
 using ActiveAttributes.Core.Utilities;
 using NUnit.Framework;

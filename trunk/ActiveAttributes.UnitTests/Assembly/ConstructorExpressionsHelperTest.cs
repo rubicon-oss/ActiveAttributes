@@ -15,9 +15,9 @@
 // under the License.
 using System;
 using System.Reflection;
+using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.FieldWrapper;
-using ActiveAttributes.Core.Infrastructure;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;

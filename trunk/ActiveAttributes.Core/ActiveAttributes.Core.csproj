@@ -62,13 +62,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assembly\AdviceBuilder.cs" />
-    <Compile Include="Assembly\AdviceBuilderFactory.cs" />
+    <Compile Include="Discovery\AdviceBuilder.cs" />
+    <Compile Include="Discovery\AdviceBuilderFactory.cs" />
     <Compile Include="Assembly\AdviceComposer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\AspectStorageService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
-    <Compile Include="Attributes\Aspects\MethodBoundaryAspectAttributeBase.cs" />
+    <Compile Include="Aspects\MethodBoundaryAspectAttributeBase.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,7 +95,6 @@
     </Compile>
     <Compile Include="Discovery\AdviceDeclarationProviders\AspectClassDeclarationProvider.cs" />
     <Compile Include="Discovery\AdviceDeclarationProviders\MethodAttributeAdviceDeclarationProvider.cs" />
-    <Compile Include="Infrastructure\Intertype\MemberImport.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
@@ -123,9 +122,9 @@
     <Compile Include="Discovery\CustomAttributeProviderTransform.cs" />
     <Compile Include="Discovery\ClassDeclarationProvider.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Infrastructure\Orderings\AdviceNameOrdering.cs" />
-    <Compile Include="Infrastructure\Orderings\AdviceRoleOrdering.cs" />
-    <Compile Include="Infrastructure\Orderings\AdviceTypeOrdering.cs" />
+    <Compile Include="Ordering\AdviceNameOrdering.cs" />
+    <Compile Include="Ordering\AdviceRoleOrdering.cs" />
+    <Compile Include="Ordering\AdviceTypeOrdering.cs" />
     <Compile Include="Ordering\AdviceSequencer.cs" />
     <Compile Include="Assembly\AspectInitializationExpressionHelper.cs" />
     <Compile Include="Assembly\ConstructorExpressionsHelperFactory.cs" />
@@ -133,12 +132,11 @@
     <Compile Include="Assembly\ConstructorExpressionsHelper.cs" />
     <Compile Include="Assembly\FieldService.cs" />
     <Compile Include="Assembly\InvocationExpressionHelper.cs" />
-    <Compile Include="Attributes\Orderings\AdviceOrderingAttributeBase.cs" />
-    <Compile Include="Attributes\Orderings\AdviceRoleOrderingAttribute.cs" />
+    <Compile Include="Ordering\AdviceOrderingAttributeBase.cs" />
     <Compile Include="Pointcuts\MemberFlags.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\Orderings\Position.cs">
+    <Compile Include="Ordering\Position.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pointcuts\Visibility.cs">
@@ -146,25 +144,20 @@
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Attributes\AdviceAttribute.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceNameAttribute.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdvicePriorityAttribute.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceRoleAttribute.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceScopeAttribute.cs" />
+    <Compile Include="AdviceInfo\AdviceAttribute.cs" />
+    <Compile Include="AdviceInfo\AdviceNameAttribute.cs" />
+    <Compile Include="AdviceInfo\AdvicePriorityAttribute.cs" />
+    <Compile Include="AdviceInfo\AdviceRoleAttribute.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
-    <Compile Include="Infrastructure\Construction\CustomAttributeDataConstruction.cs" />
-    <Compile Include="Infrastructure\Construction\IConstruction.cs" />
-    <Compile Include="Infrastructure\Construction\TypeConstruction.cs" />
-    <Compile Include="Attributes\Aspects\EventInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Attributes\Aspects\InterceptionAspectAttributeBase.cs" />
-    <Compile Include="Attributes\Aspects\MethodInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Attributes\Aspects\PropertyInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Attributes\AdviceInfo\AdviceExecutionAttribute.cs" />
-    <Compile Include="Infrastructure\Advice.cs" />
-    <Compile Include="Attributes\Intertype\ImportAttribute.cs" />
-    <Compile Include="Attributes\Intertype\IntertypeBaseAttribute.cs" />
-    <Compile Include="Attributes\Intertype\IntroduceAttribute.cs" />
-    <Compile Include="Infrastructure\Joinpoint.cs" />
+    <Compile Include="Discovery\Construction\CustomAttributeDataConstruction.cs" />
+    <Compile Include="Discovery\Construction\IConstruction.cs" />
+    <Compile Include="Discovery\Construction\TypeConstruction.cs" />
+    <Compile Include="Aspects\EventInterceptionAspectAttributeBase.cs" />
+    <Compile Include="Aspects\InterceptionAspectAttributeBase.cs" />
+    <Compile Include="Aspects\MethodInterceptionAspectAttributeBase.cs" />
+    <Compile Include="Aspects\PropertyInterceptionAspectAttributeBase.cs" />
+    <Compile Include="Discovery\Advice.cs" />
+    <Compile Include="Assembly\Joinpoint.cs" />
     <Compile Include="Pointcuts\IPointcut.cs" />
     <Compile Include="Pointcuts\ArgumentTypePointcut.cs" />
     <Compile Include="Pointcuts\CustomAttributePointcut.cs" />
@@ -176,12 +169,11 @@
     <Compile Include="Pointcuts\TypeNamePointcut.cs" />
     <Compile Include="Pointcuts\VisibilityPointcut.cs" />
     <Compile Include="Assembly\ObjectFactory.cs" />
-    <Compile Include="Infrastructure\AdviceInfo\AdviceScope.cs" />
+    <Compile Include="AdviceInfo\AdviceScopeAttribute.cs" />
     <Compile Include="Configuration\TypeRuleCollection.cs" />
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Configuration\AspectsConfigurationSection.cs" />
-    <Compile Include="Attributes\Orderings\AdviceTypeOrderingAttribute.cs" />
-    <Compile Include="Infrastructure\Orderings\AdviceOrderingBase.cs" />
+    <Compile Include="Ordering\AdviceOrderingBase.cs" />
     <Compile Include="Interception\Invocations\IndexerGetInvocation.cs" />
     <Compile Include="Interception\Invocations\IndexerSetInvocation.cs" />
     <Compile Include="Interception\Invocations\PropertySetInvocation.cs" />
@@ -223,9 +215,9 @@
     <Compile Include="Interception\Invocations\IReadOnlyInvocation.cs" />
     <Compile Include="Interception\Invocations\OuterInvocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Attributes\Aspects\AspectAttributeBase.cs" />
-    <Compile Include="Infrastructure\AdviceInfo\AdviceExecution.cs" />
-    <Compile Include="Infrastructure\IAspect.cs" />
+    <Compile Include="Aspects\AspectAttributeBase.cs" />
+    <Compile Include="AdviceInfo\AdviceExecutionAttribute.cs" />
+    <Compile Include="IAspect.cs" />
     <Compile Include="Pointcuts\ControlFlowPointcut.cs" />
     <Compile Include="Pointcuts\MemberNamePointcut.cs" />
     <Compile Include="Pointcuts\TypePointcut.cs" />

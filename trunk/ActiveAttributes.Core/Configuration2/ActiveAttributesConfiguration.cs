@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
-using ActiveAttributes.Core.Infrastructure.Orderings;
+using ActiveAttributes.Core.Ordering;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Core.Configuration2

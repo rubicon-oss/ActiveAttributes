@@ -16,8 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.AdviceDeclarationProviders;
-using ActiveAttributes.Core.Infrastructure;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;

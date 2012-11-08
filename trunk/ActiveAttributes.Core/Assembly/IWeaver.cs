@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Discovery;
 
 namespace ActiveAttributes.Core.Assembly
 {

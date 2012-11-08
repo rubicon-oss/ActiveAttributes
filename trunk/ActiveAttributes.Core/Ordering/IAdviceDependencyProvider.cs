@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Infrastructure;
+using ActiveAttributes.Core.Discovery;
 using Remotion.Collections;
 
 namespace ActiveAttributes.Core.Ordering

@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
+using ActiveAttributes.Core.Discovery;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;

@@ -16,7 +16,6 @@
 
 using System;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Infrastructure;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Pointcuts

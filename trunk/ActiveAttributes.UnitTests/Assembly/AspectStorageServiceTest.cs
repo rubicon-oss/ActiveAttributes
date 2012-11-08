@@ -16,12 +16,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using ActiveAttributes.Core;
+using ActiveAttributes.Core.AdviceInfo;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.FieldWrapper;
-using ActiveAttributes.Core.Attributes.Aspects;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Construction;
+using ActiveAttributes.Core.Discovery.Construction;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;

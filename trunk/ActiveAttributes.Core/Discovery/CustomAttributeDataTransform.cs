@@ -16,11 +16,10 @@
 
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Infrastructure;
-using ActiveAttributes.Core.Infrastructure.AdviceInfo;
-using ActiveAttributes.Core.Infrastructure.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;

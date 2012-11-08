@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Infrastructure.Construction;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;

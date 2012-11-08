@@ -16,7 +16,7 @@
 using System;
 using System.Configuration;
 using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Infrastructure.Orderings;
+using ActiveAttributes.Core.Ordering;
 
 namespace ActiveAttributes.Core.Configuration2.Configurators
 {

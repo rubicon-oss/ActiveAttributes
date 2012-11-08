@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Discovery;
 
 namespace ActiveAttributes.UnitTests
 {
