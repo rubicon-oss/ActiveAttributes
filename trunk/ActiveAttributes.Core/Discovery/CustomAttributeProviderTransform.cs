@@ -21,6 +21,7 @@ using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using Castle.Core.Internal;
 using Remotion.Utilities;
+using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.Core.Discovery
 {
@@ -52,7 +53,7 @@ namespace ActiveAttributes.Core.Discovery
 
       var type = customAttributeProvider as Type;
       if (type != null)
-        adviceBuilder.SetConstruction (new TypeConstruction (type));
+        adviceBuilder.UpdateConstruction (new TypeConstruction (type));
       // TODO adviceBuilder.SetConstruction (new TypeConstruction (customAttributeProvider as Type));
 
       adviceBuilder.SetMethod (customAttributeProvider as MethodInfo);
@@ -63,8 +64,8 @@ namespace ActiveAttributes.Core.Discovery
       TrySetValue (customAttributeProvider, (AdviceScopeAttribute x) => x.Scope, adviceBuilder.SetScope);
       TrySetValue (customAttributeProvider, (AdvicePriorityAttribute x) => x.Priority, adviceBuilder.SetPriority);
 
-      foreach (var pointcut in customAttributeProvider.GetAttributes<PointcutAttributeBase> ().Select (x => x.Pointcut))
-        adviceBuilder.AddPointcut (pointcut);
+      foreach (var pointcutAttribute in customAttributeProvider.GetCustomAttributes<PointcutAttributeBase> (true))
+        adviceBuilder.AddPointcut (pointcutAttribute.Pointcut);
 
       return adviceBuilder;
     }
@@ -72,7 +73,7 @@ namespace ActiveAttributes.Core.Discovery
     private void TrySetValue<TAttribute, T> (ICustomAttributeProvider customAttributeProvider, Func<TAttribute, T> selector, Func<T, IAdviceBuilder> set)
         where TAttribute : Attribute
     {
-      var attribute = customAttributeProvider.GetAttribute<TAttribute>();
+      var attribute = customAttributeProvider.GetCustomAttributes<TAttribute> (true).SingleOrDefault();
       if (attribute != null)
         set (selector (attribute));
     }

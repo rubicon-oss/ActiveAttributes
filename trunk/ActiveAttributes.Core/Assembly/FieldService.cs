@@ -31,13 +31,15 @@ namespace ActiveAttributes.Core.Assembly
 
   public class FieldService : IFieldService
   {
+    private int _counter;
+
     public IFieldWrapper AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var field = mutableType.AddField (type, name, attributes);
+      var field = mutableType.AddField (type, name + _counter++, attributes);
       return attributes.HasFlags (FieldAttributes.Static)
                  ? (IFieldWrapper) new StaticFieldWrapper (field)
                  : new InstanceFieldWrapper (field);

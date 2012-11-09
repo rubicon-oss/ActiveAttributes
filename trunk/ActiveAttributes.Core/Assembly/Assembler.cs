@@ -21,6 +21,7 @@ using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
@@ -43,14 +44,14 @@ namespace ActiveAttributes.Core.Assembly
       _adviceComposer = adviceComposer;
       _weaver = weaver;
 
-      _globalAdvices = declarationProvider.GetDeclarations().ToList();
+      _globalAdvices = declarationProvider.GetDeclarations().ConvertToCollection();
     }
 
     public void ModifyType (MutableType mutableType)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
-      var typeAdvices = _declarationProvider.GetDeclarations (mutableType).ToList();
+      var typeAdvices = _declarationProvider.GetDeclarations (mutableType).ConvertToCollection();
 
       foreach (var method in mutableType.GetMethods())
       {
@@ -58,7 +59,7 @@ namespace ActiveAttributes.Core.Assembly
         var methodAdvices = _declarationProvider.GetDeclarations (method1);
         var joinPoint = new JoinPoint (method);
         var allAdvices = ConcatAdvices (_globalAdvices, typeAdvices, methodAdvices);
-        var sortedAdvices = _adviceComposer.Compose (allAdvices, joinPoint).ToList ();
+        var sortedAdvices = _adviceComposer.Compose (allAdvices, joinPoint).ConvertToCollection();
         _weaver.Weave (method, sortedAdvices);
       }
     }

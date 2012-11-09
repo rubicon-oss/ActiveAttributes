@@ -22,7 +22,6 @@ using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
-  [Ignore]
   [TestFixture]
   public class ProceedTest : TestBase
   {

@@ -15,9 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Extensions;
 using Remotion.TypePipe.MutableReflection;
@@ -64,7 +62,7 @@ namespace ActiveAttributes.Core.Discovery
         var aspectConstructionInfo = new CustomAttributeDataConstruction (customAttributeData);
 
         foreach (var aspectTypeAdviceBuilder in aspectTypeAdviceBuilders)
-          yield return aspectTypeAdviceBuilder.SetConstruction (aspectConstructionInfo);
+          yield return aspectTypeAdviceBuilder.UpdateConstruction (aspectConstructionInfo);
       }
     }
   }

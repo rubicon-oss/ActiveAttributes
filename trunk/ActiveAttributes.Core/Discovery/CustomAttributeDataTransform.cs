@@ -66,7 +66,7 @@ namespace ActiveAttributes.Core.Discovery
       var adviceBuilder = _adviceBuilderFactory.Create();
 
       var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
-      adviceBuilder.SetConstruction (constructionInfo);
+      adviceBuilder.UpdateConstruction (constructionInfo);
 
       foreach (var argument in customAttributeData.NamedArguments)
       {

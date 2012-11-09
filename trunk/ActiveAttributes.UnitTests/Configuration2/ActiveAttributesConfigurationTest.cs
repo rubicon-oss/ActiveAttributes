@@ -31,8 +31,8 @@ namespace ActiveAttributes.UnitTests.Configuration2
     {
       var configuration = new ActiveAttributesConfiguration();
 
-      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<List<IDeclarationProvider>>());
-      Assert.That (configuration.AdviceOrderings, Is.TypeOf<List<AdviceOrderingBase>>());
+      Assert.That (configuration.DeclarationProviders, Is.TypeOf<List<IDeclarationProvider>>());
+      Assert.That (configuration.Orderings, Is.TypeOf<List<AdviceOrderingBase>>());
     }
 
     [Test]
@@ -42,17 +42,16 @@ namespace ActiveAttributes.UnitTests.Configuration2
       configuration.Lock();
 
       Assert.That (configuration.IsLocked, Is.True);
-      Assert.That (configuration.AspectDeclarationProviders, Is.TypeOf<ReadOnlyCollection<IDeclarationProvider>>());
-      Assert.That (configuration.AdviceOrderings, Is.TypeOf<ReadOnlyCollection<AdviceOrderingBase>>());
+      Assert.That (configuration.DeclarationProviders, Is.TypeOf<ReadOnlyCollection<IDeclarationProvider>>());
+      Assert.That (configuration.Orderings, Is.TypeOf<ReadOnlyCollection<AdviceOrderingBase>>());
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Configuration is already locked.")]
     public void ThrowsForMultipleLock ()
     {
       var configuration = new ActiveAttributesConfiguration();
       configuration.Lock();
-      configuration.Lock();
+      Assert.That (() => configuration.Lock(), Throws.InvalidOperationException.With.Message.EqualTo ("Configuration is already locked."));
     }
   }
 }

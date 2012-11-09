@@ -29,13 +29,13 @@ namespace ActiveAttributes.Core.Discovery
 
   public class ClassDeclarationProvider : IClassDeclarationProvider
   {
-    private readonly ICustomAttributeProviderTransform _customAttributeConverter;
+    private readonly ICustomAttributeProviderTransform _customAttributeProviderTransform;
 
-    public ClassDeclarationProvider (ICustomAttributeProviderTransform customAttributeConverter)
+    public ClassDeclarationProvider (ICustomAttributeProviderTransform customAttributeProviderTransform)
     {
-      ArgumentUtility.CheckNotNull ("customAttributeConverter", customAttributeConverter);
+      ArgumentUtility.CheckNotNull ("customAttributeProviderTransform", customAttributeProviderTransform);
 
-      _customAttributeConverter = customAttributeConverter;
+      _customAttributeProviderTransform = customAttributeProviderTransform;
     }
 
     public IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType, IAdviceBuilder parentAdviceBuilder = null)
@@ -43,10 +43,10 @@ namespace ActiveAttributes.Core.Discovery
       ArgumentUtility.CheckNotNull ("aspectType", aspectType);
 
       // TODO need to apply constructionInfo for class advice declaration
-      var typeAdviceBuilder = _customAttributeConverter.GetAdviceBuilder (aspectType, parentAdviceBuilder);
+      var typeAdviceBuilder = _customAttributeProviderTransform.GetAdviceBuilder (aspectType, parentAdviceBuilder);
 
       return from m in aspectType.GetMethods (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-             let methodAdviceBuilder = _customAttributeConverter.GetAdviceBuilder (m, typeAdviceBuilder)
+             let methodAdviceBuilder = _customAttributeProviderTransform.GetAdviceBuilder (m, typeAdviceBuilder)
              select methodAdviceBuilder;
     }
   }

@@ -30,7 +30,7 @@ namespace ActiveAttributes.Core.Assembly
 
     public JoinPoint (System.Reflection.Assembly assembly)
     {
-      ArgumentUtility.CheckNotNull ("assembly", assembly);
+      //ArgumentUtility.CheckNotNull ("assembly", assembly);
 
       _assembly = assembly;
     }

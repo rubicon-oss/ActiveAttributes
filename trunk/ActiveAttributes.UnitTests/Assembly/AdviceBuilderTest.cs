@@ -16,12 +16,10 @@
 using System;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
 using NUnit.Framework;
-using System.Linq;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -36,7 +34,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var pointcut = ObjectMother2.GetPointcut();
 
       var builder = new AdviceBuilder()
-          .SetConstruction (construction)
+          .UpdateConstruction (construction)
           .SetMethod (method)
           .SetName ("name")
           .SetRole ("role")
@@ -60,7 +58,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ThrowsForMultipleSet ()
     {
-      CheckThrowForMultipleSet (x => x.SetConstruction (ObjectMother2.GetConstruction()));
+      // can update construction
+      //CheckThrowForMultipleSet (x => x.UpdateConstruction (ObjectMother2.GetConstruction()));
       CheckThrowForMultipleSet (x => x.SetMethod (ObjectMother2.GetMethodInfo()));
       CheckThrowForMultipleSet (x => x.SetName ("name"));
       CheckThrowForMultipleSet (x => x.SetRole ("role"));
@@ -76,8 +75,11 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var pointcutType = typeof (TypePointcut);
 
-      builder.AddPointcut (ObjectMother2.GetPointcut (pointcutType));
-      Assert.That (() => builder.AddPointcut (ObjectMother2.GetPointcut (pointcutType)), Throws.Exception);
+      var pointcut1 = ObjectMother2.GetPointcut (pointcutType);
+      var pointcut2 = ObjectMother2.GetPointcut (pointcutType);
+      builder.AddPointcut (pointcut1);
+      var message = string.Format ("Cannot add multiple pointcuts of type '{0}'", pointcutType.Name);
+      Assert.That (() => builder.AddPointcut (pointcut2), Throws.InvalidOperationException.With.Message.EqualTo (message));
     }
 
     [Test]
@@ -88,31 +90,42 @@ namespace ActiveAttributes.UnitTests.Assembly
       var execution = AdviceExecution.Around;
       var scope = AdviceScope.Static;
 
-      CheckThrowForMissing (construction: null, method: method, execution: execution, scope: scope);
-      CheckThrowForMissing (method: null, construction: construction, execution: execution, scope: scope);
-      CheckThrowForMissing (execution: AdviceExecution.Undefined, method: method, construction: construction, scope: scope);
-      CheckThrowForMissing (scope: AdviceScope.Undefined, method: method, execution: execution, construction: construction);
+      CheckThrowForMissing ("construction", construction: null, method: method, execution: execution, scope: scope);
+      CheckThrowForMissing ("method", method: null, construction: construction, execution: execution, scope: scope);
+      CheckThrowForMissing ("execution", execution: AdviceExecution.Undefined, method: method, construction: construction, scope: scope);
+      CheckThrowForMissing ("scope", scope: AdviceScope.Undefined, method: method, execution: execution, construction: construction);
     }
 
     [Test]
-    public void CanOverwriteConstructionIfMoreMeaningful ()
+    public void UpdateConstruction ()
     {
-      // Construction from CustomAttributeData has more information than construction from Type
       var typeConstruction = ObjectMother2.GetConstructionByType (typeof (TypeConstruction));
-      var customAttributeDataConstruction = ObjectMother2.GetConstructionByType (typeof (CustomAttributeDataConstruction));
+      var attrConstruction = ObjectMother2.GetConstructionByType (typeof (CustomAttributeDataConstruction));
 
-      var builder = new AdviceBuilder();
+      var baseBuilder = new AdviceBuilder()
+          .SetMethod (ObjectMother2.GetMethodInfo())
+          .SetScope (AdviceScope.Static)
+          .SetExecution (AdviceExecution.Before);
+      var builder1 = baseBuilder.Copy().UpdateConstruction (typeConstruction);
+      var builder2 = baseBuilder.Copy().UpdateConstruction (attrConstruction);
 
-      builder.SetConstruction (typeConstruction);
-      Assert.That (() => builder.SetConstruction (customAttributeDataConstruction), Throws.Nothing);
-      Assert.That (() => builder.SetConstruction (customAttributeDataConstruction), Throws.Exception);
+      var advice1 = builder1.UpdateConstruction (attrConstruction).Build();
+      var advice2 = builder2.UpdateConstruction (typeConstruction).Build();
+      Assert.That (advice1.Construction, Is.SameAs (attrConstruction));
+      Assert.That (advice2.Construction, Is.SameAs (attrConstruction));
+    }
+
+    [Test]
+    public void ValidateArgumentTypes ()
+    {
+      
     }
 
     [Test]
     public void Copy ()
     {
       var builder = new AdviceBuilder()
-          .SetConstruction (ObjectMother2.GetConstruction())
+          .UpdateConstruction (ObjectMother2.GetConstruction())
           .SetMethod (ObjectMother2.GetMethodInfo())
           .SetName ("name")
           .SetRole ("name")
@@ -135,17 +148,19 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     private void CheckThrowForMissing (
+        string missingMember,
         IConstruction construction = null,
         MethodInfo method = null,
         AdviceExecution execution = AdviceExecution.Undefined,
         AdviceScope scope = AdviceScope.Undefined)
     {
       var builder = new AdviceBuilder()
-          .SetConstruction (construction)
+          .UpdateConstruction (construction)
           .SetMethod (method)
           .SetExecution (execution)
           .SetScope (scope);
-      Assert.That (() => builder.Build(), Throws.Exception);
+      var message = string.Format ("Cannot build advice without having set its {0}.", missingMember);
+      Assert.That (() => builder.Build(), Throws.InvalidOperationException.With.Message.EqualTo(message));
     }
 
     private void CheckThrowForMultipleSet (Action<AdviceBuilder> action)

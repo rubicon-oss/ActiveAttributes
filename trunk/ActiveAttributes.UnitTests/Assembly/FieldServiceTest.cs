@@ -38,7 +38,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void AddField ()
+    public void AddField_Instance ()
     {
       var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Private);
 

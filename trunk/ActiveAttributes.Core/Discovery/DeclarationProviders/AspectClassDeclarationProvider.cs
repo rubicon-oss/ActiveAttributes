@@ -44,7 +44,7 @@ namespace ActiveAttributes.Core.Discovery.DeclarationProviders
              let construction = new TypeConstruction (aspectType)
              where !typeof (AspectAttributeBase).IsAssignableFrom (aspectType)
              from adviceBuilder in _classDeclarationProvider.GetAdviceBuilders (aspectType)
-             select adviceBuilder.SetConstruction (construction);
+             select adviceBuilder.UpdateConstruction (construction);
     }
   }
 }

@@ -57,7 +57,7 @@ namespace ActiveAttributes.UnitTests.Discovery
           };
       var customAttributeData = ObjectMother2.GetCustomAttributeData (typeof(AspectAttributeBase), namedArguments);
 
-      adviceBuilderMock.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock);
+      adviceBuilderMock.Expect (x => x.UpdateConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock);
       adviceBuilderMock.Expect (x => x.SetName ("name")).Return (adviceBuilderMock);
       adviceBuilderMock.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock);
       adviceBuilderMock.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock);

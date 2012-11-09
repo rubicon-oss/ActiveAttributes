@@ -35,7 +35,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
         var afterType = Type.GetType (item.AfterType, true);
         var rule = new AdviceTypeOrdering (beforeType, afterType, GetType().Name);
 
-        activeAttributesConfiguration.AdviceOrderings.Add (rule);
+        activeAttributesConfiguration.Orderings.Add (rule);
       }
     }
   }

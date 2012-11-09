@@ -18,11 +18,19 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Core.Interception;
+using ActiveAttributes.Core.Ordering;
+using Castle.Components.DictionaryAdapter;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
 
@@ -43,7 +51,33 @@ namespace ActiveAttributes.Core.Assembly
 
     public static T Create<T> ()
     {
-      return ServiceLocator.Current.GetInstance<IObjectFactory>().Create<T>();
+      var interceptionTypeProvider = new InterceptionTypeProvider();
+      var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory(interceptionTypeProvider);
+      var fieldService = new FieldService();
+      var aspectInitializationExpressionHelper = new AspectInitializationExpressionHelper();
+      var aspectStorageService = new AspectStorageService(fieldService, aspectInitializationExpressionHelper);
+      var constructorExpressionsHelperFactory = new ConstructorExpressionsHelperFactory(aspectInitializationExpressionHelper);
+      var initializationService = new InitializationService(fieldService, constructorExpressionsHelperFactory);
+      var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService, initializationService);
+      var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[0];
+      var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
+      var adviceBuilderFactory = new AdviceBuilderFactory();
+      var customAttributeProviderTransform = new CustomAttributeProviderTransform(adviceBuilderFactory);
+      var classDeclarationProvider = new ClassDeclarationProvider(customAttributeProviderTransform);
+      var customAttributeDataTransform = new CustomAttributeDataTransform(adviceBuilderFactory);
+      var attributeDeclarationProvider = new AttributeDeclarationProvider(classDeclarationProvider, customAttributeDataTransform);
+      var relatedMethodFinder = new RelatedMethodFinder();
+      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider(attributeDeclarationProvider, relatedMethodFinder);
+      var methodLevelAdviceDeclarationProviders = new [] { methodAttributeDeclarationProvider };
+      var compositeDeclarationProvider = new CompositeDeclarationProvider(assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
+      var adviceDependencyProvider = new AdviceDependencyProvider (new IAdviceOrdering[0]);
+      var adviceSequencer = new AdviceSequencer (adviceDependencyProvider);
+      var pointcutParser = new PointcutParser();
+      var pointcutVisitor = new PointcutVisitor (pointcutParser);
+      var adviceComposer = new AdviceComposer (adviceSequencer, pointcutVisitor);
+      var assembler = new Assembler (compositeDeclarationProvider, adviceComposer, interceptionWeaver);
+      IObjectFactory objectFactory = new ObjectFactory (assembler);
+      return objectFactory.Create<T> ();
     }
 
     public ObjectFactory (ITypeAssemblyParticipant assembler)

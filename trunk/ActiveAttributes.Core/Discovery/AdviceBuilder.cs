@@ -26,7 +26,7 @@ namespace ActiveAttributes.Core.Discovery
 {
   public interface IAdviceBuilder
   {
-    IAdviceBuilder SetConstruction (IConstruction construction);
+    IAdviceBuilder UpdateConstruction (IConstruction construction);
     IAdviceBuilder SetMethod (MethodInfo method);
 
     IAdviceBuilder SetName (string name);
@@ -53,12 +53,10 @@ namespace ActiveAttributes.Core.Discovery
     
     private readonly IList<IPointcut> _pointcuts = new List<IPointcut>();
 
-    public IAdviceBuilder SetConstruction (IConstruction construction)
+    public IAdviceBuilder UpdateConstruction (IConstruction construction)
     {
-      if (_construction != null
-          && (construction.GetType() != typeof (CustomAttributeDataConstruction)
-              || _construction.GetType() == typeof (CustomAttributeDataConstruction)))
-        throw new Exception ("TODO");
+      if (_construction != null && construction.GetType() != typeof (CustomAttributeDataConstruction))
+        return this;
 
       _construction = construction;
       return this;
@@ -115,7 +113,10 @@ namespace ActiveAttributes.Core.Discovery
     public IAdviceBuilder AddPointcut (IPointcut pointcut)
     {
       if (_pointcuts.Any (x => x.GetType() == pointcut.GetType()))
-        throw new Exception ("TODO");
+      {
+        var message = string.Format ("Cannot add multiple pointcuts of type '{0}'", pointcut.GetType().Name);
+        throw new InvalidOperationException (message);
+      }
 
       _pointcuts.Add (pointcut);
       return this;
@@ -124,7 +125,7 @@ namespace ActiveAttributes.Core.Discovery
     public IAdviceBuilder Copy ()
     {
       var copy = new AdviceBuilder()
-          .SetConstruction (_construction)
+          .UpdateConstruction (_construction)
           .SetMethod (_method)
           .SetName (_name)
           .SetRole (_role)
@@ -140,10 +141,10 @@ namespace ActiveAttributes.Core.Discovery
 
     public Advice Build ()
     {
-      EnsureWasSet (_construction);
-      EnsureWasSet (_method);
-      EnsureWasSet (_execution);
-      EnsureWasSet (_scope);
+      EnsureWasSet ("construction",_construction);
+      EnsureWasSet ("method", _method);
+      EnsureWasSet ("execution", _execution);
+      EnsureWasSet ("scope", _scope);
 
       return new Advice (_construction, _method, _name, _role, _execution, _scope, _priority, _pointcuts);
     }
@@ -154,10 +155,13 @@ namespace ActiveAttributes.Core.Discovery
         throw new Exception();
     }
 
-    private void EnsureWasSet<T> (T value)
+    private void EnsureWasSet<T> (string memberName, T value)
     {
       if (value == null || value.Equals (default(T)))
-        throw new Exception ("TODO");
+      {
+        var message = string.Format ("Cannot build advice without having set its {0}.", memberName);
+        throw new InvalidOperationException (message);
+      }
     }
   }
 }

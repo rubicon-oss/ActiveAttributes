@@ -16,7 +16,6 @@
 using System;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
@@ -48,7 +47,7 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Method1());
 
-      _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (_builderMock);
+      _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
       _builderMock.Expect (x => x.SetMethod (method)).Return (_builderMock);
       _builderMock.Expect (x => x.SetName ("Name")).Return (_builderMock);
       _builderMock.Expect (x => x.SetRole ("Role")).Return (_builderMock);
@@ -67,7 +66,7 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Method2());
 
-      _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (_builderMock);
+      _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
       _builderMock.Expect (x => x.SetMethod (method)).Return (_builderMock);
       _builderMock.Expect (x => x.AddPointcut (Arg<TypePointcut>.Is.TypeOf)).Return (_builderMock);
       _builderMock.Expect (x => x.AddPointcut (Arg<MemberNamePointcut>.Is.TypeOf)).Return (_builderMock);
@@ -86,13 +85,13 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var type = typeof (DomainAspect);
 
-      _builderMock.Expect (x => x.SetConstruction (Arg<TypeConstruction>.Is.TypeOf)).Return (_builderMock);
+      _builderMock.Expect (x => x.UpdateConstruction (Arg<TypeConstruction>.Is.TypeOf)).Return (_builderMock);
       _builderMock.Expect (x => x.SetMethod (null)).Return (_builderMock);
 
-      _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (_builderMock);
-      var result = _transform.GetAdviceBuilder (type, null);
+      _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
+      _transform.GetAdviceBuilder (type, null);
 
-      var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null));
+      var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.UpdateConstruction (null));
       Assert.That (((IConstruction) args[0][0]).ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
       _builderMock.VerifyAllExpectations();
     }
@@ -111,7 +110,21 @@ namespace ActiveAttributes.UnitTests.Discovery
       Assert.That (result, Is.SameAs (fakeAdviceBuilder));
     }
 
-    private class DomainAspect : IAspect
+    [Test]
+    public void GetAdviceBuilder_ConsidersDerivedAttributes ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DerivedDomainAspect obj) => obj.Method3());
+      
+      var adviceBuilderMock = MockRepository.GenerateMock<IAdviceBuilder>();
+      _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (adviceBuilderMock);
+
+      _transform.GetAdviceBuilder (method, null);
+
+      adviceBuilderMock.AssertWasCalled (x => x.SetName ("Name"));
+      adviceBuilderMock.AssertWasCalled (x => x.AddPointcut (Arg<ReturnTypePointcut>.Is.Anything));
+    }
+
+    class DomainAspect : IAspect
     {
       [AdviceExecution (AdviceExecution.Around)]
       [AdviceScope (AdviceScope.Instance)]
@@ -123,6 +136,15 @@ namespace ActiveAttributes.UnitTests.Discovery
       [MemberNamePointcut ("MemberName")]
       [TypePointcut (typeof (string))]
       public void Method2 () {}
+
+      [AdviceName ("Name")]
+      [ReturnTypePointcut (typeof (string))]
+      public virtual void Method3 () { }
+    }
+
+    class DerivedDomainAspect : DomainAspect
+    {
+      public override void Method3 () {}
     }
   }
 }
