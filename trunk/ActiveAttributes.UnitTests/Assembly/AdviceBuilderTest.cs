@@ -34,7 +34,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var pointcut = ObjectMother2.GetPointcut();
 
       var builder = new AdviceBuilder()
-          .UpdateConstruction (construction)
+          .SetConstruction (construction)
           .SetMethod (method)
           .SetName ("name")
           .SetRole ("role")
@@ -56,6 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
+    [Ignore]
     public void ThrowsForMultipleSet ()
     {
       // can update construction
@@ -69,6 +70,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
+    [Ignore]
     public void ThrowsForMultiplePointcutTypes ()
     {
       var builder = new AdviceBuilder();
@@ -83,7 +85,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    public void ThrowsForForMissing ()
+    public void ThrowsForMissing ()
     {
       var construction = ObjectMother2.GetConstruction();
       var method = ObjectMother2.GetMethodInfo();
@@ -96,26 +98,39 @@ namespace ActiveAttributes.UnitTests.Assembly
       CheckThrowForMissing ("scope", scope: AdviceScope.Undefined, method: method, execution: execution, construction: construction);
     }
 
-    [Test]
-    public void UpdateConstruction ()
+    [Test (Description = "Construction can be overwritten with more meaningful construction (i.e., CustomAttributeDataConstruction)")]
+    public void SetConstruction ()
     {
       var typeConstruction = ObjectMother2.GetConstructionByType (typeof (TypeConstruction));
       var attrConstruction = ObjectMother2.GetConstructionByType (typeof (CustomAttributeDataConstruction));
 
-      var baseBuilder = new AdviceBuilder()
-          .SetMethod (ObjectMother2.GetMethodInfo())
-          .SetScope (AdviceScope.Static)
-          .SetExecution (AdviceExecution.Before);
-      var builder1 = baseBuilder.Copy().UpdateConstruction (typeConstruction);
-      var builder2 = baseBuilder.Copy().UpdateConstruction (attrConstruction);
+      var builder1 = ObjectMother2.GetAdviceBuilder (typeConstruction);
+      var builder2 = ObjectMother2.GetAdviceBuilder (attrConstruction);
 
-      var advice1 = builder1.UpdateConstruction (attrConstruction).Build();
-      var advice2 = builder2.UpdateConstruction (typeConstruction).Build();
-      Assert.That (advice1.Construction, Is.SameAs (attrConstruction));
-      Assert.That (advice2.Construction, Is.SameAs (attrConstruction));
+      var message = "Construction can not be overwritten if existing construction is more meaningful.";
+      Assert.That (() => builder1.SetConstruction (typeConstruction), Throws.Nothing);
+      Assert.That (() => builder1.SetConstruction (attrConstruction), Throws.Nothing);
+      Assert.That (() => builder2.SetConstruction (attrConstruction), Throws.Nothing);
+      Assert.That (() => builder2.SetConstruction (typeConstruction), Throws.InvalidOperationException.With.Message.EqualTo (message));
     }
 
-    [Test]
+    [Test (Description = "Pointcut of certain type can be overwritten")]
+    public void AddPointcut ()
+    {
+      var unrelatedPointcut = ObjectMother2.GetPointcut (typeof (NamespacePointcut));
+      var pointcut1 = ObjectMother2.GetPointcut (typeof (TypePointcut));
+      var pointcut2 = ObjectMother2.GetPointcut (typeof (TypePointcut));
+      var advice = ObjectMother2.GetAdviceBuilder()
+          .AddPointcut (unrelatedPointcut)
+          .AddPointcut (pointcut1)
+          .AddPointcut (pointcut2)
+          .Build();
+
+      Assert.That (advice.Pointcuts, Is.EquivalentTo (new[] { unrelatedPointcut, pointcut2 }));
+    }
+
+
+    [Test(Description = "TODO")]
     public void ValidateArgumentTypes ()
     {
       
@@ -125,7 +140,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void Copy ()
     {
       var builder = new AdviceBuilder()
-          .UpdateConstruction (ObjectMother2.GetConstruction())
+          .SetConstruction (ObjectMother2.GetConstruction())
           .SetMethod (ObjectMother2.GetMethodInfo())
           .SetName ("name")
           .SetRole ("name")
@@ -155,7 +170,7 @@ namespace ActiveAttributes.UnitTests.Assembly
         AdviceScope scope = AdviceScope.Undefined)
     {
       var builder = new AdviceBuilder()
-          .UpdateConstruction (construction)
+          .SetConstruction (construction)
           .SetMethod (method)
           .SetExecution (execution)
           .SetScope (scope);

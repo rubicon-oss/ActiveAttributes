@@ -53,7 +53,7 @@ namespace ActiveAttributes.Core.Discovery
 
       var type = customAttributeProvider as Type;
       if (type != null)
-        adviceBuilder.UpdateConstruction (new TypeConstruction (type));
+        adviceBuilder.SetConstruction (new TypeConstruction (type));
       // TODO adviceBuilder.SetConstruction (new TypeConstruction (customAttributeProvider as Type));
 
       adviceBuilder.SetMethod (customAttributeProvider as MethodInfo);

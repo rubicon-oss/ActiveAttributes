@@ -14,16 +14,28 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly;
+using System.Reflection;
+using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Core.Discovery.Construction;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static IAdviceBuilder GetAdviceBuilder ()
+    public static IAdviceBuilder GetAdviceBuilder (
+        IConstruction construction = null,
+        MethodInfo method = null,
+        AdviceExecution execution = AdviceExecution.Before,
+        AdviceScope scope = AdviceScope.Instance)
     {
-      return new AdviceBuilder();
+      construction = construction ?? GetConstruction();
+      method = method ?? GetMethodInfo();
+      return new AdviceBuilder()
+          .SetConstruction (construction)
+          .SetMethod (method)
+          .SetExecution (execution)
+          .SetScope (scope);
     }
   }
 }

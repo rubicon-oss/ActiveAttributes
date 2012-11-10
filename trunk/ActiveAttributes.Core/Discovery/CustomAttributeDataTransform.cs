@@ -66,7 +66,7 @@ namespace ActiveAttributes.Core.Discovery
       var adviceBuilder = _adviceBuilderFactory.Create();
 
       var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
-      adviceBuilder.UpdateConstruction (constructionInfo);
+      adviceBuilder.SetConstruction (constructionInfo);
 
       foreach (var argument in customAttributeData.NamedArguments)
       {
@@ -99,7 +99,7 @@ namespace ActiveAttributes.Core.Discovery
       var buildersAsCollection = adviceBuilders.ConvertToCollection();
 
       var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
-      UpdateBuilders (buildersAsCollection, (x, v) => x.UpdateConstruction (v), constructionInfo);
+      UpdateBuilders (buildersAsCollection, (x, v) => x.SetConstruction (v), constructionInfo);
 
       foreach (var argument in customAttributeData.NamedArguments)
       {

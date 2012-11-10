@@ -75,15 +75,15 @@ namespace ActiveAttributes.UnitTests.Discovery
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2Attribute), fakeAttributeAdviceBuilder2))
           .Return (fakeTypeAdviceBuilders2.AsOneTime());
       typeAdviceBuilderMock1
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
           .WhenCalled (x => construction1 = (IConstruction) x.Arguments[0])
           .Return (typeAdviceBuilderMock1);
       typeAdviceBuilderMock2
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
           .WhenCalled (x => construction2 = (IConstruction) x.Arguments[0])
           .Return (typeAdviceBuilderMock2);
       typeAdviceBuilderMock3
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2Attribute))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2Attribute))))
           .Return (typeAdviceBuilderMock3);
 
       var result = _attributeDeclarationProvider.GetAdviceBuilders (method).ToList();

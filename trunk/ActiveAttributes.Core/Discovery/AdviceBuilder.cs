@@ -26,7 +26,7 @@ namespace ActiveAttributes.Core.Discovery
 {
   public interface IAdviceBuilder
   {
-    IAdviceBuilder UpdateConstruction (IConstruction construction);
+    IAdviceBuilder SetConstruction (IConstruction construction);
     IAdviceBuilder SetMethod (MethodInfo method);
 
     IAdviceBuilder SetName (string name);
@@ -37,6 +37,7 @@ namespace ActiveAttributes.Core.Discovery
     IAdviceBuilder AddPointcut (IPointcut pointcut);
 
     IAdviceBuilder Copy ();
+
     Advice Build ();
   }
 
@@ -50,13 +51,18 @@ namespace ActiveAttributes.Core.Discovery
     private int _priority;
     private AdviceExecution _execution;
     private AdviceScope _scope;
-    
-    private readonly IList<IPointcut> _pointcuts = new List<IPointcut>();
 
-    public IAdviceBuilder UpdateConstruction (IConstruction construction)
+    private readonly List<IPointcut> _pointcuts = new List<IPointcut>();
+
+    public IAdviceBuilder SetConstruction (IConstruction construction)
     {
-      if (_construction != null && construction.GetType() != typeof (CustomAttributeDataConstruction))
-        return this;
+      if (_construction != null
+          && construction.GetType() == typeof (TypeConstruction)
+          && _construction.GetType() == typeof (CustomAttributeDataConstruction))
+      {
+        var message = "Construction can not be overwritten if existing construction is more meaningful.";
+        throw new InvalidOperationException (message);
+      }
 
       _construction = construction;
       return this;
@@ -72,52 +78,37 @@ namespace ActiveAttributes.Core.Discovery
 
     public IAdviceBuilder SetName (string name)
     {
-      EnsureWasNotSet (_name);
-
       _name = name;
       return this;
     }
 
     public IAdviceBuilder SetRole (string role)
     {
-      EnsureWasNotSet (_role);
-
       _role = role;
       return this;
     }
 
     public IAdviceBuilder SetPriority (int priority)
     {
-      EnsureWasNotSet (_priority);
-
       _priority = priority;
       return this;
     }
 
     public IAdviceBuilder SetExecution (AdviceExecution execution)
     {
-      EnsureWasNotSet (_execution);
-
       _execution = execution;
       return this;
     }
 
     public IAdviceBuilder SetScope (AdviceScope scope)
     {
-      EnsureWasNotSet (_scope);
-
       _scope = scope;
       return this;
     }
 
     public IAdviceBuilder AddPointcut (IPointcut pointcut)
     {
-      if (_pointcuts.Any (x => x.GetType() == pointcut.GetType()))
-      {
-        var message = string.Format ("Cannot add multiple pointcuts of type '{0}'", pointcut.GetType().Name);
-        throw new InvalidOperationException (message);
-      }
-
+      _pointcuts.RemoveAll (x => x.GetType() == pointcut.GetType());
       _pointcuts.Add (pointcut);
       return this;
     }
@@ -125,7 +116,7 @@ namespace ActiveAttributes.Core.Discovery
     public IAdviceBuilder Copy ()
     {
       var copy = new AdviceBuilder()
-          .UpdateConstruction (_construction)
+          .SetConstruction (_construction)
           .SetMethod (_method)
           .SetName (_name)
           .SetRole (_role)

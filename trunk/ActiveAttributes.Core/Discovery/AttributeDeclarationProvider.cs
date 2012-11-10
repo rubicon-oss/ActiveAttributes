@@ -62,7 +62,7 @@ namespace ActiveAttributes.Core.Discovery
         var aspectConstructionInfo = new CustomAttributeDataConstruction (customAttributeData);
 
         foreach (var aspectTypeAdviceBuilder in aspectTypeAdviceBuilders)
-          yield return aspectTypeAdviceBuilder.UpdateConstruction (aspectConstructionInfo);
+          yield return aspectTypeAdviceBuilder.SetConstruction (aspectConstructionInfo);
       }
     }
   }

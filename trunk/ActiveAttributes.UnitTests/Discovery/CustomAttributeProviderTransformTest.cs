@@ -85,13 +85,13 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var type = typeof (DomainAspect);
 
-      _builderMock.Expect (x => x.UpdateConstruction (Arg<TypeConstruction>.Is.TypeOf)).Return (_builderMock);
+      _builderMock.Expect (x => x.SetConstruction (Arg<TypeConstruction>.Is.TypeOf)).Return (_builderMock);
       _builderMock.Expect (x => x.SetMethod (null)).Return (_builderMock);
 
       _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
       _transform.GetAdviceBuilder (type, null);
 
-      var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.UpdateConstruction (null));
+      var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null));
       Assert.That (((IConstruction) args[0][0]).ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
       _builderMock.VerifyAllExpectations();
     }
@@ -101,13 +101,13 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var type = typeof (DomainAspect);
       var parentAdviceBuilderMock = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var fakeAdviceBuilder = ObjectMother2.GetAdviceBuilder();
+      var builderStub = MockRepository.GenerateStub<IAdviceBuilder>();
 
-      parentAdviceBuilderMock.Expect (x => x.Copy()).Return (fakeAdviceBuilder);
+      parentAdviceBuilderMock.Expect (x => x.Copy()).Return (builderStub);
 
       var result = _transform.GetAdviceBuilder (type, parentAdviceBuilderMock);
 
-      Assert.That (result, Is.SameAs (fakeAdviceBuilder));
+      Assert.That (result, Is.SameAs (builderStub));
     }
 
     [Test]

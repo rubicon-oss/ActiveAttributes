@@ -52,15 +52,15 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2)))
           .Return (new[] { adviceBuilderMock3 });
       adviceBuilderMock1
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
           .WhenCalled (x => construction1 = (IConstruction) x.Arguments[0])
           .Return (adviceBuilderMock1);
       adviceBuilderMock2
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
           .WhenCalled (x => construction2 = (IConstruction) x.Arguments[0])
           .Return (adviceBuilderMock2);
       adviceBuilderMock3
-          .Expect (x => x.UpdateConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2))))
+          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2))))
           .Return (adviceBuilderMock3);
 
       var result = provider.GetDeclarations().ToList();
