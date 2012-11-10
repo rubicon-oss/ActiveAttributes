@@ -14,12 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.Construction;
 using NUnit.Framework;
@@ -51,16 +49,14 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
 
-      var typeAdviceBuilderMock1 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var typeAdviceBuilderMock2 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var typeAdviceBuilderMock3 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var fakeTypeAdviceBuilders1 = new[] { typeAdviceBuilderMock1, typeAdviceBuilderMock2 };
-      var fakeTypeAdviceBuilders2 = new[] { typeAdviceBuilderMock3 };
+      var fakeAdviceBuilder1 = ObjectMother2.GetAdviceBuilder();
+      var fakeAdviceBuilder2 = ObjectMother2.GetAdviceBuilder();
+      var fakeAdviceBuilder3 = ObjectMother2.GetAdviceBuilder();
+      var fakeTypeAdviceBuilders1 = new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 };
+      var fakeTypeAdviceBuilders2 = new[] { fakeAdviceBuilder3 };
       var fakeAdviceBuilders1 = new IAdviceBuilder[0];
       var fakeAdviceBuilders2 = new IAdviceBuilder[0];
 
-      IConstruction construction1 = null;
-      IConstruction construction2 = null;
       _classDeclarationProviderMock
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1Attribute)))
           .Return (fakeAdviceBuilders1.AsOneTime());
@@ -73,25 +69,12 @@ namespace ActiveAttributes.UnitTests.Discovery
       _customAttributeDataTransformMock
           .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 2), Arg.Is (fakeAdviceBuilders2)))
           .Return (fakeTypeAdviceBuilders2);
-      typeAdviceBuilderMock1
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
-          .WhenCalled (x => construction1 = (IConstruction) x.Arguments[0])
-          .Return (typeAdviceBuilderMock1);
-      typeAdviceBuilderMock2
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
-          .WhenCalled (x => construction2 = (IConstruction) x.Arguments[0])
-          .Return (typeAdviceBuilderMock2);
-      typeAdviceBuilderMock3
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2Attribute))))
-          .Return (typeAdviceBuilderMock3);
 
       var result = _attributeDeclarationProvider.GetAdviceBuilders (method).ToList();
 
       _customAttributeDataTransformMock.VerifyAllExpectations();
       _classDeclarationProviderMock.VerifyAllExpectations();
-      typeAdviceBuilderMock1.VerifyAllExpectations();
-      Assert.That (result, Is.EquivalentTo (new[] { typeAdviceBuilderMock1, typeAdviceBuilderMock2, typeAdviceBuilderMock3 }));
-      Assert.That (construction1, Is.SameAs (construction2));
+      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
     }
 
     [Test]

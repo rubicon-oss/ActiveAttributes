@@ -60,10 +60,8 @@ namespace ActiveAttributes.Core.Discovery
         var aspectTypeAdviceBuilders = _classDeclarationProvider.GetAdviceBuilders (aspectType).ConvertToCollection();
 
         var attributeAdviceBuilders = _customAttributeDataTransform.UpdateAdviceBuilders (customAttributeData, aspectTypeAdviceBuilders);
-
-        var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
         foreach (var attributeAdviceBuilder in attributeAdviceBuilders)
-          yield return attributeAdviceBuilder.SetConstruction (constructionInfo);
+          yield return attributeAdviceBuilder;
       }
     }
   }
