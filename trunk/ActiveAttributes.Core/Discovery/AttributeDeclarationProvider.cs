@@ -20,6 +20,7 @@ using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Extensions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Discovery
 {
@@ -55,14 +56,14 @@ namespace ActiveAttributes.Core.Discovery
         if (!customAttributeData.IsAspectAttribute ())
           continue;
 
-        var attributeAdviceBuilder = _customAttributeDataTransform.GetAdviceBuilder (customAttributeData);
         var aspectType = customAttributeData.Constructor.DeclaringType;
-        var aspectTypeAdviceBuilders = _classDeclarationProvider.GetAdviceBuilders (aspectType, attributeAdviceBuilder);
+        var aspectTypeAdviceBuilders = _classDeclarationProvider.GetAdviceBuilders (aspectType).ConvertToCollection();
 
-        var aspectConstructionInfo = new CustomAttributeDataConstruction (customAttributeData);
+        var attributeAdviceBuilders = _customAttributeDataTransform.UpdateAdviceBuilders (customAttributeData, aspectTypeAdviceBuilders);
 
-        foreach (var aspectTypeAdviceBuilder in aspectTypeAdviceBuilders)
-          yield return aspectTypeAdviceBuilder.SetConstruction (aspectConstructionInfo);
+        var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
+        foreach (var attributeAdviceBuilder in attributeAdviceBuilders)
+          yield return attributeAdviceBuilder.SetConstruction (constructionInfo);
       }
     }
   }

@@ -51,29 +51,28 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
 
-      var fakeAttributeAdviceBuilder1 = ObjectMother2.GetAdviceBuilder();
-      var fakeAttributeAdviceBuilder2 = ObjectMother2.GetAdviceBuilder();
-
       var typeAdviceBuilderMock1 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var typeAdviceBuilderMock2 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var typeAdviceBuilderMock3 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var fakeTypeAdviceBuilders1 = new[] { typeAdviceBuilderMock1, typeAdviceBuilderMock2 };
       var fakeTypeAdviceBuilders2 = new[] { typeAdviceBuilderMock3 };
+      var fakeAdviceBuilders1 = new IAdviceBuilder[0];
+      var fakeAdviceBuilders2 = new IAdviceBuilder[0];
 
       IConstruction construction1 = null;
       IConstruction construction2 = null;
-      _customAttributeDataTransformMock
-          .Expect (x => x.GetAdviceBuilder (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 1)))
-          .Return (fakeAttributeAdviceBuilder1);
-      _customAttributeDataTransformMock
-          .Expect (x => x.GetAdviceBuilder (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 2)))
-          .Return (fakeAttributeAdviceBuilder2);
       _classDeclarationProviderMock
-          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1Attribute), fakeAttributeAdviceBuilder1))
-          .Return (fakeTypeAdviceBuilders1.AsOneTime());
+          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1Attribute)))
+          .Return (fakeAdviceBuilders1.AsOneTime());
+      _customAttributeDataTransformMock
+          .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 1), Arg.Is (fakeAdviceBuilders1)))
+          .Return (fakeTypeAdviceBuilders1);
       _classDeclarationProviderMock
-          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2Attribute), fakeAttributeAdviceBuilder2))
-          .Return (fakeTypeAdviceBuilders2.AsOneTime());
+          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2Attribute)))
+          .Return (fakeAdviceBuilders2.AsOneTime());
+      _customAttributeDataTransformMock
+          .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 2), Arg.Is (fakeAdviceBuilders2)))
+          .Return (fakeTypeAdviceBuilders2);
       typeAdviceBuilderMock1
           .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1Attribute))))
           .WhenCalled (x => construction1 = (IConstruction) x.Arguments[0])
