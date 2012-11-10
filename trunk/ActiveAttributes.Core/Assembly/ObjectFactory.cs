@@ -27,11 +27,11 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
@@ -47,7 +47,7 @@ namespace ActiveAttributes.Core.Assembly
 
   public class ObjectFactory : IObjectFactory
   {
-    public readonly static ITypeAssemblyParticipant Assembler;
+    public readonly static IParticipant Assembler;
 
     public static T Create<T> ()
     {
@@ -95,16 +95,14 @@ namespace ActiveAttributes.Core.Assembly
     private ITypeModifier CreateReflectionEmitTypeModifier (string testName)
     {
       var assemblyName = new AssemblyName (testName);
-      var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly (
-          assemblyName, AssemblyBuilderAccess.RunAndSave, Environment.CurrentDirectory);
+      var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly (assemblyName, AssemblyBuilderAccess.RunAndSave, Environment.CurrentDirectory);
       var generatedFileName = assemblyName.Name + ".dll";
 
       var moduleBuilder = assemblyBuilder.DefineDynamicModule (generatedFileName, true);
       var moduleBuilderAdapter = new ModuleBuilderAdapter (moduleBuilder);
       var decoratedModuleBuilderAdapter = new UniqueNamingModuleBuilderDecorator (moduleBuilderAdapter);
-      var expressionPreparer = new ExpandingExpressionPreparer();
-      var debugInfoGenerator = DebugInfoGenerator.CreatePdbGenerator();
-      var handlerFactory = new SubclassProxyBuilderFactory (decoratedModuleBuilderAdapter, expressionPreparer, debugInfoGenerator);
+      var debugInfoGenerator = DebugInfoGenerator.CreatePdbGenerator ();
+      var handlerFactory = new SubclassProxyBuilderFactory (decoratedModuleBuilderAdapter, debugInfoGenerator);
 
       return new TypeModifier (handlerFactory);
     }

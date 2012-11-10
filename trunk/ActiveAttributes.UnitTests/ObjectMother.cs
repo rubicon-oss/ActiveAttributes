@@ -77,7 +77,7 @@ namespace ActiveAttributes.UnitTests
 
     public static MutableType GetMutableType (Type type = null)
     {
-      return MutableTypeObjectMother.CreateForExistingType (type);
+      return MutableTypeObjectMother.CreateForExisting (type);
     }
 
     public static FieldInfo GetFieldInfo (
@@ -244,7 +244,7 @@ namespace ActiveAttributes.UnitTests
     {
       return methodInfo == null
                  ? MutableMethodInfoObjectMother.Create()
-                 : MutableMethodInfoObjectMother.CreateForExisting (originalMethodInfo: methodInfo);
+                 : MutableMethodInfoObjectMother.CreateForExisting (methodInfo);
     }
   }
 }

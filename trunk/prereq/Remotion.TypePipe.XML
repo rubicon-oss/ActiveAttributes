@@ -24,6 +24,16 @@
             Defines a common interface for <see cref="T:System.Reflection.Emit.MethodBuilder"/> and <see cref="T:System.Reflection.Emit.ConstructorBuilder"/>.
             </summary>
         </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.ConstructorOnTypeInstantiation">
+            <summary>
+            Represents a constructor on a constructed type.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.FieldOnTypeInstantiation">
+            <summary>
+            Represents a field on a constructed type.
+            </summary>
+        </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IMethodBuilder">
             <summary>
             Defines an interface for <see cref="T:System.Reflection.Emit.MethodBuilder"/>.
@@ -42,6 +52,11 @@
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.MethodBuilderAdapter">
             <summary>
             Adapts <see cref="P:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.MethodBuilderAdapter.MethodBuilder"/> with the <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IMethodBaseBuilder"/> interface.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.MethodOnTypeInstantiation">
+            <summary>
+            Represents a method on a constructed type.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.DeferredActionManager">
@@ -85,6 +100,11 @@
             Defines an interface for classes preparing method (and constructor) bodies so that code can be generated for them.
             </summary>
         </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IMethodTrampolineProvider">
+            <summary>
+            Provides method stubs for performing non virtual calls to virtual methods as it is needed for base calls.
+            </summary>
+        </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.ConstructorBuilderForLambdaCompiler">
             <summary>
             Adapts <see cref="T:System.Reflection.Emit.ConstructorBuilder"/> for the <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.IMethodBuilderForLambdaCompiler"/> interface.
@@ -126,9 +146,9 @@
             A decorator which adapts emit calls for <see cref="T:Remotion.TypePipe.Expressions.ReflectionAdapters.ConstructorAsMethodInfoAdapter"/> and <see cref="T:Remotion.TypePipe.Expressions.ReflectionAdapters.NonVirtualCallMethodInfoAdapter"/>.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ExpandingExpressionPreparer">
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ExpressionPreparer">
             <summary>
-            Prepares method (and constructor) bodies so that code can be generated for them by expanding all nodes not
+            Prepares method (and constructor) bodies so that code can be generated for them by replacing all nodes not
             understood by <see cref="T:Microsoft.Scripting.Ast.Compiler.LambdaCompiler"/> and <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.ILGeneratingTypePipeExpressionVisitor"/>.
             </summary>
         </member>
@@ -156,6 +176,12 @@
             <summary>
             This class holds information needed by <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IMemberEmitter"/> instances to emit members.
             </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.MethodTrampolineProvider">
+            <summary>
+            Provides method stubs for performing non virtual calls to virtual methods as it is needed for base calls.
+            </summary>
+            <remarks>This class is used by <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.UnemittableExpressionVisitor"/>.</remarks>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.UnemittableExpressionVisitor">
             <summary>
@@ -525,6 +551,138 @@
             <summary>
             Defines an interface for <see cref="T:System.Reflection.Emit.ModuleBuilder"/>.
             </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CompoundCacheKeyEqualityComparer">
+            <summary>
+            Compares compound cache keys, i.e., compares object arrays.
+            This class is an implementation detail of <see cref="T:Remotion.TypePipe.TypeCache"/>.
+            </summary>
+            <remarks>
+            Note that the length of the object arrays is assumed to be equal.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.DelegateFactory">
+            <summary>
+            Uses <see cref="T:System.Linq.Expressions.LambdaExpression"/> to create delegates enabling the efficient invocation of constructors.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.IDelegateFactory">
+            <summary>
+            Creates delegates to enable the efficient invocation of constructors.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Scripting.Ast.Compiler.CompilerScope">
+            <summary>
+            CompilerScope is the data structure which the Compiler keeps information
+            related to compiling scopes. It stores the following information:
+              1. Parent relationship (for resolving variables)
+              2. Information about hoisted variables
+              3. Information for resolving closures
+            
+            Instances are produced by VariableBinder, which does a tree walk
+            looking for scope nodes: LambdaExpression and BlockExpression.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._parent">
+            <summary>
+            parent scope, if any
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.Node">
+            <summary>
+            The expression node for this scope
+            Can be LambdaExpression, BlockExpression, or CatchBlock
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.IsMethod">
+            <summary>
+            True if this node corresponds to an IL method.
+            Can only be true if the Node is a LambdaExpression.
+            But inlined lambdas will have it set to false.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.NeedsClosure">
+            <summary>
+            Does this scope (or any inner scope) close over variables from any
+            parent scope?
+            Populated by VariableBinder
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.Definitions">
+            <summary>
+            Variables defined in this scope, and whether they're hoisted or not
+            Populated by VariableBinder
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.ReferenceCount">
+            <summary>
+            Each variable referenced within this scope, and how often it was referenced
+            Populated by VariableBinder
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.MergedScopes">
+            <summary>
+            Scopes whose variables were merged into this one
+            
+            Created lazily as we create hundreds of compiler scopes w/o merging scopes when compiling rules.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._hoistedLocals">
+            <summary>
+            The scope's hoisted locals, if any.
+            Provides storage for variables that are referenced from nested lambdas
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._closureHoistedLocals">
+            <summary>
+            The closed over hoisted locals
+            </summary>
+        </member>
+        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._locals">
+            <summary>
+            Mutable dictionary that maps non-hoisted variables to either local
+            slots or argument slots
+            </summary>
+        </member>
+        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.Enter(Microsoft.Scripting.Ast.Compiler.LambdaCompiler,Microsoft.Scripting.Ast.Compiler.CompilerScope)">
+            <summary>
+            Called when entering a lambda/block. Performs all variable allocation
+            needed, including creating hoisted locals and IL locals for accessing
+            parent locals
+            </summary>
+        </member>
+        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.Exit">
+            <summary>
+            Frees unnamed locals, clears state associated with this compiler
+            </summary>
+        </member>
+        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.AddLocal(Microsoft.Scripting.Ast.Compiler.LambdaCompiler,Microsoft.Scripting.Ast.ParameterExpression)">
+            <summary>
+            Adds a new virtual variable corresponding to an IL local
+            </summary>
+        </member>
+        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.ResolveVariable(Microsoft.Scripting.Ast.ParameterExpression,Microsoft.Scripting.Ast.Compiler.HoistedLocals)">
+            <summary>
+            Resolve a local variable in this scope or a closed over scope
+            Throws if the variable is defined
+            </summary>
+        </member>
+        <member name="P:Microsoft.Scripting.Ast.Compiler.CompilerScope.NearestHoistedLocals">
+            <summary>
+            This scope's hoisted locals, or the closed over locals, if any
+            Equivalent to: _hoistedLocals ?? _closureHoistedLocals
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Expressions.DelegateBasedExpressionVisitor">
+            <summary>
+            A visitor that implements <see cref="M:Remotion.TypePipe.Expressions.DelegateBasedExpressionVisitor.Visit(Microsoft.Scripting.Ast.Expression)"/> by using the provided <see cref="T:System.Func`2"/> delegate.
+            </summary>
+        </member>
+        <member name="M:Remotion.TypePipe.Expressions.DelegateBasedExpressionVisitor.#ctor(System.Func{Microsoft.Scripting.Ast.Expression,Microsoft.Scripting.Ast.Expression})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Remotion.TypePipe.Expressions.DelegateBasedExpressionVisitor"/> class.
+            </summary>
+            <param name="expressionVisitorDelegate">The expression delegate.</param>
         </member>
         <member name="T:Microsoft.Scripting.Ast.Expression">
             <summary>
@@ -3819,6 +3977,11 @@
             </summary>
             <returns>A <see cref="T:System.String"/> representation of the Expression.</returns>
         </member>
+        <member name="T:Remotion.TypePipe.Expressions.ExpressionExtensions">
+            <summary>
+            Provides extension methods for working with <see cref="T:Microsoft.Scripting.Ast.Expression"/> trees.
+            </summary>
+        </member>
         <member name="T:Remotion.TypePipe.Expressions.NewDelegateExpression">
             <summary>
             Represents the instantiation of a delegate.
@@ -3855,8 +4018,7 @@
         </member>
         <member name="T:Remotion.TypePipe.Expressions.ReflectionAdapters.ConstructorAsMethodInfoAdapter">
             <summary>
-            Represents a constructor as a <see cref="T:System.Reflection.MethodInfo"/>. This is required for calling a constructor using a 
-            <see cref="T:Microsoft.Scripting.Ast.MethodCallExpression"/>.
+            Represents a constructor as a <see cref="T:System.Reflection.MethodInfo"/>. This is required for calling a constructor using a <see cref="T:Microsoft.Scripting.Ast.MethodCallExpression"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation.OffsetTrackingILGeneratorAdapter">
@@ -3903,6 +4065,47 @@
             Implements forward declarations of method and constructor bodies by deferring emission of code to the <see cref="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder.Build"/> method.
             </summary>
         </member>
+        <member name="T:Remotion.TypePipe.ICacheKeyProvider">
+            <summary>
+            This interface provides a cache key for a <see cref="T:Remotion.TypePipe.IParticipant"/> depending on the requested type.
+            Implementations should return non-equal cache keys if the participant applies different modifications to the <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            This might depend on participant configuation, context and user options.
+            However, a cache key should not encode the requested type itself, as this is already handled by the pipeline caching facilities.
+            </summary>
+            <remarks>
+            This interface must be implemented if the generated types cannot be cached unconditionally.
+            If the generated types can be cached unconditionally <see cref="P:Remotion.TypePipe.IParticipant.PartialCacheKeyProvider"/> should return <see langword="null"/>.
+            </remarks>
+        </member>
+        <member name="M:Remotion.TypePipe.ICacheKeyProvider.GetCacheKey(System.Type)">
+            <summary>
+            Gets a cache key used to identify the generated type for the provided requested type.
+            It should include the <see cref="T:Remotion.TypePipe.IParticipant"/> configuation and other data that might influence the modifications specified by a 
+            participant. However, implementations should not encode the requested type itself, as this is already handled by the pipeline.
+            </summary>
+            <param name="requestedType">The requested type.</param>
+            <returns>A cache key.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.ITypeAssembler">
+            <summary>
+            Generates types for requested types and computes compound cache keys to enabled efficient caching of generated types.
+            </summary>
+        </member>
+        <member name="M:Remotion.TypePipe.ITypeAssembler.GetCompoundCacheKey(System.Type,System.Int32)">
+            <summary>
+            Computes a compound cache key consisting of the individual cache key parts from the <see cref="T:Remotion.TypePipe.ICacheKeyProvider"/>s and the
+            <paramref name="requestedType"/>. The return value of this method is an object array for performance reasons.
+            </summary>
+            <param name="requestedType">The requested type.</param>
+            <param name="freeSlotsAtStart">Number of slots beginning at the start of the array which are reserved for use by the caller.</param>
+            <returns>The compound cache key.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.ITypeCache">
+            <summary>
+            Caches the types generated by the pipeline.
+            Also caches delegates that perform constructor calls to enable efficient object creation.
+            </summary>
+        </member>
         <member name="T:Remotion.TypePipe.MutableReflection.BodyBuilding.BodyContextUtility">
             <summary>
             Holds utility functions used by <see cref="T:Remotion.TypePipe.MutableReflection.BodyBuilding.BodyContextBase"/> and its descendants.
@@ -3933,6 +4136,14 @@
             Base class for method body context classes.
             </summary>
         </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.IMutableMemberFactory">
+            <summary>
+            Serves as a factory for mutable members.
+            </summary>
+            <remarks>
+            This class is an implementation detail of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            </remarks>
+        </member>
         <member name="T:Remotion.TypePipe.MutableReflection.IRelatedEventFinder">
             <summary>
             Defines an interface for classes providing methods for investigating event overrides.
@@ -3941,6 +4152,11 @@
         <member name="T:Remotion.TypePipe.MutableReflection.IRelatedPropertyFinder">
             <summary>
             Defines an interface for classes providing methods for investigating property overrides.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.MutableMemberFactory">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.MutableReflection.IMutableMemberFactory"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.RelatedEventFinder">
@@ -4164,7 +4380,7 @@
             <summary>
             A container storing members and providing convenience properties for <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.ExistingDeclaredMembers"/> <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.ExistingBaseMembers"/>
             and <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.AddedMembers"/>.
-            <see cref="M:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.GetMutableMember(`0)"/> can be used to retrieve the mutable version for an existing member.
+            <see cref="M:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.GetMutableMember(`0)"/> can be used to retrieve the mutable version for a member.
             This class is an implementation detail of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
             </summary>
             <typeparam name="TMemberInfo">The type of the existing member infos.</typeparam>
@@ -4208,6 +4424,11 @@
         <member name="T:Remotion.TypePipe.MutableReflection.SignatureDebugStringGenerator">
             <summary>
             Builds signature strings which can be used for debug messages.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.TypeExtensions">
+            <summary>
+            <see cref="T:System.Type"/> extension methods that are useful when working with <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>s.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.TypePipeCustomAttributeData">
@@ -8278,108 +8499,6 @@
             <param name="constants">The constant values used by the method.</param>
             <param name="locals">The hoisted local variables from the parent context.</param>
         </member>
-        <member name="T:Microsoft.Scripting.Ast.Compiler.CompilerScope">
-            <summary>
-            CompilerScope is the data structure which the Compiler keeps information
-            related to compiling scopes. It stores the following information:
-              1. Parent relationship (for resolving variables)
-              2. Information about hoisted variables
-              3. Information for resolving closures
-            
-            Instances are produced by VariableBinder, which does a tree walk
-            looking for scope nodes: LambdaExpression and BlockExpression.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._parent">
-            <summary>
-            parent scope, if any
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.Node">
-            <summary>
-            The expression node for this scope
-            Can be LambdaExpression, BlockExpression, or CatchBlock
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.IsMethod">
-            <summary>
-            True if this node corresponds to an IL method.
-            Can only be true if the Node is a LambdaExpression.
-            But inlined lambdas will have it set to false.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.NeedsClosure">
-            <summary>
-            Does this scope (or any inner scope) close over variables from any
-            parent scope?
-            Populated by VariableBinder
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.Definitions">
-            <summary>
-            Variables defined in this scope, and whether they're hoisted or not
-            Populated by VariableBinder
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.ReferenceCount">
-            <summary>
-            Each variable referenced within this scope, and how often it was referenced
-            Populated by VariableBinder
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope.MergedScopes">
-            <summary>
-            Scopes whose variables were merged into this one
-            
-            Created lazily as we create hundreds of compiler scopes w/o merging scopes when compiling rules.
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._hoistedLocals">
-            <summary>
-            The scope's hoisted locals, if any.
-            Provides storage for variables that are referenced from nested lambdas
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._closureHoistedLocals">
-            <summary>
-            The closed over hoisted locals
-            </summary>
-        </member>
-        <member name="F:Microsoft.Scripting.Ast.Compiler.CompilerScope._locals">
-            <summary>
-            Mutable dictionary that maps non-hoisted variables to either local
-            slots or argument slots
-            </summary>
-        </member>
-        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.Enter(Microsoft.Scripting.Ast.Compiler.LambdaCompiler,Microsoft.Scripting.Ast.Compiler.CompilerScope)">
-            <summary>
-            Called when entering a lambda/block. Performs all variable allocation
-            needed, including creating hoisted locals and IL locals for accessing
-            parent locals
-            </summary>
-        </member>
-        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.Exit">
-            <summary>
-            Frees unnamed locals, clears state associated with this compiler
-            </summary>
-        </member>
-        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.AddLocal(Microsoft.Scripting.Ast.Compiler.LambdaCompiler,Microsoft.Scripting.Ast.ParameterExpression)">
-            <summary>
-            Adds a new virtual variable corresponding to an IL local
-            </summary>
-        </member>
-        <member name="M:Microsoft.Scripting.Ast.Compiler.CompilerScope.ResolveVariable(Microsoft.Scripting.Ast.ParameterExpression,Microsoft.Scripting.Ast.Compiler.HoistedLocals)">
-            <summary>
-            Resolve a local variable in this scope or a closed over scope
-            Throws if the variable is defined
-            </summary>
-        </member>
-        <member name="P:Microsoft.Scripting.Ast.Compiler.CompilerScope.NearestHoistedLocals">
-            <summary>
-            This scope's hoisted locals, or the closed over locals, if any
-            Equivalent to: _hoistedLocals ?? _closureHoistedLocals
-            </summary>
-        </member>
         <member name="M:Microsoft.Scripting.Ast.ConstantCheck.AnalyzeTypeIs(Microsoft.Scripting.Ast.TypeBinaryExpression)">
             <summary>
             If the result of a TypeBinaryExpression is known statically, this
@@ -11585,15 +11704,6 @@
             The <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> corresponding to <paramref name="method"/> or an override of the method.
             </returns>
         </member>
-        <member name="P:Remotion.TypePipe.MutableReflection.MutableType.IsFullyImplemented">
-            <summary>
-            Gets a value indicating whether this <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/> is fully implemented,
-            i.e., has no abstract members and implements all abstract members of its base types.
-            </summary>
-            <value>
-            <c>true</c> if this instance is fully implemented; otherwise, <c>false</c>.
-            </value>
-        </member>
         <member name="T:Remotion.TypePipe.MutableReflection.ParameterDeclaration">
             <summary>
             Holds all values required to declare a method, constructor, or property parameter.
@@ -11602,15 +11712,43 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/> when declaring methods, constructors, or indexed properties.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.TypeAssembly.ITypeAssemblyParticipant">
+        <member name="T:Remotion.TypePipe.IParticipant">
             <summary>
             Participates in the assembly of a type by calling mutating members of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            Framework authors implement this interface in order to specify their code generation needs.
+            </summary>
+            <remarks>
+            <para>
+            Instances of this interface can be configured in the pipeline.
+            Every participant has the chance the specify type modifications via the provided <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/> instance.
+            The <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/> is a representation of the type to be generated for the requested type.
+            In addition, it contains all modifications applied by preceding participants in the pipeline.
+            </para>
+            <para>
+            A participant must also provide a <see cref="T:Remotion.TypePipe.ICacheKeyProvider"/> if generated types cannot be cached unconditionally, i.e.,
+            the modifications depend not solely on the requested type.
+            If generated types can be cached unconditionally, <see cref="P:Remotion.TypePipe.IParticipant.PartialCacheKeyProvider"/> should return <see langword="null"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.ObjectFactory">
+            <summary>
+            The main entry point of the pipeline.
+            This class is used by application developers to create instances for the types generated by the pipeline.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.TypeAssembly.TypeAssembler">
+        <member name="T:Remotion.TypePipe.TypeAssembler">
             <summary>
-            Provides functionality for assembling a type by orchestrating <see cref="T:Remotion.TypePipe.TypeAssembly.ITypeAssemblyParticipant"/> instances and an instance of 
+            Provides functionality for assembling a type by orchestrating <see cref="T:Remotion.TypePipe.IParticipant"/> instances and an instance of 
             <see cref="T:Remotion.TypePipe.CodeGeneration.ITypeModifier"/>.
+            Also calculates a compound cache key consisting of the requested type and the individual cache key parts returned from the 
+            <see cref="T:Remotion.TypePipe.ICacheKeyProvider"/>. The providers are retrieved from the participants exactly once at object creation.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.TypeCache">
+            <summary>
+            Retrieves the generated type or its constructors for the requested type from the cache or delegates to the contained
+            <see cref="T:Remotion.TypePipe.ITypeAssembler"/> instance.
             </summary>
         </member>
     </members>

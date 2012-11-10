@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="ControlFlowTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -75,7 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScopeTest.cs" />
     <Compile Include="SetupFixture.cs" />
-    <Compile Include="TestBase.cs" />
+    <Compile Include="IntegrationTestBase.cs" />
     <Compile Include="TypeLevelAspectTest.cs">
       <SubType>Code</SubType>
     </Compile>

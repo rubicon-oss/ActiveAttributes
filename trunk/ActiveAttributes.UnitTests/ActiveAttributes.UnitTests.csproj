@@ -169,7 +169,6 @@
     <Compile Include="Interception\Invocations\ActionInvocationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />
-    <Compile Include="TestBase.cs" />
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentTest.cs" />
     <Compile Include="Utilities\TopologicalSorterTest.cs" />

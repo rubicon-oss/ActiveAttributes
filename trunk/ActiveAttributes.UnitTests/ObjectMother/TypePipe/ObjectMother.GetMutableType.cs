@@ -23,7 +23,7 @@ namespace ActiveAttributes.UnitTests
   {
     public static MutableType GetMutableType (Type originalType = null)
     {
-      return MutableTypeObjectMother.CreateForExistingType (originalType);
+      return MutableTypeObjectMother.CreateForExisting (originalType);
     }
   }
 }

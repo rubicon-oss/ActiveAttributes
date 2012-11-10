@@ -24,6 +24,54 @@
             </para>
             </remarks>
         </member>
+        <member name="T:Remotion.Mixins.AdditionalMixinDependencyAttribute">
+            <summary>
+            Defines a dependency from a mixin to another mixin or interface type in the context of a given target class, 
+            as if that dependency was specified via an <see cref="T:Remotion.Mixins.ExtendsAttribute"/>'s, <see cref="T:Remotion.Mixins.UsesAttribute"/>'s, or <see cref="T:Remotion.Mixins.MixAttribute"/>'s 
+            <see cref="P:Remotion.Mixins.MixinRelationshipAttribute.AdditionalDependencies"/> property. If the type depended upon is not present within the target type's 
+            mixin configuration, an error is raised.
+            </summary>
+            <remarks>
+            <para>
+            This can be used to augment an existing mixin declaration with a dependency in situations where the mixin declaration cannot be changed. It 
+            implements the following use cases:
+            <list type="bullet">
+            <item>
+              <description>
+                Resolving an ordering conflict between mixins added to a single class by different components oblivious to each other. 
+                An application or additional component that combines the components with conflicting mixins can resolve that conflict by adding 
+                dependencies using the <see cref="T:Remotion.Mixins.AdditionalMixinDependencyAttribute"/>.
+              </description>
+            </item>
+            <item>
+              <description>
+                Adding a mixin in the middle of two existing mixins.
+              </description>
+            </item>
+            <item>
+              <description>
+                Overriding the alphabetic ordering (see <see cref="T:Remotion.Mixins.AcceptsAlphabeticOrderingAttribute"/>) between existing mixins.
+              </description>
+            </item>
+            </list>
+            </para>
+            <para>
+            Assembly-level mixin dependencies influence the mixin configuration of the class specified via the <see cref="P:Remotion.Mixins.AdditionalMixinDependencyAttribute.TargetType"/>parameter. 
+            If a derived class inherits a mixin with a dependency, the dependency is inherited together with the mixin.
+            </para>
+            <para>
+            When an assembly-level mixin dependency is specified for a class that does not have the given dependent mixin, an error of type 
+            <see cref="T:Remotion.Mixins.ConfigurationException"/> is raised at attribute analysis time.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Remotion.Mixins.IMixinConfigurationAttribute`1">
+            <summary>
+            Defines a way of applying an attribute to a <see cref="T:Remotion.Mixins.Context.FluentBuilders.MixinConfigurationBuilder"/> so that the attribute's configuration
+            information is included into the <see cref="T:Remotion.Mixins.MixinConfiguration"/> built by the <see cref="T:Remotion.Mixins.Context.FluentBuilders.MixinConfigurationBuilder"/>.
+            </summary>
+            <typeparam name="TTarget">The type of entity the <see cref="T:Remotion.Mixins.IMixinConfigurationAttribute`1"/> is applied to.</typeparam>
+        </member>
         <member name="T:Remotion.Mixins.BindToConstraintsAttribute">
             <summary>
             Indicates that a generic parameter of a mixin should be bound to a type inferred from the type parameter's generic constraints 
@@ -978,18 +1026,6 @@
             <exception cref="T:System.ArgumentNullException">The <paramref name="genericArguments"/> parameter is <see langword="null"/>.</exception>
             <exception cref="T:System.InvalidOperationException"><see cref="P:Remotion.Mixins.Context.ClassContext.Type"/> is not a generic type definition.</exception>
         </member>
-        <member name="M:Remotion.Mixins.Context.ClassContext.InheritFrom(Remotion.Mixins.Context.ClassContext)">
-            <summary>
-            Creates a new <see cref="T:Remotion.Mixins.Context.ClassContext"/> inheriting all data from the given <paramref name="baseContext"/> and applying overriding rules for
-            mixins and concrete interfaces already defined for this <see cref="T:Remotion.Mixins.Context.ClassContext"/>.
-            </summary>
-            <param name="baseContext">The base context to inherit data from.</param>
-            <returns>A new <see cref="T:Remotion.Mixins.Context.ClassContext"/> combining the mixins of this object with those from the <paramref name="baseContext"/>.</returns>
-            <exception cref="T:Remotion.Mixins.ConfigurationException">The <paramref name="baseContext"/> contains mixins whose base types or generic
-            type definitions are already defined on this mixin. The derived context cannot have concrete mixins whose base types
-            are defined on the parent context.
-            </exception>
-        </member>
         <member name="M:Remotion.Mixins.Context.ClassContext.InheritFrom(System.Collections.Generic.IEnumerable{Remotion.Mixins.Context.ClassContext})">
             <summary>
             Creates a new <see cref="T:Remotion.Mixins.Context.ClassContext"/> inheriting all data from the given <paramref name="baseContexts"/> and applying overriding rules for
@@ -1011,6 +1047,20 @@
             <returns>
             A copy of this <see cref="T:Remotion.Mixins.Context.ClassContext"/> without any mixins that are affected by the given <parmref name="suppressionRules"/>.
             </returns>
+        </member>
+        <member name="M:Remotion.Mixins.Context.ClassContext.ApplyMixinDependencies(System.Collections.Generic.IEnumerable{Remotion.Mixins.Context.MixinDependencySpecification})">
+            <summary>
+            Returns a new <see cref="T:Remotion.Mixins.Context.ClassContext"/> equivalent to this object but with the given <paramref name="dependencySpecifications"/> applied to 
+            the <see cref="P:Remotion.Mixins.Context.ClassContext.Mixins"/>.
+            </summary>
+            <param name="dependencySpecifications">The <see cref="T:Remotion.Mixins.Context.MixinDependencySpecification"/> objects to apply to the <see cref="P:Remotion.Mixins.Context.ClassContext.Mixins"/> of this 
+            <see cref="T:Remotion.Mixins.Context.ClassContext"/> to create the resulting new <see cref="T:Remotion.Mixins.Context.ClassContext"/>.
+            </param>
+            <returns>A new <see cref="T:Remotion.Mixins.Context.ClassContext"/> equivalent to this object but with the given <paramref name="dependencySpecifications"/> applied to 
+            the <see cref="P:Remotion.Mixins.Context.ClassContext.Mixins"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">
+              The mixin given by an item of <paramref name="dependencySpecifications"/> does not exist within this <see cref="T:Remotion.Mixins.Context.ClassContext"/>.
+            </exception>
         </member>
         <member name="P:Remotion.Mixins.Context.ClassContext.Type">
             <summary>
@@ -1037,6 +1087,31 @@
             This class is immutable, i.e., it is initialized on construction and cannot be changed later on.
             </summary>
             <threadsafety static="true" instance="true"/>
+        </member>
+        <member name="T:Remotion.Mixins.Context.DeclarativeAnalyzers.HasCompleteInterfaceMarkerAnalyzer">
+            <summary>
+            Analyzes <see cref="T:Remotion.Mixins.IHasCompleteInterface`1"/> markers implemented by a type and applies the respective configuration information
+            to the <see cref="T:Remotion.Mixins.Context.FluentBuilders.MixinConfigurationBuilder"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.Mixins.Context.DeclarativeAnalyzers.IMixinDeclarationAnalyzer`1">
+            <summary>
+            Defines an interface for classes analyzing entities of type <typeparamref name="TAnalyzedObject"/> for mixin declarations.
+            </summary>
+            <typeparam name="TAnalyzedObject">The type of entity the declaration is applied to.</typeparam>
+        </member>
+        <member name="T:Remotion.Mixins.Context.DeclarativeAnalyzers.DeclarativeConfigurationAnalyzer">
+            <summary>
+            Analyzes the given types and their containing assemblies via a set of <see cref="T:Remotion.Mixins.Context.DeclarativeAnalyzers.IMixinDeclarationAnalyzer`1"/> implementations.
+            </summary>
+        </member>
+        <member name="T:Remotion.Mixins.Context.DeclarativeAnalyzers.MixinConfigurationAttributeAnalyzer`1">
+            <summary>
+            Implements <see cref="T:Remotion.Mixins.Context.DeclarativeAnalyzers.IMixinDeclarationAnalyzer`1"/> by analyzing the given <typeparamref name="TAnalyzedEntity"/> objects for 
+            custom attributes implementing <see cref="T:Remotion.Mixins.IMixinConfigurationAttribute`1"/> and applying them to the 
+            <see cref="T:Remotion.Mixins.Context.FluentBuilders.MixinConfigurationBuilder"/>.
+            </summary>
+            <typeparam name="TAnalyzedEntity">The type of entity searched for <see cref="T:Remotion.Mixins.IMixinConfigurationAttribute`1"/> is applied to.</typeparam>
         </member>
         <member name="T:Remotion.Mixins.Context.DeclarativeConfigurationBuilder">
             <summary>
@@ -1545,6 +1620,26 @@
             <typeparam name="TMixinType3">The third mixin type, base type, or generic type definition denoting mixin types to be suppressed.</typeparam>
             <returns>This object for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
         </member>
+        <member name="M:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.AddMixinDependency(System.Type,System.Type)">
+            <summary>
+            Denotes that mixin <paramref name="dependentMixin"/> should have a dependency on <paramref name="requiredMixin"/> in the context 
+            of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="T:Remotion.Mixins.Context.ClassContext"/> is 
+            built, an exception is found if <paramref name="dependentMixin"/> is not configured for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.
+            </summary>
+            <param name="dependentMixin">The mixin for which the dependency is to be added.</param>
+            <param name="requiredMixin">The type on which <paramref name="dependentMixin"/> should have a dependency.</param>
+            <returns>This object for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
+        </member>
+        <member name="M:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.AddMixinDependency``2">
+            <summary>
+            Denotes that mixin <typeparamref name="TDependentMixin"/> should have a dependency on <typeparamref name="TRequiredMixin"/> in the context 
+            of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="T:Remotion.Mixins.Context.ClassContext"/> is 
+            built, an exception is found if <typeparamref name="TDependentMixin"/> is not configured for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.
+            </summary>
+            <typeparam name="TDependentMixin">The mixin for which the dependency is to be added.</typeparam>
+            <typeparam name="TRequiredMixin">The type on which <typeparamref name="TDependentMixin"/> should have a dependency.</typeparam>
+            <returns>This object for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
+        </member>
         <member name="M:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.BuildClassContext(System.Collections.Generic.IEnumerable{Remotion.Mixins.Context.ClassContext})">
             <summary>
             Builds a class context with the data collected so far for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/> that inherits from other contexts.
@@ -1615,6 +1710,12 @@
             Gets the suppressed mixins collected so far.
             </summary>
             <value>The suppressed mixins collected so far by this object.</value>
+        </member>
+        <member name="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.MixinDependencies">
+            <summary>
+            Gets the independent mixin dependencies collected so far.
+            </summary>
+            <value>The independent mixin dependencies collected so far.</value>
         </member>
         <member name="T:Remotion.Mixins.Context.FluentBuilders.InheritanceResolvingClassContextBuilder">
             <summary>
@@ -2193,6 +2294,26 @@
             <typeparam name="TMixinType3">The third mixin type, base type, or generic type definition denoting mixin types to be suppressed.</typeparam>
             <returns>This object's <see cref="T:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder"/> for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
         </member>
+        <member name="M:Remotion.Mixins.Context.FluentBuilders.MixinContextBuilder.AddMixinDependency(System.Type,System.Type)">
+            <summary>
+            Denotes that mixin <paramref name="dependentMixin"/> should have a dependency on <paramref name="requiredMixin"/> in the context 
+            of this object's <see cref="T:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder"/>'s <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="T:Remotion.Mixins.Context.ClassContext"/> is 
+            built, an exception is found if <paramref name="dependentMixin"/> is not configured for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.
+            </summary>
+            <param name="dependentMixin">The mixin for which the dependency is to be added.</param>
+            <param name="requiredMixin">The type on which <paramref name="dependentMixin"/> should have a dependency.</param>
+            <returns>This object's <see cref="T:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder"/> for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
+        </member>
+        <member name="M:Remotion.Mixins.Context.FluentBuilders.MixinContextBuilder.AddMixinDependency``2">
+            <summary>
+            Denotes that mixin <typeparamref name="TDependentMixin"/> should have a dependency on <typeparamref name="TRequiredMixin"/> in the context 
+            of this object's <see cref="T:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder"/>'s <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="T:Remotion.Mixins.Context.ClassContext"/> is 
+            built, an exception is found if <typeparamref name="TDependentMixin"/> is not configured for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.
+            </summary>
+            <typeparam name="TDependentMixin">The mixin for which the dependency is to be added.</typeparam>
+            <typeparam name="TRequiredMixin">The type on which <typeparamref name="TDependentMixin"/> should have a dependency.</typeparam>
+            <returns>This object's <see cref="T:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder"/> for further configuration of the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/>.</returns>
+        </member>
         <member name="M:Remotion.Mixins.Context.FluentBuilders.MixinContextBuilder.BuildClassContext(System.Collections.Generic.IEnumerable{Remotion.Mixins.Context.ClassContext})">
             <summary>
             Builds a class context with the data collected so far for the <see cref="P:Remotion.Mixins.Context.FluentBuilders.ClassContextBuilder.TargetType"/> that inherits from other contexts.
@@ -2314,6 +2435,15 @@
             A hash code for the current <see cref="T:Remotion.Mixins.Context.MixinContext"/> which includes the hash codes of its mixin type and its explicit dependencies.
             </returns>
         </member>
+        <member name="M:Remotion.Mixins.Context.MixinContext.ApplyAdditionalExplicitDependencies(System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Returns an equivalent <see cref="T:Remotion.Mixins.Context.MixinContext"/> that contains the given <paramref name="explicitDependencies"/> (eliminating duplicates).
+            </summary>
+            <param name="explicitDependencies">The additional types to add to the <see cref="P:Remotion.Mixins.Context.MixinContext.ExplicitDependencies"/> collection of the returned
+            <see cref="T:Remotion.Mixins.Context.MixinContext"/>. If this sequence contains duplicate entries or entries that already exist within the 
+            <see cref="P:Remotion.Mixins.Context.MixinContext.ExplicitDependencies"/>, those entries are ignored.</param>
+            <returns>An equivalent <see cref="T:Remotion.Mixins.Context.MixinContext"/> that contains the given <paramref name="explicitDependencies"/>.</returns>
+        </member>
         <member name="P:Remotion.Mixins.Context.MixinContext.MixinType">
             <summary>
             The mixin type represented by the <see cref="T:Remotion.Mixins.Context.MixinContext"/>.
@@ -2363,6 +2493,11 @@
             <returns>
             True if the specified mixin type is overridden in this class context; otherwise, false.
             </returns>
+        </member>
+        <member name="T:Remotion.Mixins.Context.MixinDependencySpecification">
+            <summary>
+            Specifies a dependency from a mixin on a list of types.
+            </summary>
         </member>
         <member name="T:Remotion.Mixins.Context.Serialization.AttributeClassContextDeserializer">
             <summary>
@@ -2476,6 +2611,59 @@
             should add certain attributes without itself exposing those attributes.
             </summary>
         </member>
+        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter2">
+            <summary>
+            Implements <see cref="T:Remotion.Mixins.Definitions.Building.DependencySorting.IMixinDefinitionSorter"/> by sorting the mixins according to their dependencies and using lexicographic ordering when
+            no dependencies are defined. For all mixins that are sorted lexicographically but overlap in overriding the same method, the algorithm 
+            requires the <see cref="P:Remotion.Mixins.Definitions.MixinDefinition.AcceptsAlphabeticOrdering"/> flag to be set. In such a group of mixins overlapping in an overridden 
+            method, at most one mixin can have the <see cref="P:Remotion.Mixins.Definitions.MixinDefinition.AcceptsAlphabeticOrdering"/> flag unset. (Rationale: If just one mixin
+            cares about its ordering, but all others don't, an "undefined", i.e., lexicographical, ordering is acceptable.)
+            </summary>
+            <remarks>
+            The algorithm works as follows:
+            <list type="bullet">
+            <item><description>If there are no mixins left, stop.</description></item>
+            <item>
+            <description>
+            From the set of mixins (that have not been processed yet), take those on which there are no ordering dependencies.
+            <list type="bullet">
+            <item><description>If you find 0, throw (cyclic dependency).</description></item>
+            </list>
+            </description>
+            </item>
+            <item><description>If you find 1, append this mixin to the returned sequence.</description></item>
+            <item><description>If you find more than 1:
+            <list type="bullet">
+            <item><description>Group the mixins based on the methods overridden by the mixins.</description></item>
+            <item><description>Check that within each group, alphabetic ordering is accepted.</description></item>
+            <item><description>Order the (ungrouped) mixins lexicographicsally, and append the ordered result to the returned sequence.</description></item>
+            </list>
+            </description>
+            </item>
+            <item><description>Repeat.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.IMixinDefinitionSorter">
+            <summary>
+            Defines an interface for classes sorting a sequence of <see cref="T:Remotion.Mixins.Definitions.MixinDefinition"/> objects based on the dependencies between the mixins and 
+            other ordering-relevant information.
+            </summary>
+        </member>
+        <member name="M:Remotion.Mixins.Definitions.Building.DependencySorting.IMixinDefinitionSorter.SortMixins(System.Collections.Generic.IEnumerable{Remotion.Mixins.Definitions.MixinDefinition})">
+            <summary>
+            Sorts the given mixins.
+            </summary>
+            <param name="mixinDefinitions">The <see cref="T:Remotion.Mixins.Definitions.MixinDefinition"/> objects to sort relative to each other.</param>
+            <returns>A sequence with the given mixins, but in the correct order.</returns>
+            <exception cref="T:System.InvalidOperationException">The <paramref name="mixinDefinitions"/> cannot be sorted.</exception>
+        </member>
+        <member name="T:Remotion.Mixins.Definitions.Building.ITargetClassDefinitionBuilder">
+            <summary>
+            Defines an interface for classes building <see cref="T:Remotion.Mixins.Definitions.TargetClassDefinition"/> objects containing all metadata required for code generation 
+            from a <see cref="T:Remotion.Mixins.Context.ClassContext"/>.
+            </summary>
+        </member>
         <member name="T:Remotion.Mixins.Definitions.CompleteInterfaceDependencyDefinition">
             <summary>
             Represents the dependency on an interface added to a target class via a complete interface specification.
@@ -2488,18 +2676,10 @@
         </member>
         <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter">
             <summary>
-            Sorts the given mixin definitions by first grouping them into independent groups via <see cref="T:Remotion.Mixins.Definitions.Building.DependencySorting.DependentMixinGrouper"/> and then sorting the
-            mixins in the groups via <see cref="T:Remotion.Mixins.Utilities.DependencySort.DependentObjectSorter`1"/>. The groups are alphabetically sorted according to the full name of the first 
-            mixin in the group.
+            Sorts the mixin definitions of a <see cref="T:Remotion.Mixins.Definitions.TargetClassDefinition"/> by first grouping them into independent groups via 
+            <see cref="T:Remotion.Mixins.Definitions.Building.DependencySorting.DependentMixinGrouper"/> and then sorting the mixins in the groups via <see cref="T:Remotion.Mixins.Utilities.DependencySort.DependentObjectSorter`1"/>. 
+            The groups are alphabetically sorted according to the full name of the first mixin in the group.
             </summary>
-        </member>
-        <member name="M:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter.SortMixins(Remotion.Mixins.Definitions.TargetClassDefinition)">
-            <summary>
-            Sorts the mixins of <paramref name="targetClassDefinition"/>. The <see cref="T:Remotion.Mixins.Definitions.TargetClassDefinition"/> is required because without a target
-            class, the dependencies are not defined.
-            </summary>
-            <param name="targetClassDefinition">The target class definition holding the mixins.</param>
-            <returns>A list with the mixins held by <paramref name="targetClassDefinition"/>, but in the correct order.</returns>
         </member>
         <member name="T:Remotion.Mixins.Definitions.Building.MemberOverridePair`1">
             <summary>
@@ -2542,6 +2722,11 @@
             </summary>
             <param name="genericArgumentFinder">The <see cref="T:Remotion.Mixins.Utilities.MixinGenericArgumentFinder"/> used to determine the generic argument defining the
             requirements to be analyzed.</param>
+        </member>
+        <member name="T:Remotion.Mixins.Definitions.Building.TargetClassDefinitionBuilder">
+            <summary>
+            Builds <see cref="T:Remotion.Mixins.Definitions.TargetClassDefinition"/> objects containing all metadata required for code generation from a <see cref="T:Remotion.Mixins.Context.ClassContext"/>.
+            </summary>
         </member>
         <member name="T:Remotion.Mixins.Definitions.Building.TargetCallDependencyDefinitionBuilder">
             <summary>
@@ -3283,7 +3468,7 @@
             <exception cref="T:System.NotSupportedException">The <see cref="T:Remotion.Mixins.MixinConfiguration"/> contains a <see cref="T:Remotion.Mixins.Context.ClassContext"/> for a generic type, of
             which it cannot make a closed generic type. Because closed types are needed for validation, this <see cref="T:Remotion.Mixins.MixinConfiguration"/>
             cannot be validated as a whole. Even in this case, the configuration might still be correct, but validation is deferred to
-            <see cref="M:Remotion.Mixins.Definitions.TargetClassDefinitionFactory.CreateTargetClassDefinition(Remotion.Mixins.Context.ClassContext)"/>.</exception>
+            <see cref="M:Remotion.Mixins.Definitions.TargetClassDefinitionFactory.CreateAndValidate(Remotion.Mixins.Context.ClassContext)"/>.</exception>
         </member>
         <member name="M:Remotion.Mixins.MixinConfiguration.GetMasterConfiguration">
             <summary>

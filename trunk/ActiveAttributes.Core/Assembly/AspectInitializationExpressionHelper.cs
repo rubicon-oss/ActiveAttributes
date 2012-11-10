@@ -72,10 +72,6 @@ namespace ActiveAttributes.Core.Assembly
 
     private ConstantExpression CreateElement (Type type, object obj)
     {
-      // TODO Should not be necessary with TypePipe custom attribute data - if it still is, fix in TypePipe
-      if (type.IsEnum)
-        obj = Enum.ToObject (type, obj);
-
       return Expression.Constant (obj, type);
     }
   }

@@ -42,6 +42,14 @@
             <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1"/> to be wrapped.</param>
             <returns>An instance of <see cref="T:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1"/> decorating the <paramref name="source"/>.</returns>
         </member>
+        <member name="M:Remotion.Development.UnitTesting.Enumerables.EnumerableExtensions.ForceEnumeration``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Forces the enumeration of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+            <typeparam name="T">The element type of the <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</typeparam>
+            <param name="source">The source <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</param>
+            <returns>An array containing all values computed by <paramref name="source"/>.</returns>
+        </member>
         <member name="T:Remotion.Development.UnitTesting.Enumerables.OneTimeEnumerable`1">
             <summary>
             A decorator for <see cref="T:System.Collections.Generic.IEnumerable`1"/> instances ensuring that they are iterated only once.

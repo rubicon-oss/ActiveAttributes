@@ -38,11 +38,11 @@ namespace ActiveAttributes.UnitTests.Discovery
       var namedArguments =
           new[]
           {
-              ObjectMother2.GetCustomAttributeNamedArgument ("Priority", 4),
-              ObjectMother2.GetCustomAttributeNamedArgument ("Execution", AdviceExecution.Around),
-              ObjectMother2.GetCustomAttributeNamedArgument ("Scope", AdviceScope.Static),
-              ObjectMother2.GetCustomAttributeNamedArgument ("Name", "name"),
-              ObjectMother2.GetCustomAttributeNamedArgument ("Role", "role"),
+              ObjectMother2.GetCustomAttributeNamedArgument ("AdvicePriority", 4),
+              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceExecution", AdviceExecution.Around),
+              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceScope", AdviceScope.Static),
+              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceName", "name"),
+              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceRole", "role"),
               //
               ObjectMother2.GetCustomAttributeNamedArgument ("ApplyToType", typeof (string)),
               ObjectMother2.GetCustomAttributeNamedArgument ("ApplyToTypeName", "typeName"),

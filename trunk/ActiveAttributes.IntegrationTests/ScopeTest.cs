@@ -13,18 +13,17 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
-  [Ignore]
   [TestFixture]
-  public class ScopeTest
+  public class ScopeTest : TypeAssemblerIntegrationTestBase
   {
     private DomainType _instance1;
     private DomainType _instance2;
@@ -32,17 +31,19 @@ namespace ActiveAttributes.IntegrationTests
     [SetUp]
     public void SetUp ()
     {
-      _instance1 = ObjectFactory.Create<DomainType>();
-      _instance2 = ObjectFactory.Create<DomainType>();
+      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
+      _instance1 = assembleType.CreateInstance<DomainType> ();
+      _instance2 = assembleType.CreateInstance<DomainType> ();
     }
 
     [Test]
     public void InstanceAdviced ()
     {
-      var result1 = _instance1.InstanceAdvicedMethod();
-      var result2 = _instance2.InstanceAdvicedMethod();
+      SkipDeletion();
+      var result1 = _instance1.InstanceAdvicedMethod ();
+      var result2 = _instance2.InstanceAdvicedMethod ();
 
-      Assert.That (result1, Is.Not.EqualTo (result2));
+      Assert.That (result1, Is.EqualTo (result2));
     }
 
     [Test]
@@ -51,7 +52,8 @@ namespace ActiveAttributes.IntegrationTests
       var result1 = _instance1.StaticAdvicedMethod ();
       var result2 = _instance2.StaticAdvicedMethod ();
 
-      Assert.That (result1, Is.EqualTo (result2));
+      Assert.That (result1, Is.EqualTo (1));
+      Assert.That (result2, Is.EqualTo (2));
     }
 
     public class DomainType
@@ -69,7 +71,8 @@ namespace ActiveAttributes.IntegrationTests
 
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Context.ReturnValue = _counter++;
+        _counter++;
+        invocation.Context.ReturnValue = _counter;
       }
     }
   }

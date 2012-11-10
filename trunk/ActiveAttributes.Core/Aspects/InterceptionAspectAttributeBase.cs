@@ -19,5 +19,7 @@ using ActiveAttributes.Core.AdviceInfo;
 
 namespace ActiveAttributes.Core.Aspects
 {
+  [AdviceScope (AdviceScope.Static)]
+  [AdviceExecution (AdviceExecution.Around)]
   public abstract class InterceptionAspectAttributeBase : AspectAttributeBase {}
 }

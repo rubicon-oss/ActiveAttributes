@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.AdviceInfo;
@@ -56,8 +55,20 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var adviceScope = AdviceScope.Instance;
       var fieldAttributes = FieldAttributes.Private;
+      Action<Expression, MemberExpression, MemberInitExpression> expressionTest =
+          (body, member, memberInit) =>
+          {
+            Assert.That (body, Is.InstanceOf<BlockExpression>());
+            var blockExpression = (BlockExpression) (body);
+            var expressions = blockExpression.Expressions;
+            Assert.That (expressions[0], Is.TypeOf<OriginalBodyExpression>());
+            Assert.That (expressions[1], Is.InstanceOf<BinaryExpression>());
+            var binaryExpression = (BinaryExpression) expressions[1];
+            Assert.That (binaryExpression.Left, Is.SameAs (member));
+            Assert.That (binaryExpression.Right, Is.SameAs (memberInit));
+          };
 
-      CheckGetOrAddAspect(fieldAttributes, adviceScope, ObjectMother2.GetConstruction());
+      CheckGetOrAddAspect (fieldAttributes, adviceScope, ObjectMother2.GetConstruction(), expressionTest);
     }
 
     [Test]
@@ -83,14 +94,18 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Is.SameAs (_fieldWrapperMock));
     }
 
-    private void CheckGetOrAddAspect (FieldAttributes fieldAttributes, AdviceScope adviceScope, IConstruction construction)
+    private void CheckGetOrAddAspect (
+        FieldAttributes fieldAttributes,
+        AdviceScope adviceScope,
+        IConstruction construction,
+        Action<Expression, MemberExpression, MemberInitExpression> bodyExpressionTest = null)
     {
       var method = ObjectMother2.GetMethodInfo (declaringType: typeof (IAspect));
       var advice = ObjectMother2.GetAdvice (method: method, construction: construction, scope: adviceScope);
       var fakeMember = ObjectMother2.GetMemberExpression (typeof (IAspect));
       var fakeMemberInit = ObjectMother2.GetMemberInitExpression (typeof (AspectAttributeBase));
 
-      _fieldServiceMock.Expect (x => x.AddField (_mutableType, typeof (IAspect), "advice0", fieldAttributes)).Return (_fieldWrapperMock);
+      _fieldServiceMock.Expect (x => x.AddField (_mutableType, typeof (IAspect), "aspect0", fieldAttributes)).Return (_fieldWrapperMock);
       _expressionHelperMock.Expect (x => x.CreateInitExpression (construction)).Return (fakeMemberInit);
       _fieldWrapperMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Matches (y => y.Type == _mutableType))).Return (fakeMember);
 
@@ -100,17 +115,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       _expressionHelperMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_fieldWrapperMock));
 
-      foreach (var constructor in _mutableType.AllMutableConstructors)
-      {
-        Assert.That (constructor.Body, Is.InstanceOf<BlockExpression> ());
-        var blockExpression = (BlockExpression) constructor.Body;
-        var expressions = blockExpression.Expressions;
-        Assert.That (expressions[0], Is.TypeOf<OriginalBodyExpression> ());
-        Assert.That (expressions[1], Is.InstanceOf<BinaryExpression> ());
-        var binaryExpression = (BinaryExpression) expressions[1];
-        Assert.That (binaryExpression.Left, Is.SameAs (fakeMember));
-        Assert.That (binaryExpression.Right, Is.SameAs (fakeMemberInit));
-      }
+      if (bodyExpressionTest != null)
+        foreach (var constructor in _mutableType.AllMutableConstructors)
+          bodyExpressionTest (constructor.Body, fakeMember, fakeMemberInit);
+
+      //foreach (var constructor in _mutableType.AllMutableConstructors)
+      //{
+
+      //}
     }
   }
 }

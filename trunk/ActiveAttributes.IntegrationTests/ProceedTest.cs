@@ -13,9 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Interception.Invocations;
@@ -25,7 +23,7 @@ using ActiveAttributes.Core.Extensions;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ProceedTest : TestBase
+  public class ProceedTest : TypeAssemblerIntegrationTestBase
   {
     [Test]
     public void Proceed ()
@@ -46,8 +44,6 @@ namespace ActiveAttributes.IntegrationTests
       public virtual void ThrowingMethod2 () { throw new Exception (); }
     }
 
-    [AdviceScope (AdviceScope.Static)]
-    [AdviceExecution (AdviceExecution.Around)]
     public class ProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
@@ -56,8 +52,6 @@ namespace ActiveAttributes.IntegrationTests
       }
     }
 
-    [AdviceScope (AdviceScope.Static)]
-    [AdviceExecution (AdviceExecution.Around)]
     public class NotProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)

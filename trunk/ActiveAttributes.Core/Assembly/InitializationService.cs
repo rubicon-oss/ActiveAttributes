@@ -40,6 +40,8 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IConstructorExpressionsHelperFactory _expressionsHelperFactory;
     private readonly IMethodCopyService _methodCopyService;
 
+
+    // TODO use TypeInitialization Expressions
     // TODO MethodCopyService?
     public InitializationService (IFieldService fieldService, IConstructorExpressionsHelperFactory expressionsHelperFactory, IMethodCopyService methodCopyService)
     {
@@ -86,7 +88,7 @@ namespace ActiveAttributes.Core.Assembly
       Assertion.IsTrue (method.DeclaringType is MutableType);
 
       var mutableType = (MutableType) method.DeclaringType;
-      var field = _fieldService.AddField (mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
+      var field = _fieldService.AddField (mutableType, method.GetDelegateType(), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
 
       var copy = _methodCopyService.GetCopy ((MutableMethodInfo) method);
 

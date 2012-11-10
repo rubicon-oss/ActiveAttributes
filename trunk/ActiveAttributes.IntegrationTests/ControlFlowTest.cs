@@ -23,7 +23,7 @@ namespace ActiveAttributes.IntegrationTests
 {
   [Ignore]
   [TestFixture]
-  public class ControlFlowTest : TestBase
+  public class ControlFlowTest : TypeAssemblerIntegrationTestBase
   {
     [Test]
     public void ConditionalCatch ()

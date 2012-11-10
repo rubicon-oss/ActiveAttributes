@@ -20,14 +20,14 @@ using System.Reflection;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using Remotion;
+using Remotion.TypePipe;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  public class Assembler : ITypeAssemblyParticipant
+  public class Assembler : IParticipant
   {
     private readonly IDeclarationProvider _declarationProvider;
     private readonly IAdviceComposer _adviceComposer;
@@ -69,6 +69,11 @@ namespace ActiveAttributes.Core.Assembly
         var mutableMethod = mutableType.GetOrAddMutableMethod (method);
         _weaver.Weave (mutableMethod, filteredAndSortedAdvices);
       }
+    }
+
+    public ICacheKeyProvider PartialCacheKeyProvider
+    {
+      get { return null; }
     }
 
     private IEnumerable<IAdviceBuilder> ConcatAdvices (params IEnumerable<IAdviceBuilder>[] advices)

@@ -23,7 +23,7 @@ namespace ActiveAttributes.IntegrationTests
 {
   [Ignore]
   [TestFixture]
-  public class TypeLevelAspectTest : TestBase
+  public class TypeLevelAspectTest : TypeAssemblerIntegrationTestBase
   {
     [Test]
     public void InterfaceAspect ()

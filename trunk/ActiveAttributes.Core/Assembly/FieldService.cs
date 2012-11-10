@@ -39,7 +39,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      var field = mutableType.AddField (type, name + _counter++, attributes);
+      var field = mutableType.AddField (name + _counter++, type, attributes);
       return attributes.HasFlags (FieldAttributes.Static)
                  ? (IFieldWrapper) new StaticFieldWrapper (field)
                  : new InstanceFieldWrapper (field);

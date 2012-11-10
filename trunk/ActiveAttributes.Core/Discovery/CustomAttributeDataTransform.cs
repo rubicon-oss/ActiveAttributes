@@ -59,11 +59,11 @@ namespace ActiveAttributes.Core.Discovery
 
       foreach (var argument in customAttributeData.NamedArguments)
       {
-        TryUpdateBuilders (buildersAsCollection, argument, "Name", (IAdviceBuilder x, string v) => x.SetName (v));
-        TryUpdateBuilders (buildersAsCollection, argument, "Role", (IAdviceBuilder x, string v) => x.SetRole (v));
-        TryUpdateBuilders (buildersAsCollection, argument, "Execution", (IAdviceBuilder x, AdviceExecution v) => x.SetExecution (v));
-        TryUpdateBuilders (buildersAsCollection, argument, "Scope", (IAdviceBuilder x, AdviceScope v) => x.SetScope (v));
-        TryUpdateBuilders (buildersAsCollection, argument, "Priority", (IAdviceBuilder x, int v) => x.SetPriority (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "AdviceName", (IAdviceBuilder x, string v) => x.SetName (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "AdviceRole", (IAdviceBuilder x, string v) => x.SetRole (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "AdviceExecution", (IAdviceBuilder x, AdviceExecution v) => x.SetExecution (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "AdviceScope", (IAdviceBuilder x, AdviceScope v) => x.SetScope (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "AdvicePriority", (IAdviceBuilder x, int v) => x.SetPriority (v));
 
         Type pointcutType;
         if (s_dictionary.TryGetValue (argument.MemberInfo.Name, out pointcutType))
