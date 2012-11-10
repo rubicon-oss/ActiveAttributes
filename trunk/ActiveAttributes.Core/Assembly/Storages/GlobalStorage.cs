@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly.Storages
 {
@@ -40,6 +41,8 @@ namespace ActiveAttributes.Core.Assembly.Storages
 
     public Expression GetStorageExpression (Expression thisExpression)
     {
+      ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
+
       return _storageExpression;
     }
   }

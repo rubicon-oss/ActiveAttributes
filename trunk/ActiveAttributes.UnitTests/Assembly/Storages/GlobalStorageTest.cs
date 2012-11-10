@@ -39,8 +39,9 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
     {
       var dictionary = new Dictionary<Guid, object> ();
       var storage = new GlobalStorage (dictionary, typeof (int));
+      var fakeExpression = ObjectMother2.GetExpression();
 
-      var result = storage.GetStorageExpression (null);
+      var result = storage.GetStorageExpression (fakeExpression);
 
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
