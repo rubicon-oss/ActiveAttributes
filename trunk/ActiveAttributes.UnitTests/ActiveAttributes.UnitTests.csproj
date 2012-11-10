@@ -90,8 +90,9 @@
     <Compile Include="Assembly\FieldServiceTest.cs" />
     <Compile Include="Assembly\InvocationExpressionHelperTest.cs" />
     <Compile Include="Assembly\ConstructorExpressionsHelperTest.cs" />
-    <Compile Include="Assembly\FieldWrappers\InstanceFieldWrapperTest.cs" />
-    <Compile Include="Assembly\FieldWrappers\StaticFieldWrapperTest.cs" />
+    <Compile Include="Assembly\Storages\GlobalStorageTest.cs" />
+    <Compile Include="Assembly\Storages\InstanceStorageTest.cs" />
+    <Compile Include="Assembly\Storages\StaticStorageTest.cs" />
     <Compile Include="Assembly\AspectStorageServiceTest.cs" />
     <Compile Include="AdviceInfo\AdviceExecutionAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceNameAttributeTest.cs" />

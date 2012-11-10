@@ -13,18 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.UnitTests.Expressions;
 
-namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
+namespace ActiveAttributes.UnitTests.Assembly.Storages
 {
   [TestFixture]
-  public class StaticFieldWrapperTest
+  public class InstanceStorageTest
   {
     private FieldInfo _fieldInfo;
     private ThisExpression _thisExpression;
@@ -32,14 +33,14 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
     [SetUp]
     public void SetUp ()
     {
-      _fieldInfo = ObjectMother.GetFieldInfo (attributes: FieldAttributes.Static);
+      _fieldInfo = ObjectMother.GetFieldInfo();
       _thisExpression = ObjectMother.GetThisExpression();
     }
 
     [Test]
     public void Initialization ()
     {
-      var fieldWrapper = new StaticStorage (_fieldInfo);
+      var fieldWrapper = new InstanceStorage (_fieldInfo);
 
       Assert.That (fieldWrapper.Field, Is.SameAs (_fieldInfo));
     }
@@ -47,9 +48,9 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
     [Test]
     public void GetAccessExpression ()
     {
-      var fieldWrapper = new StaticStorage (_fieldInfo);
+      var fieldWrapper = new InstanceStorage (_fieldInfo);
 
-      var expected = Expression.Field (null, _fieldInfo);
+      var expected = Expression.Field (_thisExpression, _fieldInfo);
       var actual = fieldWrapper.GetStorageExpression (_thisExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);

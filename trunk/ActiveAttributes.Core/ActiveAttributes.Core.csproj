@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assembly\Storages\GlobalStorage.cs" />
     <Compile Include="Discovery\AdviceBuilder.cs" />
     <Compile Include="Discovery\AdviceBuilderFactory.cs" />
     <Compile Include="Assembly\AdviceComposer.cs" />
@@ -193,10 +194,10 @@
     <Compile Include="Interception\Invocations\IEventInvocation.cs" />
     <Compile Include="Interception\Invocations\EventInvocation.template.cs" />
     <Compile Include="Interception\Contexts\EventInvocationContext.template.cs" />
-    <Compile Include="Assembly\Storage\IStorage.cs" />
-    <Compile Include="Assembly\Storage\InstanceStorage.cs" />
+    <Compile Include="Assembly\Storages\IStorage.cs" />
+    <Compile Include="Assembly\Storages\InstanceStorage.cs" />
     <Compile Include="Assembly\MethodCopyService.cs" />
-    <Compile Include="Assembly\Storage\StaticStorage.cs" />
+    <Compile Include="Assembly\Storages\StaticStorage.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.template.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContextBase.cs" />

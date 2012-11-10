@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Interception;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;

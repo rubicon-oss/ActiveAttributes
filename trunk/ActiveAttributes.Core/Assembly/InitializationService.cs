@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Extensions;
 using JetBrains.Annotations;
 using Microsoft.Scripting.Ast;

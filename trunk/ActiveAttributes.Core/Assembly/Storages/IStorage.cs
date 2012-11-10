@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,25 +13,20 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storages;
 using Microsoft.Scripting.Ast;
-using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests
+namespace ActiveAttributes.Core.Assembly.Storages
 {
-  public static partial class ObjectMother2
+  /// <summary>
+  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
+  /// </summary>
+  public interface IStorage
   {
-    public static IStorage GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
-    {
-      var expression = GetExpression (type);
+    FieldInfo Field { get; }
 
-      var stub = MockRepository.GenerateStub<IStorage>();
-
-      stub.Stub (x => x.GetStorageExpression (Arg<Expression>.Is.Anything)).Return (expression);
-
-      return stub;
-    }
+    Expression GetStorageExpression (Expression thisExpression);
   }
 }

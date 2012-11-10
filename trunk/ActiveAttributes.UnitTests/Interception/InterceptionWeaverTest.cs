@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Interception;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;

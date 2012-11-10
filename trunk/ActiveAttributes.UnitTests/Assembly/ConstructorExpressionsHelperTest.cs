@@ -17,7 +17,7 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;

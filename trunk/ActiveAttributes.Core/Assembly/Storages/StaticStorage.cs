@@ -17,16 +17,40 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly.Storage
+namespace ActiveAttributes.Core.Assembly.Storages
 {
   /// <summary>
-  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
+  /// Generates an expression that provides access to a static field.
   /// </summary>
-  public interface IStorage
+  public class StaticStorage : IStorage
   {
-    FieldInfo Field { get; }
+    private readonly FieldInfo _field;
 
-    Expression GetStorageExpression (Expression thisExpression);
+    public StaticStorage (FieldInfo field)
+    {
+      ArgumentUtility.CheckNotNull ("field", field);
+      Assertion.IsTrue (field.IsStatic);
+      
+      _field = field;
+    }
+
+    public FieldInfo Field
+    {
+      get { return _field; }
+    }
+
+    public Expression GetStorageExpression (Expression thisExpression)
+    {
+      ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
+
+      return Expression.Field (null, _field);
+    }
+
+    public bool IsStatic
+    {
+      get { return true; }
+    }
   }
 }

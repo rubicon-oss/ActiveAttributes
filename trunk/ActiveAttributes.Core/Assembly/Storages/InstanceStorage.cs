@@ -19,20 +19,20 @@ using System.Reflection;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly.Storage
+namespace ActiveAttributes.Core.Assembly.Storages
 {
   /// <summary>
-  /// Generates an expression that provides access to a static field.
+  /// Generates an expression that provides access to an instance field.
   /// </summary>
-  public class StaticStorage : IStorage
+  public class InstanceStorage : IStorage
   {
     private readonly FieldInfo _field;
 
-    public StaticStorage (FieldInfo field)
+    public InstanceStorage (FieldInfo field)
     {
       ArgumentUtility.CheckNotNull ("field", field);
-      Assertion.IsTrue (field.IsStatic);
-      
+      Assertion.IsFalse (field.IsStatic);
+
       _field = field;
     }
 
@@ -45,12 +45,12 @@ namespace ActiveAttributes.Core.Assembly.Storage
     {
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
 
-      return Expression.Field (null, _field);
+      return Expression.Field (thisExpression, _field);
     }
 
     public bool IsStatic
     {
-      get { return true; }
+      get { return false; }
     }
   }
 }

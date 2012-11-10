@@ -13,46 +13,36 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Storages;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.UnitTests.Assembly
+namespace ActiveAttributes.UnitTests.Assembly.Storages
 {
   [TestFixture]
-  public class FieldServiceTest
+  public class GlobalStorageTest
   {
-    private MutableType _mutableType;
-    private FieldService _service;
-
-    [SetUp]
-    public void SetUp ()
+    [Test]
+    public void Initialization ()
     {
-      _mutableType = ObjectMother.GetMutableType();
-      _service = new FieldService();
+      var dictionary = new Dictionary<Guid, object>();
+      new GlobalStorage (dictionary, typeof (int));
+
+      Assert.That (dictionary, Has.Count.EqualTo (1));
+      Assert.That (dictionary.Values.Single(), Is.EqualTo (0));
     }
 
     [Test]
-    public void AddField_Instance ()
+    public void GetStorageExpression ()
     {
-      var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Private);
+      var dictionary = new Dictionary<Guid, object> ();
+      var storage = new GlobalStorage (dictionary, typeof (int));
 
-      Assert.That (result, Is.TypeOf<InstanceStorage>());
-      var addedField = _mutableType.AddedFields.Single();
-      Assert.That (result.Field, Is.SameAs (addedField));
-    }
+      var result = storage.GetStorageExpression (null);
 
-    [Test]
-    public void AddField_Static ()
-    {
-      var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Static);
-
-      Assert.That (result, Is.TypeOf<StaticStorage>());
+      Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }
   }
 }

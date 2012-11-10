@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storage;
+using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;

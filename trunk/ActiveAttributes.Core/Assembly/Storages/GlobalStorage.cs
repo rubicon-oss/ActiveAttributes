@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,42 +15,32 @@
 // under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
-using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly.Storage
+namespace ActiveAttributes.Core.Assembly.Storages
 {
-  /// <summary>
-  /// Generates an expression that provides access to an instance field.
-  /// </summary>
-  public class InstanceStorage : IStorage
+  public class GlobalStorage : IStorage
   {
-    private readonly FieldInfo _field;
+    private readonly Expression _storageExpression;
 
-    public InstanceStorage (FieldInfo field)
+    public GlobalStorage (IDictionary<Guid, object> dictionary, Type type)
     {
-      ArgumentUtility.CheckNotNull ("field", field);
-      Assertion.IsFalse (field.IsStatic);
+      var guid = Guid.NewGuid();
+      var indexExpression = Expression.Property (Expression.Constant (dictionary), "Item", Expression.Constant (guid));
+      _storageExpression = Expression.Convert (indexExpression, type);
 
-      _field = field;
+      var assignExpression = Expression.Assign (indexExpression, Expression.Convert (Expression.Default (type), typeof (object)));
+      var lambda = Expression.Lambda<Action> (assignExpression);
+      lambda.Compile()();
     }
 
-    public FieldInfo Field
-    {
-      get { return _field; }
-    }
+    public FieldInfo Field { get; private set; }
 
     public Expression GetStorageExpression (Expression thisExpression)
     {
-      ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
-
-      return Expression.Field (thisExpression, _field);
-    }
-
-    public bool IsStatic
-    {
-      get { return false; }
+      return _storageExpression;
     }
   }
 }
