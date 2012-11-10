@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
@@ -46,9 +46,9 @@ namespace ActiveAttributes.Core.Interception
     private readonly IEnumerable<ParameterExpression> _parameterExpressions;
     private readonly Type _invocationType;
     private readonly Type _invocationContextType;
-    private readonly IList<Tuple<MethodInfo, IFieldWrapper>> _advices;
-    private readonly IFieldWrapper _memberInfoField;
-    private readonly IFieldWrapper _delegateField;
+    private readonly IList<Tuple<MethodInfo, IStorage>> _advices;
+    private readonly IStorage _memberInfoField;
+    private readonly IStorage _delegateField;
 
     public InterceptionExpressionHelper (
         IInvocationExpressionHelper invocationExpressionHelper,
@@ -57,9 +57,9 @@ namespace ActiveAttributes.Core.Interception
         IEnumerable<ParameterExpression> parameterExpressions,
         Type invocationType,
         Type invocationContextType,
-        IEnumerable<Tuple<MethodInfo, IFieldWrapper>> advices,
-        IFieldWrapper memberInfoField,
-        IFieldWrapper delegateField)
+        IEnumerable<Tuple<MethodInfo, IStorage>> advices,
+        IStorage memberInfoField,
+        IStorage delegateField)
     {
       ArgumentUtility.CheckNotNull ("invocationExpressionHelper", invocationExpressionHelper);
       ArgumentUtility.CheckNotNull ("interceptedMethod", interceptedMethod);
@@ -88,7 +88,7 @@ namespace ActiveAttributes.Core.Interception
       var parameterExpression = Expression.Variable (_invocationContextType, "ctx");
 
       var constructor = _invocationContextType.GetConstructors().Single();
-      var memberInfoExpression = _memberInfoField.GetMemberExpression (_thisExpression);
+      var memberInfoExpression = _memberInfoField.GetStorageExpression (_thisExpression);
       var argumentExpressions = new[] { memberInfoExpression, _thisExpression }.Concat (_parameterExpressions.Cast<Expression>());
       var newExpression = Expression.New (constructor, argumentExpressions);
       var assignExpression = Expression.Assign (parameterExpression, newExpression);
@@ -119,7 +119,7 @@ namespace ActiveAttributes.Core.Interception
           invocationType = typeof (OuterInvocation);
           var previousInvocation = invocations[i - 1];
           var previousAdvice = _advices[i - 1].Item1;
-          var previousAspect = _advices[i - 1].Item2.GetMemberExpression (_thisExpression);
+          var previousAspect = _advices[i - 1].Item2.GetStorageExpression (_thisExpression);
           newExpression = _invocationExpressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, previousAdvice, invocationContext);
         }
 
@@ -134,7 +134,7 @@ namespace ActiveAttributes.Core.Interception
     {
       ArgumentUtility.CheckNotNull ("outermostInvocation", outermostInvocation);
 
-      var outermostAspect = _advices.Last().Item2.GetMemberExpression (_thisExpression);
+      var outermostAspect = _advices.Last().Item2.GetStorageExpression (_thisExpression);
       var outermostAdvice = _advices.Last().Item1;
 
       return Expression.Call (outermostAspect, outermostAdvice, new[] { outermostInvocation });
@@ -142,6 +142,7 @@ namespace ActiveAttributes.Core.Interception
 
     public MemberExpression CreateReturnValueExpression (Expression invocationContext)
     {
+      // TODO return empty or property depending on interceptedMethod
       return Expression.Property (invocationContext, "ReturnValue");
     }
   }

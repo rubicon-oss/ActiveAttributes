@@ -15,8 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using Microsoft.Scripting.Ast;
 using Rhino.Mocks;
 
@@ -24,13 +23,13 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
+    public static IStorage GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
     {
-      var memberExpression = GetMemberExpression (type, attributes);
+      var expression = GetExpression (type);
 
-      var stub = MockRepository.GenerateStub<IFieldWrapper>();
+      var stub = MockRepository.GenerateStub<IStorage>();
 
-      stub.Stub (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (memberExpression);
+      stub.Stub (x => x.GetStorageExpression (Arg<Expression>.Is.Anything)).Return (expression);
 
       return stub;
     }

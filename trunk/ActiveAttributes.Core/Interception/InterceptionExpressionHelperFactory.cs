@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
@@ -30,9 +30,9 @@ namespace ActiveAttributes.Core.Interception
     IInterceptionExpressionHelper Create (
         MethodInfo method,
         BodyContextBase bodyContextBase,
-        IEnumerable<Tuple<MethodInfo, IFieldWrapper>> advices,
-        IFieldWrapper memberInfoField,
-        IFieldWrapper delegateField);
+        IEnumerable<Tuple<MethodInfo, IStorage>> advices,
+        IStorage memberInfoField,
+        IStorage delegateField);
   }
 
   public class InterceptionExpressionHelperFactory : IInterceptionExpressionHelperFactory
@@ -49,9 +49,9 @@ namespace ActiveAttributes.Core.Interception
     public IInterceptionExpressionHelper Create (
         MethodInfo method,
         BodyContextBase bodyContextBase,
-        IEnumerable<Tuple<MethodInfo, IFieldWrapper>> advices,
-        IFieldWrapper memberInfoField,
-        IFieldWrapper delegateField)
+        IEnumerable<Tuple<MethodInfo, IStorage>> advices,
+        IStorage memberInfoField,
+        IStorage delegateField)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       ArgumentUtility.CheckNotNull ("bodyContextBase", bodyContextBase);

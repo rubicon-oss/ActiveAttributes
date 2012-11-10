@@ -52,7 +52,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var expected =
           Expression.New (
               typeof (FuncInvocation<object, int, string>).GetConstructors().Single(),
-              new Expression[] { invocationContext, delegateFieldStub.GetMemberExpression (_thisExpression) });
+              new Expression[] { invocationContext, delegateFieldStub.GetStorageExpression (_thisExpression) });
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }

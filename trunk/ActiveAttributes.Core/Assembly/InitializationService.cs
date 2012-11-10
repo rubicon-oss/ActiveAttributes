@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Extensions;
 using JetBrains.Annotations;
 using Microsoft.Scripting.Ast;
@@ -29,9 +29,9 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (InitializationService))]
   public interface IInitializationService
   {
-    IFieldWrapper AddMemberInfoInitialization (MethodInfo method);
+    IStorage AddMemberInfoInitialization (MethodInfo method);
 
-    IFieldWrapper AddDelegateInitialization (MethodInfo method);
+    IStorage AddDelegateInitialization (MethodInfo method);
   }
 
   public class InitializationService : IInitializationService
@@ -54,14 +54,14 @@ namespace ActiveAttributes.Core.Assembly
       _methodCopyService = methodCopyService;
     }
 
-    public IFieldWrapper AddMemberInfoInitialization (MethodInfo method)
+    public IStorage AddMemberInfoInitialization (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsTrue (method.DeclaringType is MutableType);
 
       var mutableType = (MutableType) method.DeclaringType;
       var mutableMethod = (MutableMethodInfo) method;
-      IFieldWrapper field;
+      IStorage field;
       Func<IConstructorExpressionsHelper, Expression> expressionProvider;
 
       // TODO UnderlyingSystemMethodInfo
@@ -82,7 +82,7 @@ namespace ActiveAttributes.Core.Assembly
       return field;
     }
 
-    public IFieldWrapper AddDelegateInitialization (MethodInfo method)
+    public IStorage AddDelegateInitialization (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsTrue (method.DeclaringType is MutableType);

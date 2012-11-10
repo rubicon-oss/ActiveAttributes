@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.Construction;
 using Microsoft.Scripting.Ast;
@@ -31,14 +31,14 @@ namespace ActiveAttributes.Core.Assembly
 {
   public interface IAspectStorageService
   {
-    IFieldWrapper GetOrAdd (Advice advice, MutableType mutableType);
+    IStorage GetOrAdd (Advice advice, MutableType mutableType);
   }
 
   public class AspectStorageService : IAspectStorageService
   {
     private readonly IFieldService _fieldService;
     private readonly IAspectInitializationExpressionHelper _initializationExpressionHelper;
-    private readonly Dictionary<Tuple<IConstruction, AdviceScope>, IFieldWrapper> _fieldWrappers;
+    private readonly Dictionary<Tuple<IConstruction, AdviceScope>, IStorage> _fieldWrappers;
 
     private int _counter;
 
@@ -49,15 +49,15 @@ namespace ActiveAttributes.Core.Assembly
 
       _fieldService = fieldService;
       _initializationExpressionHelper = initializationExpressionHelper;
-      _fieldWrappers = new Dictionary<Tuple<IConstruction, AdviceScope>, IFieldWrapper> ();
+      _fieldWrappers = new Dictionary<Tuple<IConstruction, AdviceScope>, IStorage> ();
     }
 
-    public IFieldWrapper GetOrAdd (Advice advice, MutableType mutableType)
+    public IStorage GetOrAdd (Advice advice, MutableType mutableType)
     {
       ArgumentUtility.CheckNotNull ("advice", advice);
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
-      IFieldWrapper field;
+      IStorage field;
       var tuple = Tuple.Create (advice.Construction, advice.Scope);
       if (!_fieldWrappers.TryGetValue (tuple, out field))
       {
@@ -71,13 +71,13 @@ namespace ActiveAttributes.Core.Assembly
       return field;
     }
 
-    private void AddInitialization (MutableType mutableType, IFieldWrapper field, Expression value)
+    private void AddInitialization (MutableType mutableType, IStorage field, Expression value)
     {
       var constructor = mutableType.AllMutableConstructors.Single ();
       constructor.SetBody (
           ctx =>
           {
-            var assignExpression = Expression.Assign (field.GetMemberExpression (ctx.This), value);
+            var assignExpression = Expression.Assign (field.GetStorageExpression (ctx.This), value);
             return Expression.Block (typeof(void), ctx.PreviousBody, assignExpression);
           });
     }

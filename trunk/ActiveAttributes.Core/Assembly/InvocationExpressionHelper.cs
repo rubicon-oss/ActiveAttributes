@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
@@ -28,7 +28,7 @@ namespace ActiveAttributes.Core.Assembly
   public interface IInvocationExpressionHelper
   {
     NewExpression CreateInnermostInvocation (
-        Expression thisExpression, Type innerInvocationType, Expression invocationContext, IFieldWrapper delegateField);
+        Expression thisExpression, Type innerInvocationType, Expression invocationContext, IStorage delegateField);
 
     NewExpression CreateOuterInvocation (
         Expression previousAspect,
@@ -40,10 +40,10 @@ namespace ActiveAttributes.Core.Assembly
   public class InvocationExpressionHelper : IInvocationExpressionHelper
   {
     public NewExpression CreateInnermostInvocation (
-        Expression thisExpression, Type innerInvocationType, Expression invocationContext, IFieldWrapper delegateField)
+        Expression thisExpression, Type innerInvocationType, Expression invocationContext, IStorage delegateField)
     {
       var constructor = innerInvocationType.GetConstructors().Single();
-      var arguments = new[] { invocationContext, delegateField.GetMemberExpression (thisExpression) };
+      var arguments = new[] { invocationContext, delegateField.GetStorageExpression (thisExpression) };
 
       return Expression.New (constructor, arguments);
     }

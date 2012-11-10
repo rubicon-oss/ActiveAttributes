@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Interception;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -86,16 +86,16 @@ namespace ActiveAttributes.UnitTests.Interception
           .Expect (x => x.GetOrAdd (advice2, mutableType))
           .Return (fakeAspectField2);
 
-      IList<Tuple<MethodInfo, IFieldWrapper>> adviceTuples = null;
+      IList<Tuple<MethodInfo, IStorage>> adviceTuples = null;
       expressionHelperFactoryMock
           .Expect (
               x => x.Create (
                   Arg.Is (method),
                   Arg<BodyContextBase>.Matches (y => y.DeclaringType == method.DeclaringType),
-                  Arg<IEnumerable<Tuple<MethodInfo, IFieldWrapper>>>.Is.Anything,
+                  Arg<IEnumerable<Tuple<MethodInfo, IStorage>>>.Is.Anything,
                   Arg.Is (fakeMemberInfoField),
                   Arg.Is (fakeDelegateField)))
-          .WhenCalled (x => adviceTuples = ((IEnumerable<Tuple<MethodInfo, IFieldWrapper>>) x.Arguments[2]).ToList())
+          .WhenCalled (x => adviceTuples = ((IEnumerable<Tuple<MethodInfo, IStorage>>) x.Arguments[2]).ToList())
           .Return (expressionHelperMock);
 
       expressionHelperMock

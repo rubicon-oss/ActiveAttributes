@@ -17,7 +17,7 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Core;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;
@@ -86,10 +86,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void CreateDelegateAssignExpression_FieldWrapper ()
     {
       var method = ObjectMother.GetMethodInfo (returnType: typeof (string), parameterTypes: new[] { typeof (int), typeof (string) });
-      var fieldMock = MockRepository.GenerateStrictMock<IFieldWrapper> ();
+      var fieldMock = MockRepository.GenerateStrictMock<IStorage> ();
       var fakeExpression1 = ObjectMother.GetMemberExpression (typeof (Delegate));
 
-      fieldMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
+      fieldMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Anything)).Return (fakeExpression1);
 
       var result = _constructorExpressionsHelper.CreateDelegateAssignExpression (fieldMock, method);
 

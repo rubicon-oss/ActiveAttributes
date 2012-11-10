@@ -18,7 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 
@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Private);
 
-      Assert.That (result, Is.TypeOf<InstanceFieldWrapper>());
+      Assert.That (result, Is.TypeOf<InstanceStorage>());
       var addedField = _mutableType.AddedFields.Single();
       Assert.That (result.Field, Is.SameAs (addedField));
     }
@@ -52,7 +52,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Static);
 
-      Assert.That (result, Is.TypeOf<StaticFieldWrapper>());
+      Assert.That (result, Is.TypeOf<StaticStorage>());
     }
   }
 }

@@ -193,10 +193,10 @@
     <Compile Include="Interception\Invocations\IEventInvocation.cs" />
     <Compile Include="Interception\Invocations\EventInvocation.template.cs" />
     <Compile Include="Interception\Contexts\EventInvocationContext.template.cs" />
-    <Compile Include="Assembly\FieldWrapper\IFieldWrapper.cs" />
-    <Compile Include="Assembly\FieldWrapper\InstanceFieldWrapper.cs" />
+    <Compile Include="Assembly\Storage\IStorage.cs" />
+    <Compile Include="Assembly\Storage\InstanceStorage.cs" />
     <Compile Include="Assembly\MethodCopyService.cs" />
-    <Compile Include="Assembly\FieldWrapper\StaticFieldWrapper.cs" />
+    <Compile Include="Assembly\Storage\StaticStorage.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.generated.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContext.template.cs" />
     <Compile Include="Interception\Contexts\ActionInvocationContextBase.cs" />

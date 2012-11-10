@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
@@ -27,9 +27,9 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (ConstructorExpressionsHelper))]
   public interface IConstructorExpressionsHelper
   {
-    BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MemberInfo method);
+    BinaryExpression CreateMemberInfoAssignExpression (IStorage field, MemberInfo method);
 
-    BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method);
+    BinaryExpression CreateDelegateAssignExpression (IStorage field, MethodInfo method);
   }
 
   public class ConstructorExpressionsHelper : IConstructorExpressionsHelper
@@ -46,7 +46,7 @@ namespace ActiveAttributes.Core.Assembly
       _context = context;
     }
 
-    public BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MemberInfo member)
+    public BinaryExpression CreateMemberInfoAssignExpression (IStorage field, MemberInfo member)
     {
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("member", member);
@@ -59,7 +59,7 @@ namespace ActiveAttributes.Core.Assembly
       throw new NotSupportedException();
     }
 
-    public BinaryExpression CreateDelegateAssignExpression (IFieldWrapper field, MethodInfo method)
+    public BinaryExpression CreateDelegateAssignExpression (IStorage field, MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("method", method);
@@ -70,7 +70,7 @@ namespace ActiveAttributes.Core.Assembly
     }
 
 
-    private BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, MethodInfo method)
+    private BinaryExpression CreateMemberInfoAssignExpression (IStorage field, MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("method", method);
@@ -78,7 +78,7 @@ namespace ActiveAttributes.Core.Assembly
       return GetAssignExpression<MethodInfo> (field, method);
     }
 
-    private BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, PropertyInfo property)
+    private BinaryExpression CreateMemberInfoAssignExpression (IStorage field, PropertyInfo property)
     {
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("property", property);
@@ -93,21 +93,21 @@ namespace ActiveAttributes.Core.Assembly
     }
 
 
-    private BinaryExpression GetAssignExpression<T> (IFieldWrapper field, object constant)
+    private BinaryExpression GetAssignExpression<T> (IStorage field, object constant)
     {
       var constantExpression = Expression.Constant (constant, typeof (T));
 
       return GetAssignExpression (field, constantExpression);
     }
 
-    private BinaryExpression GetAssignExpression (IFieldWrapper field, Expression value)
+    private BinaryExpression GetAssignExpression (IStorage field, Expression value)
     {
       return Expression.Assign (GetFieldAccessExpression (field), value);
     }
 
-    private MemberExpression GetFieldAccessExpression (IFieldWrapper fieldWrapper)
+    private Expression GetFieldAccessExpression (IStorage storage)
     {
-      return fieldWrapper.GetMemberExpression (_context.This);
+      return storage.GetStorageExpression (_context.This);
     }
   }
 }

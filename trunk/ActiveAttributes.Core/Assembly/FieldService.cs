@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Extensions;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
@@ -26,14 +26,14 @@ namespace ActiveAttributes.Core.Assembly
   [ConcreteImplementation (typeof (FieldService))]
   public interface IFieldService
   {
-    IFieldWrapper AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes);
+    IStorage AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes);
   }
 
   public class FieldService : IFieldService
   {
     private int _counter;
 
-    public IFieldWrapper AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes)
+    public IStorage AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes)
     {
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
       ArgumentUtility.CheckNotNull ("type", type);
@@ -41,8 +41,8 @@ namespace ActiveAttributes.Core.Assembly
 
       var field = mutableType.AddField (name + _counter++, type, attributes);
       return attributes.HasFlags (FieldAttributes.Static)
-                 ? (IFieldWrapper) new StaticFieldWrapper (field)
-                 : new InstanceFieldWrapper (field);
+                 ? (IStorage) new StaticStorage (field)
+                 : new InstanceStorage (field);
     }
   }
 }

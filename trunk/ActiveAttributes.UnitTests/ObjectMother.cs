@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using Microsoft.Scripting.Ast;
 using Remotion.Reflection.MemberSignatures;
 using Remotion.TypePipe.Expressions;
@@ -175,23 +175,23 @@ namespace ActiveAttributes.UnitTests
       return Expression.Parameter (type, name);
     }
 
-    public static IFieldWrapper GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null, ThisExpression thisExpression = null)
+    public static IStorage GetFieldWrapper (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null, ThisExpression thisExpression = null)
     {
       var field = GetFieldInfo (type, attributes: attributes, declaringType: declaringType);
       thisExpression = thisExpression ?? GetThisExpression (field.DeclaringType);
       return GetFieldWrapper (field, thisExpression);
     }
 
-    public static IFieldWrapper GetFieldWrapper (FieldInfo field, ThisExpression thisExpression = null)
+    public static IStorage GetFieldWrapper (FieldInfo field, ThisExpression thisExpression = null)
     {
       thisExpression = field.IsStatic ? null : thisExpression ?? GetThisExpression (field.DeclaringType);
 
-      var mock = MockRepository.GenerateStub<IFieldWrapper>();
+      var mock = MockRepository.GenerateStub<IStorage>();
       mock
           .Stub (x => x.Field)
           .Return (field);
       mock
-          .Stub (x => x.GetMemberExpression (Arg<Expression>.Is.Anything))
+          .Stub (x => x.GetStorageExpression (Arg<Expression>.Is.Anything))
           .Return (Expression.Field (thisExpression, field));
 
       return mock;

@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Interception;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
@@ -43,7 +43,7 @@ namespace ActiveAttributes.UnitTests.Interception
       var bodyContextBase = ObjectMother2.GetBodyContextBase (declaringType, parameterExpressions);
       var fakeInvocationType = typeof (FuncInvocation<object, int>);
       var fakeInvocationContextType = typeof (FuncInvocationContext<object, int>);
-      var fakeAdvices = new Tuple<MethodInfo, IFieldWrapper>[0];
+      var fakeAdvices = new Tuple<MethodInfo, IStorage>[0];
       var fakeMemberInfoField = ObjectMother2.GetFieldWrapper();
       var fakeDelegateField = ObjectMother2.GetFieldWrapper();
 

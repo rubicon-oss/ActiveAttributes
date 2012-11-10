@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.TypePipe.Expressions;
@@ -39,7 +39,7 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
     [Test]
     public void Initialization ()
     {
-      var fieldWrapper = new InstanceFieldWrapper (_fieldInfo);
+      var fieldWrapper = new InstanceStorage (_fieldInfo);
 
       Assert.That (fieldWrapper.Field, Is.SameAs (_fieldInfo));
     }
@@ -47,10 +47,10 @@ namespace ActiveAttributes.UnitTests.Assembly.FieldWrappers
     [Test]
     public void GetAccessExpression ()
     {
-      var fieldWrapper = new InstanceFieldWrapper (_fieldInfo);
+      var fieldWrapper = new InstanceStorage (_fieldInfo);
 
       var expected = Expression.Field (_thisExpression, _fieldInfo);
-      var actual = fieldWrapper.GetMemberExpression (_thisExpression);
+      var actual = fieldWrapper.GetStorageExpression (_thisExpression);
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }

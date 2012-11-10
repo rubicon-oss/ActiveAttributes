@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.FieldWrapper;
+using ActiveAttributes.Core.Assembly.Storage;
 using ActiveAttributes.Core.Interception;
 using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
@@ -40,10 +40,10 @@ namespace ActiveAttributes.UnitTests.Interception
     private MethodInfo _interceptedMethod;
     private MethodInfo _adviceMethod1;
     private MethodInfo _adviceMethod2;
-    private IFieldWrapper _aspectFieldMock1;
-    private IFieldWrapper _aspectFieldMock2;
-    private IFieldWrapper _memberFieldMock;
-    private IFieldWrapper _delegateFieldMock;
+    private IStorage _aspectFieldMock1;
+    private IStorage _aspectFieldMock2;
+    private IStorage _memberFieldMock;
+    private IStorage _delegateFieldMock;
 
     private MutableType _declaringType;
     private ParameterExpression _parameterExpression1;
@@ -64,10 +64,10 @@ namespace ActiveAttributes.UnitTests.Interception
       _invocationType = typeof (FuncInvocation<object, string, int, int>);
       _invocationContextType = typeof (FuncInvocationContext<object, string, int, int>);
       _interceptedMethod = ObjectMother2.GetMethodInfo (returnType: typeof (int));
-      _memberFieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
-      _delegateFieldMock = MockRepository.GenerateStrictMock<IFieldWrapper>();
-      _aspectFieldMock1 = MockRepository.GenerateStrictMock<IFieldWrapper>();
-      _aspectFieldMock2 = MockRepository.GenerateStrictMock<IFieldWrapper>();
+      _memberFieldMock = MockRepository.GenerateStrictMock<IStorage>();
+      _delegateFieldMock = MockRepository.GenerateStrictMock<IStorage>();
+      _aspectFieldMock1 = MockRepository.GenerateStrictMock<IStorage>();
+      _aspectFieldMock2 = MockRepository.GenerateStrictMock<IStorage>();
       _adviceMethod1 = ObjectMother2.GetMethodInfo();
       _adviceMethod2 = ObjectMother2.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
       var advices = new[] { Tuple.Create (_adviceMethod1, _aspectFieldMock1), Tuple.Create (_adviceMethod2, _aspectFieldMock2) };
@@ -88,9 +88,9 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void GetInvocationContextExpressions ()
     {
-      var fakeExpression = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
+      var fakeMemberExpression = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
 
-      _memberFieldMock.Expect (x => x.GetMemberExpression (Arg.Is (_thisExpression))).Return (fakeExpression);
+      _memberFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeMemberExpression);
 
       var result = _expressionHelper.CreateInvocationContextExpressions();
 
@@ -104,7 +104,7 @@ namespace ActiveAttributes.UnitTests.Interception
       var newExpression = (NewExpression) binaryExpression.Right;
       Assert.That (newExpression.Constructor, Is.EqualTo (typeof (FuncInvocationContext<object, string, int, int>).GetConstructors().Single()));
       Assert.That (newExpression.Arguments, Has.Count.EqualTo (4));
-      Assert.That (newExpression.Arguments[0], Is.SameAs (fakeExpression));
+      Assert.That (newExpression.Arguments[0], Is.SameAs (fakeMemberExpression));
       Assert.That (newExpression.Arguments[1], Is.TypeOf<ThisExpression>().With.Property ("Type").EqualTo (_declaringType));
       Assert.That (newExpression.Arguments[2], Is.SameAs (_parameterExpression1));
       Assert.That (newExpression.Arguments[3], Is.SameAs (_parameterExpression2));
@@ -124,7 +124,7 @@ namespace ActiveAttributes.UnitTests.Interception
           .Expect (x => x.CreateInnermostInvocation (_thisExpression, _invocationType, invocationContext, _delegateFieldMock))
           .Return (fakeExpression1);
       _aspectFieldMock1
-          .Expect (x => x.GetMemberExpression (_thisExpression))
+          .Expect (x => x.GetStorageExpression (_thisExpression))
           .Return (fakeMemberExpression);
       object[] arguments = null;
       _invocationExpressionHelperMock
@@ -163,14 +163,14 @@ namespace ActiveAttributes.UnitTests.Interception
     public void CreateOutermostAspectCallExpression ()
     {
       var invocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var fakeExpression = ObjectMother2.GetMemberExpression (_adviceMethod2.DeclaringType);
+      var fakeMemberExpression = ObjectMother2.GetMemberExpression (_adviceMethod2.DeclaringType);
 
-      _aspectFieldMock2.Expect (x => x.GetMemberExpression (_thisExpression)).Return (fakeExpression);
+      _aspectFieldMock2.Expect (x => x.GetStorageExpression (_thisExpression)).Return (fakeMemberExpression);
 
       var result = _expressionHelper.CreateOutermostAdviceCallExpression (invocation);
 
       _aspectFieldMock2.VerifyAllExpectations();
-      Assert.That (result.Object, Is.SameAs (fakeExpression));
+      Assert.That (result.Object, Is.SameAs (fakeMemberExpression));
       Assert.That (result.Method, Is.SameAs (_adviceMethod2));
       Assert.That (result.Arguments.Single(), Is.SameAs (invocation));
     }

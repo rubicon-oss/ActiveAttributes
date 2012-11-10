@@ -18,15 +18,15 @@ using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
 
-namespace ActiveAttributes.Core.Assembly.FieldWrapper
+namespace ActiveAttributes.Core.Assembly.Storage
 {
   /// <summary>
   /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
   /// </summary>
-  public interface IFieldWrapper
+  public interface IStorage
   {
     FieldInfo Field { get; }
 
-    MemberExpression GetMemberExpression (Expression thisExpression);
+    Expression GetStorageExpression (Expression thisExpression);
   }
 }
