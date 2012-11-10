@@ -30,7 +30,6 @@ namespace ActiveAttributes.Core.Discovery
   /// </summary>
   public interface ICustomAttributeDataTransform
   {
-    IAdviceBuilder GetAdviceBuilder (ICustomAttributeData customAttributeData);
     IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders);
   }
 
@@ -49,49 +48,6 @@ namespace ActiveAttributes.Core.Discovery
               { "MemberVisibilityFilter", typeof (VisibilityPointcut) },
               { "MemberCustomAttributeFilter", typeof (CustomAttributePointcut) }
           };
-
-    private readonly IAdviceBuilderFactory _adviceBuilderFactory;
-
-    public CustomAttributeDataTransform (IAdviceBuilderFactory adviceBuilderFactory)
-    {
-      ArgumentUtility.CheckNotNull ("adviceBuilderFactory", adviceBuilderFactory);
-
-      _adviceBuilderFactory = adviceBuilderFactory;
-    }
-
-    public IAdviceBuilder GetAdviceBuilder (ICustomAttributeData customAttributeData)
-    {
-      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
-
-      var adviceBuilder = _adviceBuilderFactory.Create();
-
-      var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
-      adviceBuilder.SetConstruction (constructionInfo);
-
-      foreach (var argument in customAttributeData.NamedArguments)
-      {
-        TrySetValue (argument, "Name", new Func<string, IAdviceBuilder> (adviceBuilder.SetName));
-        TrySetValue (argument, "Role", new Func<string, IAdviceBuilder> (adviceBuilder.SetRole));
-        TrySetValue (argument, "Execution", new Func<AdviceExecution, IAdviceBuilder> (adviceBuilder.SetExecution));
-        TrySetValue (argument, "Scope", new Func<AdviceScope, IAdviceBuilder> (adviceBuilder.SetScope));
-        TrySetValue (argument, "Priority", new Func<int, IAdviceBuilder> (adviceBuilder.SetPriority));
-
-        Type pointcutType;
-        if (s_dictionary.TryGetValue (argument.MemberInfo.Name, out pointcutType))
-        {
-          var pointcut = pointcutType.CreateInstance<IPointcut> (argument.Value);
-          adviceBuilder.AddPointcut (pointcut);
-        }
-      }
-
-      return adviceBuilder;
-    }
-
-    private void TrySetValue<T> (ICustomAttributeNamedArgument namedArgument, string memberName, Func<T, IAdviceBuilder> set)
-    {
-      if (namedArgument.MemberInfo.Name == memberName)
-        set ((T) namedArgument.Value);
-    }
 
     public IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders)
     {

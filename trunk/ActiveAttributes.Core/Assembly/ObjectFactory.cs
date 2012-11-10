@@ -71,7 +71,7 @@ namespace ActiveAttributes.Core.Assembly
       var adviceBuilderFactory = new AdviceBuilderFactory ();
       var customAttributeProviderTransform = new CustomAttributeProviderTransform (adviceBuilderFactory);
       var classDeclarationProvider = new ClassDeclarationProvider (customAttributeProviderTransform);
-      var customAttributeDataTransform = new CustomAttributeDataTransform (adviceBuilderFactory);
+      var customAttributeDataTransform = new CustomAttributeDataTransform ();
       var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
       var relatedMethodFinder = new RelatedMethodFinder ();
       var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider, relatedMethodFinder);

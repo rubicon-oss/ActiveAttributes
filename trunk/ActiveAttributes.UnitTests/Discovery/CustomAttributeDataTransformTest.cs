@@ -16,7 +16,6 @@
 using System;
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
@@ -30,11 +29,11 @@ namespace ActiveAttributes.UnitTests.Discovery
   public class CustomAttributeDataTransformTest
   {
     [Test]
-    public void GetAdviceBuilder ()
+    public void UpdateAdviceBuilders ()
     {
-      var factoryStub = MockRepository.GenerateStrictMock<IAdviceBuilderFactory>();
-      var adviceBuilderMock = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      factoryStub.Stub (x => x.Create()).Return (adviceBuilderMock);
+      var adviceBuilderMock1 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
+      var adviceBuilderMock2 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
+      var adviceBuilderMocks = new[] { adviceBuilderMock1, adviceBuilderMock2 };
 
       var namedArguments =
           new[]
@@ -57,19 +56,32 @@ namespace ActiveAttributes.UnitTests.Discovery
           };
       var customAttributeData = ObjectMother2.GetCustomAttributeData (typeof(AspectAttributeBase), namedArguments);
 
-      adviceBuilderMock.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.SetName ("name")).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.SetScope (AdviceScope.Static)).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.SetPriority (4)).Return (adviceBuilderMock);
-      adviceBuilderMock.Expect (x => x.AddPointcut (null)).IgnoreArguments().Return (adviceBuilderMock).Repeat.Any();
+      adviceBuilderMock1.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetName ("name")).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetScope (AdviceScope.Static)).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetPriority (4)).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.AddPointcut (null)).IgnoreArguments ().Return (adviceBuilderMock1).Repeat.Any ();
+      adviceBuilderMock2.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetName ("name")).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetScope (AdviceScope.Static)).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetPriority (4)).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.AddPointcut (null)).IgnoreArguments ().Return (adviceBuilderMock2).Repeat.Any ();
 
-      var result = new CustomAttributeDataTransform (factoryStub).GetAdviceBuilder (customAttributeData);
+      var result = new CustomAttributeDataTransform ().UpdateAdviceBuilders (customAttributeData, adviceBuilderMocks);
 
-      Assert.That (result, Is.SameAs (adviceBuilderMock));
+      var construction1 = adviceBuilderMock1.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null))[0][0];
+      var construction2 = adviceBuilderMock2.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null))[0][0];
+      var pointcuts = adviceBuilderMock1.GetArgumentsForCallsMadeOn (x => x.AddPointcut (null)).Select (x => (IPointcut) x[0]);
+      adviceBuilderMock1.VerifyAllExpectations ();
+      adviceBuilderMock2.VerifyAllExpectations ();
 
-      var pointcuts = adviceBuilderMock.GetArgumentsForCallsMadeOn (x => x.AddPointcut (null)).Select (x => (IPointcut) x[0]);
+      Assert.That (result, Is.SameAs (adviceBuilderMocks));
+      Assert.That (construction1, Is.SameAs (construction2));
+
       Assert.That (pointcuts, Has.Some.TypeOf<TypePointcut>().With.Property ("Type").EqualTo (typeof (string)));
       Assert.That (pointcuts, Has.Some.TypeOf<TypeNamePointcut>().With.Property ("TypeName").EqualTo ("typeName"));
       Assert.That (pointcuts, Has.Some.TypeOf<NamespacePointcut>().With.Property ("Namespace").EqualTo ("namespace"));
@@ -80,7 +92,6 @@ namespace ActiveAttributes.UnitTests.Discovery
       Assert.That (pointcuts, Has.Some.TypeOf<VisibilityPointcut>().With.Property ("Visibility").EqualTo (Visibility.Family));
       Assert.That (pointcuts, Has.Some.TypeOf<CustomAttributePointcut>().With.Property ("CustomAttributeType").EqualTo (typeof (Attribute)));
 
-      adviceBuilderMock.VerifyAllExpectations();
     }
   }
 }

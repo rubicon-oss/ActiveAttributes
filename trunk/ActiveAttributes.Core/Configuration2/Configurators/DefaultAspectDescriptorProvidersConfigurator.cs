@@ -25,7 +25,7 @@ namespace ActiveAttributes.Core.Configuration2.Configurators
     {
       var customAttributeProviderToAdviceConverter = new CustomAttributeProviderTransform (null);
       //var standaloneAdviceProvider = new ClassDeclarationProvider (null, customAttributeProviderToAdviceConverter);
-      var customAttributeDataToAdviceConverter = new CustomAttributeDataTransform (null);
+      var customAttributeDataToAdviceConverter = new CustomAttributeDataTransform ();
       //var aspectDeclarationProviderHelper = new AttributeDeclarationProvider (
       //    //standaloneAdviceProvider, customAttributeDataToAdviceConverter, adviceMerger);
       //var aspectDeclarationProviders =
