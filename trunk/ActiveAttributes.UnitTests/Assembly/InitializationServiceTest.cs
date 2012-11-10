@@ -46,6 +46,8 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       _expressionsHelperFactoryStub = MockRepository.GenerateStub<IConstructorExpressionsHelperFactory>();
       _expressionsHelperMock = MockRepository.GenerateStrictMock<IConstructorExpressionsHelper>();
+      // TODO methodCopyService
+      var mock = MockRepository.GenerateStub<IMethodCopyService>();
       _fieldServiceMock = MockRepository.GenerateStrictMock<IFieldService>();
       _firstConstructor = _mutableType.AllMutableConstructors.First();
 
@@ -53,7 +55,7 @@ namespace ActiveAttributes.UnitTests.Assembly
           .Stub (x => x.CreateConstructorExpressionHelper (Arg<BodyContextBase>.Is.Anything))
           .Return (_expressionsHelperMock);
 
-      _initializationService = new InitializationService (_fieldServiceMock, _expressionsHelperFactoryStub);
+      _initializationService = new InitializationService (_fieldServiceMock, _expressionsHelperFactoryStub, mock);
     }
 
     [Test]

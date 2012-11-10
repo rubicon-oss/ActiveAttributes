@@ -16,8 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using Remotion;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.TypeAssembly;
 using Remotion.Utilities;
@@ -31,7 +33,7 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IAdviceComposer _adviceComposer;
     private readonly IWeaver _weaver;
 
-    private readonly IEnumerable<IAdviceBuilder> _globalAdvices;
+    private readonly DoubleCheckedLockingContainer<IEnumerable<IAdviceBuilder>> _globalAdvices;
 
     public Assembler (
         IDeclarationProvider declarationProvider, IAdviceComposer adviceComposer, IWeaver weaver)
@@ -44,7 +46,8 @@ namespace ActiveAttributes.Core.Assembly
       _adviceComposer = adviceComposer;
       _weaver = weaver;
 
-      _globalAdvices = declarationProvider.GetDeclarations().ConvertToCollection();
+      Func<IEnumerable<IAdviceBuilder>> factory = () => declarationProvider.GetDeclarations().ConvertToCollection();
+      _globalAdvices = new DoubleCheckedLockingContainer<IEnumerable<IAdviceBuilder>> (factory);
     }
 
     public void ModifyType (MutableType mutableType)
@@ -55,12 +58,16 @@ namespace ActiveAttributes.Core.Assembly
 
       foreach (var method in mutableType.GetMethods())
       {
-        var method1 = method;
-        var methodAdvices = _declarationProvider.GetDeclarations (method1);
+        var methodAdvices = _declarationProvider.GetDeclarations (method);
+        var allAdvices = ConcatAdvices (_globalAdvices.Value, typeAdvices, methodAdvices);
         var joinPoint = new JoinPoint (method);
-        var allAdvices = ConcatAdvices (_globalAdvices, typeAdvices, methodAdvices);
-        var sortedAdvices = _adviceComposer.Compose (allAdvices, joinPoint).ConvertToCollection();
-        _weaver.Weave (method, sortedAdvices);
+        var filteredAndSortedAdvices = _adviceComposer.Compose (allAdvices, joinPoint).ConvertToCollection ();
+
+        if (!filteredAndSortedAdvices.Any ())
+          continue;
+
+        var mutableMethod = mutableType.GetOrAddMutableMethod (method);
+        _weaver.Weave (mutableMethod, filteredAndSortedAdvices);
       }
     }
 

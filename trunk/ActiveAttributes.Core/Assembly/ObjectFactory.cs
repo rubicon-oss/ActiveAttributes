@@ -47,49 +47,46 @@ namespace ActiveAttributes.Core.Assembly
 
   public class ObjectFactory : IObjectFactory
   {
-    private readonly ITypeAssemblyParticipant _assembler;
+    public readonly static ITypeAssemblyParticipant Assembler;
 
     public static T Create<T> ()
     {
-      var interceptionTypeProvider = new InterceptionTypeProvider();
-      var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory(interceptionTypeProvider);
-      var fieldService = new FieldService();
-      var aspectInitializationExpressionHelper = new AspectInitializationExpressionHelper();
-      var aspectStorageService = new AspectStorageService(fieldService, aspectInitializationExpressionHelper);
-      var constructorExpressionsHelperFactory = new ConstructorExpressionsHelperFactory(aspectInitializationExpressionHelper);
-      var initializationService = new InitializationService(fieldService, constructorExpressionsHelperFactory);
-      var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService, initializationService);
-      var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[0];
-      var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
-      var adviceBuilderFactory = new AdviceBuilderFactory();
-      var customAttributeProviderTransform = new CustomAttributeProviderTransform(adviceBuilderFactory);
-      var classDeclarationProvider = new ClassDeclarationProvider(customAttributeProviderTransform);
-      var customAttributeDataTransform = new CustomAttributeDataTransform(adviceBuilderFactory);
-      var attributeDeclarationProvider = new AttributeDeclarationProvider(classDeclarationProvider, customAttributeDataTransform);
-      var relatedMethodFinder = new RelatedMethodFinder();
-      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider(attributeDeclarationProvider, relatedMethodFinder);
-      var methodLevelAdviceDeclarationProviders = new [] { methodAttributeDeclarationProvider };
-      var compositeDeclarationProvider = new CompositeDeclarationProvider(assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
-      var adviceDependencyProvider = new AdviceDependencyProvider (new IAdviceOrdering[0]);
-      var adviceSequencer = new AdviceSequencer (adviceDependencyProvider);
-      var pointcutParser = new PointcutParser();
-      var pointcutVisitor = new PointcutVisitor (pointcutParser);
-      var adviceComposer = new AdviceComposer (adviceSequencer, pointcutVisitor);
-      var assembler = new Assembler (compositeDeclarationProvider, adviceComposer, interceptionWeaver);
-      IObjectFactory objectFactory = new ObjectFactory (assembler);
+      IObjectFactory objectFactory = new ObjectFactory ();
       return objectFactory.Create<T> ();
     }
 
-    public ObjectFactory (ITypeAssemblyParticipant assembler)
+    static ObjectFactory()
     {
-      ArgumentUtility.CheckNotNull ("assembler", assembler);
-
-      _assembler = assembler;
+      var interceptionTypeProvider = new InterceptionTypeProvider ();
+      var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory (interceptionTypeProvider);
+      var fieldService = new FieldService ();
+      var aspectInitializationExpressionHelper = new AspectInitializationExpressionHelper ();
+      var aspectStorageService = new AspectStorageService (fieldService, aspectInitializationExpressionHelper);
+      var constructorExpressionsHelperFactory = new ConstructorExpressionsHelperFactory (aspectInitializationExpressionHelper);
+      var methodCopyService = new MethodCopyService();
+      var initializationService = new InitializationService (fieldService, constructorExpressionsHelperFactory, methodCopyService);
+      var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService, initializationService);
+      var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[0];
+      var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
+      var adviceBuilderFactory = new AdviceBuilderFactory ();
+      var customAttributeProviderTransform = new CustomAttributeProviderTransform (adviceBuilderFactory);
+      var classDeclarationProvider = new ClassDeclarationProvider (customAttributeProviderTransform);
+      var customAttributeDataTransform = new CustomAttributeDataTransform (adviceBuilderFactory);
+      var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
+      var relatedMethodFinder = new RelatedMethodFinder ();
+      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider, relatedMethodFinder);
+      var methodLevelAdviceDeclarationProviders = new[] { methodAttributeDeclarationProvider };
+      var compositeDeclarationProvider = new CompositeDeclarationProvider (assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
+      var adviceDependencyProvider = new AdviceDependencyProvider (new IAdviceOrdering[0]);
+      var adviceSequencer = new AdviceSequencer (adviceDependencyProvider);
+      var pointcutParser = new PointcutParser ();
+      var pointcutVisitor = new PointcutEvaluator (pointcutParser);
+      var adviceComposer = new AdviceComposer (adviceSequencer, pointcutVisitor);
+      Assembler = new Assembler (compositeDeclarationProvider, adviceComposer, interceptionWeaver);
     }
-
     T IObjectFactory.Create<T> ()
     {
-      var typeAssembler = new TypeAssembler (new[] { _assembler }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
+      var typeAssembler = new TypeAssembler (new[] { Assembler }, CreateReflectionEmitTypeModifier (typeof (T).FullName));
       var assembledType = typeAssembler.AssembleType (typeof (T));
 
       return (T) Activator.CreateInstance (assembledType);

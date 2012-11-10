@@ -16,11 +16,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery;
 using ActiveAttributes.Core.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -28,43 +31,86 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class AssemblerTest
   {
+    private Assembler _assembler;
+
+    private IDeclarationProvider _adviceDeclarationProviderMock;
+    private IWeaver _weaverMock;
+    private IAdviceComposer _adviceComposerMock;
+    private MutableType _mutableType;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _adviceDeclarationProviderMock = MockRepository.GenerateStrictMock<IDeclarationProvider> ();
+      _weaverMock = MockRepository.GenerateStrictMock<IWeaver> ();
+      _adviceComposerMock = MockRepository.GenerateStrictMock<IAdviceComposer>();
+      _mutableType = ObjectMother2.GetMutableType ();
+
+      _assembler = new Assembler (_adviceDeclarationProviderMock, _adviceComposerMock, _weaverMock);
+    }
+
     [Test]
     public void ModifyType ()
     {
-      var adviceDeclarationProviderMock = MockRepository.GenerateStrictMock<IDeclarationProvider>();
-      var weaverMock = MockRepository.GenerateStrictMock<IWeaver>();
-      var adviceComposerMock = MockRepository.GenerateStrictMock<IAdviceComposer>();
-      var mutableType = ObjectMother2.GetMutableType();
-
       var fakeAssemblyAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
       var fakeTypeAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
       var fakeMethodAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
+      var allAdviceBuilders =
+          fakeAssemblyAdviceDeclarations
+              .Concat (fakeTypeAdviceDeclarations)
+              .Concat (fakeMethodAdviceDeclarations);
 
-      adviceDeclarationProviderMock.Expect (x => x.GetDeclarations()).Return (fakeAssemblyAdviceDeclarations.AsOneTime());
-      adviceDeclarationProviderMock.Expect (x => x.GetDeclarations (mutableType)).Return (fakeTypeAdviceDeclarations.AsOneTime());
+      _adviceDeclarationProviderMock.Expect (x => x.GetDeclarations()).Return (fakeAssemblyAdviceDeclarations.AsOneTime());
+      _adviceDeclarationProviderMock.Expect (x => x.GetDeclarations (_mutableType)).Return (fakeTypeAdviceDeclarations.AsOneTime());
 
-      foreach (var method in mutableType.GetMethods())
+      foreach (var method in _mutableType.GetMethods())
       {
         var method1 = method;
-        var fakeAdvices = new[] { ObjectMother2.GetAdvice() };
+        var fakeAdvices = method.Name == "ToString" ? new[] { ObjectMother2.GetAdvice() } : new Advice[0];
 
-        adviceDeclarationProviderMock.Expect (x => x.GetDeclarations (method)).Return (fakeMethodAdviceDeclarations);
-        var allAdviceBuilders = fakeAssemblyAdviceDeclarations.Concat (fakeTypeAdviceDeclarations).Concat (fakeMethodAdviceDeclarations);
-        adviceComposerMock
+        _adviceDeclarationProviderMock
+            .Expect (x => x.GetDeclarations (method))
+            .Return (fakeMethodAdviceDeclarations);
+        _adviceComposerMock
             .Expect (
                 x => x.Compose (
                     Arg<IEnumerable<IAdviceBuilder>>.List.Equal (allAdviceBuilders),
                     Arg<JoinPoint>.Matches (y => y.Member == method1)))
             .Return (fakeAdvices.AsOneTime());
 
-        weaverMock.Expect (x => x.Weave (method1, fakeAdvices));
+        if (method.Name == "ToString")
+        {
+          _weaverMock
+              .Expect (x => x.Weave (Arg<MethodInfo>.Is.Anything, Arg.Is (fakeAdvices)))
+              .WhenCalled (x =>
+              {
+                var mutableMethod = (MutableMethodInfo) x.Arguments[0];
+                Assert.That (mutableMethod.Name, Is.EqualTo (method.Name));
+              });
+        }
       }
 
-      new Assembler (adviceDeclarationProviderMock, adviceComposerMock, weaverMock).ModifyType (mutableType);
+      _assembler.ModifyType (_mutableType);
 
-      adviceDeclarationProviderMock.VerifyAllExpectations();
-      adviceComposerMock.VerifyAllExpectations();
-      weaverMock.VerifyAllExpectations();
+      _adviceDeclarationProviderMock.VerifyAllExpectations();
+      _adviceComposerMock.VerifyAllExpectations();
+      _weaverMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void ModifyType_ContinuesForEmptyAdvices ()
+    {
+      var emptyAdvices = new IAdviceBuilder[0];
+      _adviceDeclarationProviderMock.Expect (x => x.GetDeclarations ()).Return (emptyAdvices);
+      _adviceDeclarationProviderMock.Expect (x => x.GetDeclarations (_mutableType)).Return (emptyAdvices);
+      _adviceDeclarationProviderMock.Expect (x => x.GetDeclarations (Arg<MethodInfo>.Is.Anything)).Return (emptyAdvices).Repeat.Any();
+      _adviceComposerMock
+        .Expect (x => x.Compose (Arg<IEnumerable<IAdviceBuilder>>.Is.Anything, Arg<JoinPoint>.Is.Anything))
+        .Return (new Advice[0]).Repeat.Any ();
+
+      _assembler.ModifyType (_mutableType);
+
+      _weaverMock.AssertWasNotCalled (x => x.Weave (Arg<MethodInfo>.Is.Anything, Arg<IEnumerable<Advice>>.Is.Anything));
     }
   }
 }

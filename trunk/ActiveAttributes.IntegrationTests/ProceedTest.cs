@@ -15,10 +15,12 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
+using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -28,10 +30,11 @@ namespace ActiveAttributes.IntegrationTests
     [Test]
     public void Proceed ()
     {
-      var instance = ObjectFactory.Create<DomainType>();
+      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
+      var instance = assembleType.CreateInstance<DomainType> ();
 
-      Assert.That (() => instance.ThrowingMethod1(), Throws.Nothing);
-      Assert.That (() => instance.ThrowingMethod2(), Throws.Exception);
+      Assert.That (() => instance.ThrowingMethod1 (), Throws.Exception);
+      Assert.That (() => instance.ThrowingMethod2 (), Throws.Nothing);
     }
 
     public class DomainType
@@ -43,19 +46,22 @@ namespace ActiveAttributes.IntegrationTests
       public virtual void ThrowingMethod2 () { throw new Exception (); }
     }
 
+    [AdviceScope (AdviceScope.Static)]
+    [AdviceExecution (AdviceExecution.Around)]
     public class ProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Proceed();
+        invocation.Proceed ();
       }
     }
-    
+
+    [AdviceScope (AdviceScope.Static)]
+    [AdviceExecution (AdviceExecution.Around)]
     public class NotProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Proceed();
       }
     }
   }

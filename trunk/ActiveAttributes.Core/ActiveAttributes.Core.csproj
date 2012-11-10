@@ -162,14 +162,14 @@
     <Compile Include="Aspects\MethodInterceptionAspectAttributeBase.cs" />
     <Compile Include="Aspects\PropertyInterceptionAspectAttributeBase.cs" />
     <Compile Include="Discovery\Advice.cs" />
-    <Compile Include="Assembly\Joinpoint.cs" />
+    <Compile Include="Assembly\JoinPoint.cs" />
     <Compile Include="Pointcuts\IPointcut.cs" />
     <Compile Include="Pointcuts\ArgumentTypePointcut.cs" />
     <Compile Include="Pointcuts\CustomAttributePointcut.cs" />
     <Compile Include="Pointcuts\NamespacePointcut.cs" />
     <Compile Include="Pointcuts\ExpressionPointcut.cs" />
     <Compile Include="Assembly\PointcutParser.cs" />
-    <Compile Include="Assembly\PointcutVisitor.cs" />
+    <Compile Include="Assembly\PointcutEvaluator.cs" />
     <Compile Include="Pointcuts\ReturnTypePointcut.cs" />
     <Compile Include="Pointcuts\TypeNamePointcut.cs" />
     <Compile Include="Pointcuts\VisibilityPointcut.cs" />

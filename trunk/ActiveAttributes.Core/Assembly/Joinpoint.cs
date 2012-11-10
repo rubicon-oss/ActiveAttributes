@@ -69,6 +69,7 @@ namespace ActiveAttributes.Core.Assembly
       get { return _type; }
     }
 
+    // TODO change to Method?
     public MemberInfo Member
     {
       get { return _member; }

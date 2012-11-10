@@ -30,15 +30,15 @@ namespace ActiveAttributes.Core.Assembly
   public class AdviceComposer : IAdviceComposer
   {
     private readonly IAdviceSequencer _adviceSequencer;
-    private readonly IPointcutVisitor _pointcutVisitor;
+    private readonly IPointcutEvaluator _pointcutEvaluator;
 
-    public AdviceComposer (IAdviceSequencer adviceSequencer, IPointcutVisitor pointcutVisitor)
+    public AdviceComposer (IAdviceSequencer adviceSequencer, IPointcutEvaluator pointcutEvaluator)
     {
       ArgumentUtility.CheckNotNull ("adviceSequencer", adviceSequencer);
-      ArgumentUtility.CheckNotNull ("pointcutVisitor", pointcutVisitor);
+      ArgumentUtility.CheckNotNull ("pointcutEvaluator", pointcutEvaluator);
 
       _adviceSequencer = adviceSequencer;
-      _pointcutVisitor = pointcutVisitor;
+      _pointcutEvaluator = pointcutEvaluator;
     }
 
     public IEnumerable<Advice> Compose (IEnumerable<IAdviceBuilder> adviceBuilders, JoinPoint joinPoint)
@@ -47,7 +47,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
       var advices = adviceBuilders.Select (x => x.Build());
-      var matchingAdvices = advices.Where (x => _pointcutVisitor.Matches (x, joinPoint));
+      var matchingAdvices = advices.Where (x => _pointcutEvaluator.Matches (x, joinPoint));
       var sortedAdvices = _adviceSequencer.Sort (matchingAdvices);
       return sortedAdvices;
     }

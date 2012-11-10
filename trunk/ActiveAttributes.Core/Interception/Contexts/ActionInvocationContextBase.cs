@@ -40,7 +40,7 @@ namespace ActiveAttributes.Core.Interception.Contexts
 
     public object ReturnValue
     {
-      get { throw new NotSupportedException(); }
+      get { return null; }
       set { throw new NotSupportedException(); }
     }
 

@@ -75,7 +75,7 @@ namespace ActiveAttributes.Core.Assembly
       ArgumentUtility.CheckNotNull ("field", field);
       ArgumentUtility.CheckNotNull ("method", method);
 
-      return GetAssignExpression (field, method);
+      return GetAssignExpression<MethodInfo> (field, method);
     }
 
     private BinaryExpression CreateMemberInfoAssignExpression (IFieldWrapper field, PropertyInfo property)
@@ -93,9 +93,9 @@ namespace ActiveAttributes.Core.Assembly
     }
 
 
-    private BinaryExpression GetAssignExpression (IFieldWrapper field, object constant)
+    private BinaryExpression GetAssignExpression<T> (IFieldWrapper field, object constant)
     {
-      var constantExpression = Expression.Constant (constant, constant.GetType());
+      var constantExpression = Expression.Constant (constant, typeof (T));
 
       return GetAssignExpression (field, constantExpression);
     }

@@ -21,6 +21,6 @@ namespace ActiveAttributes.Core.Pointcuts
 {
   public interface IPointcut
   {
-    bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint);
+    bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint);
   }
 }

@@ -108,7 +108,7 @@
     <Compile Include="Pointcuts\TypePointcutTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
-    <Compile Include="Assembly\PointcutVisitorTest.cs" />
+    <Compile Include="Assembly\PointcutEvaluatorTest.cs" />
     <Compile Include="Discovery\DeclarationProviders\AspectClassDeclarationProviderTest.cs" />
     <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProviderTest.cs" />
     <Compile Include="Discovery\AttributeDeclarationProviderTest.cs" />

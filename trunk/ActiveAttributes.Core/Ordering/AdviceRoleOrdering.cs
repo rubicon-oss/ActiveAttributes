@@ -13,10 +13,8 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using ActiveAttributes.Core.Discovery;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Ordering
@@ -52,7 +50,7 @@ namespace ActiveAttributes.Core.Ordering
       get { return _afterRole; }
     }
 
-    public override bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2)
+    public override bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2)
     {
       return provider.DependsRole (advice1, advice2, this);
     }

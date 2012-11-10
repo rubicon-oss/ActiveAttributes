@@ -15,7 +15,6 @@
 // under the License.
 using System;
 using ActiveAttributes.Core.Discovery;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Ordering
@@ -24,7 +23,7 @@ namespace ActiveAttributes.Core.Ordering
   {
     string Source { get; }
 
-    bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
+    bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
   }
 
   public abstract class AdviceOrderingBase : IAdviceOrdering
@@ -43,6 +42,6 @@ namespace ActiveAttributes.Core.Ordering
       get { return _source; }
     }
 
-    public abstract bool Depends (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
+    public abstract bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
   }
 }

@@ -37,6 +37,8 @@ namespace ActiveAttributes.UnitTests
         AdviceScope scope = 0)
     {
       construction = construction ?? GetConstruction();
+      name = name ?? "name";
+      role = role ?? "role";
       method = method ?? GetMethodInfo();
       pointcuts = pointcuts ?? new IPointcut[0];
 

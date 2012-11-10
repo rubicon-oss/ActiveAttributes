@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.FieldWrapper;
 using ActiveAttributes.Core.Extensions;
+using JetBrains.Annotations;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
@@ -37,15 +38,18 @@ namespace ActiveAttributes.Core.Assembly
   {
     private readonly IFieldService _fieldService;
     private readonly IConstructorExpressionsHelperFactory _expressionsHelperFactory;
+    private readonly IMethodCopyService _methodCopyService;
 
     // TODO MethodCopyService?
-    public InitializationService (IFieldService fieldService, IConstructorExpressionsHelperFactory expressionsHelperFactory)
+    public InitializationService (IFieldService fieldService, IConstructorExpressionsHelperFactory expressionsHelperFactory, IMethodCopyService methodCopyService)
     {
       ArgumentUtility.CheckNotNull ("fieldService", fieldService);
       ArgumentUtility.CheckNotNull ("expressionsHelperFactory", expressionsHelperFactory);
+      ArgumentUtility.CheckNotNull ("methodCopyService", methodCopyService);
 
       _fieldService = fieldService;
       _expressionsHelperFactory = expressionsHelperFactory;
+      _methodCopyService = methodCopyService;
     }
 
     public IFieldWrapper AddMemberInfoInitialization (MethodInfo method)
@@ -84,7 +88,9 @@ namespace ActiveAttributes.Core.Assembly
       var mutableType = (MutableType) method.DeclaringType;
       var field = _fieldService.AddField (mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static);
 
-      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, method);
+      var copy = _methodCopyService.GetCopy ((MutableMethodInfo) method);
+
+      Func<IConstructorExpressionsHelper, Expression> expressionProvider = x => x.CreateDelegateAssignExpression (field, copy);
       AddInitialization (mutableType, expressionProvider);
 
       return field;

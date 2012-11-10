@@ -39,12 +39,12 @@ namespace ActiveAttributes.Core.Pointcuts
       get { return _argumentType; }
     }
 
-    public bool MatchVisit (IPointcutVisitor visitor, JoinPoint joinPoint)
+    public bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint)
     {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return visitor.MatchesArgumentType (this, joinPoint);
+      return evaluator.MatchesArgumentType (this, joinPoint);
     }
   }
 

@@ -90,7 +90,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeMember = ObjectMother2.GetMemberExpression (typeof (IAspect));
       var fakeMemberInit = ObjectMother2.GetMemberInitExpression (typeof (AspectAttributeBase));
 
-      _fieldServiceMock.Expect (x => x.AddField (_mutableType, typeof (IAspect), "TODO fieldname", fieldAttributes)).Return (_fieldWrapperMock);
+      _fieldServiceMock.Expect (x => x.AddField (_mutableType, typeof (IAspect), "advice0", fieldAttributes)).Return (_fieldWrapperMock);
       _expressionHelperMock.Expect (x => x.CreateInitExpression (construction)).Return (fakeMemberInit);
       _fieldWrapperMock.Expect (x => x.GetMemberExpression (Arg<Expression>.Matches (y => y.Type == _mutableType))).Return (fakeMember);
 

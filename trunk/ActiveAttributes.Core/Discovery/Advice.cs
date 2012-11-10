@@ -20,6 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Core.AdviceInfo;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Pointcuts;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Discovery
 {

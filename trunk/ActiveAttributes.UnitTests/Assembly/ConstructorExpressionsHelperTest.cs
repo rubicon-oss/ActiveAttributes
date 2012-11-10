@@ -58,7 +58,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var expected =
           Expression.Assign (
               Expression.Field (_thisExpression, field.Field),
-              Expression.Constant (method));
+              Expression.Constant (method, typeof (MethodInfo)));
 
       ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
     }

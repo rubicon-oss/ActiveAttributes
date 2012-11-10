@@ -25,8 +25,8 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  [ConcreteImplementation (typeof (PointcutVisitor))]
-  public interface IPointcutVisitor
+  [ConcreteImplementation (typeof (PointcutEvaluator))]
+  public interface IPointcutEvaluator
   {
     bool Matches (Advice advice, JoinPoint joinPoint);
 
@@ -45,11 +45,11 @@ namespace ActiveAttributes.Core.Assembly
     bool MatchesCustomAttribute (ICustomAttributePointcut pointcut, JoinPoint joinPoint);
   }
 
-  public class PointcutVisitor : IPointcutVisitor
+  public class PointcutEvaluator : IPointcutEvaluator
   {
     private readonly IPointcutParser _pointcutParser;
 
-    public PointcutVisitor (IPointcutParser pointcutParser)
+    public PointcutEvaluator (IPointcutParser pointcutParser)
     {
       ArgumentUtility.CheckNotNull ("pointcutParser", pointcutParser);
 

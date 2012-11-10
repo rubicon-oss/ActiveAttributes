@@ -53,7 +53,7 @@ namespace ActiveAttributes.Core.Ordering
                          from advice2 in advicesAsCollection
                          where advice1 != advice2
                          from ordering in _orderings
-                         where ordering.Depends (this, advice1, advice2)
+                         where ordering.DependVisit (this, advice1, advice2)
                          select Tuple.Create (advice1, advice2);
 
       return new HashSet<Tuple<Advice, Advice>> (dependencies);

@@ -40,6 +40,8 @@ namespace ActiveAttributes.Core.Assembly
     private readonly IAspectInitializationExpressionHelper _initializationExpressionHelper;
     private readonly Dictionary<Tuple<IConstruction, AdviceScope>, IFieldWrapper> _fieldWrappers;
 
+    private int _counter;
+
     public AspectStorageService (IFieldService fieldService, IAspectInitializationExpressionHelper initializationExpressionHelper)
     {
       ArgumentUtility.CheckNotNull ("fieldService", fieldService);
@@ -60,7 +62,7 @@ namespace ActiveAttributes.Core.Assembly
       if (!_fieldWrappers.TryGetValue (tuple, out field))
       {
         var attributes = FieldAttributes.Private | (advice.Scope == AdviceScope.Static ? FieldAttributes.Static : 0);
-        field = _fieldService.AddField (mutableType, advice.DeclaringType, "TODO fieldname", attributes);
+        field = _fieldService.AddField (mutableType, advice.DeclaringType, "advice" + _counter++, attributes);
         var value = _initializationExpressionHelper.CreateInitExpression (advice.Construction);
         AddInitialization (mutableType, field, value);
         _fieldWrappers.Add (tuple, field);

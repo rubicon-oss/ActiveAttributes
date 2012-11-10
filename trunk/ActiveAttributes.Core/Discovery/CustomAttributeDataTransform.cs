@@ -13,16 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Discovery.Construction;
 using ActiveAttributes.Core.Extensions;
 using ActiveAttributes.Core.Pointcuts;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Core.Discovery
 {
@@ -32,6 +31,7 @@ namespace ActiveAttributes.Core.Discovery
   public interface ICustomAttributeDataTransform
   {
     IAdviceBuilder GetAdviceBuilder (ICustomAttributeData customAttributeData);
+    IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders);
   }
 
   public class CustomAttributeDataTransform : ICustomAttributeDataTransform
@@ -91,6 +91,46 @@ namespace ActiveAttributes.Core.Discovery
     {
       if (namedArgument.MemberInfo.Name == memberName)
         set ((T) namedArgument.Value);
+    }
+
+    public IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders)
+    {
+      ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
+      var buildersAsCollection = adviceBuilders.ConvertToCollection();
+
+      var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
+      UpdateBuilders (buildersAsCollection, (x, v) => x.UpdateConstruction (v), constructionInfo);
+
+      foreach (var argument in customAttributeData.NamedArguments)
+      {
+        TryUpdateBuilders (buildersAsCollection, argument, "Name", (IAdviceBuilder x, string v) => x.SetName (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "Role", (IAdviceBuilder x, string v) => x.SetRole (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "Execution", (IAdviceBuilder x, AdviceExecution v) => x.SetExecution (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "Scope", (IAdviceBuilder x, AdviceScope v) => x.SetScope (v));
+        TryUpdateBuilders (buildersAsCollection, argument, "Priority", (IAdviceBuilder x, int v) => x.SetPriority (v));
+
+        Type pointcutType;
+        if (s_dictionary.TryGetValue (argument.MemberInfo.Name, out pointcutType))
+        {
+          var pointcut = pointcutType.CreateInstance<IPointcut> (argument.Value);
+          UpdateBuilders (buildersAsCollection, (x, v) => x.AddPointcut (v), pointcut);
+        }
+      }
+
+      return buildersAsCollection;
+    }
+
+    private void TryUpdateBuilders<T> (
+        IEnumerable<IAdviceBuilder> adviceBuilders, ICustomAttributeNamedArgument namedArgument, string memberName, Action<IAdviceBuilder, T> set)
+    {
+      if (namedArgument.MemberInfo.Name == memberName)
+        UpdateBuilders (adviceBuilders, set, (T) namedArgument.Value);
+    }
+
+    private void UpdateBuilders<T> (IEnumerable<IAdviceBuilder> adviceBuilders, Action<IAdviceBuilder, T> set, T value)
+    {
+      foreach (var adviceBuilder in adviceBuilders)
+        set (adviceBuilder, value);
     }
   }
 }

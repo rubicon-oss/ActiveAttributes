@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var joinPoint = ObjectMother2.GetJoinPoint();
 
-      var pointcutVisitorMock = MockRepository.GenerateStrictMock<IPointcutVisitor>();
+      var pointcutVisitorMock = MockRepository.GenerateStrictMock<IPointcutEvaluator>();
       var adviceSequencerMock = MockRepository.GenerateStrictMock<IAdviceSequencer>();
 
       var fakeAdvices = new Advice[0];

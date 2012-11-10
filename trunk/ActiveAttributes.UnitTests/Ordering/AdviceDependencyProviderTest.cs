@@ -47,26 +47,26 @@ namespace ActiveAttributes.UnitTests.Ordering
 
       var provider = new AdviceDependencyProvider (new[] { orderingMock1, orderingMock2, orderingMock3 });
 
-      orderingMock1.Expect (x => x.Depends (provider, advice1, advice2)).Return (false);
-      orderingMock1.Expect (x => x.Depends (provider, advice2, advice1)).Return (true);
-      orderingMock1.Expect (x => x.Depends (provider, advice2, advice3)).Return (false);
-      orderingMock1.Expect (x => x.Depends (provider, advice3, advice2)).Return (false);
-      orderingMock1.Expect (x => x.Depends (provider, advice1, advice3)).Return (false);
-      orderingMock1.Expect (x => x.Depends (provider, advice3, advice1)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (true);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice2, advice3)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice3, advice2)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice1, advice3)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice3, advice1)).Return (false);
 
-      orderingMock2.Expect (x => x.Depends (provider, advice1, advice2)).Return (false);
-      orderingMock2.Expect (x => x.Depends (provider, advice2, advice1)).Return (false);
-      orderingMock2.Expect (x => x.Depends (provider, advice2, advice3)).Return (false);
-      orderingMock2.Expect (x => x.Depends (provider, advice3, advice2)).Return (false);
-      orderingMock2.Expect (x => x.Depends (provider, advice1, advice3)).Return (true);
-      orderingMock2.Expect (x => x.Depends (provider, advice3, advice1)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice2, advice3)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice3, advice2)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice1, advice3)).Return (true);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice3, advice1)).Return (false);
 
-      orderingMock3.Expect (x => x.Depends (provider, advice1, advice2)).Return (false);
-      orderingMock3.Expect (x => x.Depends (provider, advice2, advice1)).Return (false);
-      orderingMock3.Expect (x => x.Depends (provider, advice2, advice3)).Return (true);
-      orderingMock3.Expect (x => x.Depends (provider, advice3, advice2)).Return (false);
-      orderingMock3.Expect (x => x.Depends (provider, advice1, advice3)).Return (false);
-      orderingMock3.Expect (x => x.Depends (provider, advice3, advice1)).Return (false);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (false);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (false);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice2, advice3)).Return (true);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice3, advice2)).Return (false);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice1, advice3)).Return (false);
+      orderingMock3.Expect (x => x.DependVisit (provider, advice3, advice1)).Return (false);
 
       var result = provider.GetDependencies (new[] { advice1, advice2, advice3 }).ToArray();
 
@@ -90,11 +90,11 @@ namespace ActiveAttributes.UnitTests.Ordering
 
       var provider = new AdviceDependencyProvider (new[] { orderingMock1, orderingMock2 });
 
-      orderingMock1.Expect (x => x.Depends (provider, advice1, advice2)).Return (true);
-      orderingMock1.Expect (x => x.Depends (provider, advice2, advice1)).Return (false);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (true);
+      orderingMock1.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (false);
 
-      orderingMock2.Expect (x => x.Depends (provider, advice1, advice2)).Return (true);
-      orderingMock2.Expect (x => x.Depends (provider, advice2, advice1)).Return (false);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (true);
+      orderingMock2.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (false);
 
       var result = provider.GetDependencies (new[] { advice1, advice2 }).ToArray();
 

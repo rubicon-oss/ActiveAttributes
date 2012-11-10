@@ -22,9 +22,9 @@ using Rhino.Mocks;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class PointcutVisitorTest
+  public class PointcutEvaluatorTest
   {
-    private PointcutVisitor _pointcutVisitor;
+    private PointcutEvaluator _pointcutEvaluator;
 
     private IPointcutParser _pointcutParserMock;
 
@@ -33,7 +33,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       _pointcutParserMock = MockRepository.GenerateStrictMock<IPointcutParser>();
 
-      _pointcutVisitor = new PointcutVisitor (_pointcutParserMock);
+      _pointcutEvaluator = new PointcutEvaluator (_pointcutParserMock);
     }
 
     [Test]
@@ -41,10 +41,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var joinPoint = ObjectMother2.GetJoinPoint();
       var pointcut = MockRepository.GenerateStrictMock<IPointcut>();
-      pointcut.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (true);
+      pointcut.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (true);
       var advice = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut });
 
-      var result = _pointcutVisitor.Matches (advice, joinPoint);
+      var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
       pointcut.VerifyAllExpectations();
       Assert.That (result, Is.True);
@@ -56,7 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var joinPoint = ObjectMother2.GetJoinPoint();
       var advice = ObjectMother2.GetAdvice ();
 
-      var result = _pointcutVisitor.Matches (advice, joinPoint);
+      var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
       Assert.That (result, Is.True);
     }
@@ -67,11 +67,11 @@ namespace ActiveAttributes.UnitTests.Assembly
       var joinPoint = ObjectMother2.GetJoinPoint();
       var pointcut1 = MockRepository.GenerateStrictMock<IPointcut>();
       var pointcut2 = MockRepository.GenerateStrictMock<IPointcut>();
-      pointcut1.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (true);
-      pointcut2.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (false);
+      pointcut1.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (true);
+      pointcut2.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (false);
       var advice = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut1, pointcut2 });
 
-      var result = _pointcutVisitor.Matches (advice, joinPoint);
+      var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
       pointcut1.VerifyAllExpectations();
       pointcut2.VerifyAllExpectations();
@@ -83,10 +83,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var joinPoint = ObjectMother2.GetJoinPoint (typeof (DomainType));
 
-      CheckMatches (_pointcutVisitor.MatchesType, new TypePointcut (joinPoint.Type), joinPoint);
-      CheckMatchesNot (_pointcutVisitor.MatchesType, new TypePointcut (typeof (int)), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesType, new TypePointcut (typeof (DomainTypeBase)), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesType, new TypePointcut (typeof (IDomainInterface)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesType, new TypePointcut (joinPoint.Type), joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesType, new TypePointcut (typeof (int)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesType, new TypePointcut (typeof (DomainTypeBase)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesType, new TypePointcut (typeof (IDomainInterface)), joinPoint);
     }
 
     [Test]
@@ -95,9 +95,9 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = ObjectMother2.GetMethodInfo ("Method");
       var joinPoint = new JoinPoint (method);
 
-      CheckMatches (_pointcutVisitor.MatchesMemberName, new MemberNamePointcut ("Method"), joinPoint);
-      CheckMatchesNot (_pointcutVisitor.MatchesMemberName, new MemberNamePointcut ("Field"), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesMemberName, new MemberNamePointcut ("Meth*"), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesMemberName, new MemberNamePointcut ("Method"), joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesMemberName, new MemberNamePointcut ("Field"), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesMemberName, new MemberNamePointcut ("Meth*"), joinPoint);
     }
 
     [Test]
@@ -107,13 +107,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var pointcut = new ExpressionPointcut ("test");
 
       SetupPointcutParser (joinPoint, true, true);
-      CheckMatches (_pointcutVisitor.MatchesExpression, pointcut, joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesExpression, pointcut, joinPoint);
 
       SetupPointcutParser (joinPoint, true, false);
-      CheckMatchesNot (_pointcutVisitor.MatchesExpression, pointcut, joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesExpression, pointcut, joinPoint);
 
       SetupPointcutParser (joinPoint, false, false);
-      CheckMatchesNot (_pointcutVisitor.MatchesExpression, pointcut, joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesExpression, pointcut, joinPoint);
     }
 
     [Test]
@@ -121,9 +121,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var joinPoint = new JoinPoint (typeof (string));
 
-      CheckMatches (_pointcutVisitor.MatchesTypeName, new TypeNamePointcut ("String"), joinPoint);
-      CheckMatchesNot (_pointcutVisitor.MatchesTypeName, new TypeNamePointcut ("int"), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesTypeName, new TypeNamePointcut ("Str*"), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesTypeName, new TypeNamePointcut ("String"), joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesTypeName, new TypeNamePointcut ("int"), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesTypeName, new TypeNamePointcut ("Str*"), joinPoint);
     }
 
     [Test]
@@ -132,10 +132,10 @@ namespace ActiveAttributes.UnitTests.Assembly
       var method = ObjectMother2.GetMethodInfo (returnType: typeof (DomainType));
       var joinPoint = new JoinPoint (method);
 
-      CheckMatches (_pointcutVisitor.MatchesReturnType, new ReturnTypePointcut (typeof (DomainType)), joinPoint);
-      CheckMatchesNot (_pointcutVisitor.MatchesReturnType, new ReturnTypePointcut (typeof (int)), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesReturnType, new ReturnTypePointcut (typeof (DomainTypeBase)), joinPoint);
-      CheckMatches (_pointcutVisitor.MatchesReturnType, new ReturnTypePointcut (typeof (IDomainInterface)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (DomainType)), joinPoint);
+      CheckMatchesNot (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (int)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (DomainTypeBase)), joinPoint);
+      CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (IDomainInterface)), joinPoint);
     }
 
     private void SetupPointcutParser (JoinPoint joinPoint, bool first, bool second)
@@ -145,8 +145,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       var pointcutMocks = new[] { pointcutMock1, pointcutMock2 };
 
       _pointcutParserMock.Expect (x => x.GetPointcuts ("test")).Return (pointcutMocks);
-      pointcutMock1.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (first);
-      pointcutMock2.Expect (x => x.MatchVisit (_pointcutVisitor, joinPoint)).Return (second);
+      pointcutMock1.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (first);
+      pointcutMock2.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (second);
     }
 
     private void CheckMatches<T> (Func<T, JoinPoint, bool> visit, T pointcut, JoinPoint joinPoint)
