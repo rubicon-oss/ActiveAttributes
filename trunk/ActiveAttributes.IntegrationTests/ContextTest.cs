@@ -21,10 +21,10 @@ using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.IntegrationTests
 {
-  [Ignore]
   [TestFixture]
   public class ContextTest
   {
@@ -43,7 +43,7 @@ namespace ActiveAttributes.IntegrationTests
 
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.ContextMethod());
       Assert.That (ContextAspectAttribute.Instance, Is.SameAs (_instance));
-      Assert.That (ContextAspectAttribute.Member, Is.EqualTo (method));
+      Assert.That (ContextAspectAttribute.Member.Name, Is.EqualTo (method.Name));
     }
 
     [Test]
@@ -91,6 +91,7 @@ namespace ActiveAttributes.IntegrationTests
       public override void OnIntercept (IInvocation invocation)
       {
         invocation.Context.Arguments[0] = 1;
+        invocation.Proceed();
       }
     }
 
