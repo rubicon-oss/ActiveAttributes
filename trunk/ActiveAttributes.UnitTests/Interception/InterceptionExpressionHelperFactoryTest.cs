@@ -19,7 +19,6 @@ using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -42,30 +41,23 @@ namespace ActiveAttributes.UnitTests.Interception
       var parameterExpressions = ObjectMother2.GetMultiple (() => ObjectMother2.GetParameterExpression()).ToList();
       var bodyContextBase = ObjectMother2.GetBodyContextBase (declaringType, parameterExpressions);
       var fakeInvocationType = typeof (FuncInvocation<object, int>);
-      var fakeInvocationContextType = typeof (FuncInvocationContext<object, int>);
       var fakeAdvices = new Tuple<MethodInfo, IStorage>[0];
-      var fakeMemberInfoField = ObjectMother2.GetFieldWrapper();
-      var fakeDelegateField = ObjectMother2.GetFieldWrapper();
+      var fakeMemberInfoStorage = ObjectMother2.GetStorage();
+      var fakeDelegateStorage = ObjectMother2.GetStorage();
 
       var interceptionTypeProviderMock = MockRepository.GenerateStrictMock<IInterceptionTypeProvider>();
-      interceptionTypeProviderMock.Expect (
-          x => x.GetTypes (
-              Arg.Is (method),
-              out Arg<Type>.Out (fakeInvocationType).Dummy,
-              out Arg<Type>.Out (fakeInvocationContextType).Dummy));
+      interceptionTypeProviderMock.Expect (x => x.GetInvocationType (method)).Return (fakeInvocationType);
 
       var factory = new InterceptionExpressionHelperFactory (interceptionTypeProviderMock);
-      var result = factory.Create (method, bodyContextBase, fakeAdvices, fakeMemberInfoField, fakeDelegateField);
+      var result = factory.Create (method, bodyContextBase, fakeAdvices, fakeMemberInfoStorage, fakeDelegateStorage);
 
-      Check (result, "_invocationExpressionHelper", Is.TypeOf<InvocationExpressionHelper>());
-      Check (result, "_interceptedMethod", Is.SameAs (method));
+      Check (result, "_callExpressionHelper", Is.TypeOf<CallExpressionHelper> ());
       Check (result, "_thisExpression", Is.TypeOf<ThisExpression>().With.Property ("Type").EqualTo (declaringType));
       Check (result, "_parameterExpressions", Is.EqualTo (parameterExpressions));
       Check (result, "_invocationType", Is.EqualTo (fakeInvocationType));
-      Check (result, "_invocationContextType", Is.EqualTo (fakeInvocationContextType));
       Check (result, "_advices", Is.EqualTo (fakeAdvices));
-      Check (result, "_memberInfoField", Is.EqualTo (fakeMemberInfoField));
-      Check (result, "_delegateField", Is.EqualTo (fakeDelegateField));
+      Check (result, "_memberInfoStorage", Is.EqualTo (fakeMemberInfoStorage));
+      Check (result, "_delegateStorage", Is.EqualTo (fakeDelegateStorage));
     }
 
     private static void Check (IInterceptionExpressionHelper result, string fieldName, IResolveConstraint constraint)

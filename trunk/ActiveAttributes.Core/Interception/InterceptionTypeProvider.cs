@@ -14,10 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using Remotion.Utilities;
 
@@ -25,7 +25,7 @@ namespace ActiveAttributes.Core.Interception
 {
   public interface IInterceptionTypeProvider
   {
-    void GetTypes (MethodInfo method, out Type invocationType, out Type invocationContextType);
+    Type GetInvocationType (MethodInfo method);
   }
 
   public class InterceptionTypeProvider : IInterceptionTypeProvider
@@ -33,6 +33,7 @@ namespace ActiveAttributes.Core.Interception
     private readonly Type[] _actionInvocationOpenTypes
         = new[]
           {
+              typeof (ActionInvocation),
               typeof (ActionInvocation<>),
               typeof (ActionInvocation<,>),
               typeof (ActionInvocation<,,>),
@@ -44,6 +45,7 @@ namespace ActiveAttributes.Core.Interception
         = new[]
           {
               null,
+              typeof (FuncInvocation<>),
               typeof (FuncInvocation<,>),
               typeof (FuncInvocation<,,>),
               typeof (FuncInvocation<,,,>),
@@ -51,90 +53,46 @@ namespace ActiveAttributes.Core.Interception
               typeof (FuncInvocation<,,,,,>)
           };
 
-    private readonly Type[] _actionInvocationContextOpenTypes
-        = new[]
-          {
-              typeof (ActionInvocationContext<>),
-              typeof (ActionInvocationContext<,>),
-              typeof (ActionInvocationContext<,,>),
-              typeof (ActionInvocationContext<,,,>),
-              typeof (ActionInvocationContext<,,,,>)
-          };
-
-    private readonly Type[] _funcInvocationContextOpenTypes
-        = new[]
-          {
-              null,
-              typeof (FuncInvocationContext<,>),
-              typeof (FuncInvocationContext<,,>),
-              typeof (FuncInvocationContext<,,,>),
-              typeof (FuncInvocationContext<,,,,>),
-              typeof (FuncInvocationContext<,,,,,>)
-          };
-
-    public void GetTypes (MethodInfo method, out Type invocationType, out Type invocationContextType)
+    public Type GetInvocationType (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsNotNull (method.DeclaringType);
 
       // TODO UNDERLYING
-      var instanceType = new[] { method.DeclaringType.UnderlyingSystemType };
       var parameterTypes = method.GetParameters ().Select (x => x.ParameterType).ToArray ();
       var returnType = new[] { method.ReturnType };
 
       var genericTypes = method.IsAction ()
-                             ? instanceType.Concat (parameterTypes).ToArray ()
-                             : instanceType.Concat (parameterTypes).Concat (returnType).ToArray ();
+                             ? parameterTypes.ToArray ()
+                             : parameterTypes.Concat (returnType).ToArray ();
 
-      var property = method.GetRelatedPropertyInfo ();
-      var event_ = method.GetRelatedEventInfo ();
-      if (property != null)
-        GetInvocationOpenTypes (method, property, out invocationType, out invocationContextType);
-      else if (event_ != null)
-        GetInvocationOpenTypes (method, event_, out invocationType, out invocationContextType);
-      else
-        GetInvocationOpenTypes (method, out invocationType, out invocationContextType, parameterTypes.Length);
+      //var property = method.GetRelatedPropertyInfo ();
+      //var event_ = method.GetRelatedEventInfo ();
+      //if (property != null)
+      //  GetInvocationOpenTypes (method, property, out invocationType, out invocationContextType);
+      //else if (event_ != null)
+      //  GetInvocationOpenTypes (method, event_, out invocationType, out invocationContextType);
+      //else
+      var type = GetMethodInvocationType (method, genericTypes);
 
-      invocationType = invocationType.MakeGenericType (genericTypes);
-      invocationContextType = invocationContextType.MakeGenericType (genericTypes);
+      return genericTypes.Any()
+                 ? type.MakeGenericType (genericTypes)
+                 : type;
     }
 
-    private void GetInvocationOpenTypes (MethodInfo method, out Type invocationType, out Type invocationContextType, int parameterCount)
+    private Type GetMethodInvocationType (MethodInfo method, ICollection<Type> genericTypes)
     {
-      if (method.IsAction ())
-      {
-        invocationType = _actionInvocationOpenTypes[parameterCount];
-        invocationContextType = _actionInvocationContextOpenTypes[parameterCount];
-      }
-      else
-      {
-        invocationType = _funcInvocationOpenTypes[parameterCount + 1];
-        invocationContextType = _funcInvocationContextOpenTypes[parameterCount + 1];
-      }
+      return method.IsAction()
+                 ? _actionInvocationOpenTypes[genericTypes.Count]
+                 : _funcInvocationOpenTypes[genericTypes.Count];
     }
 
-    private void GetInvocationOpenTypes (MethodInfo method, PropertyInfo property, out Type invocationType, out Type invocationContextType)
+    private void GetOpenInvocationType (MethodInfo method, PropertyInfo property, out Type invocationType, out Type invocationContextType)
     {
-      if (property.IsIndexer ())
-      {
-        throw new NotImplementedException ();
-      }
-      else
-      {
-        if (method.IsAction ())
-        {
-          invocationType = typeof (PropertySetInvocation<,>);
-          invocationContextType = typeof (PropertySetInvocationContext<,>);
-        }
-        else
-        {
-          invocationType = typeof (PropertyGetInvocation<,>);
-          invocationContextType = typeof (PropertyGetInvocationContext<,>);
-        }
-      }
+      throw new NotImplementedException();
     }
 
-    private void GetInvocationOpenTypes (MethodInfo method, EventInfo event_, out Type invocationType, out Type invocationContextType)
+    private void GetOpenInvocationType (MethodInfo method, EventInfo event_, out Type invocationType, out Type invocationContextType)
     {
       throw new NotImplementedException ();
     }

@@ -81,8 +81,8 @@ namespace ActiveAttributes.IntegrationTests
 
       public override void OnIntercept (IInvocation invocation)
       {
-        Instance = invocation.Context.Instance;
-        Member = invocation.Context.MethodInfo;
+        Instance = invocation.Instance;
+        Member = invocation.MemberInfo;
       }
     }
 
@@ -90,7 +90,7 @@ namespace ActiveAttributes.IntegrationTests
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Context.Arguments[0] = 1;
+        invocation.Arguments[0] = 1;
         invocation.Proceed();
       }
     }
@@ -99,7 +99,7 @@ namespace ActiveAttributes.IntegrationTests
     {
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Context.ReturnValue = "advice";
+        invocation.ReturnValue = "advice";
       }
     }
   }

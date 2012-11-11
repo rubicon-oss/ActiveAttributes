@@ -45,15 +45,15 @@ namespace ActiveAttributes.UnitTests.Interception
       var method = ObjectMother2.GetMutableMethodInfo ();
       var mutableType = (MutableType) method.DeclaringType;
 
-      var fakeMemberInfoField = ObjectMother2.GetFieldWrapper ();
-      var fakeDelegateField = ObjectMother2.GetFieldWrapper ();
+      var fakeMemberInfoField = ObjectMother2.GetStorage ();
+      var fakeDelegateField = ObjectMother2.GetStorage ();
 
       var fakeAdviceMethod1 = ObjectMother2.GetMethodInfo ();
       var fakeAdviceMethod2 = ObjectMother2.GetMethodInfo ();
-      var fakeAspectField1 = ObjectMother2.GetFieldWrapper ();
-      var fakeAspectField2 = ObjectMother2.GetFieldWrapper ();
+      var fakeAspectField1 = ObjectMother2.GetStorage ();
+      var fakeAspectField2 = ObjectMother2.GetStorage ();
 
-      var fakeContextParam = ObjectMother2.GetVariableExpression ();
+      var fakeMethodInvocationParam = ObjectMother2.GetVariableExpression ();
       var fakeContextAssign = ObjectMother2.GetBinaryExpression ();
       var fakeInvocationParam1 = ObjectMother2.GetVariableExpression ();
       var fakeInvocationAssign1 = ObjectMother2.GetBinaryExpression ();
@@ -98,16 +98,16 @@ namespace ActiveAttributes.UnitTests.Interception
           .Return (expressionHelperMock);
 
       expressionHelperMock
-          .Expect (x => x.CreateInvocationContextExpressions())
-          .Return (Tuple.Create (fakeContextParam, fakeContextAssign));
+          .Expect (x => x.CreateMethodInvocationExpressions())
+          .Return (Tuple.Create (fakeMethodInvocationParam, fakeContextAssign));
       expressionHelperMock
-          .Expect (x => x.CreateInvocationExpressions (fakeContextParam))
+          .Expect (x => x.CreateAdviceInvocationExpressions (fakeMethodInvocationParam))
           .Return (tuples.AsOneTime());
       expressionHelperMock
-          .Expect (x => x.CreateOutermostAdviceCallExpression (fakeInvocationParam2))
+          .Expect (x => x.CreateOutermostAdviceCallExpression (fakeMethodInvocationParam, fakeInvocationParam2))
           .Return (fakeAdviceCall);
       expressionHelperMock
-          .Expect (x => x.CreateReturnValueExpression (fakeContextParam))
+          .Expect (x => x.CreateReturnValueExpression (fakeMethodInvocationParam))
           .Return (fakeReturnValue);
 
       var interceptionWeaver = new InterceptionWeaver (expressionHelperFactoryMock, aspectStorageServiceMock);
@@ -125,7 +125,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (method.Body, Is.InstanceOf<BlockExpression> ());
       var blockExpression = (BlockExpression) method.Body;
 
-      Assert.That (blockExpression.Variables[0], Is.SameAs (fakeContextParam));
+      Assert.That (blockExpression.Variables[0], Is.SameAs (fakeMethodInvocationParam));
       Assert.That (blockExpression.Variables[1], Is.SameAs (fakeInvocationParam1));
       Assert.That (blockExpression.Variables[2], Is.SameAs (fakeInvocationParam2));
 

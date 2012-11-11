@@ -13,25 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  /// <summary>
-  ///   Provides facilities to change the behavior of an intercepted action.
-  /// </summary>
-  public interface IInvocation
+  public interface IInvocation : IInvocationContext
   {
-    /// <summary>
-    ///   The context in which the particular action was intercepted.
-    /// </summary>
-    IInvocationContext Context { get; }
-
-    /// <summary>
-    ///   Proceed with the intercepted action.
-    /// </summary>
     void Proceed ();
   }
 }

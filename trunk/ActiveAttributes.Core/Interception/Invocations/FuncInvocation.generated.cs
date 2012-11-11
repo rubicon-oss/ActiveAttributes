@@ -20,181 +20,481 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
+using System.Reflection;
+using Remotion.Utilities;
 // ReSharper disable RedundantUsingDirective
 using Remotion;
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public class FuncInvocation<TInstance, TR> : Invocation
+  public class FuncInvocation<TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TR> _context;
-    private readonly Func<TR> _func;
+    private readonly Func<TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TR> context, Func<TR> func)
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, Func<TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 0; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func ();
+      ReturnValue = _func ();
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TR> _context;
-    private readonly Func<TA1, TA2, TR> _func;
+    private readonly Func<TA1, TA2, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TR> context, Func<TA1, TA2, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, Func<TA1, TA2, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 2; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2);
+      ReturnValue = _func (Arg1, Arg2);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TR> context, Func<TA1, TA2, TA3, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, Func<TA1, TA2, TA3, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 3; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3);
+      ReturnValue = _func (Arg1, Arg2, Arg3);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TA4, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TA4, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TA4, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TR> context, Func<TA1, TA2, TA3, TA4, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Func<TA1, TA2, TA3, TA4, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 4; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4);
+      ReturnValue = _func (Arg1, Arg2, Arg3, Arg4);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TA4, TA5, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Func<TA1, TA2, TA3, TA4, TA5, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 5; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5);
+      ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Func<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 6; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6);
+      ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+    public TA7 Arg7;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
+      Arg7 = arg7;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 7; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          case 7: return Arg7;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7);
+      ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
-  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> : Invocation
+  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _context;
-    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> _func;
+    private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> context, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TR> func)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+    public TA7 Arg7;
+    public TA8 Arg8;
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
+      Arg7 = arg7;
+      Arg8 = arg8;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 8; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          case 7: return Arg7;
+          case 8: return Arg8;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
+          case 8: Arg8 = (TA8) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8);
+      ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
     }
   }
 }

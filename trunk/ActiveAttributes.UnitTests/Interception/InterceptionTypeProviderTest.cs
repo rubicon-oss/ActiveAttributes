@@ -16,10 +16,7 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
-using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
@@ -31,9 +28,6 @@ namespace ActiveAttributes.UnitTests.Interception
   {
     private InterceptionTypeProvider _provider;
 
-    private Type _invocationType;
-    private Type _invocationContextType;
-
     [SetUp]
     public void SetUp ()
     {
@@ -43,59 +37,72 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void GetInvocationTypes_Action ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method1 (""));
-      var expectedInvocationType = typeof (ActionInvocation<DomainType, string>);
-      var expectedInvocationContextType = typeof (ActionInvocationContext<DomainType, string>);
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method1 ());
 
-      CheckInvocationTypes (method, expectedInvocationType, expectedInvocationContextType);
+      var actual = _provider.GetInvocationType (method);
+
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation)));
+    }
+
+    [Test]
+    public void GetInvocationTypes_Action2 ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method2 (""));
+
+      var actual = _provider.GetInvocationType (method);
+
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
     }
 
     [Test]
     public void GetInvocationTypes_Func ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method2 (""));
-      var expectedInvocationType = typeof (FuncInvocation<DomainType, string, int>);
-      var expectedInvocationContextType = typeof (FuncInvocationContext<DomainType, string, int>);
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method3 ());
 
-      CheckInvocationTypes (method, expectedInvocationType, expectedInvocationContextType);
+      var actual = _provider.GetInvocationType (method);
+
+      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<int>)));
     }
 
+
+    [Test]
+    public void GetInvocationTypes_Func2 ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method4 (1));
+
+      var actual = _provider.GetInvocationType (method);
+
+      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<int, int>)));
+    }
+
+    [Ignore]
     [Test]
     public void GetInvocationTypes_Property_Get ()
     {
       var method = typeof (DomainType).GetMethods ().Single (x => x.Name == "get_Property");
-      var expectedInvocationType = typeof (PropertyGetInvocation<DomainType, string>);
-      var expectedInvocationContextType = typeof (PropertyGetInvocationContext<DomainType, string>);
 
-      CheckInvocationTypes (method, expectedInvocationType, expectedInvocationContextType);
+      var actual = _provider.GetInvocationType (method);
+
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
     }
 
+    [Ignore]
     [Test]
     public void GetInvocationTypes_Property_Set ()
     {
       var method = typeof (DomainType).GetMethods ().Single (x => x.Name == "set_Property");
-      var expectedInvocationType = typeof (PropertySetInvocation<DomainType, string>);
-      var expectedInvocationContextType = typeof (PropertySetInvocationContext<DomainType, string>);
 
-      CheckInvocationTypes (method, expectedInvocationType, expectedInvocationContextType);
-    }
+      var actual = _provider.GetInvocationType (method);
 
-    private void CheckInvocationTypes (MethodInfo method, Type expectedInvocationType, Type expectedInvocationContextType)
-    {
-      Type actualInvocationType;
-      Type actualInvocationContextType;
-      var provider = new InterceptionTypeProvider ();
-
-      provider.GetTypes (method, out actualInvocationType, out actualInvocationContextType);
-
-      Assert.That (actualInvocationType, Is.EqualTo (expectedInvocationType));
-      Assert.That (actualInvocationContextType, Is.EqualTo (expectedInvocationContextType));
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
     }
 
     class DomainType
     {
-      public void Method1 (string a) { }
-      public int Method2 (string a) { return 1; }
+      public void Method1 () { }
+      public void Method2 (string a) { }
+      public int Method3 () { return 1; }
+      public int Method4 (int i) { return i; }
 
       public string Property
       {

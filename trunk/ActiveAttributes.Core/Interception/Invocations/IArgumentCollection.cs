@@ -14,18 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
 
-namespace ActiveAttributes.Core.Interception.InvocationsNew
+namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public interface IReadOnlyInvocationContext
+  public interface IArgumentCollection : IReadOnlyArgumentCollection
   {
-    MemberInfo MemberInfo { get; }
-
-    object Instance { get; }
-
-    IReadOnlyArgumentCollection Arguments { get; }
-
-    object ReturnValue { get; }
+    new object this[int idx] { get; set; }
   }
 }

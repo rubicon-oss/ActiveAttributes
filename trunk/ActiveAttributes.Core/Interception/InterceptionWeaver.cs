@@ -65,18 +65,18 @@ namespace ActiveAttributes.Core.Interception
           {
             var helper = _expressionHelperFactory.Create (method, ctx, adviceTuples, memberInfoField, delegateField);
 
-            var contextTuple = helper.CreateInvocationContextExpressions();
-            var contextParam = contextTuple.Item1;
-            var contextAssign = contextTuple.Item2;
-            var invocationTuples = helper.CreateInvocationExpressions (contextParam).ToList();
+            var contextTuple = helper.CreateMethodInvocationExpressions();
+            var methodInvocationParam = contextTuple.Item1;
+            var methodInvocationAssign = contextTuple.Item2;
+            var invocationTuples = helper.CreateAdviceInvocationExpressions (methodInvocationParam).ToList ();
             var invocationParams = invocationTuples.Select (x => x.Item1);
             var invocationAssigns = invocationTuples.Select (x => x.Item2).Cast<Expression>();
-            var adviceCall = helper.CreateOutermostAdviceCallExpression (invocationParams.Last());
-            var returnValue = helper.CreateReturnValueExpression (contextParam);
+            var adviceCall = helper.CreateOutermostAdviceCallExpression (methodInvocationParam, invocationParams.Last());
+            var returnValue = helper.CreateReturnValueExpression (methodInvocationParam);
 
             return Expression.Block (
-                new[] { contextParam }.Concat (invocationParams),
-                contextAssign,
+                new[] { methodInvocationParam }.Concat (invocationParams),
+                methodInvocationAssign,
                 Expression.Block (invocationAssigns),
                 adviceCall,
                 returnValue);

@@ -59,18 +59,14 @@ namespace ActiveAttributes.Core.Interception
       ArgumentUtility.CheckNotNull ("memberInfoField", memberInfoField);
       ArgumentUtility.CheckNotNull ("delegateField", delegateField);
 
-      var invocationExpressionHelper = new InvocationExpressionHelper();
-      Type invocationType;
-      Type invocationContextType;
-      _interceptionTypeProvider.GetTypes (method, out invocationType, out invocationContextType);
+      var invocationExpressionHelper = new CallExpressionHelper();
+      var invocationType = _interceptionTypeProvider.GetInvocationType (method);
 
       return new InterceptionExpressionHelper (
           invocationExpressionHelper,
-          method,
           bodyContextBase.This,
           bodyContextBase.Parameters,
           invocationType,
-          invocationContextType,
           advices,
           memberInfoField,
           delegateField);

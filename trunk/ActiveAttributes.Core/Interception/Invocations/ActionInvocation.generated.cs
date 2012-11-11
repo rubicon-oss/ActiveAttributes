@@ -20,318 +20,481 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Interception.Contexts;
+using Remotion.Utilities;
 // ReSharper disable RedundantUsingDirective
 using Remotion;
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public class ActionInvocation<TInstance> : Invocation, IInvocationContext
+  public class ActionInvocation : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance> _context;
     private readonly Action _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance> context, Action action)
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, Action action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 0; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
       _action ();
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2> _context;
     private readonly Action<TA1, TA2> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2> context, Action<TA1, TA2> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, Action<TA1, TA2> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 2; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2);
+      _action (Arg1, Arg2);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3> _context;
     private readonly Action<TA1, TA2, TA3> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3> context, Action<TA1, TA2, TA3> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA1, TA2, TA3> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 3; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3);
+      _action (Arg1, Arg2, Arg3);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3, TA4> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4> _context;
     private readonly Action<TA1, TA2, TA3, TA4> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4> context, Action<TA1, TA2, TA3, TA4> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA1, TA2, TA3, TA4> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 4; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4);
+      _action (Arg1, Arg2, Arg3, Arg4);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5> _context;
     private readonly Action<TA1, TA2, TA3, TA4, TA5> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5> context, Action<TA1, TA2, TA3, TA4, TA5> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA1, TA2, TA3, TA4, TA5> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 5; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5);
+      _action (Arg1, Arg2, Arg3, Arg4, Arg5);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> _context;
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> context, Action<TA1, TA2, TA3, TA4, TA5, TA6> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA1, TA2, TA3, TA4, TA5, TA6> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 6; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6);
+      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> _context;
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> context, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+    public TA7 Arg7;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
+      Arg7 = arg7;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 7; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          case 7: return Arg7;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7);
+      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
-  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : Invocation, IInvocationContext
+  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : ActionInvocationBase
   {
-    private readonly ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> _context;
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> _action;
 
-    public ActionInvocation (ActionInvocationContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> context, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> action)
+    public TA1 Arg1;
+    public TA2 Arg2;
+    public TA3 Arg3;
+    public TA4 Arg4;
+    public TA5 Arg5;
+    public TA6 Arg6;
+    public TA7 Arg7;
+    public TA8 Arg8;
+
+    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> action)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("action", action);
+
       _action = action;
+      Arg1 = arg1;
+      Arg2 = arg2;
+      Arg3 = arg3;
+      Arg4 = arg4;
+      Arg5 = arg5;
+      Arg6 = arg6;
+      Arg7 = arg7;
+      Arg8 = arg8;
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      get { return 8; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          case 1: return Arg1;
+          case 2: return Arg2;
+          case 3: return Arg3;
+          case 4: return Arg4;
+          case 5: return Arg5;
+          case 6: return Arg6;
+          case 7: return Arg7;
+          case 8: return Arg8;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          case 1: Arg1 = (TA1) value; break;
+          case 2: Arg2 = (TA2) value; break;
+          case 3: Arg3 = (TA3) value; break;
+          case 4: Arg4 = (TA4) value; break;
+          case 5: Arg5 = (TA5) value; break;
+          case 6: Arg6 = (TA6) value; break;
+          case 7: Arg7 = (TA7) value; break;
+          case 8: Arg8 = (TA8) value; break;
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _action (_context.Arg1, _context.Arg2, _context.Arg3, _context.Arg4, _context.Arg5, _context.Arg6, _context.Arg7, _context.Arg8);
+      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
     }
-
-    public MethodInfo MethodInfo
-    {
-      get { return _context.MethodInfo; }
-    }
-
-    public object Instance
-    {
-      get { return _context.Instance; }
-    }
-
-    public IArgumentCollection Arguments
-    {
-      get { return _context; }
-    }
-
-    public object ReturnValue { get; set; }
   }
 }

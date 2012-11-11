@@ -69,7 +69,6 @@
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
-    <Compile Include="Aspects\MethodBoundaryAspectAttributeBase.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -96,31 +95,28 @@
     </Compile>
     <Compile Include="Discovery\DeclarationProviders\AspectClassDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\MethodAttributeDeclarationProvider.cs" />
-    <Compile Include="Interception\InvocationsNew\ActionInvocation.generated.cs">
+    <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interception\InvocationsNew\ActionInvocationBase.cs" />
-    <Compile Include="Interception\InvocationsNew\FuncInvocation.generated.cs">
+    <Compile Include="Interception\Invocations\ActionInvocationBase.cs" />
+    <Compile Include="Interception\Invocations\FuncInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interception\InvocationsNew\FuncInvocationBase.cs" />
+    <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
     <Compile Include="Interception\InterceptionWeaver.cs" />
-    <Compile Include="Interception\InvocationsNew\ActionInvocation.template.cs" />
-    <Compile Include="Interception\InvocationsNew\ArgumentCollectionBase.cs" />
-    <Compile Include="Interception\InvocationsNew\FuncInvocation.template.cs" />
-    <Compile Include="Interception\InvocationsNew\IArgumentCollection.cs" />
-    <Compile Include="Interception\InvocationsNew\IInvocation.cs" />
-    <Compile Include="Interception\InvocationsNew\IInvocationContext.cs" />
-    <Compile Include="Interception\InvocationsNew\IReadOnlyArgumentCollection.cs" />
-    <Compile Include="Interception\InvocationsNew\IReadOnlyInvocationContext.cs" />
-    <Compile Include="Interception\InvocationsNew\OuterInvocation.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Interception\Invocations\ActionInvocation.template.cs" />
+    <Compile Include="Interception\Invocations\ArgumentCollectionBase.cs" />
+    <Compile Include="Interception\Invocations\FuncInvocation.template.cs" />
+    <Compile Include="Interception\Invocations\IArgumentCollection.cs" />
+    <Compile Include="Interception\Invocations\IInvocation.cs" />
+    <Compile Include="Interception\Invocations\IInvocationContext.cs" />
+    <Compile Include="Interception\Invocations\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Interception\Invocations\IReadOnlyInvocationContext.cs" />
+    <Compile Include="Interception\Invocations\OuterInvocation.cs" />
     <Compile Include="Ordering\AdviceDependencyProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,7 +130,7 @@
     <Compile Include="Ordering\AdviceSequencer.cs" />
     <Compile Include="Assembly\InitializationExpressionHelper.cs" />
     <Compile Include="Assembly\StorageService.cs" />
-    <Compile Include="Interception\InvocationExpressionHelper.cs" />
+    <Compile Include="Interception\CallExpressionHelper.cs" />
     <Compile Include="Ordering\AdviceOrderingAttributeBase.cs" />
     <Compile Include="Pointcuts\MemberFlags.cs">
       <SubType>Code</SubType>
@@ -177,46 +173,15 @@
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Configuration\AspectsConfigurationSection.cs" />
     <Compile Include="Ordering\AdviceOrderingBase.cs" />
-    <Compile Include="Interception\Invocations\IndexerGetInvocation.cs" />
-    <Compile Include="Interception\Invocations\IndexerSetInvocation.cs" />
-    <Compile Include="Interception\Invocations\PropertySetInvocation.cs" />
-    <Compile Include="Interception\Contexts\IndexerGetInvocationContext.cs" />
-    <Compile Include="Interception\Contexts\IndexerSetInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\IPropertyInvocation.cs" />
-    <Compile Include="Interception\Contexts\IPropertyInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\PropertyGetInvocation.cs" />
-    <Compile Include="Interception\Contexts\PropertyGetInvocationContext.cs" />
-    <Compile Include="Interception\Contexts\PropertySetInvocationContext.cs" />
-    <Compile Include="Interception\Contexts\IEventInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\IEventInvocation.cs" />
-    <Compile Include="Interception\Invocations\EventInvocation.template.cs" />
-    <Compile Include="Interception\Contexts\EventInvocationContext.template.cs" />
     <Compile Include="Assembly\Storages\IStorage.cs" />
     <Compile Include="Assembly\Storages\InstanceStorage.cs" />
     <Compile Include="Assembly\MethodCopyService.cs" />
     <Compile Include="Assembly\Storages\StaticStorage.cs" />
-    <Compile Include="Interception\Contexts\ActionInvocationContext.generated.cs" />
-    <Compile Include="Interception\Contexts\ActionInvocationContext.template.cs" />
-    <Compile Include="Interception\Contexts\ActionInvocationContextBase.cs" />
-    <Compile Include="Interception\Contexts\FuncInvocationContext.generated.cs" />
-    <Compile Include="Interception\Contexts\FuncInvocationContext.template.cs" />
-    <Compile Include="Interception\Contexts\FuncInvocationContextBase.cs" />
-    <Compile Include="Interception\Contexts\IReadOnlyInvocationContext.cs" />
-    <Compile Include="Interception\Contexts\IArgumentCollection.cs" />
-    <Compile Include="Interception\Contexts\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Extensions\ICustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocation.template.cs" />
-    <Compile Include="Interception\Invocations\FuncInvocation.generated.cs" />
-    <Compile Include="Interception\Invocations\FuncInvocation.template.cs" />
-    <Compile Include="Interception\Contexts\IInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\IInvocation.cs" />
-    <Compile Include="Interception\Invocations\Invocation.cs" />
-    <Compile Include="Interception\Invocations\IReadOnlyInvocation.cs" />
-    <Compile Include="Interception\Invocations\OuterInvocation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Aspects\AspectAttributeBase.cs" />
     <Compile Include="AdviceInfo\AdviceExecutionAttribute.cs" />

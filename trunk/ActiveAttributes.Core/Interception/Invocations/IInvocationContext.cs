@@ -13,25 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public class EventInvocation<TInstance, TA1> : ActionInvocation<TInstance, TA1>, IEventInvocation
+  public interface IInvocationContext : IReadOnlyInvocationContext
   {
-    public EventInvocation (EventInvocationContext<TInstance, TA1> context, Action<TA1> action)
-        : base (context, action)
-    {
-      Context = context;
-    }
+    new IArgumentCollection Arguments { get; }
 
-    IInvocationContext IInvocation.Context
-    {
-      get { return Context; }
-    }
-
-    public new IEventInvocationContext Context { get; private set; }
+    new object ReturnValue { get; set; }
   }
 }

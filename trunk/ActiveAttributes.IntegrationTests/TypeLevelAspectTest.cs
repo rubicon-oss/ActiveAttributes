@@ -52,7 +52,7 @@ namespace ActiveAttributes.IntegrationTests
 
       public override void OnIntercept (IInvocation invocation)
       {
-        invocation.Context.ReturnValue = _guid;
+        invocation.ReturnValue = _guid;
       }
     }
   }

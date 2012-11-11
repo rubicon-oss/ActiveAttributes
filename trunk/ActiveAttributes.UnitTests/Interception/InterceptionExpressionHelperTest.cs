@@ -19,7 +19,6 @@ using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Storages;
 using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Contexts;
 using ActiveAttributes.Core.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
@@ -35,9 +34,8 @@ namespace ActiveAttributes.UnitTests.Interception
   {
     private InterceptionExpressionHelper _expressionHelper;
 
-    private IInvocationExpressionHelper _invocationExpressionHelperMock;
+    private ICallExpressionHelper _callExpressionHelperMock;
     private ThisExpression _thisExpression;
-    private MethodInfo _interceptedMethod;
     private MethodInfo _adviceMethod1;
     private MethodInfo _adviceMethod2;
     private IStorage _aspectFieldMock1;
@@ -49,8 +47,6 @@ namespace ActiveAttributes.UnitTests.Interception
     private ParameterExpression _parameterExpression1;
     private ParameterExpression _parameterExpression2;
     private Type _invocationType;
-    private Type _invocationContextType;
-
 
     [SetUp]
     public void SetUp ()
@@ -60,132 +56,154 @@ namespace ActiveAttributes.UnitTests.Interception
       _parameterExpression2 = ObjectMother2.GetParameterExpression (typeof (int), "param2");
       _thisExpression = new ThisExpression (_declaringType);
 
-      _invocationExpressionHelperMock = MockRepository.GenerateMock<IInvocationExpressionHelper>();
-      _invocationType = typeof (FuncInvocation<object, string, int, int>);
-      _invocationContextType = typeof (FuncInvocationContext<object, string, int, int>);
-      _interceptedMethod = ObjectMother2.GetMethodInfo (returnType: typeof (int));
+      _callExpressionHelperMock = MockRepository.GenerateStrictMock<ICallExpressionHelper>();
+      _invocationType = typeof (FuncInvocation<string, int, int>);
       _memberFieldMock = MockRepository.GenerateStrictMock<IStorage>();
       _delegateFieldMock = MockRepository.GenerateStrictMock<IStorage>();
       _aspectFieldMock1 = MockRepository.GenerateStrictMock<IStorage>();
       _aspectFieldMock2 = MockRepository.GenerateStrictMock<IStorage>();
       _adviceMethod1 = ObjectMother2.GetMethodInfo();
-      _adviceMethod2 = ObjectMother2.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
+      _adviceMethod2 = ObjectMother2.GetMethodInfo();
       var advices = new[] { Tuple.Create (_adviceMethod1, _aspectFieldMock1), Tuple.Create (_adviceMethod2, _aspectFieldMock2) };
 
       _expressionHelper = new InterceptionExpressionHelper (
-          _invocationExpressionHelperMock,
-          _interceptedMethod,
+          _callExpressionHelperMock,
           _thisExpression,
           new[] { _parameterExpression1, _parameterExpression2 },
           _invocationType,
-          _invocationContextType,
           advices,
           _memberFieldMock,
           _delegateFieldMock);
     }
 
-
     [Test]
-    public void GetInvocationContextExpressions ()
+    public void CreateMethodInvocationExpressions ()
     {
       var fakeMemberExpression = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
+      var fakeDelegateExpression = ObjectMother2.GetMemberExpression (typeof (Func<string, int, int>));
 
       _memberFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeMemberExpression);
+      _delegateFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeDelegateExpression);
 
-      var result = _expressionHelper.CreateInvocationContextExpressions();
+      var result = _expressionHelper.CreateMethodInvocationExpressions();
 
       _memberFieldMock.VerifyAllExpectations();
       var parameterExpression = result.Item1;
-      Assert.That (parameterExpression.Type, Is.EqualTo (typeof (FuncInvocationContext<object, string, int, int>)));
+      Assert.That (parameterExpression.Type, Is.EqualTo (typeof (FuncInvocation<string, int, int>)));
       Assert.That (parameterExpression.Name, Is.EqualTo ("ctx"));
       var binaryExpression = result.Item2;
       Assert.That (binaryExpression.Left, Is.SameAs (parameterExpression));
       Assert.That (binaryExpression.Right, Is.TypeOf<NewExpression>());
       var newExpression = (NewExpression) binaryExpression.Right;
-      Assert.That (newExpression.Constructor, Is.EqualTo (typeof (FuncInvocationContext<object, string, int, int>).GetConstructors().Single()));
-      Assert.That (newExpression.Arguments, Has.Count.EqualTo (4));
+      Assert.That (newExpression.Constructor, Is.EqualTo (typeof (FuncInvocation<string, int, int>).GetConstructors().Single()));
+      Assert.That (newExpression.Arguments, Has.Count.EqualTo (5));
       Assert.That (newExpression.Arguments[0], Is.SameAs (fakeMemberExpression));
       Assert.That (newExpression.Arguments[1], Is.TypeOf<ThisExpression>().With.Property ("Type").EqualTo (_declaringType));
       Assert.That (newExpression.Arguments[2], Is.SameAs (_parameterExpression1));
       Assert.That (newExpression.Arguments[3], Is.SameAs (_parameterExpression2));
+      Assert.That (newExpression.Arguments[4], Is.SameAs (fakeDelegateExpression));
     }
 
-
     [Test]
-    public void CreateInvocationExpressions ()
+    public void CreateAdviceInvocationExpressions ()
     {
-      var invocationContext = ObjectMother2.GetParameterExpression();
+      var methodInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
+      var fakeMemberExpression = ObjectMother2.GetMemberExpression (_adviceMethod1.DeclaringType);
+      var fakeExpression = ObjectMother2.GetMethodCallExpression();
 
-      var fakeMemberExpression = ObjectMother2.GetMemberExpression();
-      var fakeExpression1 = ObjectMother.GetNewExpression (typeof (FuncInvocation<object, string, int, int>));
-      var fakeExpression2 = ObjectMother.GetNewExpression (typeof (OuterInvocation));
-
-      _invocationExpressionHelperMock
-          .Expect (x => x.CreateInnermostInvocation (_thisExpression, _invocationType, invocationContext, _delegateFieldMock))
-          .Return (fakeExpression1);
-      _aspectFieldMock1
-          .Expect (x => x.GetStorageExpression (_thisExpression))
-          .Return (fakeMemberExpression);
+      _aspectFieldMock1.Expect (x => x.GetStorageExpression (_thisExpression)).Return (fakeMemberExpression);
       object[] arguments = null;
-      _invocationExpressionHelperMock
-          .Expect (x => x.CreateOuterInvocation (null, null, null, null))
+      _callExpressionHelperMock
+          .Expect (x => x.CreateAdviceCallExpression (null, null, null, null))
           .IgnoreArguments()
           .WhenCalled (x => arguments = x.Arguments)
-          .Return (fakeExpression2);
+          .Return (fakeExpression);
 
-      var result = _expressionHelper.CreateInvocationExpressions (invocationContext).ToArray();
+      var result = _expressionHelper.CreateAdviceInvocationExpressions (methodInvocation).ToArray();
 
-      _invocationExpressionHelperMock.VerifyAllExpectations();
       _aspectFieldMock1.VerifyAllExpectations();
+      _callExpressionHelperMock.VerifyAllExpectations();
 
       var parameterExpression1 = result[0].Item1;
       var binaryExpression1 = result[0].Item2;
       var parameterExpression2 = result[1].Item1;
       var binaryExpression2 = result[1].Item2;
 
-      Assert.That (parameterExpression1.Type, Is.EqualTo (typeof (FuncInvocation<object, string, int, int>)));
+      Assert.That (parameterExpression1.Type, Is.EqualTo (typeof (IInvocation)));
       Assert.That (parameterExpression1.Name, Is.EqualTo ("ivc0"));
-      Assert.That (parameterExpression2.Type, Is.EqualTo (typeof (OuterInvocation)));
+      Assert.That (parameterExpression2.Type, Is.EqualTo (typeof (IInvocation)));
       Assert.That (parameterExpression2.Name, Is.EqualTo ("ivc1"));
 
-      Assert.That (binaryExpression1.Left, Is.SameAs (parameterExpression1));
-      Assert.That (binaryExpression1.Right, Is.SameAs (fakeExpression1));
-      Assert.That (binaryExpression2.Left, Is.SameAs (parameterExpression2));
-      Assert.That (binaryExpression2.Right, Is.SameAs (fakeExpression2));
-
-      Assert.That (arguments[0], Is.SameAs (fakeMemberExpression));
-      Assert.That (arguments[1], Is.SameAs (parameterExpression1));
+      Assert.That (arguments[0], Is.SameAs (methodInvocation));
+      Assert.That (arguments[1], Is.SameAs (fakeMemberExpression));
       Assert.That (arguments[2], Is.EqualTo (_adviceMethod1));
-      Assert.That (arguments[3], Is.SameAs (invocationContext));
+      Assert.That (arguments[3], Is.SameAs (parameterExpression1));
+
+      Assert.That (binaryExpression1.Left, Is.SameAs (parameterExpression1));
+      Assert.That (binaryExpression2.Left, Is.SameAs (parameterExpression2));
+
+      Assert.That (binaryExpression1.Right, Is.SameAs (methodInvocation));
+      Assert.That (binaryExpression2.Right, Is.TypeOf<NewExpression>());
+
+      var newExpression = (NewExpression) binaryExpression2.Right;
+      var constructor = typeof (OuterInvocation).GetConstructors().Single();
+      Assert.That (newExpression.Constructor, Is.EqualTo (constructor));
+      var arguments2 = newExpression.Arguments;
+      Assert.That (arguments2[0], Is.SameAs (methodInvocation));
+      Assert.That (arguments2[1], Is.InstanceOf<LambdaExpression>());
+      var lambdaExpression = (LambdaExpression) arguments2[1];
+      Assert.That (lambdaExpression.Type, Is.EqualTo (typeof (Action)));
+      Assert.That (lambdaExpression.Body, Is.SameAs (fakeExpression));
     }
 
     [Test]
     public void CreateOutermostAspectCallExpression ()
     {
-      var invocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
+      var methodInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
+      var outermostInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
       var fakeMemberExpression = ObjectMother2.GetMemberExpression (_adviceMethod2.DeclaringType);
+      var fakeCall = ObjectMother2.GetMethodCallExpression();
 
-      _aspectFieldMock2.Expect (x => x.GetStorageExpression (_thisExpression)).Return (fakeMemberExpression);
+      _aspectFieldMock2
+        .Expect (x => x.GetStorageExpression (_thisExpression))
+        .Return (fakeMemberExpression);
+      _callExpressionHelperMock
+          .Expect (x => x.CreateAdviceCallExpression (methodInvocation, fakeMemberExpression, _adviceMethod2, outermostInvocation))
+          .Return (fakeCall);
 
-      var result = _expressionHelper.CreateOutermostAdviceCallExpression (invocation);
+      var result = _expressionHelper.CreateOutermostAdviceCallExpression (methodInvocation, outermostInvocation);
 
       _aspectFieldMock2.VerifyAllExpectations();
-      Assert.That (result.Object, Is.SameAs (fakeMemberExpression));
-      Assert.That (result.Method, Is.SameAs (_adviceMethod2));
-      Assert.That (result.Arguments.Single(), Is.SameAs (invocation));
+      _callExpressionHelperMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeCall));
     }
 
     [Test]
-    public void CreateReturnValueExpression ()
+    public void CreateReturnValueExpression_Func ()
     {
-      var invocationContextType = typeof (FuncInvocationContext<object, string, int, int>);
+      var baseType = typeof (FuncInvocationBase<>);
+      var invocationContextType = typeof (FuncInvocation<int>);
+      Assert.That (baseType.MakeGenericType(invocationContextType.GetGenericArguments()).IsAssignableFrom (invocationContextType), Is.True);
       var fakeContext = ObjectMother2.GetVariableExpression (invocationContextType);
 
       var result = _expressionHelper.CreateReturnValueExpression (fakeContext);
 
-      var property = invocationContextType.GetProperty ("ReturnValue");
-      Assert.That (result.Member, Is.EqualTo (property));
-      Assert.That (result.Expression, Is.SameAs (fakeContext));
+      Assert.That (result, Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) result;
+      var property = invocationContextType.GetField ("TypedReturnValue");
+      Assert.That (memberExpression.Member, Is.EqualTo (property));
+      Assert.That (memberExpression.Expression, Is.SameAs (fakeContext));
+    }
+
+    [Test]
+    public void CreateReturnValueExpression_Action ()
+    {
+      var invocationContextType = typeof (ActionInvocation);
+      var fakeContext = ObjectMother2.GetVariableExpression (invocationContextType);
+
+      var result = _expressionHelper.CreateReturnValueExpression (fakeContext);
+
+      Assert.That (result, Is.TypeOf<DefaultExpression>());
     }
   }
 }

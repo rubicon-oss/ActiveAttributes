@@ -14,11 +14,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Reflection;
+using Microsoft.Scripting.Ast;
+using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Interception.InvocationsNew
+namespace ActiveAttributes.Core.Assembly
 {
-  public interface IInvocation : IInvocationContext
+  [ConcreteImplementation (typeof (CallExpressionHelper))]
+  public interface ICallExpressionHelper
   {
-    void Proceed ();
+    MethodCallExpression CreateAdviceCallExpression (
+        Expression methodInvocation, Expression aspect, MethodInfo advice, Expression invocation);
+  }
+
+  public class CallExpressionHelper : ICallExpressionHelper
+  {
+    public MethodCallExpression CreateAdviceCallExpression (Expression methodInvocation, Expression aspect, MethodInfo advice, Expression invocation)
+    {
+      return Expression.Call (aspect, advice, new[] { invocation });
+    }
   }
 }

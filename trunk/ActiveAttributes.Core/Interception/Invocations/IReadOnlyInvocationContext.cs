@@ -13,37 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Interception.Contexts
+namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public class IndexerGetInvocationContext<TInstance, TIndex, TR> : FuncInvocationContext<TInstance, TIndex, TR>, IPropertyInvocationContext
+  public interface IReadOnlyInvocationContext
   {
-    public IndexerGetInvocationContext (PropertyInfo propertyInfo, MethodInfo methodInfo, TInstance instance, TIndex index)
-        : base (methodInfo, instance, index)
-    {
-      PropertyInfo = propertyInfo;
-    }
+    MemberInfo MemberInfo { get; }
 
-    public PropertyInfo PropertyInfo { get; private set; }
+    object Instance { get; }
 
-    public override MethodInfo MethodInfo
-    {
-      get { throw new NotSupportedException (); }
-    }
+    IReadOnlyArgumentCollection Arguments { get; }
 
-    public object Index
-    {
-      get { return Arg1; }
-      set { Arg1 = (TIndex) value; }
-    }
-
-    public object Value
-    {
-      get { return base.ReturnValue; }
-      set { base.ReturnValue = (TR) value; }
-    }
+    object ReturnValue { get; }
   }
 }

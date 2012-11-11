@@ -72,7 +72,7 @@ namespace ActiveAttributes.IntegrationTests
       public override void OnIntercept (IInvocation invocation)
       {
         _counter++;
-        invocation.Context.ReturnValue = _counter;
+        invocation.ReturnValue = _counter;
       }
     }
   }

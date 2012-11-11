@@ -17,16 +17,14 @@ using System;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Interception.InvocationsNew
+namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public abstract class FuncInvocationBase<TReturn> : ArgumentCollectionBase, IInvocation
+  public abstract class ActionInvocationBase : ArgumentCollectionBase, IInvocation
   {
     private readonly MemberInfo _memberInfo;
     private readonly object _instance;
 
-    public TReturn TypedReturnValue;
-
-    protected FuncInvocationBase (MemberInfo memberInfo, object instance)
+    protected ActionInvocationBase (MemberInfo memberInfo, object instance)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("instance", instance);
@@ -52,8 +50,8 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     public object ReturnValue
     {
-      get { return TypedReturnValue; }
-      set { TypedReturnValue = (TReturn) value; }
+      get { throw new NotImplementedException (); }
+      set { throw new NotImplementedException (); }
     }
 
     IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
@@ -63,7 +61,7 @@ namespace ActiveAttributes.Core.Interception.InvocationsNew
 
     object IReadOnlyInvocationContext.ReturnValue
     {
-      get { return TypedReturnValue; }
+      get { throw new NotImplementedException (); }
     }
 
     public abstract void Proceed ();

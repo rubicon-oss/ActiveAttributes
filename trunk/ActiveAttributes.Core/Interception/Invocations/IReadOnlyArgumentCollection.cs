@@ -13,14 +13,14 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public interface IPropertyInvocation : IInvocation
+  public interface IReadOnlyArgumentCollection : ICollection, IEnumerable<object>
   {
-    new IPropertyInvocationContext Context { get; }
+    object this[int idx] { get; }
   }
 }

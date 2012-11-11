@@ -17,7 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ActiveAttributes.Core.Interception.InvocationsNew
+namespace ActiveAttributes.Core.Interception.Invocations
 {
   public abstract class ArgumentCollectionBase : IArgumentCollection
   {

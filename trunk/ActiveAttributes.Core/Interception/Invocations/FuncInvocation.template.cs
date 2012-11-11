@@ -13,9 +13,9 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
+using System.Reflection;
+using Remotion.Utilities;
 // ReSharper disable RedundantUsingDirective
 using Remotion;
 // ReSharper restore RedundantUsingDirective
@@ -23,28 +23,66 @@ using Remotion;
 namespace ActiveAttributes.Core.Interception.Invocations
 {
   // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
+  // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
   // @replace "TA<n>, "
-  // @replace "_context.Arg<n>" ", "
-  public class FuncInvocation<TInstance, TA1, TR> : Invocation
+  // @replace "Arg<n>" ", "
+  public class FuncInvocation<TA1, TReturn> : FuncInvocationBase<TReturn>
   {
-    private readonly FuncInvocationContext<TInstance, TA1, TR> _context;
-    private readonly Func<TA1, TR> _func;
+    private readonly Func<TA1, TReturn> _func;
 
-    public FuncInvocation (FuncInvocationContext<TInstance, TA1, TR> context, Func<TA1, TR> func)
+    // @begin-repeat
+    // @replace-one "<n>"
+    public TA1 Arg1;
+    // @end-repeat
+
+    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Func<TA1, TReturn> func)
+        : base (memberInfo, instance)
     {
-      _context = context;
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
+      // @begin-repeat
+      // @replace-one "<n>"
+      Arg1 = arg1;
+      // @end-repeat
     }
 
-    public override IInvocationContext Context
+    public override int Count
     {
-      get { return _context; }
+      // @replace-one "<n>"
+      get { return 1; }
+    }
+
+    public override object this [int idx]
+    {
+      get
+      {
+        switch (idx + 1)
+        {
+          // @begin-repeat
+          // @replace-one "<n>"
+          case 1: return Arg1;
+          // @end-repeat
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
+      set
+      {
+        switch (idx + 1)
+        {
+          // @begin-repeat
+          // @replace-one "<n>"
+          case 1: Arg1 = (TA1) value; break;
+          // @end-repeat
+          default: throw new IndexOutOfRangeException ("idx");
+        }
+      }
     }
 
     public override void Proceed ()
     {
-      _context.ReturnValue = _func (_context.Arg1);
+      ReturnValue = _func (Arg1);
     }
   }
   // @end-template

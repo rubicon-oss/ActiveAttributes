@@ -27,78 +27,80 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Interception
 {
+  // var ctx = new FuncInvocation<TA1, TA2, TR> (_memberInfo, this, arg1, arg2, func)
+  // var ivc0 = ctx
+  // var ivc1 = new OuterInvocation (ctx, () => _aspect1.AdviceMethod (ivc0))
+  // _aspect2.AdviceMethod (ivc1)
+  // return ctx.TypedReturnValue
+
   public interface IInterceptionExpressionHelper
   {
-    Tuple<ParameterExpression, BinaryExpression> CreateInvocationContextExpressions ();
+    Tuple<ParameterExpression, BinaryExpression> CreateMethodInvocationExpressions ();
 
-    IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateInvocationExpressions (Expression invocationContext);
+    IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateAdviceInvocationExpressions (Expression methodInvocation);
 
-    MethodCallExpression CreateOutermostAdviceCallExpression (Expression outermostInvocation);
+    MethodCallExpression CreateOutermostAdviceCallExpression (Expression methodInvocation, Expression outermostInvocation);
 
-    MemberExpression CreateReturnValueExpression (Expression invocationContext);
+    Expression CreateReturnValueExpression (Expression methodInvocation);
   }
 
   public class InterceptionExpressionHelper : IInterceptionExpressionHelper
   {
-    private readonly IInvocationExpressionHelper _invocationExpressionHelper;
-    private readonly MethodInfo _interceptedMethod;
+    private readonly ICallExpressionHelper _callExpressionHelper;
     private readonly Expression _thisExpression;
     private readonly IEnumerable<ParameterExpression> _parameterExpressions;
     private readonly Type _invocationType;
-    private readonly Type _invocationContextType;
     private readonly IList<Tuple<MethodInfo, IStorage>> _advices;
-    private readonly IStorage _memberInfoField;
-    private readonly IStorage _delegateField;
+    private readonly IStorage _memberInfoStorage;
+    private readonly IStorage _delegateStorage;
 
     public InterceptionExpressionHelper (
-        IInvocationExpressionHelper invocationExpressionHelper,
-        MethodInfo interceptedMethod,
+        ICallExpressionHelper callExpressionHelper,
         Expression thisExpression,
         IEnumerable<ParameterExpression> parameterExpressions,
         Type invocationType,
-        Type invocationContextType,
         IEnumerable<Tuple<MethodInfo, IStorage>> advices,
-        IStorage memberInfoField,
-        IStorage delegateField)
+        IStorage memberInfoStorage,
+        IStorage delegateStorage)
     {
-      ArgumentUtility.CheckNotNull ("invocationExpressionHelper", invocationExpressionHelper);
-      ArgumentUtility.CheckNotNull ("interceptedMethod", interceptedMethod);
+      ArgumentUtility.CheckNotNull ("callExpressionHelper", callExpressionHelper);
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
       ArgumentUtility.CheckNotNull ("parameterExpressions", parameterExpressions);
       ArgumentUtility.CheckNotNull ("invocationType", invocationType);
-      ArgumentUtility.CheckNotNull ("invocationContextType", invocationContextType);
       ArgumentUtility.CheckNotNull ("advices", advices);
-      ArgumentUtility.CheckNotNull ("memberInfoField", memberInfoField);
-      ArgumentUtility.CheckNotNull ("delegateField", delegateField);
+      ArgumentUtility.CheckNotNull ("memberInfoStorage", memberInfoStorage);
+      ArgumentUtility.CheckNotNull ("delegateStorage", delegateStorage);
       //Assertion.IsTrue (typeof (IInvocationContext).IsAssignableFrom (invocationContextType));
 
-      _invocationExpressionHelper = invocationExpressionHelper;
-      _interceptedMethod = interceptedMethod;
+      _callExpressionHelper = callExpressionHelper;
       _thisExpression = thisExpression;
       _parameterExpressions = parameterExpressions;
       _invocationType = invocationType;
-      _invocationContextType = invocationContextType;
       _advices = advices.ToList();
-      _memberInfoField = memberInfoField;
-      _delegateField = delegateField;
+      _memberInfoStorage = memberInfoStorage;
+      _delegateStorage = delegateStorage;
     }
 
-    public Tuple<ParameterExpression, BinaryExpression> CreateInvocationContextExpressions ()
+    public Tuple<ParameterExpression, BinaryExpression> CreateMethodInvocationExpressions ()
     {
-      var parameterExpression = Expression.Variable (_invocationContextType, "ctx");
+      var parameterExpression = Expression.Variable (_invocationType, "ctx");
 
-      var constructor = _invocationContextType.GetConstructors().Single();
-      var memberInfoExpression = _memberInfoField.GetStorageExpression (_thisExpression);
-      var argumentExpressions = new[] { memberInfoExpression, _thisExpression }.Concat (_parameterExpressions.Cast<Expression>());
+      var constructor = _invocationType.GetConstructors().Single();
+      var memberInfoExpression = _memberInfoStorage.GetStorageExpression (_thisExpression);
+      var delegateFieldExpression = _delegateStorage.GetStorageExpression (_thisExpression);
+      var argumentExpressions =
+          new[] { memberInfoExpression, _thisExpression }
+              .Concat (_parameterExpressions.Cast<Expression>())
+              .Concat (new[] { delegateFieldExpression });
       var newExpression = Expression.New (constructor, argumentExpressions);
       var assignExpression = Expression.Assign (parameterExpression, newExpression);
 
       return Tuple.Create (parameterExpression, assignExpression);
     }
 
-    public IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateInvocationExpressions (Expression invocationContext)
+    public IEnumerable<Tuple<ParameterExpression, BinaryExpression>> CreateAdviceInvocationExpressions (Expression methodInvocation)
     {
-      ArgumentUtility.CheckNotNull ("invocationContext", invocationContext);
+      ArgumentUtility.CheckNotNull ("methodInvocation", methodInvocation);
 
       var count = _advices.Count;
       var invocations = new ParameterExpression[count];
@@ -106,44 +108,46 @@ namespace ActiveAttributes.Core.Interception
 
       for (var i = 0; i < count; i++)
       {
-        Type invocationType;
-        NewExpression newExpression;
-
-        if (i == 0)
+        var invocation = methodInvocation;
+        if (i != 0)
         {
-          invocationType = _invocationType;
-          newExpression = _invocationExpressionHelper.CreateInnermostInvocation (_thisExpression, _invocationType, invocationContext, _delegateField);
-        }
-        else
-        {
-          invocationType = typeof (OuterInvocation);
-          var previousInvocation = invocations[i - 1];
-          var previousAdvice = _advices[i - 1].Item1;
-          var previousAspect = _advices[i - 1].Item2.GetStorageExpression (_thisExpression);
-          newExpression = _invocationExpressionHelper.CreateOuterInvocation (previousAspect, previousInvocation, previousAdvice, invocationContext);
+          var previous = i - 1;
+          var previousInvocation = invocations[previous];
+          var previousAdvice = _advices[previous].Item1;
+          var previousAspect = _advices[previous].Item2.GetStorageExpression (_thisExpression);
+          var previousCall = _callExpressionHelper.CreateAdviceCallExpression (
+              methodInvocation, previousAspect, previousAdvice, previousInvocation);
+
+          var constructor = typeof (OuterInvocation).GetConstructors().Single();
+          var arguments = new[]
+                          {
+                              methodInvocation,
+                              Expression.Lambda (typeof (Action), previousCall)
+                          };
+          invocation = Expression.New (constructor, arguments);
         }
 
-        invocations[i] = Expression.Parameter (invocationType, "ivc" + i);
-        invocationAssignExpression[i] = Expression.Assign (invocations[i], newExpression);
+        invocations[i] = Expression.Parameter (typeof(IInvocation), "ivc" + i);
+        invocationAssignExpression[i] = Expression.Assign (invocations[i], invocation);
       }
 
       return invocations.Zip (invocationAssignExpression, Tuple.Create);
     }
-
-    public MethodCallExpression CreateOutermostAdviceCallExpression (Expression outermostInvocation)
+    
+    public MethodCallExpression CreateOutermostAdviceCallExpression (Expression methodInvocation, Expression outermostInvocation)
     {
-      ArgumentUtility.CheckNotNull ("outermostInvocation", outermostInvocation);
-
-      var outermostAspect = _advices.Last().Item2.GetStorageExpression (_thisExpression);
-      var outermostAdvice = _advices.Last().Item1;
-
-      return Expression.Call (outermostAspect, outermostAdvice, new[] { outermostInvocation });
+      var lastTuple = _advices.Last();
+      var outermostAdvice = lastTuple.Item1;
+      var outermostAspect = lastTuple.Item2.GetStorageExpression (_thisExpression);
+      return _callExpressionHelper.CreateAdviceCallExpression (methodInvocation, outermostAspect, outermostAdvice, outermostInvocation);
     }
 
-    public MemberExpression CreateReturnValueExpression (Expression invocationContext)
+    public Expression CreateReturnValueExpression (Expression methodInvocation)
     {
-      // TODO return empty or property depending on interceptedMethod
-      return Expression.Property (invocationContext, "ReturnValue");
+      var field = methodInvocation.Type.GetField ("TypedReturnValue");
+      return field != null
+                 ? (Expression) Expression.Field (methodInvocation, field)
+                 : Expression.Empty();
     }
   }
 }

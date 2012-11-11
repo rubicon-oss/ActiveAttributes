@@ -15,35 +15,55 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Interception.Contexts;
-using Remotion.Logging;
+using System.Reflection;
 
 namespace ActiveAttributes.Core.Interception.Invocations
 {
-  public class OuterInvocation : Invocation
+  public class OuterInvocation : IInvocation
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (IInvocation));
-
     private readonly IInvocationContext _context;
-    private readonly Action<IInvocation> _innerInterception;
-    private readonly IInvocation _innerInvocation;
+    private readonly Action _innerMethod;
 
-    public OuterInvocation (IInvocationContext context, Action<IInvocation> innerInterception, IInvocation innerInvocation)
+    public OuterInvocation (IInvocationContext context, Action innerMethod)
     {
       _context = context;
-      _innerInterception = innerInterception;
-      _innerInvocation = innerInvocation;
+      _innerMethod = innerMethod;
     }
 
-    public override IInvocationContext Context
+    public MemberInfo MemberInfo
     {
-      get { return _context; }
+      get { return _context.MemberInfo; }
     }
 
-    public override void Proceed ()
+    public object Instance
     {
-      s_log.DebugFormat ("Proceeding with '{0}'", _innerInterception);
-      _innerInterception (_innerInvocation);
+      get { return _context.MemberInfo; }
+    }
+
+    public IArgumentCollection Arguments
+    {
+      get { return _context.Arguments; }
+    }
+
+    object IInvocationContext.ReturnValue
+    {
+      get { return _context.ReturnValue; }
+      set { _context.ReturnValue = value; }
+    }
+
+    IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
+    {
+      get { return _context.Arguments; }
+    }
+
+    object IReadOnlyInvocationContext.ReturnValue
+    {
+      get { return _context.ReturnValue; }
+    }
+
+    public void Proceed ()
+    {
+      _innerMethod();
     }
   }
 }

@@ -87,7 +87,6 @@
     <Compile Include="Assembly\InitializationExpressionHelperTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
     <Compile Include="Assembly\StorageServiceTest.cs" />
-    <Compile Include="Interception\InvocationExpressionHelperTest.cs" />
     <Compile Include="Assembly\Storages\GlobalStorageTest.cs" />
     <Compile Include="Assembly\Storages\InstanceStorageTest.cs" />
     <Compile Include="Assembly\Storages\StaticStorageTest.cs" />
@@ -97,6 +96,15 @@
     <Compile Include="AdviceInfo\AdvicePriorityAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceRoleAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceScopeAttributeTest.cs" />
+    <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interception\InterceptionExpressionHelperTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interception\CallExpressionHelperTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetConstantExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetNewDelegateExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAspectType.cs" />
@@ -120,20 +128,11 @@
     <Compile Include="Discovery\CustomAttributeProviderTransformTest.cs" />
     <Compile Include="Discovery\ClassDeclarationProviderTest.cs" />
     <Compile Include="Discovery\StandaloneAspectDeclarationProviderTest.cs" />
-    <Compile Include="Interception\Contexts\ActionInvocationContextTest.cs" />
-    <Compile Include="Interception\Contexts\FuncInvocationContextTest.cs" />
-    <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs" />
-    <Compile Include="Interception\InterceptionExpressionHelperTest.cs" />
     <Compile Include="Interception\InterceptionTypeProviderTest.cs" />
     <Compile Include="Interception\InterceptionWeaverTest.cs" />
     <Compile Include="ObjectMother.cs" />
     <Compile Include="Assembly\MethodCopyServiceTest.cs" />
     <Compile Include="Extensions\IEnumerableExtensionsTest.cs" />
-    <Compile Include="Interception\Invocations\IndexerGetInvocationTest.cs" />
-    <Compile Include="Interception\Invocations\IndexerSetInvocationTest.cs" />
-    <Compile Include="Interception\Invocations\OuterInvocationTest.cs" />
-    <Compile Include="Interception\Invocations\PropertyGetInvocationTest.cs" />
-    <Compile Include="Interception\Invocations\PropertySetInvocationTest.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAdviceBuilder.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetPointcut.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMethodCallExpression.cs" />
@@ -149,7 +148,7 @@
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMemberInitExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetBinaryExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetExpression.cs" />
-    <Compile Include="ObjectMother\ObjectMother.GetFieldWrapper.cs" />
+    <Compile Include="ObjectMother\ObjectMother.GetStorage.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetMemberExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetThisExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother._.cs" />
@@ -168,7 +167,6 @@
     <Compile Include="Extensions\MethodBaseExtensionsTest.cs" />
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />

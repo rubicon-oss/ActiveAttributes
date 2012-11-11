@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,18 +13,25 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
+using ActiveAttributes.Core.Assembly.Storages;
+using Microsoft.Scripting.Ast;
+using Rhino.Mocks;
 
-namespace ActiveAttributes.Core.Interception.Contexts
+namespace ActiveAttributes.UnitTests
 {
-  /// <summary>
-  ///   Provides read/write access to a collection of arguments.
-  /// </summary>
-  public interface IArgumentCollection : ICollection, IEnumerable<object>
+  public static partial class ObjectMother2
   {
-    object this [int idx] { get; set; }
+    public static IStorage GetStorage (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
+    {
+      var expression = GetExpression (type);
+
+      var stub = MockRepository.GenerateStub<IStorage>();
+
+      stub.Stub (x => x.GetStorageExpression (Arg<Expression>.Is.Anything)).Return (expression);
+
+      return stub;
+    }
   }
 }
