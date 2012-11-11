@@ -62,7 +62,7 @@ namespace ActiveAttributes.Interception
 
       // TODO Underlying
       var declaringType = method.DeclaringType;
-      declaringType = declaringType is MutableType ? declaringType.BaseType : declaringType;
+      declaringType = declaringType is MutableType ? declaringType.UnderlyingSystemType : declaringType;
       var instanceType = new[] { declaringType };
       var parameterTypes = method.GetParameters ().Select (x => x.ParameterType).ToArray ();
       var returnType = new[] { method.ReturnType };

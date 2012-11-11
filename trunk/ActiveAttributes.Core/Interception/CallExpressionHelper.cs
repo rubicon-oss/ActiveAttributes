@@ -50,7 +50,7 @@ namespace ActiveAttributes.Interception
           parameterType = parameterType.GetElementType();
 
         var invocationType = methodInvocation.Type;
-        var invocationField = invocationType.GetFields ().Single (x => x.FieldType == parameterType);
+        var invocationField = invocationType.GetFields().Single (x => parameterType.IsAssignableFrom (x.FieldType));
         return Expression.Field (methodInvocation, invocationField);
       }
       catch (Exception)

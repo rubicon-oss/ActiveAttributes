@@ -39,7 +39,6 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    [Ignore]
     public void TypePointcut ()
     {
       _instance.Method1 ();
@@ -48,7 +47,6 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    [Ignore]
     public void Argument ()
     {
       _instance.Method2 ("test");
@@ -79,23 +77,23 @@ namespace ActiveAttributes.IntegrationTests
       public static string Argument { get; set; }
 
       ////[TypePointcut (typeof (DomainType))]
-      //[MemberNamePointcut("Method1")]
-      //public void Method1Advice (DomainType instance)
-      //{
-      //  Instance = instance;
-      //}
+      [MemberNamePointcut ("Method1")]
+      public void Advice1 (DomainType instance)
+      {
+        Instance = instance;
+      }
 
 
       //[ArgumentTypePointcut (typeof (string))]
       [MemberNamePointcut ("Method2")]
-      public void Method2Advice (string argument)
+      public void Advice2 (string argument)
       {
         Argument = argument;
       }
 
       //[ArgumentTypePointcut (typeof (string))]
       [MemberNamePointcut ("Method3")]
-      public void Method3Advice (IInvocation invocation, ref int argument)
+      public void Advice3 (IInvocation invocation, ref int argument)
       {
         argument = argument + 6;
         invocation.Proceed();

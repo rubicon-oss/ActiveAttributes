@@ -52,9 +52,8 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression_TypedArguments ()
     {
-      string a = "";
       var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionInvocation<object, string, int>));
-      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Advice2 (null, ref a));
+      var advice = typeof (DomainType).GetMethod ("Advice1");
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
 
@@ -70,10 +69,73 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
     }
 
-    private class DomainType
+    [Test]
+    public void CreateAdviceCallExpression_TypedReturnValue ()
+    {
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<object, string>));
+      var advice = typeof (DomainType).GetMethod ("Advice2");
+      var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
+      var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
+
+      var result = _expressionHelper.CreateAdviceCallExpression (methodInvocation, aspect, advice, invocation);
+
+      var arguments = result.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (2));
+      Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) arguments[1];
+      var field = typeof (FuncInvocation<object, string>).GetField ("TypedReturnValue");
+      Assertion.IsTrue (field.FieldType == typeof (string));
+      Assert.That (memberExpression.Member, Is.EqualTo (field));
+      Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
+    }
+
+    [Test]
+    public void CreateAdviceCallExpression_TypedInstance ()
+    {
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<DomainType, string>));
+      var advice = typeof (DomainType).GetMethod ("Advice3");
+      var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
+      var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
+
+      var result = _expressionHelper.CreateAdviceCallExpression (methodInvocation, aspect, advice, invocation);
+
+      var arguments = result.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (2));
+      Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) arguments[1];
+      var field = typeof (FuncInvocation<DomainType, string>).GetField ("TypedInstance");
+      Assertion.IsTrue (field.FieldType == typeof (DomainType));
+      Assert.That (memberExpression.Member, Is.EqualTo (field));
+      Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
+    }
+
+    [Test]
+    public void CreateAdviceCallExpression_AssignableFrom ()
+    {
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<DerivedDomainType, string>));
+      var advice = typeof (DomainType).GetMethod ("Advice3");
+      var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
+      var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
+
+      var result = _expressionHelper.CreateAdviceCallExpression (methodInvocation, aspect, advice, invocation);
+
+      var arguments = result.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (2));
+      Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) arguments[1];
+      var field = typeof (FuncInvocation<DerivedDomainType, string>).GetField ("TypedInstance");
+      Assertion.IsTrue (field.FieldType == typeof (DerivedDomainType));
+      Assert.That (memberExpression.Member, Is.EqualTo (field));
+      Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
+    }
+
+    class DomainType
     {
       public void Advice1 (IInvocation invocation, string arg) {}
-      public void Advice2 (IInvocation invocation, ref string arg) {}
+      public void Advice2 (IInvocation invocation, out string arg) { arg = ""; }
+      public void Advice3 (IInvocation invocation, DomainType arg) {}
     }
+
+    class DerivedDomainType : DomainType {}
   }
 }
