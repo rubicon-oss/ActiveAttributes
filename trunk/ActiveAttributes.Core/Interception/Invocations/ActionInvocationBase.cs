@@ -20,18 +20,19 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Interception.Invocations
 {
-  public abstract class ActionInvocationBase : ArgumentCollectionBase, IInvocation
+  public abstract class ActionInvocationBase<T> : ArgumentCollectionBase, IInvocation
   {
     private readonly MemberInfo _memberInfo;
-    private readonly object _instance;
 
-    protected ActionInvocationBase (MemberInfo memberInfo, object instance)
+    public readonly T TypedInstance;
+
+    protected ActionInvocationBase (MemberInfo memberInfo, T instance)
     {
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
       ArgumentUtility.CheckNotNull ("instance", instance);
 
       _memberInfo = memberInfo;
-      _instance = instance;
+      TypedInstance = instance;
     }
 
     public MemberInfo MemberInfo
@@ -41,7 +42,7 @@ namespace ActiveAttributes.Interception.Invocations
 
     public object Instance
     {
-      get { return _instance; }
+      get { return TypedInstance; }
     }
 
     public IArgumentCollection Arguments

@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Interception
@@ -34,7 +35,7 @@ namespace ActiveAttributes.Interception
     private readonly Type[] _actionInvocationOpenTypes
         = new[]
           {
-              typeof (ActionInvocation),
+              null,
               typeof (ActionInvocation<>),
               typeof (ActionInvocation<,>),
               typeof (ActionInvocation<,,>),
@@ -46,7 +47,7 @@ namespace ActiveAttributes.Interception
         = new[]
           {
               null,
-              typeof (FuncInvocation<>),
+              null,
               typeof (FuncInvocation<,>),
               typeof (FuncInvocation<,,>),
               typeof (FuncInvocation<,,,>),
@@ -59,44 +60,22 @@ namespace ActiveAttributes.Interception
       ArgumentUtility.CheckNotNull ("method", method);
       Assertion.IsNotNull (method.DeclaringType);
 
-      // TODO UNDERLYING
+      // TODO Underlying
+      var declaringType = method.DeclaringType;
+      declaringType = declaringType is MutableType ? declaringType.BaseType : declaringType;
+      var instanceType = new[] { declaringType };
       var parameterTypes = method.GetParameters ().Select (x => x.ParameterType).ToArray ();
       var returnType = new[] { method.ReturnType };
 
-      var genericTypes = method.IsAction ()
-                             ? parameterTypes.ToArray ()
-                             : parameterTypes.Concat (returnType).ToArray ();
+      var genericTypes = instanceType.Concat (parameterTypes).Concat (method.IsFunc() ? returnType : new Type[0]).ToArray();
 
-      //var property = method.GetRelatedPropertyInfo ();
-      //var event_ = method.GetRelatedEventInfo ();
-      //if (property != null)
-      //  GetInvocationOpenTypes (method, property, out invocationType, out invocationContextType);
-      //else if (event_ != null)
-      //  GetInvocationOpenTypes (method, event_, out invocationType, out invocationContextType);
-      //else
-      var type = GetMethodInvocationType (method, genericTypes);
+      var type = method.IsAction()
+                     ? _actionInvocationOpenTypes[((ICollection<Type>) genericTypes).Count]
+                     : _funcInvocationOpenTypes[((ICollection<Type>) genericTypes).Count];
 
       return genericTypes.Any()
                  ? type.MakeGenericType (genericTypes)
                  : type;
     }
-
-    private Type GetMethodInvocationType (MethodInfo method, ICollection<Type> genericTypes)
-    {
-      return method.IsAction()
-                 ? _actionInvocationOpenTypes[genericTypes.Count]
-                 : _funcInvocationOpenTypes[genericTypes.Count];
-    }
-
-    private void GetOpenInvocationType (MethodInfo method, PropertyInfo property, out Type invocationType, out Type invocationContextType)
-    {
-      throw new NotImplementedException();
-    }
-
-    private void GetOpenInvocationType (MethodInfo method, EventInfo event_, out Type invocationType, out Type invocationContextType)
-    {
-      throw new NotImplementedException ();
-    }
   }
-
 }

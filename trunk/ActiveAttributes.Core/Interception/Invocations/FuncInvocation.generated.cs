@@ -24,19 +24,18 @@
 using System;
 using System.Reflection;
 using Remotion.Utilities;
+// ReSharper disable RedundantUsingDirective
 using Remotion;
-    // ReSharper disable RedundantUsingDirective
-
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Interception.Invocations
 {
-  public class FuncInvocation<TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TReturn> _func;
 
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, Func<TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, Func<TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -72,14 +71,14 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func ();
     }
   }
-  public class FuncInvocation<TA1, TA2, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TReturn> _func;
 
     public TA1 Arg1;
     public TA2 Arg2;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, Func<TA1, TA2, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, Func<TA1, TA2, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -121,7 +120,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TReturn> _func;
 
@@ -129,7 +128,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA2 Arg2;
     public TA3 Arg3;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, Func<TA1, TA2, TA3, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, Func<TA1, TA2, TA3, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -174,7 +173,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2, Arg3);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TA4, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TA4, TReturn> _func;
 
@@ -183,7 +182,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA3 Arg3;
     public TA4 Arg4;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Func<TA1, TA2, TA3, TA4, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Func<TA1, TA2, TA3, TA4, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -231,7 +230,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2, Arg3, Arg4);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TA4, TA5, TReturn> _func;
 
@@ -241,7 +240,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA4 Arg4;
     public TA5 Arg5;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Func<TA1, TA2, TA3, TA4, TA5, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Func<TA1, TA2, TA3, TA4, TA5, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -292,7 +291,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> _func;
 
@@ -303,7 +302,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA5 Arg5;
     public TA6 Arg6;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Func<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Func<TA1, TA2, TA3, TA4, TA5, TA6, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -357,7 +356,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> _func;
 
@@ -369,7 +368,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA6 Arg6;
     public TA7 Arg7;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);
@@ -426,7 +425,7 @@ namespace ActiveAttributes.Interception.Invocations
       ReturnValue = _func (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
-  public class FuncInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> _func;
 
@@ -439,7 +438,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA7 Arg7;
     public TA8 Arg8;
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Func<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);

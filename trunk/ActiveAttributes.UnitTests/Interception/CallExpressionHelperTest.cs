@@ -53,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Interception
     public void CreateAdviceCallExpression_TypedArguments ()
     {
       string a = "";
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionInvocation<string, int>));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionInvocation<object, string, int>));
       var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Advice2 (null, ref a));
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -64,7 +64,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (arguments, Has.Count.EqualTo (2));
       Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) arguments[1];
-      var field = typeof (ActionInvocation<string, int>).GetField ("Arg1");
+      var field = typeof (ActionInvocation<object, string, int>).GetField ("Arg1");
       Assertion.IsTrue (field.FieldType == typeof (string));
       Assert.That (memberExpression.Member, Is.EqualTo (field));
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));

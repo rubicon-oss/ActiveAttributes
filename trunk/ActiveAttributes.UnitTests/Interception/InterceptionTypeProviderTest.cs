@@ -41,7 +41,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType>)));
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType, string>)));
     }
 
     [Test]
@@ -61,7 +61,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<int>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, int>)));
     }
 
 
@@ -72,10 +72,9 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<int, int>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, int, int>)));
     }
 
-    [Ignore]
     [Test]
     public void GetInvocationTypes_Property_Get ()
     {
@@ -83,10 +82,9 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, string>)));
     }
 
-    [Ignore]
     [Test]
     public void GetInvocationTypes_Property_Set ()
     {
@@ -94,7 +92,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<string>)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType, string>)));
     }
 
     class DomainType

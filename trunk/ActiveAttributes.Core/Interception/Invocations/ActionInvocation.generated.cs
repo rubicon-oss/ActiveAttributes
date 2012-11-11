@@ -23,20 +23,20 @@
 
 using System;
 using System.Reflection;
-using Remotion.Utilities;
 using Remotion;
+using Remotion.Utilities;
     // ReSharper disable RedundantUsingDirective
 
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Interception.Invocations
 {
-  public class ActionInvocation : ActionInvocationBase
+  public class ActionInvocation<TInstance> : ActionInvocationBase<TInstance>
   {
     private readonly Action _action;
 
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, Action action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, Action action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -72,14 +72,14 @@ namespace ActiveAttributes.Interception.Invocations
       _action ();
     }
   }
-  public class ActionInvocation<TA1, TA2> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2> _action;
 
     public TA1 Arg1;
     public TA2 Arg2;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, Action<TA1, TA2> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, Action<TA1, TA2> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -121,7 +121,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3> _action;
 
@@ -129,7 +129,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA2 Arg2;
     public TA3 Arg3;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA1, TA2, TA3> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA1, TA2, TA3> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -174,7 +174,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2, Arg3);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3, TA4> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3, TA4> _action;
 
@@ -183,7 +183,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA3 Arg3;
     public TA4 Arg4;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA1, TA2, TA3, TA4> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA1, TA2, TA3, TA4> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -231,7 +231,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2, Arg3, Arg4);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3, TA4, TA5> _action;
 
@@ -241,7 +241,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA4 Arg4;
     public TA5 Arg5;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA1, TA2, TA3, TA4, TA5> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA1, TA2, TA3, TA4, TA5> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -292,7 +292,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2, Arg3, Arg4, Arg5);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6> _action;
 
@@ -303,7 +303,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA5 Arg5;
     public TA6 Arg6;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA1, TA2, TA3, TA4, TA5, TA6> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA1, TA2, TA3, TA4, TA5, TA6> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -357,7 +357,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> _action;
 
@@ -369,7 +369,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA6 Arg6;
     public TA7 Arg7;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
@@ -426,7 +426,7 @@ namespace ActiveAttributes.Interception.Invocations
       _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
-  public class ActionInvocation<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> _action;
 
@@ -439,7 +439,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA7 Arg7;
     public TA8 Arg8;
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);

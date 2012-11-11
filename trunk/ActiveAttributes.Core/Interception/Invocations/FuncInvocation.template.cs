@@ -17,8 +17,8 @@
 using System;
 using System.Reflection;
 using Remotion.Utilities;
-    // ReSharper disable RedundantUsingDirective
-
+// ReSharper disable RedundantUsingDirective
+using Remotion;
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Interception.Invocations
@@ -28,7 +28,7 @@ namespace ActiveAttributes.Interception.Invocations
   // @replace ", TA<n>"
   // @replace "TA<n>, "
   // @replace "Arg<n>" ", "
-  public class FuncInvocation<TA1, TReturn> : FuncInvocationBase<TReturn>
+  public class FuncInvocation<TInstance, TA1, TReturn> : FuncInvocationBase<TInstance, TReturn>
   {
     private readonly Func<TA1, TReturn> _func;
 
@@ -37,7 +37,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA1 Arg1;
     // @end-repeat
 
-    public FuncInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Func<TA1, TReturn> func)
+    public FuncInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, Func<TA1, TReturn> func)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("func", func);

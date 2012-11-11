@@ -17,18 +17,18 @@
 using System;
 using System.Reflection;
 using Remotion.Utilities;
-    // ReSharper disable RedundantUsingDirective
-
+// ReSharper disable RedundantUsingDirective
+using Remotion;
 // ReSharper restore RedundantUsingDirective
 
 namespace ActiveAttributes.Interception.Invocations
 {
   // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
+  // @replace ", TA<n>"
   // @replace "TA<n>" ", " "<" ">"
-  // @replace "TA<n>, "
   // @replace "Arg<n>" ", "
-  public class ActionInvocation<TA1> : ActionInvocationBase
+  public class ActionInvocation<TInstance, TA1> : ActionInvocationBase<TInstance>
   {
     private readonly Action<TA1> _action;
 
@@ -37,7 +37,7 @@ namespace ActiveAttributes.Interception.Invocations
     public TA1 Arg1;
     // @end-repeat
 
-    public ActionInvocation (MemberInfo memberInfo, object instance, TA1 arg1, Action<TA1> action)
+    public ActionInvocation (MemberInfo memberInfo, TInstance instance, TA1 arg1, Action<TA1> action)
         : base (memberInfo, instance)
     {
       ArgumentUtility.CheckNotNull ("action", action);
