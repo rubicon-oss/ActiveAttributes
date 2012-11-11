@@ -31,20 +31,16 @@ namespace ActiveAttributes.Core.Interception
   public class InterceptionWeaver : IWeaver
   {
     private readonly IInterceptionExpressionHelperFactory _expressionHelperFactory;
-    private readonly IAspectStorageService _aspectStorageService;
     private readonly IInitializationService _initializationService;
 
     public InterceptionWeaver (
         IInterceptionExpressionHelperFactory expressionHelperFactory,
-        IAspectStorageService aspectStorageService,
         IInitializationService initializationService)
     {
       ArgumentUtility.CheckNotNull ("expressionHelperFactory", expressionHelperFactory);
-      ArgumentUtility.CheckNotNull ("aspectStorageService", aspectStorageService);
       ArgumentUtility.CheckNotNull ("initializationService", initializationService);
 
       _expressionHelperFactory = expressionHelperFactory;
-      _aspectStorageService = aspectStorageService;
       _initializationService = initializationService;
     }
 
@@ -60,9 +56,9 @@ namespace ActiveAttributes.Core.Interception
       var mutableType = (MutableType) method.DeclaringType;
       var mutableMethod = mutableType.GetOrAddMutableMethod (method);
 
-      var memberInfoField = _initializationService.AddMemberInfoInitialization (method);
-      var delegateField = _initializationService.AddDelegateInitialization (method);
-      var adviceTuples = advicesAsList.Select (x => Tuple.Create (x.Method, _aspectStorageService.GetOrAdd (x, mutableType))).ToList();
+      var memberInfoField = _initializationService.AddMemberInfo (mutableMethod);
+      var delegateField = _initializationService.AddDelegate (mutableMethod);
+      var adviceTuples = advicesAsList.Select (x => Tuple.Create (x.Method, _initializationService.GetOrAddAspect (x, mutableType))).ToList();
 
       mutableMethod.SetBody (
           ctx =>

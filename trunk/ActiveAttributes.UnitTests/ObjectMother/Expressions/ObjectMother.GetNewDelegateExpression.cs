@@ -16,20 +16,19 @@
 using System;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
-using System.Linq;
+using Remotion.TypePipe.Expressions;
+using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MethodCallExpression GetMethodCallExpression (Type returnType = null)
+    public static NewDelegateExpression GetNewDelegateExpression (MethodInfo method = null)
     {
-      returnType = returnType ?? GetDeclaringType();
-      var method = GetMethodInfo (returnType: returnType);
-      var thisExpression = method.IsStatic ? null : GetThisExpression (method.DeclaringType);
-      var arguments = method.GetParameters().Select (x => GetParameterExpression (x.ParameterType)).Cast<Expression>();
-
-      return Expression.Call (thisExpression, method, arguments);
+      method = method ?? GetMethodInfo();
+      var delegateType = method.GetDelegateType();
+      var thisExpression = GetThisExpression (method.DeclaringType);
+      return Expression.NewDelegate (delegateType, thisExpression, method);
     }
   }
 }

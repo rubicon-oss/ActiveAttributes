@@ -28,6 +28,9 @@ namespace ActiveAttributes.Core.Assembly.Storages
 
     public GlobalStorage (IDictionary<Guid, object> dictionary, Type type)
     {
+      ArgumentUtility.CheckNotNull ("dictionary", dictionary);
+      ArgumentUtility.CheckNotNull ("type", type);
+
       var guid = Guid.NewGuid();
       var indexExpression = Expression.Property (Expression.Constant (dictionary), "Item", Expression.Constant (guid));
       _storageExpression = Expression.Convert (indexExpression, type);
@@ -41,8 +44,6 @@ namespace ActiveAttributes.Core.Assembly.Storages
 
     public Expression GetStorageExpression (Expression thisExpression)
     {
-      ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
-
       return _storageExpression;
     }
   }

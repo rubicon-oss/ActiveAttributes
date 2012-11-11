@@ -43,8 +43,6 @@ namespace ActiveAttributes.Core.Assembly.Storages
 
     public Expression GetStorageExpression (Expression thisExpression)
     {
-      ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
-
       return Expression.Field (null, _field);
     }
 

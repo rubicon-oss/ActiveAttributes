@@ -67,7 +67,7 @@
     <Compile Include="Discovery\AdviceBuilderFactory.cs" />
     <Compile Include="Assembly\AdviceComposer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
-    <Compile Include="Assembly\AspectStorageService.cs" />
+    <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
     <Compile Include="Aspects\MethodBoundaryAspectAttributeBase.cs" />
     <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
@@ -132,12 +132,9 @@
     <Compile Include="Ordering\AdviceRoleOrdering.cs" />
     <Compile Include="Ordering\AdviceTypeOrdering.cs" />
     <Compile Include="Ordering\AdviceSequencer.cs" />
-    <Compile Include="Assembly\AspectInitializationExpressionHelper.cs" />
-    <Compile Include="Assembly\ConstructorExpressionsHelperFactory.cs" />
-    <Compile Include="Assembly\InitializationService.cs" />
-    <Compile Include="Assembly\ConstructorExpressionsHelper.cs" />
+    <Compile Include="Assembly\InitializationExpressionHelper.cs" />
     <Compile Include="Assembly\FieldService.cs" />
-    <Compile Include="Assembly\InvocationExpressionHelper.cs" />
+    <Compile Include="Interception\InvocationExpressionHelper.cs" />
     <Compile Include="Ordering\AdviceOrderingAttributeBase.cs" />
     <Compile Include="Pointcuts\MemberFlags.cs">
       <SubType>Code</SubType>

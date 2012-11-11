@@ -16,13 +16,18 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using ActiveAttributes.Core;
+using ActiveAttributes.Core.AdviceInfo;
+using ActiveAttributes.Core.Aspects;
 using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Core.Discovery.Construction;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.TypePipe.MutableReflection.BodyBuilding;
-using Remotion.TypePipe.UnitTests.Expressions;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -30,102 +35,197 @@ namespace ActiveAttributes.UnitTests.Assembly
   [TestFixture]
   public class InitializationServiceTest
   {
-    private MutableType _mutableType;
-    private MutableConstructorInfo _firstConstructor;
-
-    private IConstructorExpressionsHelperFactory _expressionsHelperFactoryStub;
-    private IConstructorExpressionsHelper _expressionsHelperMock;
-    private IFieldService _fieldServiceMock;
-
     private InitializationService _initializationService;
+
+    private IFieldService _fieldServiceMock;
+    private IInitializationExpressionHelper _expressionHelperMock;
+    private IStorage _storageMock;
+
+    private MutableType _mutableType;
+    private Type _aspectType;
+    private MethodInfo _adviceMethod;
 
     [SetUp]
     public void SetUp ()
     {
-      _mutableType = ObjectMother.GetMutableType (typeof (DomainType));
+      _mutableType = ObjectMother2.GetMutableType (typeof (DomainType));
+      _fieldServiceMock = MockRepository.GenerateStrictMock<IFieldService> ();
+      _expressionHelperMock = MockRepository.GenerateStrictMock<IInitializationExpressionHelper>();
+      _storageMock = MockRepository.GenerateStrictMock<IStorage>();
+      _aspectType = ObjectMother2.GetAspectType();
+      _adviceMethod = ObjectMother2.GetMethodInfo (declaringType: _aspectType);
 
-      _expressionsHelperFactoryStub = MockRepository.GenerateStub<IConstructorExpressionsHelperFactory>();
-      _expressionsHelperMock = MockRepository.GenerateStrictMock<IConstructorExpressionsHelper>();
-      // TODO methodCopyService
-      var mock = MockRepository.GenerateStub<IMethodCopyService>();
-      _fieldServiceMock = MockRepository.GenerateStrictMock<IFieldService>();
-      _firstConstructor = _mutableType.AllMutableConstructors.First();
-
-      _expressionsHelperFactoryStub
-          .Stub (x => x.CreateConstructorExpressionHelper (Arg<BodyContextBase>.Is.Anything))
-          .Return (_expressionsHelperMock);
-
-      _initializationService = new InitializationService (_fieldServiceMock, _expressionsHelperFactoryStub, mock);
+      _initializationService = new InitializationService (_fieldServiceMock, _expressionHelperMock);
     }
 
     [Test]
-    public void AddDelegateInitialization ()
+    public void GetOrAddAspect_Instance ()
     {
-      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
-      var fakeField = ObjectMother.GetFieldWrapper();
-      var fakeExpression = Expression.Assign (Expression.Parameter (typeof (int)), Expression.Constant (1));
+      var construction = ObjectMother2.GetConstruction();
+      var advice = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
 
-      _fieldServiceMock
-          .Expect (x => x.AddField (_mutableType, typeof (Action), "Delegate", FieldAttributes.Private | FieldAttributes.Static))
-          .Return (fakeField);
-      _expressionsHelperMock
-          .Expect (x => x.CreateDelegateAssignExpression (fakeField, method))
-          .Return (fakeExpression);
-      var previousBody = _firstConstructor.Body;
+      _fieldServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _expressionHelperMock
+          .Expect (x => x.CreateAspectInitExpression (construction))
+          .Return (fakeMemberInit);
+      _storageMock
+          .Expect (x => x.GetStorageExpression (Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
+          .Return (fakeMember).Repeat.Twice();
 
-      var result = _initializationService.AddDelegateInitialization (method);
-
-      Assert.That (result, Is.SameAs (fakeField));
-      var expected = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, _firstConstructor.Body);
-    }
-
-    [Test]
-    public void AddMemberInfoInitialization_MethodInfo ()
-    {
-      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
-
-      TestAndCheckMemberInfoInitialization (method, method, typeof (MethodInfo), "Method");
-    }
-
-    [Test]
-    public void AddMemberInfoInitialization_PropertyInfo ()
-    {
-      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "get_Property");
-      var property = NormalizingMemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property);
-
-      TestAndCheckMemberInfoInitialization (method, property, typeof (PropertyInfo), "get_Property");
-    }
-
-    private void TestAndCheckMemberInfoInitialization (MutableMethodInfo method, MemberInfo memberInfo, Type fieldType, string fieldName)
-    {
-      var fakeField = ObjectMother.GetFieldWrapper();
-      var fakeExpression = Expression.Assign (Expression.Parameter (typeof (int)), Expression.Constant (1));
-
-      _fieldServiceMock
-          .Expect (x => x.AddField (_mutableType, fieldType, fieldName, FieldAttributes.Private | FieldAttributes.Static))
-          .Return (fakeField);
-      _expressionsHelperMock
-          .Expect (x => x.CreateMemberInfoAssignExpression (fakeField, memberInfo))
-          .Return (fakeExpression);
-      var previousBody = _firstConstructor.Body;
-
-      var result = _initializationService.AddMemberInfoInitialization (method);
+      var result = _initializationService.GetOrAddAspect (advice, _mutableType);
 
       _fieldServiceMock.VerifyAllExpectations();
-      _expressionsHelperMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeField));
-      var expected = Expression.Block (typeof (void), Expression.Block (previousBody, fakeExpression));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, _firstConstructor.Body);
+      _expressionHelperMock.VerifyAllExpectations();
+      _storageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_storageMock));
+      CheckInstanceInitialization (_mutableType, fakeMember, fakeMemberInit);
     }
 
-    private class DomainType
+    // TODO add tests for scope and declaredOn
+    [Test]
+    public void GetOrAddAspect_Caches ()
     {
-      public virtual void Method () {}
+      var construction = ObjectMother2.GetConstruction();
+      var advice1 = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var advice2 = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
 
-      public virtual string Property { get; set; }
+      _fieldServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _expressionHelperMock.Expect (x => x.CreateAspectInitExpression (construction)).Return (fakeMemberInit);
+      _storageMock
+          .Expect (x => x.GetStorageExpression (Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
+          .Return (fakeMember).Repeat.Twice();
 
-      public virtual event EventHandler Event;
+      var result1 = _initializationService.GetOrAddAspect (advice1, _mutableType);
+      var result2 = _initializationService.GetOrAddAspect (advice2, _mutableType);
+
+      Assert.That (result1, Is.SameAs (result2));
+    }
+
+    [Test]
+    public void GetOrAddAspect_Static ()
+    {
+      var construction = ObjectMother2.GetConstruction();
+      var advice = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Static);
+      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
+
+      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _expressionHelperMock.Expect (x => x.CreateAspectInitExpression (construction)).Return (fakeMemberInit);
+      _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
+
+      var result = _initializationService.GetOrAddAspect (advice, _mutableType);
+
+      _fieldServiceMock.VerifyAllExpectations();
+      _expressionHelperMock.VerifyAllExpectations();
+      _storageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_storageMock));
+      CheckStaticInitialization (_mutableType, fakeMember, fakeMemberInit);
+    }
+
+    [Test]
+    public void AddMemberInfo_MethodInfo ()
+    {
+      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
+      var fakeExpression = ObjectMother2.GetConstantExpression (typeof (MethodInfo));
+      var fakeMember = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
+
+      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (MethodInfo), method.Name)).Return (_storageMock);
+      _expressionHelperMock.Expect (x => x.CreateMethodInfoInitExpression (method)).Return (fakeExpression);
+      _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
+
+      var result = _initializationService.AddMemberInfo (method);
+
+      _fieldServiceMock.VerifyAllExpectations();
+      _expressionHelperMock.VerifyAllExpectations();
+      _storageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_storageMock));
+      CheckStaticInitialization (_mutableType, fakeMember, fakeExpression);
+    }
+
+    [Test]
+    public void AddMemberInfo_PropertyInfo ()
+    {
+      var property = NormalizingMemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property);
+      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "get_Property");
+      var fakeExpression = ObjectMother2.GetMethodCallExpression (typeof(PropertyInfo));
+      var fakeMember = ObjectMother2.GetMemberExpression (typeof (PropertyInfo));
+
+      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (PropertyInfo), method.Name)).Return (_storageMock);
+      _expressionHelperMock.Expect (x => x.CreatePropertyInfoInitExpression (property)).Return (fakeExpression);
+      _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
+
+      var result = _initializationService.AddMemberInfo (method);
+
+      _fieldServiceMock.VerifyAllExpectations();
+      _expressionHelperMock.VerifyAllExpectations();
+      _storageMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_storageMock));
+      CheckStaticInitialization (_mutableType, fakeMember, fakeExpression);
+    }
+
+    [Test]
+    public void GetDelegate ()
+    {
+      var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
+      var fakeMemberInit = ObjectMother2.GetNewDelegateExpression (method);
+      var fakeMember = ObjectMother2.GetMemberExpression (typeof (Action));
+
+      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (Action), method.Name)).Return (_storageMock);
+      _expressionHelperMock
+          .Expect (x => x.CreateDelegateInitExpression (Arg.Is (method), Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
+          .Return (fakeMemberInit).Repeat.Twice();
+      _storageMock
+          .Expect (x => x.GetStorageExpression (Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
+          .Return (fakeMember).Repeat.Twice();
+
+      var result = _initializationService.AddDelegate (method);
+
+      _fieldServiceMock.VerifyAllExpectations ();
+      _expressionHelperMock.VerifyAllExpectations ();
+      _storageMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_storageMock));
+      var mutableType = _mutableType;
+      CheckInstanceInitialization(mutableType, fakeMember, fakeMemberInit);
+    }
+
+    private static void CheckInstanceInitialization (MutableType mutableType, Expression member, Expression initialization)
+    {
+      foreach (var constructor in mutableType.AllMutableConstructors)
+      {
+        var body = constructor.Body;
+        Assert.That (body, Is.InstanceOf<BlockExpression>());
+        var blockExpression = (BlockExpression) (body);
+        var expressions = blockExpression.Expressions;
+        Assert.That (expressions[0], Is.TypeOf<OriginalBodyExpression>());
+        Assert.That (expressions[1], Is.InstanceOf<BinaryExpression>());
+        var binaryExpression = (BinaryExpression) expressions[1];
+        Assert.That (binaryExpression.Left, Is.SameAs (member));
+        Assert.That (binaryExpression.Right, Is.SameAs (initialization));
+      }
+    }
+
+    private static void CheckStaticInitialization (MutableType mutableType, Expression member, Expression initialization)
+    {
+      Assert.That (mutableType.TypeInitializations, Has.Count.EqualTo (1));
+      var expression = mutableType.TypeInitializations.Single();
+      Assert.That (expression, Is.InstanceOf<BinaryExpression>());
+      var binaryExpression = (BinaryExpression) expression;
+      Assert.That (binaryExpression.Left, Is.SameAs (member));
+      Assert.That (binaryExpression.Right, Is.SameAs (initialization));
+    }
+
+    class DomainType
+    {
+      public DomainType () {}
+      public DomainType (string arg) {}
+
+      public void Method () {}
+
+      public string Property { get; set; }
     }
   }
 }

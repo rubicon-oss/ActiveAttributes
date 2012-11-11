@@ -26,7 +26,10 @@ namespace ActiveAttributes.UnitTests
     {
       return method == null
                  ? MutableMethodInfoObjectMother.Create()
-                 : MutableMethodInfoObjectMother.CreateForExisting (method);
+                 : MutableMethodInfoObjectMother.Create (
+                     name: method.Name,
+                     returnType: method.ReturnType,
+                     parameterDeclarations: ParameterDeclaration.CreateForEquivalentSignature (method));
     }
   }
 }

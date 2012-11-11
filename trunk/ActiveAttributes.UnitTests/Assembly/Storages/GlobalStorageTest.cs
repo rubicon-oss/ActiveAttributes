@@ -35,13 +35,22 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
     }
 
     [Test]
+    public void Initialization_UsesNewGuid ()
+    {
+      var dictionary = new Dictionary<Guid, object> ();
+      new GlobalStorage (dictionary, typeof (int));
+      new GlobalStorage (dictionary, typeof (int));
+
+      Assert.That (dictionary, Has.Count.EqualTo (2));
+    }
+
+    [Test]
     public void GetStorageExpression ()
     {
       var dictionary = new Dictionary<Guid, object> ();
       var storage = new GlobalStorage (dictionary, typeof (int));
-      var fakeExpression = ObjectMother2.GetExpression();
 
-      var result = storage.GetStorageExpression (fakeExpression);
+      var result = storage.GetStorageExpression (null);
 
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }

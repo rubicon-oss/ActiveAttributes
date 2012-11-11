@@ -19,7 +19,9 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly;
 using ActiveAttributes.Core.Assembly.Storages;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -35,6 +37,51 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       _mutableType = ObjectMother.GetMutableType();
       _service = new FieldService();
+    }
+
+    [Test]
+    public void AddInstanceStorage ()
+    {
+      var type = ObjectMother2.GetDeclaringType();
+
+      var result = _service.AddInstanceStorage (_mutableType, type, "field");
+
+      Assert.That (result, Is.TypeOf<InstanceStorage>());
+      var addedField = _mutableType.AddedFields.Single();
+      Assert.That (addedField.Name, Is.StringStarting ("field"));
+      Assert.That (addedField.FieldType, Is.EqualTo (type));
+      Assert.That (addedField.Attributes, Is.EqualTo (FieldAttributes.Private));
+      var storageField = PrivateInvoke.GetNonPublicField (result, "_field");
+      Assert.That (storageField, Is.SameAs (addedField));
+    }
+
+    [Test]
+    public void AddStaticStorage ()
+    {
+      var type = ObjectMother2.GetDeclaringType();
+
+      var result = _service.AddStaticStorage (_mutableType, type, "field");
+
+      Assert.That (result, Is.TypeOf<StaticStorage>());
+      var addedField = _mutableType.AddedFields.Single();
+      Assert.That (addedField.Name, Is.StringStarting ("field"));
+      Assert.That (addedField.FieldType, Is.EqualTo (type));
+      Assert.That (addedField.Attributes, Is.EqualTo (FieldAttributes.Private | FieldAttributes.Static));
+      var storageField = PrivateInvoke.GetNonPublicField (result, "_field");
+      Assert.That (storageField, Is.SameAs (addedField));
+    }
+
+    [Test]
+    public void AddGlobalStorage ()
+    {
+      var type = ObjectMother2.GetDeclaringType ();
+
+      var result = _service.AddGlobalStorage (type);
+
+      Assert.That (result, Is.TypeOf<GlobalStorage> ());
+      var fakeExpression = ObjectMother2.GetExpression();
+      var storageExpression = result.GetStorageExpression (fakeExpression);
+      Assert.That (storageExpression.Type, Is.EqualTo (type));
     }
 
     [Test]

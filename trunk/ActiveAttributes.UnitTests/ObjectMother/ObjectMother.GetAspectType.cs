@@ -14,22 +14,17 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
-using Microsoft.Scripting.Ast;
-using System.Linq;
+using ActiveAttributes.Core;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother2
   {
-    public static MethodCallExpression GetMethodCallExpression (Type returnType = null)
+    public static Type GetAspectType ()
     {
-      returnType = returnType ?? GetDeclaringType();
-      var method = GetMethodInfo (returnType: returnType);
-      var thisExpression = method.IsStatic ? null : GetThisExpression (method.DeclaringType);
-      var arguments = method.GetParameters().Select (x => GetParameterExpression (x.ParameterType)).Cast<Expression>();
-
-      return Expression.Call (thisExpression, method, arguments);
+      return typeof (DomainAspect);
     }
+
+    private class DomainAspect : IAspect { }
   }
 }

@@ -60,12 +60,10 @@ namespace ActiveAttributes.Core.Assembly
       var interceptionTypeProvider = new InterceptionTypeProvider ();
       var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory (interceptionTypeProvider);
       var fieldService = new FieldService ();
-      var aspectInitializationExpressionHelper = new AspectInitializationExpressionHelper ();
-      var aspectStorageService = new AspectStorageService (fieldService, aspectInitializationExpressionHelper);
-      var constructorExpressionsHelperFactory = new ConstructorExpressionsHelperFactory (aspectInitializationExpressionHelper);
       var methodCopyService = new MethodCopyService();
-      var initializationService = new InitializationService (fieldService, constructorExpressionsHelperFactory, methodCopyService);
-      var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService, initializationService);
+      var aspectInitializationExpressionHelper = new InitializationExpressionHelper (methodCopyService);
+      var aspectStorageService = new InitializationService (fieldService, aspectInitializationExpressionHelper);
+      var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService);
       var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[0];
       var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
       var adviceBuilderFactory = new AdviceBuilderFactory ();

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.UnitTests
 {
@@ -24,8 +25,9 @@ namespace ActiveAttributes.UnitTests
   {
     private static readonly Random s_random = new Random();
 
-    private static T GetRandom<T> (IList<T> collection)
+    public static T GetRandom<T> (IEnumerable<T> enumerable)
     {
+      var collection = enumerable.ToList();
       return collection[s_random.Next (0, collection.Count)];
     }
 

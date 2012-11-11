@@ -40,8 +40,7 @@ namespace ActiveAttributes.UnitTests.Interception
     {
       var expressionHelperFactoryMock = MockRepository.GenerateMock<IInterceptionExpressionHelperFactory> ();
       var expressionHelperMock = MockRepository.GenerateStrictMock<IInterceptionExpressionHelper> ();
-      var aspectStorageServiceMock = MockRepository.GenerateStrictMock<IAspectStorageService> ();
-      var initializationServiceMock = MockRepository.GenerateStrictMock<IInitializationService> ();
+      var aspectStorageServiceMock = MockRepository.GenerateStrictMock<IInitializationService> ();
 
       var method = ObjectMother2.GetMutableMethodInfo ();
       var mutableType = (MutableType) method.DeclaringType;
@@ -72,18 +71,18 @@ namespace ActiveAttributes.UnitTests.Interception
       var advice2 = ObjectMother2.GetAdvice (method: fakeAdviceMethod2, execution: AdviceExecution.Around);
       var advices = new[] { advice1, advice2 };
 
-      initializationServiceMock
-          .Expect (x => x.AddMemberInfoInitialization (method))
+      aspectStorageServiceMock
+          .Expect (x => x.AddMemberInfo (method))
           .Return (fakeMemberInfoField);
-      initializationServiceMock
-          .Expect (x => x.AddDelegateInitialization (method))
+      aspectStorageServiceMock
+          .Expect (x => x.AddDelegate (method))
           .Return (fakeDelegateField);
 
       aspectStorageServiceMock
-          .Expect (x => x.GetOrAdd (advice1, mutableType))
+          .Expect (x => x.GetOrAddAspect (advice1, mutableType))
           .Return (fakeAspectField1);
       aspectStorageServiceMock
-          .Expect (x => x.GetOrAdd (advice2, mutableType))
+          .Expect (x => x.GetOrAddAspect (advice2, mutableType))
           .Return (fakeAspectField2);
 
       IList<Tuple<MethodInfo, IStorage>> adviceTuples = null;
@@ -111,10 +110,9 @@ namespace ActiveAttributes.UnitTests.Interception
           .Expect (x => x.CreateReturnValueExpression (fakeContextParam))
           .Return (fakeReturnValue);
 
-      var interceptionWeaver = new InterceptionWeaver (expressionHelperFactoryMock, aspectStorageServiceMock, initializationServiceMock);
+      var interceptionWeaver = new InterceptionWeaver (expressionHelperFactoryMock, aspectStorageServiceMock);
       interceptionWeaver.Weave (method, advices.AsOneTime ());
 
-      initializationServiceMock.VerifyAllExpectations ();
       aspectStorageServiceMock.VerifyAllExpectations ();
 
       expressionHelperFactoryMock.VerifyAllExpectations ();

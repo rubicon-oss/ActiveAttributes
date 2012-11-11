@@ -13,47 +13,29 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
 using ActiveAttributes.Core.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.TypePipe.Expressions;
-using Remotion.TypePipe.UnitTests.Expressions;
 
 namespace ActiveAttributes.UnitTests.Assembly.Storages
 {
   [TestFixture]
   public class InstanceStorageTest
   {
-    private FieldInfo _fieldInfo;
-    private ThisExpression _thisExpression;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _fieldInfo = ObjectMother.GetFieldInfo();
-      _thisExpression = ObjectMother.GetThisExpression();
-    }
-
     [Test]
-    public void Initialization ()
+    public void GetStorageExpression ()
     {
-      var fieldWrapper = new InstanceStorage (_fieldInfo);
+      var field = ObjectMother.GetFieldInfo();
+      var thisExpression = ObjectMother.GetThisExpression();
+      var storage = new InstanceStorage (field);
 
-      Assert.That (fieldWrapper.Field, Is.SameAs (_fieldInfo));
-    }
+      var result = storage.GetStorageExpression (thisExpression);
 
-    [Test]
-    public void GetAccessExpression ()
-    {
-      var fieldWrapper = new InstanceStorage (_fieldInfo);
-
-      var expected = Expression.Field (_thisExpression, _fieldInfo);
-      var actual = fieldWrapper.GetStorageExpression (_thisExpression);
-
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, actual);
+      Assert.That (result, Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) result;
+      Assert.That (memberExpression.Member, Is.SameAs (field));
+      Assert.That (memberExpression.Expression, Is.SameAs (thisExpression));
     }
   }
 }
