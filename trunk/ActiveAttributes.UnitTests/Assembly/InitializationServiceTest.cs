@@ -37,7 +37,7 @@ namespace ActiveAttributes.UnitTests.Assembly
   {
     private InitializationService _initializationService;
 
-    private IFieldService _fieldServiceMock;
+    private IStorageService _storageServiceMock;
     private IInitializationExpressionHelper _expressionHelperMock;
     private IStorage _storageMock;
 
@@ -49,13 +49,13 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void SetUp ()
     {
       _mutableType = ObjectMother2.GetMutableType (typeof (DomainType));
-      _fieldServiceMock = MockRepository.GenerateStrictMock<IFieldService> ();
+      _storageServiceMock = MockRepository.GenerateStrictMock<IStorageService> ();
       _expressionHelperMock = MockRepository.GenerateStrictMock<IInitializationExpressionHelper>();
       _storageMock = MockRepository.GenerateStrictMock<IStorage>();
       _aspectType = ObjectMother2.GetAspectType();
       _adviceMethod = ObjectMother2.GetMethodInfo (declaringType: _aspectType);
 
-      _initializationService = new InitializationService (_fieldServiceMock, _expressionHelperMock);
+      _initializationService = new InitializationService (_storageServiceMock, _expressionHelperMock);
     }
 
     [Test]
@@ -66,17 +66,17 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
       var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
 
-      _fieldServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _storageServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
       _expressionHelperMock
           .Expect (x => x.CreateAspectInitExpression (construction))
-          .Return (fakeMemberInit);
+          .Return (fakeMemberInit).Repeat.Twice ();
       _storageMock
           .Expect (x => x.GetStorageExpression (Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
           .Return (fakeMember).Repeat.Twice();
 
       var result = _initializationService.GetOrAddAspect (advice, _mutableType);
 
-      _fieldServiceMock.VerifyAllExpectations();
+      _storageServiceMock.VerifyAllExpectations();
       _expressionHelperMock.VerifyAllExpectations();
       _storageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_storageMock));
@@ -93,8 +93,10 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
       var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
 
-      _fieldServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
-      _expressionHelperMock.Expect (x => x.CreateAspectInitExpression (construction)).Return (fakeMemberInit);
+      _storageServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _expressionHelperMock
+          .Expect (x => x.CreateAspectInitExpression (construction))
+          .Return (fakeMemberInit).Repeat.Twice();
       _storageMock
           .Expect (x => x.GetStorageExpression (Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
           .Return (fakeMember).Repeat.Twice();
@@ -113,13 +115,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
       var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
 
-      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
+      _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreateAspectInitExpression (construction)).Return (fakeMemberInit);
       _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
 
       var result = _initializationService.GetOrAddAspect (advice, _mutableType);
 
-      _fieldServiceMock.VerifyAllExpectations();
+      _storageServiceMock.VerifyAllExpectations();
       _expressionHelperMock.VerifyAllExpectations();
       _storageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_storageMock));
@@ -133,13 +135,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeExpression = ObjectMother2.GetConstantExpression (typeof (MethodInfo));
       var fakeMember = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
 
-      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (MethodInfo), method.Name)).Return (_storageMock);
+      _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (MethodInfo), method.Name)).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreateMethodInfoInitExpression (method)).Return (fakeExpression);
       _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
 
       var result = _initializationService.AddMemberInfo (method);
 
-      _fieldServiceMock.VerifyAllExpectations();
+      _storageServiceMock.VerifyAllExpectations();
       _expressionHelperMock.VerifyAllExpectations();
       _storageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_storageMock));
@@ -154,13 +156,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeExpression = ObjectMother2.GetMethodCallExpression (typeof(PropertyInfo));
       var fakeMember = ObjectMother2.GetMemberExpression (typeof (PropertyInfo));
 
-      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (PropertyInfo), method.Name)).Return (_storageMock);
+      _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (PropertyInfo), method.Name)).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreatePropertyInfoInitExpression (property)).Return (fakeExpression);
       _storageMock.Expect (x => x.GetStorageExpression (Arg<Expression>.Is.Null)).Return (fakeMember);
 
       var result = _initializationService.AddMemberInfo (method);
 
-      _fieldServiceMock.VerifyAllExpectations();
+      _storageServiceMock.VerifyAllExpectations();
       _expressionHelperMock.VerifyAllExpectations();
       _storageMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_storageMock));
@@ -174,7 +176,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeMemberInit = ObjectMother2.GetNewDelegateExpression (method);
       var fakeMember = ObjectMother2.GetMemberExpression (typeof (Action));
 
-      _fieldServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (Action), method.Name)).Return (_storageMock);
+      _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (Action), method.Name)).Return (_storageMock);
       _expressionHelperMock
           .Expect (x => x.CreateDelegateInitExpression (Arg.Is (method), Arg<Expression>.Matches (y => y.Type.Equals (_mutableType))))
           .Return (fakeMemberInit).Repeat.Twice();
@@ -184,7 +186,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var result = _initializationService.AddDelegate (method);
 
-      _fieldServiceMock.VerifyAllExpectations ();
+      _storageServiceMock.VerifyAllExpectations ();
       _expressionHelperMock.VerifyAllExpectations ();
       _storageMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_storageMock));

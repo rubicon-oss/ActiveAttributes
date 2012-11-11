@@ -30,44 +30,28 @@ namespace ActiveAttributes.Core.Assembly
 {
   public interface IInitializationService
   {
-    IStorage GetOrAddAspect (Advice advice, MutableType mutableType);
-
     IStorage AddMemberInfo (MutableMethodInfo mutableMethod);
 
     IStorage AddDelegate (MutableMethodInfo mutableMethod);
+
+    IStorage GetOrAddAspect (Advice advice, MutableType mutableType);
   }
 
   public class InitializationService : IInitializationService
   {
-    private readonly IFieldService _fieldService;
+    private readonly IStorageService _storageService;
     private readonly IInitializationExpressionHelper _initializationExpressionHelper;
 
     private readonly Dictionary<Tuple<IConstruction, AdviceScope>, IStorage> _fieldWrappers =
         new Dictionary<Tuple<IConstruction, AdviceScope>, IStorage>();
 
-    public InitializationService (IFieldService fieldService, IInitializationExpressionHelper initializationExpressionHelper)
+    public InitializationService (IStorageService storageService, IInitializationExpressionHelper initializationExpressionHelper)
     {
-      ArgumentUtility.CheckNotNull ("fieldService", fieldService);
+      ArgumentUtility.CheckNotNull ("storageService", storageService);
       ArgumentUtility.CheckNotNull ("initializationExpressionHelper", initializationExpressionHelper);
 
-      _fieldService = fieldService;
+      _storageService = storageService;
       _initializationExpressionHelper = initializationExpressionHelper;
-    }
-
-    public IStorage GetOrAddAspect (Advice advice, MutableType mutableType)
-    {
-      ArgumentUtility.CheckNotNull ("advice", advice);
-      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-
-      IStorage field;
-      var tuple = Tuple.Create (advice.Construction, advice.Scope);
-      if (!_fieldWrappers.TryGetValue (tuple, out field))
-      {
-        field = AddStorage (advice, mutableType);
-        _fieldWrappers.Add (tuple, field);
-      }
-
-      return field;
     }
 
     public IStorage AddMemberInfo (MutableMethodInfo mutableMethod)
@@ -78,21 +62,21 @@ namespace ActiveAttributes.Core.Assembly
       var mutableType = (MutableType) mutableMethod.DeclaringType;
 
       IStorage storage;
-      Expression initialization;
+      Func<Expression, Expression> initializationProvider;
 
       var property = mutableMethod.UnderlyingSystemMethodInfo.GetRelatedPropertyInfo();
       if (property != null)
       {
-        storage = _fieldService.AddStaticStorage (mutableType, typeof (PropertyInfo), mutableMethod.Name);
-        initialization = _initializationExpressionHelper.CreatePropertyInfoInitExpression (property);
+        storage = _storageService.AddStaticStorage (mutableType, typeof (PropertyInfo), mutableMethod.Name);
+        initializationProvider = expr => _initializationExpressionHelper.CreatePropertyInfoInitExpression (property);
       }
       else
       {
-        storage = _fieldService.AddStaticStorage (mutableType, typeof (MethodInfo), mutableMethod.Name);
-        initialization = _initializationExpressionHelper.CreateMethodInfoInitExpression (mutableMethod);
+        storage = _storageService.AddStaticStorage (mutableType, typeof (MethodInfo), mutableMethod.Name);
+        initializationProvider = expr => _initializationExpressionHelper.CreateMethodInfoInitExpression (mutableMethod);
       }
 
-      AddStaticInitialization (mutableType, storage, initialization);
+      AddStaticInitialization (mutableType, storage, initializationProvider);
 
       return storage;
     }
@@ -104,7 +88,7 @@ namespace ActiveAttributes.Core.Assembly
 
       var mutableType = (MutableType) mutableMethod.DeclaringType;
       var delegateType = mutableMethod.GetDelegateType();
-      var storage = _fieldService.AddStaticStorage (mutableType, delegateType, mutableMethod.Name);
+      var storage = _storageService.AddStaticStorage (mutableType, delegateType, mutableMethod.Name);
       foreach (var constructor in mutableType.AllMutableConstructors)
       {
         constructor.SetBody (
@@ -118,56 +102,60 @@ namespace ActiveAttributes.Core.Assembly
       return storage;
     }
 
-    private IStorage AddStorage (Advice advice, MutableType mutableType)
+    public IStorage GetOrAddAspect (Advice advice, MutableType mutableType)
     {
-      var initialization = _initializationExpressionHelper.CreateAspectInitExpression (advice.Construction);
+      ArgumentUtility.CheckNotNull ("advice", advice);
+      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
+
+      IStorage field;
+      var tuple = Tuple.Create (advice.Construction, advice.Scope);
+      if (!_fieldWrappers.TryGetValue (tuple, out field))
+      {
+        field = AddAspect (advice, mutableType);
+        _fieldWrappers.Add (tuple, field);
+      }
+
+      return field;
+    }
+
+    private IStorage AddAspect (Advice advice, MutableType mutableType)
+    {
+      Func<Expression, Expression> initializationProvider = expr => _initializationExpressionHelper.CreateAspectInitExpression (advice.Construction);
       switch (advice.Scope)
       {
         case AdviceScope.Static:
-          return AddStaticStorageAndInitialization (advice, mutableType, initialization);
+          var staticStorage = _storageService.AddStaticStorage (mutableType, advice.DeclaringType, "aspect");
+          AddStaticInitialization (mutableType, staticStorage, initializationProvider);
+          return staticStorage;
         case AdviceScope.Instance:
-          return AddInstanceStorageAndInitialization (advice, mutableType, initialization);
+          var instanceStorage = _storageService.AddInstanceStorage (mutableType, advice.DeclaringType, "aspect");
+          AddInstanceInitialization (mutableType, instanceStorage, initializationProvider);
+          return instanceStorage;
       }
 
       throw new NotImplementedException();
     }
 
-    private IStorage AddInstanceStorageAndInitialization (Advice advice, MutableType mutableType, Expression initialization)
-    {
-      var storage = _fieldService.AddInstanceStorage (mutableType, advice.DeclaringType, "aspect");
-      AddInstanceInitialization (mutableType, storage, initialization);
-      return storage;
-    }
-
-    private IStorage AddStaticStorageAndInitialization (Advice advice, MutableType mutableType, Expression initialization)
-    {
-      var storage = _fieldService.AddStaticStorage (mutableType, advice.DeclaringType, "aspect");
-      AddStaticInitialization (mutableType, storage, initialization);
-      return storage;
-    }
-
-
-
-    private void AddInstanceInitialization (MutableType mutableType, IStorage storage, Expression initialization)
+    private void AddInstanceInitialization (MutableType mutableType, IStorage storage, Func<Expression, Expression> initializationProvider)
     {
       foreach (var constructor in mutableType.AllMutableConstructors)
       {
         constructor.SetBody (
             ctx =>
             {
+              var initialization = initializationProvider (ctx.This);
               var assignExpression = GetAssignExpression (storage, ctx.This, initialization);
               return Expression.Block (typeof (void), ctx.PreviousBody, assignExpression);
             });
       }
     }
 
-    private void AddStaticInitialization (MutableType mutableType, IStorage storage, Expression initialization)
+    private void AddStaticInitialization (MutableType mutableType, IStorage storage, Func<Expression, Expression> initializationProvider)
     {
+      var initialization = initializationProvider (null);
       var assignExpression = GetAssignExpression (storage, null, initialization);
       mutableType.AddTypeInitialization (assignExpression);
     }
-
-
 
     private BinaryExpression GetAssignExpression (IStorage storage, Expression thisExpression, Expression initialization)
     {

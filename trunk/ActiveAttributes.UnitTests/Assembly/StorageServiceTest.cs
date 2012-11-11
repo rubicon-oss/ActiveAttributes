@@ -27,16 +27,16 @@ using Remotion.TypePipe.MutableReflection;
 namespace ActiveAttributes.UnitTests.Assembly
 {
   [TestFixture]
-  public class FieldServiceTest
+  public class StorageServiceTest
   {
     private MutableType _mutableType;
-    private FieldService _service;
+    private StorageService _service;
 
     [SetUp]
     public void SetUp ()
     {
       _mutableType = ObjectMother.GetMutableType();
-      _service = new FieldService();
+      _service = new StorageService();
     }
 
     [Test]
@@ -82,24 +82,6 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeExpression = ObjectMother2.GetExpression();
       var storageExpression = result.GetStorageExpression (fakeExpression);
       Assert.That (storageExpression.Type, Is.EqualTo (type));
-    }
-
-    [Test]
-    public void AddField_Instance ()
-    {
-      var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Private);
-
-      Assert.That (result, Is.TypeOf<InstanceStorage>());
-      var addedField = _mutableType.AddedFields.Single();
-      Assert.That (result.Field, Is.SameAs (addedField));
-    }
-
-    [Test]
-    public void AddField_Static ()
-    {
-      var result = _service.AddField (_mutableType, typeof (int), "field", FieldAttributes.Static);
-
-      Assert.That (result, Is.TypeOf<StaticStorage>());
     }
   }
 }

@@ -59,7 +59,7 @@ namespace ActiveAttributes.Core.Assembly
     {
       var interceptionTypeProvider = new InterceptionTypeProvider ();
       var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory (interceptionTypeProvider);
-      var fieldService = new FieldService ();
+      var fieldService = new StorageService ();
       var methodCopyService = new MethodCopyService();
       var aspectInitializationExpressionHelper = new InitializationExpressionHelper (methodCopyService);
       var aspectStorageService = new InitializationService (fieldService, aspectInitializationExpressionHelper);

@@ -133,7 +133,7 @@
     <Compile Include="Ordering\AdviceTypeOrdering.cs" />
     <Compile Include="Ordering\AdviceSequencer.cs" />
     <Compile Include="Assembly\InitializationExpressionHelper.cs" />
-    <Compile Include="Assembly\FieldService.cs" />
+    <Compile Include="Assembly\StorageService.cs" />
     <Compile Include="Interception\InvocationExpressionHelper.cs" />
     <Compile Include="Ordering\AdviceOrderingAttributeBase.cs" />
     <Compile Include="Pointcuts\MemberFlags.cs">

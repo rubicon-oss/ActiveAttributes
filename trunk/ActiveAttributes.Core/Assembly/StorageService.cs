@@ -17,40 +17,27 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Extensions;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Core.Assembly
 {
-  [ConcreteImplementation (typeof (FieldService))]
-  public interface IFieldService
+  [ConcreteImplementation (typeof (StorageService))]
+  public interface IStorageService
   {
-    IStorage AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes);
-
     IStorage AddStaticStorage (MutableType mutableType, Type type, string name);
+
     IStorage AddInstanceStorage (MutableType mutableType, Type type, string name);
+
     IStorage AddGlobalStorage (Type type);
   }
 
-  public class FieldService : IFieldService
+  public class StorageService : IStorageService
   {
     private readonly Dictionary<Guid, object> _globalStorages = new Dictionary<Guid, object>();
 
     private int _counter;
-
-    public IStorage AddField (MutableType mutableType, Type type, string name, FieldAttributes attributes)
-    {
-      ArgumentUtility.CheckNotNull ("mutableType", mutableType);
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-
-      var field = mutableType.AddField (name + _counter++, type, attributes);
-      return attributes.HasFlags (FieldAttributes.Static)
-                 ? (IStorage) new StaticStorage (field)
-                 : new InstanceStorage (field);
-    }
 
     public IStorage AddStaticStorage (MutableType mutableType, Type type, string name)
     {

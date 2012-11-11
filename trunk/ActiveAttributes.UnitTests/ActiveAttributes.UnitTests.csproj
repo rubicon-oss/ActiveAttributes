@@ -86,7 +86,7 @@
     <Compile Include="Assembly\AdviceSequencerTest.cs" />
     <Compile Include="Assembly\InitializationExpressionHelperTest.cs" />
     <Compile Include="Assembly\AssemblerTest.cs" />
-    <Compile Include="Assembly\FieldServiceTest.cs" />
+    <Compile Include="Assembly\StorageServiceTest.cs" />
     <Compile Include="Interception\InvocationExpressionHelperTest.cs" />
     <Compile Include="Assembly\Storages\GlobalStorageTest.cs" />
     <Compile Include="Assembly\Storages\InstanceStorageTest.cs" />
