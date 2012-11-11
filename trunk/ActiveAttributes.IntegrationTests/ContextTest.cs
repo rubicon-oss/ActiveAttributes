@@ -18,22 +18,23 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Assembly;
+using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ContextTest
+  public class ContextTest : TypeAssemblerIntegrationTestBase
   {
     private DomainType _instance;
 
     [SetUp]
     public void SetUp ()
     {
-      _instance = ObjectFactory.Create<DomainType>();
+      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
+      _instance = assembleType.CreateInstance<DomainType> ();
     }
 
     [Test]
@@ -65,7 +66,7 @@ namespace ActiveAttributes.IntegrationTests
     public class DomainType
     {
       [ContextAspect]
-      public virtual void ContextMethod () { }
+      public virtual void ContextMethod () {}
 
       [ArgumentAspect]
       public virtual int ArgumentMethod (int arg) { return arg; }

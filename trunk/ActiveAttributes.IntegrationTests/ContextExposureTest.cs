@@ -16,14 +16,15 @@
 
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Interception.Invocations;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
-  [Ignore]
   [TestFixture]
-  public class ContextExposureTest
+  public class ContextExposureTest : TypeAssemblerIntegrationTestBase
   {
     private DomainType _instance;
 
@@ -32,10 +33,13 @@ namespace ActiveAttributes.IntegrationTests
     {
       DomainAspect.Instance = null;
       DomainAspect.Argument = null;
-      _instance = ObjectFactory.Create<DomainType> ();
+
+      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
+      _instance = assembleType.CreateInstance<DomainType> ();
     }
 
     [Test]
+    [Ignore]
     public void TypePointcut ()
     {
       _instance.Method1 ();
@@ -44,7 +48,8 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    public void ArgumentPointcut ()
+    [Ignore]
+    public void Argument ()
     {
       _instance.Method2 ("test");
 
@@ -52,45 +57,48 @@ namespace ActiveAttributes.IntegrationTests
     }
 
     [Test]
-    public void ArgumentPointcut_Out ()
+    public void RefArgument ()
     {
-      var result = _instance.Method3 ("test");
+      var result = _instance.Method3 (1);
 
-      Assert.That (result, Is.EqualTo ("advice"));
+      Assert.That (result, Is.EqualTo ("7"));
     }
 
     public class DomainType
     {
-      public void Method1 () { }
-      public void Method2 (string abc) { }
-      public string Method3 (string abc) {return abc; }
+      public virtual void Method1 () {}
+      public virtual void Method2 (string abc) {}
+      public virtual string Method3 (int arg) { return arg.ToString(); }
     }
 
     [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
     [TypePointcut (typeof (DomainType))]
     public class DomainAspect : IAspect
     {
-      public static string Muh;
       public static DomainType Instance { get; set; }
       public static string Argument { get; set; }
 
-      [TypePointcut (typeof (DomainType))]
-      public void Method1Advice (DomainType instance)
-      {
-        Instance = instance;
-      }
+      ////[TypePointcut (typeof (DomainType))]
+      //[MemberNamePointcut("Method1")]
+      //public void Method1Advice (DomainType instance)
+      //{
+      //  Instance = instance;
+      //}
 
 
-      [ArgumentTypePointcut (typeof (string))]
+      //[ArgumentTypePointcut (typeof (string))]
+      [MemberNamePointcut ("Method2")]
       public void Method2Advice (string argument)
       {
         Argument = argument;
       }
 
-      [ArgumentTypePointcut (typeof (string))]
-      public void Method3Advice (out string argument)
+      //[ArgumentTypePointcut (typeof (string))]
+      [MemberNamePointcut ("Method3")]
+      public void Method3Advice (IInvocation invocation, ref int argument)
       {
-        argument = "advice";
+        argument = argument + 6;
+        invocation.Proceed();
       }
     }
   }

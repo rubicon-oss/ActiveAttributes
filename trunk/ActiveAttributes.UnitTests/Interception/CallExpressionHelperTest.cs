@@ -13,32 +13,67 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using ActiveAttributes.Interception;
 using ActiveAttributes.Interception.Invocations;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.UnitTests.Interception
 {
   [TestFixture]
   public class CallExpressionHelperTest
   {
+    private CallExpressionHelper _expressionHelper;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _expressionHelper = new CallExpressionHelper();
+    }
+
     [Test]
     public void CreateAdviceCallExpression ()
     {
-      var fakeMethodInvocation = ObjectMother.GetVariableExpression (typeof (IInvocationContext));
-      var fakeAdvice = ObjectMother.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
-      var fakeAspect = ObjectMother.GetVariableExpression (fakeAdvice.DeclaringType);
-      var fakeInvocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (IInvocationContext));
+      var advice = ObjectMother.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
+      var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
+      var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
 
-      var expressionHelper = new CallExpressionHelper();
+      var result = _expressionHelper.CreateAdviceCallExpression (methodInvocation, aspect, advice, invocation);
 
-      var result = expressionHelper.CreateAdviceCallExpression (fakeMethodInvocation, fakeAspect, fakeAdvice, fakeInvocation);
-
-      Assert.That (result.Object, Is.SameAs (fakeAspect));
-      Assert.That (result.Method, Is.SameAs (fakeAdvice));
+      Assert.That (result.Object, Is.SameAs (aspect));
+      Assert.That (result.Method, Is.SameAs (advice));
       Assert.That (result.Arguments, Has.Count.EqualTo (1));
+    }
+
+    [Test]
+    public void CreateAdviceCallExpression_TypedArguments ()
+    {
+      string a = "";
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionInvocation<string, int>));
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Advice2 (null, ref a));
+      var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
+      var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
+
+      var result = _expressionHelper.CreateAdviceCallExpression (methodInvocation, aspect, advice, invocation);
+
+      var arguments = result.Arguments;
+      Assert.That (arguments, Has.Count.EqualTo (2));
+      Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
+      var memberExpression = (MemberExpression) arguments[1];
+      var field = typeof (ActionInvocation<string, int>).GetField ("Arg1");
+      Assertion.IsTrue (field.FieldType == typeof (string));
+      Assert.That (memberExpression.Member, Is.EqualTo (field));
+      Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
+    }
+
+    private class DomainType
+    {
+      public void Advice1 (IInvocation invocation, string arg) {}
+      public void Advice2 (IInvocation invocation, ref string arg) {}
     }
   }
 }

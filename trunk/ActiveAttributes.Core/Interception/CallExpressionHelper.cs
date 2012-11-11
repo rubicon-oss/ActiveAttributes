@@ -16,8 +16,10 @@
 
 using System;
 using System.Reflection;
+using ActiveAttributes.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
+using System.Linq;
 
 namespace ActiveAttributes.Interception
 {
@@ -32,7 +34,30 @@ namespace ActiveAttributes.Interception
   {
     public MethodCallExpression CreateAdviceCallExpression (Expression methodInvocation, Expression aspect, MethodInfo advice, Expression invocation)
     {
-      return Expression.Call (aspect, advice, new[] { invocation });
+      var arguments = advice.GetParameters().Select (x => GetParameterExpression (invocation, methodInvocation, x));
+      return Expression.Call (aspect, advice, arguments.ToArray());
+    }
+
+    private Expression GetParameterExpression (Expression invocation, Expression methodInvocation, ParameterInfo parameterInfo)
+    {
+      if (parameterInfo.ParameterType == typeof (IInvocation))
+        return invocation;
+
+      try
+      {
+        var parameterType = parameterInfo.ParameterType;
+        if (parameterType.IsByRef)
+          parameterType = parameterType.GetElementType();
+
+        var invocationType = methodInvocation.Type;
+        var invocationField = invocationType.GetFields ().Single (x => x.FieldType == parameterType);
+        return Expression.Field (methodInvocation, invocationField);
+      }
+      catch (Exception)
+      {
+        // TODO exception
+        throw;
+      }
     }
   }
 }

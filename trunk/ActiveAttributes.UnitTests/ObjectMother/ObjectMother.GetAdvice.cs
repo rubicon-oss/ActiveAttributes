@@ -30,15 +30,15 @@ namespace ActiveAttributes.UnitTests
         MethodInfo method = null,
         string role = null,
         string name = null,
-        IEnumerable<IPointcut> pointcuts = null,
+        AdviceExecution execution = AdviceExecution.Around,
+        AdviceScope scope = AdviceScope.Static,
         int priority = 0,
-        AdviceExecution execution = 0,
-        AdviceScope scope = 0)
+        IEnumerable<IPointcut> pointcuts = null)
     {
       construction = construction ?? GetConstruction();
+      method = method ?? GetMethodInfo();
       name = name ?? "name";
       role = role ?? "role";
-      method = method ?? GetMethodInfo();
       pointcuts = pointcuts ?? new IPointcut[0];
 
       return new Advice (construction, method, name, role, execution, scope, priority, pointcuts);

@@ -18,12 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Pointcuts;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Advices
 {
-  [DebuggerDisplay("Aspect: {DeclaringType,nq}, Advice = {Method,nq}")]
+  [DebuggerDisplay("{ToDebugString()}")]
   public class Advice
   {
     private readonly IConstruction _construction;
@@ -45,6 +47,12 @@ namespace ActiveAttributes.Advices
         int priority,
         IEnumerable<IPointcut> pointcuts)
     {
+      ArgumentUtility.CheckNotNull ("construction", construction);
+      ArgumentUtility.CheckNotNull ("method", method);
+      ArgumentUtility.CheckNotNull ("pointcuts", pointcuts);
+      Assertion.IsTrue (execution != AdviceExecution.Undefined);
+      Assertion.IsTrue (scope != AdviceScope.Undefined);
+
       _construction = construction;
       _execution = execution;
       _scope = scope;
@@ -100,9 +108,12 @@ namespace ActiveAttributes.Advices
       get { return _pointcuts; }
     }
 
-    public override string ToString ()
+    public string ToDebugString ()
     {
-      return _name ?? base.ToString();
+      return new StringBuilder()
+          .Append ("Aspect: ").Append (DeclaringType)
+          .Append ("Advice: ").Append (_method.Name)
+          .ToString();
     }
   }
 }
