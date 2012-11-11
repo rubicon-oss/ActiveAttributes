@@ -15,21 +15,24 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.AdviceInfo;
-using NUnit.Framework;
 
-namespace ActiveAttributes.UnitTests.AdviceInfo
+namespace ActiveAttributes.Advices
 {
-  [TestFixture]
-  public class AdviceScopeAttributeTest
+  /// <summary>
+  /// Defines the scope of an <see cref="AspectAttribute"/>.
+  /// </summary>
+  public enum AdviceScope
   {
-    [Test]
-    public void Initialization ()
-    {
-      var scope = AdviceScope.Static;
-      var attribute = new AdviceScopeAttribute (scope);
+    Undefined,
 
-      Assert.That (attribute.Scope, Is.EqualTo (scope));
-    }
+    /// <summary>
+    /// The aspect is created once per attribute.
+    /// </summary>
+    Static,
+
+    /// <summary>
+    /// The aspect is created for each new target object.
+    /// </summary>
+    Instance
   }
 }

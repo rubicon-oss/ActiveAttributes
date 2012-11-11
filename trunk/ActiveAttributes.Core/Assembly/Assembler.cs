@@ -13,19 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using Remotion;
 using Remotion.TypePipe;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   public class Assembler : IParticipant
   {

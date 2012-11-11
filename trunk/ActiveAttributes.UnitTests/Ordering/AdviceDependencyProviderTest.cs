@@ -15,8 +15,8 @@
 // under the License.
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Ordering;
 using NUnit.Framework;
 using Remotion.Collections;
 using Rhino.Mocks;
@@ -37,9 +37,9 @@ namespace ActiveAttributes.UnitTests.Ordering
     [Test]
     public void GetDependencies ()
     {
-      var advice1 = ObjectMother2.GetAdvice (name: "1");
-      var advice2 = ObjectMother2.GetAdvice (name: "2");
-      var advice3 = ObjectMother2.GetAdvice (name: "3");
+      var advice1 = ObjectMother.GetAdvice (name: "1");
+      var advice2 = ObjectMother.GetAdvice (name: "2");
+      var advice3 = ObjectMother.GetAdvice (name: "3");
 
       var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
       var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
@@ -82,8 +82,8 @@ namespace ActiveAttributes.UnitTests.Ordering
     [Test]
     public void GetDependencies_HashSet ()
     {
-      var advice1 = ObjectMother2.GetAdvice (name: "1");
-      var advice2 = ObjectMother2.GetAdvice (name: "2");
+      var advice1 = ObjectMother.GetAdvice (name: "1");
+      var advice2 = ObjectMother.GetAdvice (name: "2");
 
       var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
       var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
@@ -133,9 +133,9 @@ namespace ActiveAttributes.UnitTests.Ordering
 
     private Advice GetAdvice (Type declaringType = null, string role = null)
     {
-      var method = ObjectMother2.GetMethodInfo (declaringType: declaringType);
+      var method = ObjectMother.GetMethodInfo (declaringType: declaringType);
 
-      return ObjectMother2.GetAdvice (method: method, role: role);
+      return ObjectMother.GetAdvice (method: method, role: role);
     }
 
     class A {}

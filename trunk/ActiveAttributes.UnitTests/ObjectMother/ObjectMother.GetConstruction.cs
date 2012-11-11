@@ -18,8 +18,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Discovery.Construction;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -27,7 +27,7 @@ using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static IConstruction GetConstruction (
         ConstructorInfo constructor = null,

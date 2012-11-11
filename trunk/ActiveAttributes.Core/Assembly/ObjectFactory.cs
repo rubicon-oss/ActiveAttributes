@@ -18,12 +18,10 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
-using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Ordering;
-using Castle.Components.DictionaryAdapter;
-using Microsoft.Practices.ServiceLocation;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
+using ActiveAttributes.Interception;
+using ActiveAttributes.Ordering;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -33,9 +31,8 @@ using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
 using Remotion.TypePipe.MutableReflection;
-using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   /// <summary>
   ///   Serves as a factory for objects with extended functionality through <see cref="AspectAttribute" />s.
@@ -66,6 +63,20 @@ namespace ActiveAttributes.Core.Assembly
       var assemblyFinder = new AssemblyFinder (fixedRootAssemblyFinder, filteringAssemblyLoader);
       var assemblyFinderTypeDiscoveryService = new AssemblyFinderTypeDiscoveryService(assemblyFinder);
 
+      var adviceBuilderFactory = new AdviceBuilderFactory ();
+      var customAttributeProviderTransform = new CustomAttributeProviderTransform (adviceBuilderFactory);
+      var classDeclarationProvider = new ClassDeclarationProvider (customAttributeProviderTransform);
+      var aspectClassDeclarationProvider = new AspectClassDeclarationProvider (assemblyFinderTypeDiscoveryService, classDeclarationProvider);
+      var customAttributeDataTransform = new CustomAttributeDataTransform();
+      var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
+      var relatedMethodFinder = new RelatedMethodFinder();
+      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider, relatedMethodFinder);
+      var assemblyLevelAdviceDeclarationProviders = new[] { aspectClassDeclarationProvider };
+      var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
+      var methodLevelAdviceDeclarationProviders = new[] { methodAttributeDeclarationProvider };
+
+      var compositeDeclarationProvider = new CompositeDeclarationProvider (assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
+
 
       var interceptionTypeProvider = new InterceptionTypeProvider ();
       var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory (interceptionTypeProvider);
@@ -74,17 +85,6 @@ namespace ActiveAttributes.Core.Assembly
       var aspectInitializationExpressionHelper = new InitializationExpressionHelper (methodCopyService);
       var aspectStorageService = new InitializationService (fieldService, aspectInitializationExpressionHelper);
       var interceptionWeaver = new InterceptionWeaver (interceptionExpressionHelperFactory, aspectStorageService);
-      var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[0];
-      var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
-      var adviceBuilderFactory = new AdviceBuilderFactory ();
-      var customAttributeProviderTransform = new CustomAttributeProviderTransform (adviceBuilderFactory);
-      var classDeclarationProvider = new ClassDeclarationProvider (customAttributeProviderTransform);
-      var customAttributeDataTransform = new CustomAttributeDataTransform ();
-      var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
-      var relatedMethodFinder = new RelatedMethodFinder ();
-      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider, relatedMethodFinder);
-      var methodLevelAdviceDeclarationProviders = new[] { methodAttributeDeclarationProvider };
-      var compositeDeclarationProvider = new CompositeDeclarationProvider (assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
       var adviceDependencyProvider = new AdviceDependencyProvider (new IAdviceOrdering[0]);
       var adviceSequencer = new AdviceSequencer (adviceDependencyProvider);
       var pointcutParser = new PointcutParser ();

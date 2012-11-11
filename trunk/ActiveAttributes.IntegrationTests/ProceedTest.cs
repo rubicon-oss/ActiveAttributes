@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
-using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.IntegrationTests
 {

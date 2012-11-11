@@ -18,10 +18,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Interception;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Interception;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -42,33 +42,33 @@ namespace ActiveAttributes.UnitTests.Interception
       var expressionHelperMock = MockRepository.GenerateStrictMock<IInterceptionExpressionHelper> ();
       var aspectStorageServiceMock = MockRepository.GenerateStrictMock<IInitializationService> ();
 
-      var method = ObjectMother2.GetMutableMethodInfo ();
+      var method = ObjectMother.GetMutableMethodInfo ();
       var mutableType = (MutableType) method.DeclaringType;
 
-      var fakeMemberInfoField = ObjectMother2.GetStorage ();
-      var fakeDelegateField = ObjectMother2.GetStorage ();
+      var fakeMemberInfoField = ObjectMother.GetStorage ();
+      var fakeDelegateField = ObjectMother.GetStorage ();
 
-      var fakeAdviceMethod1 = ObjectMother2.GetMethodInfo ();
-      var fakeAdviceMethod2 = ObjectMother2.GetMethodInfo ();
-      var fakeAspectField1 = ObjectMother2.GetStorage ();
-      var fakeAspectField2 = ObjectMother2.GetStorage ();
+      var fakeAdviceMethod1 = ObjectMother.GetMethodInfo ();
+      var fakeAdviceMethod2 = ObjectMother.GetMethodInfo ();
+      var fakeAspectField1 = ObjectMother.GetStorage ();
+      var fakeAspectField2 = ObjectMother.GetStorage ();
 
-      var fakeMethodInvocationParam = ObjectMother2.GetVariableExpression ();
-      var fakeContextAssign = ObjectMother2.GetBinaryExpression ();
-      var fakeInvocationParam1 = ObjectMother2.GetVariableExpression ();
-      var fakeInvocationAssign1 = ObjectMother2.GetBinaryExpression ();
-      var fakeInvocationParam2 = ObjectMother2.GetVariableExpression ();
-      var fakeInvocationAssign2 = ObjectMother2.GetBinaryExpression ();
-      var fakeAdviceCall = ObjectMother2.GetMethodCallExpression ();
-      var fakeReturnValue = ObjectMother2.GetMemberExpression (method.ReturnType);
+      var fakeMethodInvocationParam = ObjectMother.GetVariableExpression ();
+      var fakeContextAssign = ObjectMother.GetBinaryExpression ();
+      var fakeInvocationParam1 = ObjectMother.GetVariableExpression ();
+      var fakeInvocationAssign1 = ObjectMother.GetBinaryExpression ();
+      var fakeInvocationParam2 = ObjectMother.GetVariableExpression ();
+      var fakeInvocationAssign2 = ObjectMother.GetBinaryExpression ();
+      var fakeAdviceCall = ObjectMother.GetMethodCallExpression ();
+      var fakeReturnValue = ObjectMother.GetMemberExpression (method.ReturnType);
       var tuples = new[]
                    {
                        Tuple.Create (fakeInvocationParam1, fakeInvocationAssign1),
                        Tuple.Create (fakeInvocationParam2, fakeInvocationAssign2)
                    }.AsOneTime ();
 
-      var advice1 = ObjectMother2.GetAdvice (method: fakeAdviceMethod1, execution: AdviceExecution.Around);
-      var advice2 = ObjectMother2.GetAdvice (method: fakeAdviceMethod2, execution: AdviceExecution.Around);
+      var advice1 = ObjectMother.GetAdvice (method: fakeAdviceMethod1, execution: AdviceExecution.Around);
+      var advice2 = ObjectMother.GetAdvice (method: fakeAdviceMethod2, execution: AdviceExecution.Around);
       var advices = new[] { advice1, advice2 };
 
       aspectStorageServiceMock

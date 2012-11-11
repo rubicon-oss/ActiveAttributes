@@ -19,7 +19,7 @@ using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static ICustomAttributeNamedArgument GetCustomAttributeNamedArgument (string name, object value)
     {

@@ -15,11 +15,11 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Assembly;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static JoinPoint GetJoinPoint (Type type = null)
     {

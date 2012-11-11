@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   public interface IAdviceBuilderFactory
   {

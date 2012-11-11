@@ -13,15 +13,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Extensions;
 using JetBrains.Annotations;
 
-namespace ActiveAttributes.Core.Utilities
+namespace ActiveAttributes.Utilities
 {
   /// <summary>
   /// Exception that is thrown when sorting a set of items is not possible due to a circular dependency.
@@ -43,7 +44,7 @@ namespace ActiveAttributes.Core.Utilities
 
     public override string Message
     {
-      get { return c_message + Cycles.ToString (x => x.Cast<object>().ToString (" -> "), "\r\n"); }
+      get { return c_message + Cycles.ToString (x => Enumerable.Cast<object>(x).ToString (" -> "), "\r\n"); }
     }
   }
 }

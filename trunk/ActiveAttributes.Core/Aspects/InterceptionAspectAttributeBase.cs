@@ -15,11 +15,10 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.AdviceInfo;
+using ActiveAttributes.Advices;
 
-namespace ActiveAttributes.Core.Aspects
+namespace ActiveAttributes.Aspects
 {
-  [AdviceScope (AdviceScope.Static)]
-  [AdviceExecution (AdviceExecution.Around)]
+  [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
   public abstract class InterceptionAspectAttributeBase : AspectAttributeBase {}
 }

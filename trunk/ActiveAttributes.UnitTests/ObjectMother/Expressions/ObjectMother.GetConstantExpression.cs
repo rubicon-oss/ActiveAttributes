@@ -18,7 +18,7 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static ConstantExpression GetConstantExpression (Type type = null)
     {

@@ -15,10 +15,10 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -29,9 +29,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void SetValues ()
     {
-      var construction = ObjectMother2.GetConstruction();
-      var method = ObjectMother2.GetMethodInfo();
-      var pointcut = ObjectMother2.GetPointcut();
+      var construction = ObjectMother.GetConstruction();
+      var method = ObjectMother.GetMethodInfo();
+      var pointcut = ObjectMother.GetPointcut();
 
       var builder = new AdviceBuilder()
           .SetConstruction (construction)
@@ -56,17 +56,16 @@ namespace ActiveAttributes.UnitTests.Assembly
     }
 
     [Test]
-    [Ignore]
     public void ThrowsForMultipleSet ()
     {
       // can update construction
       //CheckThrowForMultipleSet (x => x.UpdateConstruction (ObjectMother2.GetConstruction()));
-      CheckThrowForMultipleSet (x => x.SetMethod (ObjectMother2.GetMethodInfo()));
-      CheckThrowForMultipleSet (x => x.SetName ("name"));
-      CheckThrowForMultipleSet (x => x.SetRole ("role"));
-      CheckThrowForMultipleSet (x => x.SetExecution (AdviceExecution.Around));
-      CheckThrowForMultipleSet (x => x.SetScope (AdviceScope.Static));
-      CheckThrowForMultipleSet (x => x.SetPriority (2));
+      CheckThrowForMultipleSet (x => x.SetMethod (ObjectMother.GetMethodInfo()));
+      //CheckThrowForMultipleSet (x => x.SetName ("name"));
+      //CheckThrowForMultipleSet (x => x.SetRole ("role"));
+      //CheckThrowForMultipleSet (x => x.SetExecution (AdviceExecution.Around));
+      //CheckThrowForMultipleSet (x => x.SetScope (AdviceScope.Static));
+      //CheckThrowForMultipleSet (x => x.SetPriority (2));
     }
 
     [Test]
@@ -77,8 +76,8 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       var pointcutType = typeof (TypePointcut);
 
-      var pointcut1 = ObjectMother2.GetPointcut (pointcutType);
-      var pointcut2 = ObjectMother2.GetPointcut (pointcutType);
+      var pointcut1 = ObjectMother.GetPointcut (pointcutType);
+      var pointcut2 = ObjectMother.GetPointcut (pointcutType);
       builder.AddPointcut (pointcut1);
       var message = string.Format ("Cannot add multiple pointcuts of type '{0}'", pointcutType.Name);
       Assert.That (() => builder.AddPointcut (pointcut2), Throws.InvalidOperationException.With.Message.EqualTo (message));
@@ -87,8 +86,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ThrowsForMissing ()
     {
-      var construction = ObjectMother2.GetConstruction();
-      var method = ObjectMother2.GetMethodInfo();
+      var construction = ObjectMother.GetConstruction();
+      var method = ObjectMother.GetMethodInfo();
       var execution = AdviceExecution.Around;
       var scope = AdviceScope.Static;
 
@@ -101,11 +100,11 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test (Description = "Construction can be overwritten with more meaningful construction (i.e., CustomAttributeDataConstruction)")]
     public void SetConstruction ()
     {
-      var typeConstruction = ObjectMother2.GetConstructionByType (typeof (TypeConstruction));
-      var attrConstruction = ObjectMother2.GetConstructionByType (typeof (CustomAttributeDataConstruction));
+      var typeConstruction = ObjectMother.GetConstructionByType (typeof (TypeConstruction));
+      var attrConstruction = ObjectMother.GetConstructionByType (typeof (CustomAttributeDataConstruction));
 
-      var builder1 = ObjectMother2.GetAdviceBuilder (typeConstruction);
-      var builder2 = ObjectMother2.GetAdviceBuilder (attrConstruction);
+      var builder1 = ObjectMother.GetAdviceBuilder (typeConstruction);
+      var builder2 = ObjectMother.GetAdviceBuilder (attrConstruction);
 
       var message = "Construction can not be overwritten if existing construction is more meaningful.";
       Assert.That (() => builder1.SetConstruction (typeConstruction), Throws.Nothing);
@@ -117,10 +116,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test (Description = "Pointcut of certain type can be overwritten")]
     public void AddPointcut ()
     {
-      var unrelatedPointcut = ObjectMother2.GetPointcut (typeof (NamespacePointcut));
-      var pointcut1 = ObjectMother2.GetPointcut (typeof (TypePointcut));
-      var pointcut2 = ObjectMother2.GetPointcut (typeof (TypePointcut));
-      var advice = ObjectMother2.GetAdviceBuilder()
+      var unrelatedPointcut = ObjectMother.GetPointcut (typeof (NamespacePointcut));
+      var pointcut1 = ObjectMother.GetPointcut (typeof (TypePointcut));
+      var pointcut2 = ObjectMother.GetPointcut (typeof (TypePointcut));
+      var advice = ObjectMother.GetAdviceBuilder()
           .AddPointcut (unrelatedPointcut)
           .AddPointcut (pointcut1)
           .AddPointcut (pointcut2)
@@ -140,14 +139,14 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void Copy ()
     {
       var builder = new AdviceBuilder()
-          .SetConstruction (ObjectMother2.GetConstruction())
-          .SetMethod (ObjectMother2.GetMethodInfo())
+          .SetConstruction (ObjectMother.GetConstruction())
+          .SetMethod (ObjectMother.GetMethodInfo())
           .SetName ("name")
           .SetRole ("name")
           .SetExecution (AdviceExecution.Around)
           .SetScope (AdviceScope.Static)
           .SetPriority (1)
-          .AddPointcut (ObjectMother2.GetPointcut());
+          .AddPointcut (ObjectMother.GetPointcut());
 
       var copiedAdvice = builder.Copy().Build();
       var originalAdvice = builder.Build();

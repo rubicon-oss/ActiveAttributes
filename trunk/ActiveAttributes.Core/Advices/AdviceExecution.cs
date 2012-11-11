@@ -16,8 +16,13 @@
 
 using System;
 
-namespace ActiveAttributes.Core.AdviceInfo
+namespace ActiveAttributes.Advices
 {
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-  public class AdviceAttribute : Attribute {}
+  public enum AdviceExecution
+  {
+    Undefined,
+    Before,
+    After,
+    Around
+  }
 }

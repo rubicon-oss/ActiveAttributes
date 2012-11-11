@@ -20,7 +20,7 @@ using System.Reflection;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Discovery.Construction
+namespace ActiveAttributes.Discovery.Construction
 {
   public interface IConstruction
   {

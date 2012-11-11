@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Extensions
+namespace ActiveAttributes.Extensions
 {
   public static class EnumExtensions
   {

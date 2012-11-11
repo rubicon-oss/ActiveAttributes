@@ -13,12 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Configuration;
-using ActiveAttributes.Core.Configuration;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Configuration;
+using ActiveAttributes.Ordering;
 
-namespace ActiveAttributes.Core.Configuration2.Configurators
+namespace ActiveAttributes.Configuration2.Configurators
 {
   public class AppConfigConfigurator : IActiveAttributesConfigurator
   {

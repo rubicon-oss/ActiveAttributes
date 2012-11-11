@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Pointcuts
+namespace ActiveAttributes.Pointcuts
 {
   [Flags]
   public enum Visibility

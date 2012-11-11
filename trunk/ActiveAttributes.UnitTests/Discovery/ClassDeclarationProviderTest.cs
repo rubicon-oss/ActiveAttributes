@@ -15,8 +15,7 @@
 // under the License.
 using System;
 using System.Linq;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Discovery;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Rhino.Mocks;
@@ -40,17 +39,16 @@ namespace ActiveAttributes.UnitTests.Discovery
     [Test]
     public void GetAdviceBuilders ()
     {
-      var parentAdviceBuilder = ObjectMother2.GetAdviceBuilder();
-      var fakeTypeAdviceBuilder = ObjectMother2.GetAdviceBuilder();
-      var fakeMethodAdviceBuilder = ObjectMother2.GetAdviceBuilder();
+      var fakeTypeAdviceBuilder = ObjectMother.GetAdviceBuilder();
+      var fakeMethodAdviceBuilder = ObjectMother.GetAdviceBuilder();
 
       var aspectType = typeof (DomainAspect);
       var adviceMethod = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.AdviceMethod ());
 
-      _customAttributeConverterMock.Expect (x => x.GetAdviceBuilder (aspectType, parentAdviceBuilder)).Return (fakeTypeAdviceBuilder);
+      _customAttributeConverterMock.Expect (x => x.GetAdviceBuilder (aspectType)).Return (fakeTypeAdviceBuilder);
       _customAttributeConverterMock.Expect (x => x.GetAdviceBuilder (adviceMethod, fakeTypeAdviceBuilder)).Return (fakeMethodAdviceBuilder);
 
-      var result = _classDeclarationProvider.GetAdviceBuilders (aspectType, parentAdviceBuilder).Single();
+      var result = _classDeclarationProvider.GetAdviceBuilders (aspectType).Single();
 
       _customAttributeConverterMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeMethodAdviceBuilder));

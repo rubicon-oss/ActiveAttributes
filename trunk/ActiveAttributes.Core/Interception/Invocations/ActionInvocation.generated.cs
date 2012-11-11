@@ -20,14 +20,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Reflection;
 using Remotion.Utilities;
-// ReSharper disable RedundantUsingDirective
 using Remotion;
+    // ReSharper disable RedundantUsingDirective
+
 // ReSharper restore RedundantUsingDirective
 
-namespace ActiveAttributes.Core.Interception.Invocations
+namespace ActiveAttributes.Interception.Invocations
 {
   public class ActionInvocation : ActionInvocationBase
   {

@@ -15,10 +15,10 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Interception.Invocations;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Pointcuts;
 
-namespace ActiveAttributes.Core.Aspects
+namespace ActiveAttributes.Aspects
 {
   [AttributeUsage (AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
   public abstract class PropertyInterceptionAspectAttributeBase : InterceptionAspectAttributeBase

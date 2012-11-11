@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static Type GetDeclaringType ()
     {

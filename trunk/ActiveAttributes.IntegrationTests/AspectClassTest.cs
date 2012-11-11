@@ -14,19 +14,18 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Interception.Invocations;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
-using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
   public class AspectClassTest : TypeAssemblerIntegrationTestBase
   {
-    [Ignore]
     [Test]
     public void AspectClass ()
     {
@@ -41,7 +40,8 @@ namespace ActiveAttributes.IntegrationTests
       public virtual void ThrowingMethod () { throw new Exception (); }
     }
 
-    [TypePointcut(typeof(DomainType))]
+    [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
+    [TypePointcut (typeof (DomainType))]
     public class DomainAspect : IAspect
     {
       public void Advice (IInvocation invocation) {}

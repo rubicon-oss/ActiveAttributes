@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core
+namespace ActiveAttributes
 {
   // TODO turn into BaseClass with GetScope(), GetPointcut<>().Value, etc.
   public interface IAspect {}

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;

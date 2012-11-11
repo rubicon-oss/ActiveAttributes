@@ -20,7 +20,7 @@ using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static MutableMethodInfo GetMutableMethodInfo (MethodInfo method = null)
     {

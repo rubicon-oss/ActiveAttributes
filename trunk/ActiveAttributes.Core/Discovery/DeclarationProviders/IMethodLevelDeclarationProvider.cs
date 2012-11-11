@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public interface IMethodLevelDeclarationProvider
   {

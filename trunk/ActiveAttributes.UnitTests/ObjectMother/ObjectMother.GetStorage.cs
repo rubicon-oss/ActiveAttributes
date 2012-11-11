@@ -15,13 +15,13 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static IStorage GetStorage (Type type = null, FieldAttributes attributes = FieldAttributes.Private)
     {

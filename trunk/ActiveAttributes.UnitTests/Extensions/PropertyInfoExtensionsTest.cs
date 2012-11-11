@@ -16,7 +16,7 @@
 
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Extensions;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Extensions

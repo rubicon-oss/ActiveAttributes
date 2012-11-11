@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -27,7 +27,7 @@ namespace ActiveAttributes.UnitTests.Pointcuts
     [Test]
     public void Initialization ()
     {
-      var pointcut = ObjectMother2.GetPointcut();
+      var pointcut = ObjectMother.GetPointcut();
       var attribute = MockRepository.GeneratePartialMock<PointcutAttributeBase> (pointcut);
 
       Assert.That (attribute.Pointcut, Is.SameAs (pointcut));

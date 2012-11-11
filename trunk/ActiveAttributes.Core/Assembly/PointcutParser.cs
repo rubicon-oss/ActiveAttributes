@@ -13,12 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Pointcuts;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   [ConcreteImplementation (typeof (PointcutParser))]
   public interface IPointcutParser

@@ -19,7 +19,7 @@ using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static MemberExpression GetMemberExpression (Type type = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null)
     {

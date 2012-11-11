@@ -14,11 +14,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Rhino.Mocks;
@@ -55,7 +54,7 @@ namespace ActiveAttributes.UnitTests.Discovery
       _builderMock.Expect (x => x.SetScope (AdviceScope.Instance)).Return (_builderMock);
       _builderMock.Expect (x => x.SetPriority (10)).Return (_builderMock);
 
-      var result = _transform.GetAdviceBuilder (method, null);
+      var result = _transform.GetAdviceBuilder (method);
 
       Assert.That (result, Is.SameAs (_builderMock));
       _builderMock.VerifyAllExpectations();
@@ -71,7 +70,7 @@ namespace ActiveAttributes.UnitTests.Discovery
       _builderMock.Expect (x => x.AddPointcut (Arg<TypePointcut>.Is.TypeOf)).Return (_builderMock);
       _builderMock.Expect (x => x.AddPointcut (Arg<MemberNamePointcut>.Is.TypeOf)).Return (_builderMock);
 
-      var result = _transform.GetAdviceBuilder (method, null);
+      _transform.GetAdviceBuilder (method);
 
       var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.AddPointcut (null));
       var pointcuts = new[] { (IPointcut) args[0][0], (IPointcut) args[1][0] };
@@ -89,7 +88,7 @@ namespace ActiveAttributes.UnitTests.Discovery
       _builderMock.Expect (x => x.SetMethod (null)).Return (_builderMock);
 
       _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
-      _transform.GetAdviceBuilder (type, null);
+      _transform.GetAdviceBuilder (type);
 
       var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null));
       Assert.That (((IConstruction) args[0][0]).ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
@@ -118,28 +117,30 @@ namespace ActiveAttributes.UnitTests.Discovery
       var adviceBuilderMock = MockRepository.GenerateMock<IAdviceBuilder>();
       _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (adviceBuilderMock);
 
-      _transform.GetAdviceBuilder (method, null);
+      _transform.GetAdviceBuilder (method);
 
       adviceBuilderMock.AssertWasCalled (x => x.SetName ("Name"));
       adviceBuilderMock.AssertWasCalled (x => x.AddPointcut (Arg<ReturnTypePointcut>.Is.Anything));
+      adviceBuilderMock.AssertWasNotCalled (x => x.SetPriority (0));
     }
 
     class DomainAspect : IAspect
     {
-      [AdviceExecution (AdviceExecution.Around)]
-      [AdviceScope (AdviceScope.Instance)]
-      [AdviceName ("Name")]
-      [AdviceRole ("Role")]
-      [AdvicePriority (10)]
+      [AdviceInfo (
+          Name = "Name",
+          Role = "Role",
+          Execution = AdviceExecution.Around,
+          Scope = AdviceScope.Instance,
+          Priority = 10)]
       public void Method1 () {}
 
       [MemberNamePointcut ("MemberName")]
       [TypePointcut (typeof (string))]
       public void Method2 () {}
 
-      [AdviceName ("Name")]
+      [AdviceInfo (Name = "Name")]
       [ReturnTypePointcut (typeof (string))]
-      public virtual void Method3 () { }
+      public virtual void Method3 () {}
     }
 
     class DerivedDomainAspect : DomainAspect

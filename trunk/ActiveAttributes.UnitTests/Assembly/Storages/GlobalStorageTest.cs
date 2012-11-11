@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Assembly.Storages;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly.Storages

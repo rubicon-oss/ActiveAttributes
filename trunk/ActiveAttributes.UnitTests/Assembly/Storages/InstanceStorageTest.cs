@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 
@@ -26,8 +26,9 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
     [Test]
     public void GetStorageExpression ()
     {
-      var field = ObjectMother.GetFieldInfo();
-      var thisExpression = ObjectMother.GetThisExpression();
+      var declaringType = ObjectMother.GetDeclaringType();
+      var field = ObjectMother.GetFieldInfo (declaringType: declaringType);
+      var thisExpression = ObjectMother.GetThisExpression (declaringType);
       var storage = new InstanceStorage (field);
 
       var result = storage.GetStorageExpression (thisExpression);

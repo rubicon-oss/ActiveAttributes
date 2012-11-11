@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Rhino.Mocks;
@@ -40,15 +40,15 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
       var methodLevelAdviceDeclarationProviderMock1 = mockRepository.StrictMock<IMethodLevelDeclarationProvider>();
       var methodLevelAdviceDeclarationProviderMock2 = mockRepository.StrictMock<IMethodLevelDeclarationProvider>();
 
-      var fakeDeclarations1 = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeDeclarations2 = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeDeclarations3 = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeDeclarations4 = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeDeclarations5 = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeDeclarations6 = new[] { ObjectMother2.GetAdviceBuilder() };
+      var fakeDeclarations1 = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeDeclarations2 = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeDeclarations3 = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeDeclarations4 = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeDeclarations5 = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeDeclarations6 = new[] { ObjectMother.GetAdviceBuilder() };
 
-      var type = ObjectMother2.GetDeclaringType();
-      var method = ObjectMother2.GetMethodInfo();
+      var type = ObjectMother.GetDeclaringType();
+      var method = ObjectMother.GetMethodInfo();
 
       assemblyLevelAdviceDeclarationProviderMock1.Expect (x => x.GetDeclarations()).Return (fakeDeclarations1);
       assemblyLevelAdviceDeclarationProviderMock2.Expect (x => x.GetDeclarations()).Return (fakeDeclarations2);

@@ -19,7 +19,7 @@ using System.Reflection;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly.Storages
+namespace ActiveAttributes.Assembly.Storages
 {
   /// <summary>
   /// Generates an expression that provides access to a static field.

@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public interface IDeclarationProvider
       : IAssemblyLevelDeclarationProvider,

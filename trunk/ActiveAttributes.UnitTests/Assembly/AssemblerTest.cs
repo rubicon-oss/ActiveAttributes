@@ -17,9 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.TypePipe.MutableReflection;
@@ -44,7 +45,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       _adviceDeclarationProviderMock = MockRepository.GenerateStrictMock<IDeclarationProvider> ();
       _weaverMock = MockRepository.GenerateStrictMock<IWeaver> ();
       _adviceComposerMock = MockRepository.GenerateStrictMock<IAdviceComposer>();
-      _mutableType = ObjectMother2.GetMutableType ();
+      _mutableType = ObjectMother.GetMutableType ();
 
       _assembler = new Assembler (_adviceDeclarationProviderMock, _adviceComposerMock, _weaverMock);
     }
@@ -52,9 +53,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ModifyType ()
     {
-      var fakeAssemblyAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeTypeAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
-      var fakeMethodAdviceDeclarations = new[] { ObjectMother2.GetAdviceBuilder() };
+      var fakeAssemblyAdviceDeclarations = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeTypeAdviceDeclarations = new[] { ObjectMother.GetAdviceBuilder() };
+      var fakeMethodAdviceDeclarations = new[] { ObjectMother.GetAdviceBuilder() };
       var allAdviceBuilders =
           fakeAssemblyAdviceDeclarations
               .Concat (fakeTypeAdviceDeclarations)
@@ -66,7 +67,7 @@ namespace ActiveAttributes.UnitTests.Assembly
       foreach (var method in _mutableType.GetMethods())
       {
         var method1 = method;
-        var fakeAdvices = method.Name == "ToString" ? new[] { ObjectMother2.GetAdvice() } : new Advice[0];
+        var fakeAdvices = method.Name == "ToString" ? new[] { ObjectMother.GetAdvice() } : new Advice[0];
 
         _adviceDeclarationProviderMock
             .Expect (x => x.GetDeclarations (method))

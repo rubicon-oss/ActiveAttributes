@@ -14,9 +14,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
@@ -66,10 +66,13 @@ namespace ActiveAttributes.IntegrationTests
       public string Method3 (string abc) {return abc; }
     }
 
+    [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
+    [TypePointcut (typeof (DomainType))]
     public class DomainAspect : IAspect
     {
       public static string Muh;
       public static DomainType Instance { get; set; }
+      public static string Argument { get; set; }
 
       [TypePointcut (typeof (DomainType))]
       public void Method1Advice (DomainType instance)
@@ -77,7 +80,6 @@ namespace ActiveAttributes.IntegrationTests
         Instance = instance;
       }
 
-      public static string Argument { get; set; }
 
       [ArgumentTypePointcut (typeof (string))]
       public void Method2Advice (string argument)

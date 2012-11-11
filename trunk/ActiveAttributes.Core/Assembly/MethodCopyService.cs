@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -21,7 +22,7 @@ using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   /// <summary>
   /// Copies a method.

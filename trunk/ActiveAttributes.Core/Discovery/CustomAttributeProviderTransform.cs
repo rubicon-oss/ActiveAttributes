@@ -13,17 +13,17 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
-using Castle.Core.Internal;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Pointcuts;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Extensions;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   /// <summary>
   /// Transforms attributes declared on a <see cref="ICustomAttributeProvider"/> to an <see cref="Advice"/>.
@@ -31,7 +31,7 @@ namespace ActiveAttributes.Core.Discovery
   /// </summary>
   public interface ICustomAttributeProviderTransform
   {
-    IAdviceBuilder GetAdviceBuilder (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder parentAdviceBuilder);
+    IAdviceBuilder GetAdviceBuilder (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder parentAdviceBuilder = null);
   }
 
   public class CustomAttributeProviderTransform : ICustomAttributeProviderTransform
@@ -45,7 +45,7 @@ namespace ActiveAttributes.Core.Discovery
       _adviceBuilderFactory = adviceBuilderFactory;
     }
 
-    public IAdviceBuilder GetAdviceBuilder (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder parentAdviceBuilder)
+    public IAdviceBuilder GetAdviceBuilder (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder parentAdviceBuilder = null)
     {
       ArgumentUtility.CheckNotNull ("customAttributeProvider", customAttributeProvider);
 
@@ -57,12 +57,16 @@ namespace ActiveAttributes.Core.Discovery
       // TODO adviceBuilder.SetConstruction (new TypeConstruction (customAttributeProvider as Type));
 
       adviceBuilder.SetMethod (customAttributeProvider as MethodInfo);
-      
-      TrySetValue (customAttributeProvider, (AdviceNameAttribute x) => x.Name, adviceBuilder.SetName);
-      TrySetValue (customAttributeProvider, (AdviceRoleAttribute x) => x.Role, adviceBuilder.SetRole);
-      TrySetValue (customAttributeProvider, (AdviceExecutionAttribute x) => x.Execution, adviceBuilder.SetExecution);
-      TrySetValue (customAttributeProvider, (AdviceScopeAttribute x) => x.Scope, adviceBuilder.SetScope);
-      TrySetValue (customAttributeProvider, (AdvicePriorityAttribute x) => x.Priority, adviceBuilder.SetPriority);
+
+      var adviceAttribute = customAttributeProvider.GetCustomAttributes<AdviceInfoAttribute>(true).SingleOrDefault();
+      if (adviceAttribute != null)
+      {
+        TrySetValue (adviceBuilder.SetName, adviceAttribute.Name);
+        TrySetValue (adviceBuilder.SetRole, adviceAttribute.Role);
+        TrySetValue (adviceBuilder.SetExecution, adviceAttribute.Execution);
+        TrySetValue (adviceBuilder.SetScope, adviceAttribute.Scope);
+        TrySetValue (adviceBuilder.SetPriority, adviceAttribute.Priority);
+      }
 
       foreach (var pointcutAttribute in customAttributeProvider.GetCustomAttributes<PointcutAttributeBase> (true))
         adviceBuilder.AddPointcut (pointcutAttribute.Pointcut);
@@ -70,12 +74,10 @@ namespace ActiveAttributes.Core.Discovery
       return adviceBuilder;
     }
 
-    private void TrySetValue<TAttribute, T> (ICustomAttributeProvider customAttributeProvider, Func<TAttribute, T> selector, Func<T, IAdviceBuilder> set)
-        where TAttribute : Attribute
+    private void TrySetValue<T> (Func<T, IAdviceBuilder> set, T value)
     {
-      var attribute = customAttributeProvider.GetCustomAttributes<TAttribute> (true).SingleOrDefault();
-      if (attribute != null)
-        set (selector (attribute));
+      if (value != null && !value.Equals (default (T)))
+        set (value);
     }
   }
 }

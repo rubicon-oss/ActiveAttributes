@@ -16,17 +16,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
-using System.Linq;
 
-namespace ActiveAttributes.Core.Interception
+namespace ActiveAttributes.Interception
 {
   public class InterceptionWeaver : IWeaver
   {
@@ -48,7 +47,7 @@ namespace ActiveAttributes.Core.Interception
     {
       ArgumentUtility.CheckNotNull ("method", method);
       ArgumentUtility.CheckNotNull ("advices", advices);
-      var advicesAsList = advices.ToList ();
+      var advicesAsList = advices.ToList();
       Assertion.IsNotNull (method.DeclaringType);
       Assertion.IsTrue (method.DeclaringType is MutableType);
       Assertion.IsTrue (advicesAsList.All (x => x.Execution == AdviceExecution.Around));
@@ -68,7 +67,7 @@ namespace ActiveAttributes.Core.Interception
             var contextTuple = helper.CreateMethodInvocationExpressions();
             var methodInvocationParam = contextTuple.Item1;
             var methodInvocationAssign = contextTuple.Item2;
-            var invocationTuples = helper.CreateAdviceInvocationExpressions (methodInvocationParam).ToList ();
+            var invocationTuples = helper.CreateAdviceInvocationExpressions (methodInvocationParam).ToList();
             var invocationParams = invocationTuples.Select (x => x.Item1);
             var invocationAssigns = invocationTuples.Select (x => x.Item2).Cast<Expression>();
             var adviceCall = helper.CreateOutermostAdviceCallExpression (methodInvocationParam, invocationParams.Last());

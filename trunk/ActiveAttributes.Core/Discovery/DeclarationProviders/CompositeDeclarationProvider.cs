@@ -20,7 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class CompositeDeclarationProvider : IDeclarationProvider
   {

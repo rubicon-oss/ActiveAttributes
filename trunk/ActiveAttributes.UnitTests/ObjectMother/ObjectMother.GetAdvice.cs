@@ -17,14 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static Advice GetAdvice (
         IConstruction construction = null,

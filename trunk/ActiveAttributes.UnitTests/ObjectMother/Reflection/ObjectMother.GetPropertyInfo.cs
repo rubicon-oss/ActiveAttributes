@@ -19,7 +19,7 @@ using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static PropertyInfo GetPropertyInfo (
         Type type = null, string name = null, PropertyAttributes attributes = PropertyAttributes.None, Type declaringType = null)

@@ -15,13 +15,13 @@
 // under the License.
 using System;
 using System.Reflection;
+using ActiveAttributes.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.Expressions;
-using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static NewDelegateExpression GetNewDelegateExpression (MethodInfo method = null)
     {

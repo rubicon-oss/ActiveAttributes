@@ -16,10 +16,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Discovery;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
@@ -49,9 +48,9 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
 
-      var fakeAdviceBuilder1 = ObjectMother2.GetAdviceBuilder();
-      var fakeAdviceBuilder2 = ObjectMother2.GetAdviceBuilder();
-      var fakeAdviceBuilder3 = ObjectMother2.GetAdviceBuilder();
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
+      var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder();
       var fakeTypeAdviceBuilders1 = new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 };
       var fakeTypeAdviceBuilders2 = new[] { fakeAdviceBuilder3 };
       var fakeAdviceBuilders1 = new IAdviceBuilder[0];

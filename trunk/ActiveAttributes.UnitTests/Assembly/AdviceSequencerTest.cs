@@ -14,9 +14,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Ordering;
-using ActiveAttributes.Core.Utilities;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Ordering;
+using ActiveAttributes.Utilities;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting.Enumerables;
@@ -38,9 +38,9 @@ namespace ActiveAttributes.UnitTests.Assembly
     [SetUp]
     public void SetUp ()
     {
-      _advice1 = ObjectMother2.GetAdvice();
-      _advice2 = ObjectMother2.GetAdvice();
-      _advice3 = ObjectMother2.GetAdvice();
+      _advice1 = ObjectMother.GetAdvice();
+      _advice2 = ObjectMother.GetAdvice();
+      _advice3 = ObjectMother.GetAdvice();
 
       _dependencyProviderMock = MockRepository.GenerateStrictMock<IAdviceDependencyProvider>();
       _adviceSequencer = new AdviceSequencer (_dependencyProviderMock);

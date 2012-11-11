@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;
 using System.Linq;
@@ -38,23 +38,23 @@ namespace ActiveAttributes.UnitTests.Discovery
       var namedArguments =
           new[]
           {
-              ObjectMother2.GetCustomAttributeNamedArgument ("AdvicePriority", 4),
-              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceExecution", AdviceExecution.Around),
-              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceScope", AdviceScope.Static),
-              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceName", "name"),
-              ObjectMother2.GetCustomAttributeNamedArgument ("AdviceRole", "role"),
+              ObjectMother.GetCustomAttributeNamedArgument ("AdvicePriority", 4),
+              ObjectMother.GetCustomAttributeNamedArgument ("AdviceExecution", AdviceExecution.Around),
+              ObjectMother.GetCustomAttributeNamedArgument ("AdviceScope", AdviceScope.Static),
+              ObjectMother.GetCustomAttributeNamedArgument ("AdviceName", "name"),
+              ObjectMother.GetCustomAttributeNamedArgument ("AdviceRole", "role"),
               //
-              ObjectMother2.GetCustomAttributeNamedArgument ("ApplyToType", typeof (string)),
-              ObjectMother2.GetCustomAttributeNamedArgument ("ApplyToTypeName", "typeName"),
-              ObjectMother2.GetCustomAttributeNamedArgument ("ApplyToNamespace", "namespace"),
+              ObjectMother.GetCustomAttributeNamedArgument ("ApplyToType", typeof (string)),
+              ObjectMother.GetCustomAttributeNamedArgument ("ApplyToTypeName", "typeName"),
+              ObjectMother.GetCustomAttributeNamedArgument ("ApplyToNamespace", "namespace"),
               //
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberNameFilter", "memberName"),
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberReturnTypeFilter", typeof (int)),
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberArgumentFilter", typeof (string)),
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberVisibilityFilter", Visibility.Family),
-              ObjectMother2.GetCustomAttributeNamedArgument ("MemberCustomAttributeFilter", typeof(Attribute)),
+              ObjectMother.GetCustomAttributeNamedArgument ("MemberNameFilter", "memberName"),
+              ObjectMother.GetCustomAttributeNamedArgument ("MemberReturnTypeFilter", typeof (int)),
+              ObjectMother.GetCustomAttributeNamedArgument ("MemberArgumentFilter", typeof (string)),
+              ObjectMother.GetCustomAttributeNamedArgument ("MemberVisibilityFilter", Visibility.Family),
+              ObjectMother.GetCustomAttributeNamedArgument ("MemberCustomAttributeFilter", typeof(Attribute)),
           };
-      var customAttributeData = ObjectMother2.GetCustomAttributeData (typeof(AspectAttributeBase), namedArguments);
+      var customAttributeData = ObjectMother.GetCustomAttributeData (typeof(AspectAttributeBase), namedArguments);
 
       adviceBuilderMock1.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetName ("name")).Return (adviceBuilderMock1);

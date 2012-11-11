@@ -15,10 +15,10 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Pointcuts;
 
-namespace ActiveAttributes.Core.Aspects
+namespace ActiveAttributes.Aspects
 {
   public abstract class AspectAttributeBase : Attribute, IAspect
   {

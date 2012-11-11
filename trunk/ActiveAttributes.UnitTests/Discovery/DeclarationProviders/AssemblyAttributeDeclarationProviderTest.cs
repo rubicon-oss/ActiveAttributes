@@ -16,9 +16,9 @@
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using ActiveAttributes.UnitTests.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -36,8 +36,8 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
       var typeDiscoveryServiceMock = MockRepository.GenerateStrictMock<ITypeDiscoveryService>();
       var attributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider>();
       var provider = new AssemblyAttributeDeclarationProvider (typeDiscoveryServiceMock, attributeDeclarationProviderMock);
-      var fakeAdviceBuilder1 = ObjectMother2.GetAdviceBuilder();
-      var fakeAdviceBuilder2 = ObjectMother2.GetAdviceBuilder();
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
 
       var type1 = typeof (DomainAspectAttribute);
       var type2 = typeof (AspectAttributeBase);

@@ -13,17 +13,18 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Pointcuts;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   /// <summary>
   /// Transforms <see cref="ICustomAttributeNamedArgument"/>s declared in <see cref="ICustomAttributeData"/>s to an <see cref="Advice"/>.

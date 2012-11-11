@@ -13,17 +13,18 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   public interface IClassDeclarationProvider
   {
-    IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType, IAdviceBuilder parentAdviceBuilder = null);
+    IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType);
   }
 
   public class ClassDeclarationProvider : IClassDeclarationProvider
@@ -37,12 +38,12 @@ namespace ActiveAttributes.Core.Discovery
       _customAttributeProviderTransform = customAttributeProviderTransform;
     }
 
-    public IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType, IAdviceBuilder parentAdviceBuilder = null)
+    public IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType)
     {
       ArgumentUtility.CheckNotNull ("aspectType", aspectType);
 
       // TODO need to apply constructionInfo for class advice declaration
-      var typeAdviceBuilder = _customAttributeProviderTransform.GetAdviceBuilder (aspectType, parentAdviceBuilder);
+      var typeAdviceBuilder = _customAttributeProviderTransform.GetAdviceBuilder (aspectType);
 
       return from m in aspectType.GetMethods (BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
              let methodAdviceBuilder = _customAttributeProviderTransform.GetAdviceBuilder (m, typeAdviceBuilder)

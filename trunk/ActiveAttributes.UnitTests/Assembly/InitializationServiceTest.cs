@@ -17,12 +17,9 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
@@ -48,12 +45,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     [SetUp]
     public void SetUp ()
     {
-      _mutableType = ObjectMother2.GetMutableType (typeof (DomainType));
+      _mutableType = ObjectMother.GetMutableType (typeof (DomainType));
       _storageServiceMock = MockRepository.GenerateStrictMock<IStorageService> ();
       _expressionHelperMock = MockRepository.GenerateStrictMock<IInitializationExpressionHelper>();
       _storageMock = MockRepository.GenerateStrictMock<IStorage>();
-      _aspectType = ObjectMother2.GetAspectType();
-      _adviceMethod = ObjectMother2.GetMethodInfo (declaringType: _aspectType);
+      _aspectType = ObjectMother.GetAspectType();
+      _adviceMethod = ObjectMother.GetMethodInfo (declaringType: _aspectType);
 
       _initializationService = new InitializationService (_storageServiceMock, _expressionHelperMock);
     }
@@ -61,10 +58,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetOrAddAspect_Instance ()
     {
-      var construction = ObjectMother2.GetConstruction();
-      var advice = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
-      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
-      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
+      var construction = ObjectMother.GetConstruction();
+      var advice = ObjectMother.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var fakeMemberInit = ObjectMother.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother.GetMemberExpression (_aspectType);
 
       _storageServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
       _expressionHelperMock
@@ -87,11 +84,11 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetOrAddAspect_Caches ()
     {
-      var construction = ObjectMother2.GetConstruction();
-      var advice1 = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
-      var advice2 = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
-      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
-      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
+      var construction = ObjectMother.GetConstruction();
+      var advice1 = ObjectMother.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var advice2 = ObjectMother.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Instance);
+      var fakeMemberInit = ObjectMother.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother.GetMemberExpression (_aspectType);
 
       _storageServiceMock.Expect (x => x.AddInstanceStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
       _expressionHelperMock
@@ -110,10 +107,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void GetOrAddAspect_Static ()
     {
-      var construction = ObjectMother2.GetConstruction();
-      var advice = ObjectMother2.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Static);
-      var fakeMemberInit = ObjectMother2.GetMemberInitExpression (_aspectType);
-      var fakeMember = ObjectMother2.GetMemberExpression (_aspectType);
+      var construction = ObjectMother.GetConstruction();
+      var advice = ObjectMother.GetAdvice (construction, _adviceMethod, scope: AdviceScope.Static);
+      var fakeMemberInit = ObjectMother.GetMemberInitExpression (_aspectType);
+      var fakeMember = ObjectMother.GetMemberExpression (_aspectType);
 
       _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, _aspectType, "aspect")).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreateAspectInitExpression (construction)).Return (fakeMemberInit);
@@ -132,8 +129,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void AddMemberInfo_MethodInfo ()
     {
       var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
-      var fakeExpression = ObjectMother2.GetConstantExpression (typeof (MethodInfo));
-      var fakeMember = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
+      var fakeExpression = ObjectMother.GetConstantExpression (typeof (MethodInfo));
+      var fakeMember = ObjectMother.GetMemberExpression (typeof (MethodInfo));
 
       _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (MethodInfo), method.Name)).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreateMethodInfoInitExpression (method)).Return (fakeExpression);
@@ -153,8 +150,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     {
       var property = NormalizingMemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.Property);
       var method = _mutableType.AllMutableMethods.Single (x => x.Name == "get_Property");
-      var fakeExpression = ObjectMother2.GetMethodCallExpression (typeof(PropertyInfo));
-      var fakeMember = ObjectMother2.GetMemberExpression (typeof (PropertyInfo));
+      var fakeExpression = ObjectMother.GetMethodCallExpression (typeof(PropertyInfo));
+      var fakeMember = ObjectMother.GetMemberExpression (typeof (PropertyInfo));
 
       _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (PropertyInfo), method.Name)).Return (_storageMock);
       _expressionHelperMock.Expect (x => x.CreatePropertyInfoInitExpression (property)).Return (fakeExpression);
@@ -173,8 +170,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void GetDelegate ()
     {
       var method = _mutableType.AllMutableMethods.Single (x => x.Name == "Method");
-      var fakeMemberInit = ObjectMother2.GetNewDelegateExpression (method);
-      var fakeMember = ObjectMother2.GetMemberExpression (typeof (Action));
+      var fakeMemberInit = ObjectMother.GetNewDelegateExpression (method);
+      var fakeMember = ObjectMother.GetMemberExpression (typeof (Action));
 
       _storageServiceMock.Expect (x => x.AddStaticStorage (_mutableType, typeof (Action), method.Name)).Return (_storageMock);
       _expressionHelperMock

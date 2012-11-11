@@ -13,16 +13,17 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Extensions;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Extensions;
 
-namespace ActiveAttributes.Core.Ordering
+namespace ActiveAttributes.Ordering
 {
   public interface IAdviceDependencyProvider
   {

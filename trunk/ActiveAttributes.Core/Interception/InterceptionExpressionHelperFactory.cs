@@ -13,17 +13,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using Microsoft.Scripting.Ast;
+using ActiveAttributes.Assembly.Storages;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Interception
+namespace ActiveAttributes.Interception
 {
   public interface IInterceptionExpressionHelperFactory
   {

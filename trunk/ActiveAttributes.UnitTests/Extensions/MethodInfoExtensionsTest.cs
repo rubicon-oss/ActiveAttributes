@@ -16,7 +16,7 @@
 
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Extensions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Utilities;

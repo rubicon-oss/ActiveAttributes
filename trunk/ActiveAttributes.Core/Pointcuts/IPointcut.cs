@@ -15,9 +15,9 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Assembly;
 
-namespace ActiveAttributes.Core.Pointcuts
+namespace ActiveAttributes.Pointcuts
 {
   public interface IPointcut
   {

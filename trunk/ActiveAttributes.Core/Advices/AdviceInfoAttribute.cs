@@ -15,32 +15,17 @@
 // under the License.
 
 using System;
-using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.AdviceInfo
+namespace ActiveAttributes.Advices
 {
-  public enum AdviceExecution
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+  public sealed class AdviceInfoAttribute : Attribute
   {
-    Undefined,
-    Before,
-    After,
-    Around
-  }
+    public string Name { get; set; }
+    public string Role { get; set; }
 
-  public sealed class AdviceExecutionAttribute : AdviceAttribute
-  {
-    private readonly AdviceExecution _execution;
-
-    public AdviceExecutionAttribute (AdviceExecution execution)
-    {
-      Assertion.IsTrue (execution != AdviceExecution.Undefined);
-
-      _execution = execution;
-    }
-
-    public AdviceExecution Execution
-    {
-      get { return _execution; }
-    }
+    public AdviceExecution Execution { get; set; }
+    public AdviceScope Scope { get; set; }
+    public int Priority { get; set; }
   }
 }

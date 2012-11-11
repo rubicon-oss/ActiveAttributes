@@ -16,9 +16,9 @@
 
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Utilities;

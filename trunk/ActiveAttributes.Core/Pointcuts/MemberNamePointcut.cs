@@ -13,11 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Assembly;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Pointcuts
+namespace ActiveAttributes.Pointcuts
 {
   public interface IMemberNamePointcut : IPointcut
   {

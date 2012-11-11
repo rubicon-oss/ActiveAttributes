@@ -14,13 +14,15 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Ordering;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   public interface IAdviceComposer
   {

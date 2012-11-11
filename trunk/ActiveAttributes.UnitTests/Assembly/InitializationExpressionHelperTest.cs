@@ -16,9 +16,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Discovery.Construction;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -132,7 +131,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateMemberInfoInitExpression_MethodInfo ()
     {
-      var method = ObjectMother2.GetMethodInfo ();
+      var method = ObjectMother.GetMethodInfo ();
 
       var result = _initializationExpressionHelper.CreateMemberInfoInitExpression (method);
 
@@ -145,7 +144,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateMemberInfoInitExpression_PropertyInfo ()
     {
-      var property = ObjectMother2.GetPropertyInfo ();
+      var property = ObjectMother.GetPropertyInfo ();
 
       var result = _initializationExpressionHelper.CreateMemberInfoInitExpression (property);
 
@@ -163,10 +162,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void CreateDelegateInitExpression ()
     {
-      var baseMethod = ObjectMother2.GetMethodInfo();
-      var method = ObjectMother2.GetMutableMethodInfo (baseMethod);
-      var fakeMethod = ObjectMother2.GetMutableMethodInfo (baseMethod);
-      var thisExpression = ObjectMother2.GetThisExpression (method.DeclaringType);
+      var baseMethod = ObjectMother.GetMethodInfo();
+      var method = ObjectMother.GetMutableMethodInfo (baseMethod);
+      var fakeMethod = ObjectMother.GetMutableMethodInfo (baseMethod);
+      var thisExpression = ObjectMother.GetThisExpression (method.DeclaringType);
 
       _methodCopyServiceMock.Expect (x => x.GetCopy (method)).Return (fakeMethod);
 

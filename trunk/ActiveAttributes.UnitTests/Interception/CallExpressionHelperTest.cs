@@ -15,8 +15,8 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Interception;
+using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Interception
@@ -27,10 +27,10 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression ()
     {
-      var fakeMethodInvocation = ObjectMother2.GetVariableExpression (typeof (IInvocationContext));
-      var fakeAdvice = ObjectMother2.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
-      var fakeAspect = ObjectMother2.GetVariableExpression (fakeAdvice.DeclaringType);
-      var fakeInvocation = ObjectMother2.GetVariableExpression (typeof (IInvocation));
+      var fakeMethodInvocation = ObjectMother.GetVariableExpression (typeof (IInvocationContext));
+      var fakeAdvice = ObjectMother.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
+      var fakeAspect = ObjectMother.GetVariableExpression (fakeAdvice.DeclaringType);
+      var fakeInvocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
 
       var expressionHelper = new CallExpressionHelper();
 

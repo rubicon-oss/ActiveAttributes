@@ -16,8 +16,8 @@
 
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Interception;
+using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 

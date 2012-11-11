@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static MethodCallExpression GetMethodCallExpression (Type returnType = null)
     {

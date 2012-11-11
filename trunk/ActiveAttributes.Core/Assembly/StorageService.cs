@@ -13,15 +13,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Assembly.Storages;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   [ConcreteImplementation (typeof (StorageService))]
   public interface IStorageService

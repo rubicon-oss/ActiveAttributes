@@ -13,11 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Configuration2.Configurators;
+using ActiveAttributes.Configuration2.Configurators;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Configuration2
 {
   /// <summary>
   /// Serves as a configurator for a <see cref="IActiveAttributesConfiguration"/>.

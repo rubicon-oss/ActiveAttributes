@@ -18,11 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Aspects;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class AspectClassDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
@@ -40,11 +39,20 @@ namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
-      return from Type aspectType in _typeDiscoveryService.GetTypes (typeof (IAspect), false)
-             let construction = new TypeConstruction (aspectType)
-             where !typeof (AspectAttributeBase).IsAssignableFrom (aspectType)
-             from adviceBuilder in _classDeclarationProvider.GetAdviceBuilders (aspectType)
-             select adviceBuilder.SetConstruction (construction);
+      var aspectTypes = _typeDiscoveryService.GetTypes (typeof (IAspect), false).Cast<Type> ();
+      var classTypes = aspectTypes.Where (x => x.IsClass).Where (x => !typeof (AspectAttributeBase).IsAssignableFrom (x));
+
+      foreach (var classType in classTypes)
+      {
+        if (classType.GetConstructor (Type.EmptyTypes) == null)
+        {
+          var message = string.Format ("Cannot create an object of type '{0}' without parameterless constructor.", classType.Name);
+          throw new InvalidOperationException (message);
+        }
+
+        foreach (var adviceBuilder in _classDeclarationProvider.GetAdviceBuilders (classType))
+          yield return adviceBuilder;
+      }
     }
   }
 }

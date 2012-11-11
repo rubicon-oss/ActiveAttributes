@@ -18,7 +18,7 @@ using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace ActiveAttributes.Core.Extensions
+namespace ActiveAttributes.Extensions
 {
   internal static class MethodBaseExtensions
   {

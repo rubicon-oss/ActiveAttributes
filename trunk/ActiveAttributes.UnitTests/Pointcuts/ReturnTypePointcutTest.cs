@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Pointcuts
@@ -26,7 +26,7 @@ namespace ActiveAttributes.UnitTests.Pointcuts
     [Test]
     public void Initialization ()
     {
-      var type = ObjectMother2.GetDeclaringType();
+      var type = ObjectMother.GetDeclaringType();
       var attribute = new ReturnTypePointcutAttribute (type);
 
       Assert.That (attribute.Pointcut, Is.TypeOf<ReturnTypePointcut>().With.Property ("ReturnType").EqualTo (type));

@@ -13,13 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using Microsoft.Scripting.Ast;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Assembly.Storages;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.TypePipe.MutableReflection;
@@ -42,7 +40,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void AddInstanceStorage ()
     {
-      var type = ObjectMother2.GetDeclaringType();
+      var type = ObjectMother.GetDeclaringType();
 
       var result = _service.AddInstanceStorage (_mutableType, type, "field");
 
@@ -58,7 +56,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void AddStaticStorage ()
     {
-      var type = ObjectMother2.GetDeclaringType();
+      var type = ObjectMother.GetDeclaringType();
 
       var result = _service.AddStaticStorage (_mutableType, type, "field");
 
@@ -74,12 +72,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void AddGlobalStorage ()
     {
-      var type = ObjectMother2.GetDeclaringType ();
+      var type = ObjectMother.GetDeclaringType ();
 
       var result = _service.AddGlobalStorage (type);
 
       Assert.That (result, Is.TypeOf<GlobalStorage> ());
-      var fakeExpression = ObjectMother2.GetExpression();
+      var fakeExpression = ObjectMother.GetExpression();
       var storageExpression = result.GetStorageExpression (fakeExpression);
       Assert.That (storageExpression.Type, Is.EqualTo (type));
     }

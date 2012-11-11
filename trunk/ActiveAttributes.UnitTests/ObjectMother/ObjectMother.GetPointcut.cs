@@ -14,13 +14,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Pointcuts;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     private static readonly IPointcut[] s_pointcuts
         = new IPointcut[]

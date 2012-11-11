@@ -15,9 +15,10 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Ordering;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
@@ -34,13 +35,13 @@ namespace ActiveAttributes.UnitTests.Assembly
       var adviceBuilder2Mock = MockRepository.GenerateStrictMock<IAdviceBuilder>();
       var adviceBuilders = new[] { adviceBuilder1Mock, adviceBuilder2Mock };
 
-      var advice1 = ObjectMother2.GetAdvice();
-      var advice2 = ObjectMother2.GetAdvice();
+      var advice1 = ObjectMother.GetAdvice();
+      var advice2 = ObjectMother.GetAdvice();
 
       adviceBuilder1Mock.Expect (x => x.Build()).Return (advice1);
       adviceBuilder2Mock.Expect (x => x.Build()).Return (advice2);
 
-      var joinPoint = ObjectMother2.GetJoinPoint();
+      var joinPoint = ObjectMother.GetJoinPoint();
 
       var pointcutVisitorMock = MockRepository.GenerateStrictMock<IPointcutEvaluator>();
       var adviceSequencerMock = MockRepository.GenerateStrictMock<IAdviceSequencer>();

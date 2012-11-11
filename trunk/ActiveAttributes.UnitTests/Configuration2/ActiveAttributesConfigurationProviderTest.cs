@@ -15,8 +15,8 @@
 // under the License.
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Configuration2.Configurators;
+using ActiveAttributes.Configuration2;
+using ActiveAttributes.Configuration2.Configurators;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ServiceLocation;

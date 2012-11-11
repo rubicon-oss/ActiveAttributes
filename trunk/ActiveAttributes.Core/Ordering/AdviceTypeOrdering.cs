@@ -13,11 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Advices;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Ordering
+namespace ActiveAttributes.Ordering
 {
   public interface IAdviceTypeOrdering : IAdviceOrdering
   {

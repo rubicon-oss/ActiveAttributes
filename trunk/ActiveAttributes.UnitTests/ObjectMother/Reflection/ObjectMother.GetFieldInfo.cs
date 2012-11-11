@@ -20,7 +20,7 @@ using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static FieldInfo GetFieldInfo (
         Type type = null, string name = null, FieldAttributes attributes = FieldAttributes.Private, Type declaringType = null)

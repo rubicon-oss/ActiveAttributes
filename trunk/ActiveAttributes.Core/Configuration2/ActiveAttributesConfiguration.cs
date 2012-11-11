@@ -13,14 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Discovery.DeclarationProviders;
+using ActiveAttributes.Ordering;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Configuration2
+namespace ActiveAttributes.Configuration2
 {
   /// <summary>
   /// Serves as a configuration object for all concerns of <see cref="AspectAttribute"/>s.

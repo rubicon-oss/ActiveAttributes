@@ -13,19 +13,19 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Interception
+namespace ActiveAttributes.Interception
 {
   // var ctx = new FuncInvocation<TA1, TA2, TR> (_memberInfo, this, arg1, arg2, func)
   // var ivc0 = ctx

@@ -15,10 +15,9 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.AdviceInfo;
 
-namespace ActiveAttributes.Core.Ordering
+namespace ActiveAttributes.Ordering
 {
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-  public abstract class AdviceOrderingAttributeBase : AdviceAttribute {}
+  public abstract class AdviceOrderingAttributeBase : Attribute {}
 }

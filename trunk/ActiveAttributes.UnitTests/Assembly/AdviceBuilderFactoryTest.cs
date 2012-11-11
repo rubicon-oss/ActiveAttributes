@@ -14,8 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Discovery;
+using ActiveAttributes.Discovery;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly

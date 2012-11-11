@@ -21,7 +21,7 @@ using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static MethodInfo GetMethodInfo (
         string name = null,

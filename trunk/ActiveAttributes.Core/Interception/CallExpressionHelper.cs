@@ -19,7 +19,7 @@ using System.Reflection;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Core.Interception
+namespace ActiveAttributes.Interception
 {
   [ConcreteImplementation (typeof (CallExpressionHelper))]
   public interface ICallExpressionHelper

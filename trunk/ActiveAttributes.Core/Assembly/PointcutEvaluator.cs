@@ -16,14 +16,14 @@
 
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Pointcuts;
 using Remotion.ServiceLocation;
 using System.Linq;
-using ActiveAttributes.Core.Extensions;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly
+namespace ActiveAttributes.Assembly
 {
   [ConcreteImplementation (typeof (PointcutEvaluator))]
   public interface IPointcutEvaluator

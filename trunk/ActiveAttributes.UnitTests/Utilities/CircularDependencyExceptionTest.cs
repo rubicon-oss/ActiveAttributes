@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-using ActiveAttributes.Core.Utilities;
+using ActiveAttributes.Utilities;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Utilities

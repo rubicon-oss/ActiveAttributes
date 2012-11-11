@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly.Storages;
+using ActiveAttributes.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 

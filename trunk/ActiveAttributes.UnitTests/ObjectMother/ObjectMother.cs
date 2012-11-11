@@ -21,7 +21,7 @@ using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     private static readonly Random s_random = new Random();
 

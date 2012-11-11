@@ -22,7 +22,7 @@ using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class MethodAttributeDeclarationProvider : IMethodLevelDeclarationProvider
   {

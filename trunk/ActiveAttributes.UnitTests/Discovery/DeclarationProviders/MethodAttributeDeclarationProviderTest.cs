@@ -16,8 +16,8 @@
 
 using System;
 using System.Linq;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
@@ -33,11 +33,11 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
     {
       var aspectDeclarationHelperMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider> ();
       var relatedMethodFinderMock = MockRepository.GenerateStrictMock<IRelatedMethodFinder> ();
-      var method = ObjectMother2.GetMethodInfo ();
-      var fakeMethod = ObjectMother2.GetMethodInfo ();
-      var fakeAdviceBuilder1 = ObjectMother2.GetAdviceBuilder ();
-      var fakeAdviceBuilder2 = ObjectMother2.GetAdviceBuilder ();
-      var fakeAdviceBuilder3 = ObjectMother2.GetAdviceBuilder ();
+      var method = ObjectMother.GetMethodInfo ();
+      var fakeMethod = ObjectMother.GetMethodInfo ();
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder ();
 
       relatedMethodFinderMock.Expect (x => x.GetBaseMethod (method)).Return (fakeMethod);
       relatedMethodFinderMock.Expect (x => x.GetBaseMethod (fakeMethod)).Return (null);

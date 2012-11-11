@@ -16,14 +16,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
-using Remotion.Utilities;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Advices
 {
+  [DebuggerDisplay("Aspect: {DeclaringType,nq}, Advice = {Method,nq}")]
   public class Advice
   {
     private readonly IConstruction _construction;

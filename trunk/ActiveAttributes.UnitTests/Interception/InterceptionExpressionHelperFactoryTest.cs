@@ -16,10 +16,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Interception;
+using ActiveAttributes.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -36,14 +35,14 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void Create ()
     {
-      var declaringType = ObjectMother2.GetMutableType();
-      var method = ObjectMother2.GetMethodInfo();
-      var parameterExpressions = ObjectMother2.GetMultiple (() => ObjectMother2.GetParameterExpression()).ToList();
-      var bodyContextBase = ObjectMother2.GetBodyContextBase (declaringType, parameterExpressions);
+      var declaringType = ObjectMother.GetMutableType();
+      var method = ObjectMother.GetMethodInfo();
+      var parameterExpressions = ObjectMother.GetMultiple (() => ObjectMother.GetParameterExpression()).ToList();
+      var bodyContextBase = ObjectMother.GetBodyContextBase (declaringType, parameterExpressions);
       var fakeInvocationType = typeof (FuncInvocation<object, int>);
       var fakeAdvices = new Tuple<MethodInfo, IStorage>[0];
-      var fakeMemberInfoStorage = ObjectMother2.GetStorage();
-      var fakeDelegateStorage = ObjectMother2.GetStorage();
+      var fakeMemberInfoStorage = ObjectMother.GetStorage();
+      var fakeDelegateStorage = ObjectMother.GetStorage();
 
       var interceptionTypeProviderMock = MockRepository.GenerateStrictMock<IInterceptionTypeProvider>();
       interceptionTypeProviderMock.Expect (x => x.GetInvocationType (method)).Return (fakeInvocationType);

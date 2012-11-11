@@ -16,7 +16,7 @@
 
 using System;
 
-namespace ActiveAttributes.Core.Ordering
+namespace ActiveAttributes.Ordering
 {
   /// <summary>
   /// Defines a position.

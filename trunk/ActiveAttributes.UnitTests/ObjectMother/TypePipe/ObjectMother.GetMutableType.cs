@@ -19,7 +19,7 @@ using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static MutableType GetMutableType (Type originalType = null)
     {

@@ -21,7 +21,7 @@ using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using System.Linq;
 
-namespace ActiveAttributes.Core.Discovery.Construction
+namespace ActiveAttributes.Discovery.Construction
 {
   public class TypeConstruction : IConstruction
   {

@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Pointcuts
@@ -27,7 +27,7 @@ namespace ActiveAttributes.UnitTests.Pointcuts
     public void Initialization ()
     {
       var expression = "expression";
-      var attribute = new Core.Pointcuts.ExpressionPointcutAttribute (expression);
+      var attribute = new ExpressionPointcutAttribute (expression);
 
       Assert.That (attribute.Pointcut, Is.TypeOf<ExpressionPointcut>().With.Property ("Expression").EqualTo (expression));
     }

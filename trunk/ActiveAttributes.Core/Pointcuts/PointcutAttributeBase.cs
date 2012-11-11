@@ -15,12 +15,11 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.AdviceInfo;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Pointcuts
+namespace ActiveAttributes.Pointcuts
 {
-  public abstract class PointcutAttributeBase : AdviceAttribute
+  public abstract class PointcutAttributeBase : Attribute
   {
     private readonly IPointcut _pointcut;
 

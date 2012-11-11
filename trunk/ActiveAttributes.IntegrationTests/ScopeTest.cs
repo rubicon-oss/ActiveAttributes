@@ -13,11 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Aspects;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Extensions;
-using ActiveAttributes.Core.Interception.Invocations;
+
+using ActiveAttributes.Advices;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Extensions;
+using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests

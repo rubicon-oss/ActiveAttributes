@@ -13,16 +13,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Extensions;
+using ActiveAttributes.Extensions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   public interface IAttributeDeclarationProvider
   {

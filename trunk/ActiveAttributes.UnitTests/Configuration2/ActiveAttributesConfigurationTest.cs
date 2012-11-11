@@ -16,9 +16,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ActiveAttributes.Core.Configuration2;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
-using ActiveAttributes.Core.Ordering;
+using ActiveAttributes.Configuration2;
+using ActiveAttributes.Discovery.DeclarationProviders;
+using ActiveAttributes.Ordering;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Configuration2

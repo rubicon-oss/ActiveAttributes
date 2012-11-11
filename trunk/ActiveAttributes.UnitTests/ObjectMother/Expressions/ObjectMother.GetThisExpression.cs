@@ -18,7 +18,7 @@ using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static ThisExpression GetThisExpression (Type type = null)
     {

@@ -20,7 +20,7 @@ using System.Reflection;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Assembly.Storages
+namespace ActiveAttributes.Assembly.Storages
 {
   public class GlobalStorage : IStorage
   {

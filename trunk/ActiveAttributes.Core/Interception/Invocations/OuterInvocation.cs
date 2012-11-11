@@ -17,7 +17,7 @@
 using System;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Interception.Invocations
+namespace ActiveAttributes.Interception.Invocations
 {
   public class OuterInvocation : IInvocation
   {

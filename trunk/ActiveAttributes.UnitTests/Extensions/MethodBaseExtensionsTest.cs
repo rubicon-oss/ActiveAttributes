@@ -15,9 +15,9 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Extensions;
 using NUnit.Framework;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Extensions;
 
 namespace ActiveAttributes.UnitTests.Extensions
 {

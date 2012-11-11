@@ -17,11 +17,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Aspects;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Core.Discovery.Construction
+namespace ActiveAttributes.Discovery.Construction
 {
   public class CustomAttributeDataConstruction : IConstruction
   {

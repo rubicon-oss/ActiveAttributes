@@ -13,14 +13,11 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Core;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Discovery.DeclarationProviders;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
@@ -30,57 +27,67 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
   [TestFixture]
   public class AspectClassDeclarationProviderTest
   {
+    private ITypeDiscoveryService _typeDiscoveryServiceMock;
+    private IClassDeclarationProvider _classDeclarationProviderMock;
+    private AspectClassDeclarationProvider _provider;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _typeDiscoveryServiceMock = MockRepository.GenerateStrictMock<ITypeDiscoveryService> ();
+      _classDeclarationProviderMock = MockRepository.GenerateStrictMock<IClassDeclarationProvider> ();
+      _provider = new AspectClassDeclarationProvider (_typeDiscoveryServiceMock, _classDeclarationProviderMock);
+    }
+
     [Test]
     public void GetDeclarations ()
     {
-      var typeDiscoveryServiceMock = MockRepository.GenerateStrictMock<ITypeDiscoveryService>();
-      var classDeclarationProviderMock = MockRepository.GenerateStrictMock<IClassDeclarationProvider>();
-      var provider = new AspectClassDeclarationProvider (typeDiscoveryServiceMock, classDeclarationProviderMock);
-
       var aspectTypes = new[] { typeof (DomainAspect1), typeof (DomainAspect2) };
-      var adviceBuilderMock1 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var adviceBuilderMock2 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
-      var adviceBuilderMock3 = MockRepository.GenerateStrictMock<IAdviceBuilder>();
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
+      var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder();
 
-      IConstruction construction1 = null;
-      IConstruction construction2 = null;
-      typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
-      classDeclarationProviderMock
+      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
+      _classDeclarationProviderMock
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1)))
-          .Return (new[] { adviceBuilderMock1, adviceBuilderMock2 }.AsOneTime());
-      classDeclarationProviderMock
+          .Return (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }.AsOneTime ());
+      _classDeclarationProviderMock
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2)))
-          .Return (new[] { adviceBuilderMock3 });
-      adviceBuilderMock1
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
-          .WhenCalled (x => construction1 = (IConstruction) x.Arguments[0])
-          .Return (adviceBuilderMock1);
-      adviceBuilderMock2
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect1))))
-          .WhenCalled (x => construction2 = (IConstruction) x.Arguments[0])
-          .Return (adviceBuilderMock2);
-      adviceBuilderMock3
-          .Expect (x => x.SetConstruction (Arg<IConstruction>.Matches (y => y.ConstructorInfo.DeclaringType == typeof (DomainAspect2))))
-          .Return (adviceBuilderMock3);
+          .Return (new[] { fakeAdviceBuilder3 });
 
-      var result = provider.GetDeclarations().ToList();
+      var result = _provider.GetDeclarations().ToList();
 
-      typeDiscoveryServiceMock.VerifyAllExpectations();
-      classDeclarationProviderMock.VerifyAllExpectations();
-      adviceBuilderMock1.VerifyAllExpectations();
-      adviceBuilderMock2.VerifyAllExpectations();
-      adviceBuilderMock3.VerifyAllExpectations();
-      Assert.That (result, Is.EquivalentTo (new[] { adviceBuilderMock1, adviceBuilderMock2, adviceBuilderMock3 }));
-      Assert.That (construction1, Is.SameAs (construction2));
+      _typeDiscoveryServiceMock.VerifyAllExpectations();
+      _classDeclarationProviderMock.VerifyAllExpectations();
+      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
     }
 
-    class DomainAspect1 : IAspect
+    [Test]
+    public void GetDeclarations_IgnoreInterfaces ()
     {
-       
+      var aspectTypes = new[] { typeof (IAspect) };
+      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
+
+      Assert.That (() => _provider.GetDeclarations().ToList(), Throws.Nothing);
     }
-    class DomainAspect2 : IAspect
+
+    [Test]
+    public void GetDeclarations_NoParameterlessConstructor ()
     {
-       
+      var aspectTypes = new[] { typeof(DomainAspect3) };
+      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
+
+      var message = string.Format ("Cannot create an object of type '{0}' without parameterless constructor.", typeof (DomainAspect3).Name);
+      Assert.That (() => _provider.GetDeclarations().ToList(), Throws.InvalidOperationException.With.Message.EqualTo (message));
+    }
+
+    class DomainAspect1 : IAspect {}
+
+    class DomainAspect2 : IAspect {}
+
+    class DomainAspect3 : IAspect
+    {
+      public DomainAspect3 (string arg) {}
     }
   }
 }

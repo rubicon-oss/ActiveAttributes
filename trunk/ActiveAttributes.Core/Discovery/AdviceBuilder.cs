@@ -16,13 +16,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery.Construction;
-using ActiveAttributes.Core.Pointcuts;
+using System.Text;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Pointcuts;
 
-namespace ActiveAttributes.Core.Discovery
+namespace ActiveAttributes.Discovery
 {
   public interface IAdviceBuilder
   {
@@ -41,6 +42,7 @@ namespace ActiveAttributes.Core.Discovery
     Advice Build ();
   }
 
+  [DebuggerDisplay ("{ToDebugString()}")]
   public class AdviceBuilder : IAdviceBuilder
   {
     private IConstruction _construction;
@@ -70,7 +72,8 @@ namespace ActiveAttributes.Core.Discovery
 
     public IAdviceBuilder SetMethod (MethodInfo method)
     {
-      EnsureWasNotSet (_method);
+      if (_method != null && !_method.Equals (default (MethodInfo)))
+        throw new Exception();
 
       _method = method;
       return this;
@@ -140,12 +143,6 @@ namespace ActiveAttributes.Core.Discovery
       return new Advice (_construction, _method, _name, _role, _execution, _scope, _priority, _pointcuts);
     }
 
-    private void EnsureWasNotSet<T> (T value)
-    {
-      if (value != null && !value.Equals (default (T)))
-        throw new Exception();
-    }
-
     private void EnsureWasSet<T> (string memberName, T value)
     {
       if (value == null || value.Equals (default(T)))
@@ -153,6 +150,16 @@ namespace ActiveAttributes.Core.Discovery
         var message = string.Format ("Cannot build advice without having set its {0}.", memberName);
         throw new InvalidOperationException (message);
       }
+    }
+
+    private string ToDebugString ()
+    {
+      return new StringBuilder()
+          .Append ("Construction: ").Append (_construction != null ? _construction.ConstructorInfo.DeclaringType.Name : "Unspecified").Append (" ")
+          .Append ("Method: ").Append (_method.Name).Append (" ")
+          .Append ("Execution: ").Append (_execution).Append (" ")
+          .Append ("Scope: ").Append (_scope)
+          .ToString();
     }
   }
 }

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ActiveAttributes.Core.Extensions
+namespace ActiveAttributes.Extensions
 {
   public static class ICustomAttributeProviderExtensions
   {

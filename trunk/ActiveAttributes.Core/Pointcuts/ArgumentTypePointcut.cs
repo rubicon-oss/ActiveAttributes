@@ -15,10 +15,10 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Assembly;
+using ActiveAttributes.Assembly;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Core.Pointcuts
+namespace ActiveAttributes.Pointcuts
 {
   public interface IArgumentTypePointcut : IPointcut
   {

@@ -15,9 +15,9 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Interception.Invocations;
 
-namespace ActiveAttributes.Core.Aspects
+namespace ActiveAttributes.Aspects
 {
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
   public abstract class MethodInterceptionAspectAttributeBase : InterceptionAspectAttributeBase

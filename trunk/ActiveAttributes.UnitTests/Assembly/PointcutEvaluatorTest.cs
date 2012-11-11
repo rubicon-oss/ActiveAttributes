@@ -14,8 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Pointcuts;
+using ActiveAttributes.Assembly;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Rhino.Mocks;
 
@@ -39,10 +39,10 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Matches_ReturnsTrue ()
     {
-      var joinPoint = ObjectMother2.GetJoinPoint();
+      var joinPoint = ObjectMother.GetJoinPoint();
       var pointcut = MockRepository.GenerateStrictMock<IPointcut>();
       pointcut.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (true);
-      var advice = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut });
+      var advice = ObjectMother.GetAdvice (pointcuts: new[] { pointcut });
 
       var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
@@ -53,8 +53,8 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Matches_ReturnsTrue_ForEmptyPointcuts ()
     {
-      var joinPoint = ObjectMother2.GetJoinPoint();
-      var advice = ObjectMother2.GetAdvice ();
+      var joinPoint = ObjectMother.GetJoinPoint();
+      var advice = ObjectMother.GetAdvice ();
 
       var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
@@ -64,12 +64,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void Matches_ReturnsFalse ()
     {
-      var joinPoint = ObjectMother2.GetJoinPoint();
+      var joinPoint = ObjectMother.GetJoinPoint();
       var pointcut1 = MockRepository.GenerateStrictMock<IPointcut>();
       var pointcut2 = MockRepository.GenerateStrictMock<IPointcut>();
       pointcut1.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (true);
       pointcut2.Expect (x => x.MatchVisit (_pointcutEvaluator, joinPoint)).Return (false);
-      var advice = ObjectMother2.GetAdvice (pointcuts: new[] { pointcut1, pointcut2 });
+      var advice = ObjectMother.GetAdvice (pointcuts: new[] { pointcut1, pointcut2 });
 
       var result = _pointcutEvaluator.Matches (advice, joinPoint);
 
@@ -81,7 +81,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void TypePointcut ()
     {
-      var joinPoint = ObjectMother2.GetJoinPoint (typeof (DomainType));
+      var joinPoint = ObjectMother.GetJoinPoint (typeof (DomainType));
 
       CheckMatches (_pointcutEvaluator.MatchesType, new TypePointcut (joinPoint.Type), joinPoint);
       CheckMatchesNot (_pointcutEvaluator.MatchesType, new TypePointcut (typeof (int)), joinPoint);
@@ -92,7 +92,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void MemberNamePointcut ()
     {
-      var method = ObjectMother2.GetMethodInfo ("Method");
+      var method = ObjectMother.GetMethodInfo ("Method");
       var joinPoint = new JoinPoint (method);
 
       CheckMatches (_pointcutEvaluator.MatchesMemberName, new MemberNamePointcut ("Method"), joinPoint);
@@ -129,7 +129,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     [Test]
     public void ReturnTypePointcut ()
     {
-      var method = ObjectMother2.GetMethodInfo (returnType: typeof (DomainType));
+      var method = ObjectMother.GetMethodInfo (returnType: typeof (DomainType));
       var joinPoint = new JoinPoint (method);
 
       CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (DomainType)), joinPoint);

@@ -17,7 +17,7 @@ using System;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     private static readonly Type[] s_types = new[] { typeof (object), typeof (int), typeof(void), typeof(Type) };
 

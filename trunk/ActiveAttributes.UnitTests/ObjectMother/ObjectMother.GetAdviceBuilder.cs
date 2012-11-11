@@ -15,13 +15,13 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Core.AdviceInfo;
-using ActiveAttributes.Core.Discovery;
-using ActiveAttributes.Core.Discovery.Construction;
+using ActiveAttributes.Advices;
+using ActiveAttributes.Discovery;
+using ActiveAttributes.Discovery.Construction;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static partial class ObjectMother2
+  public static partial class ObjectMother
   {
     public static IAdviceBuilder GetAdviceBuilder (
         IConstruction construction = null,

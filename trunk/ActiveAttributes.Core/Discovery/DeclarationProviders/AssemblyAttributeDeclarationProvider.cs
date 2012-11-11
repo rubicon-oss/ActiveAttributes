@@ -13,15 +13,16 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Core.Aspects;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Extensions;
 using Remotion.Utilities;
-using ActiveAttributes.Core.Extensions;
 
-namespace ActiveAttributes.Core.Discovery.DeclarationProviders
+namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class AssemblyAttributeDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
@@ -39,7 +40,7 @@ namespace ActiveAttributes.Core.Discovery.DeclarationProviders
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
-      var types = _typeDiscoveryService.GetTypes (typeof (AspectAttributeBase), false).Cast<Type>();
+      var types = _typeDiscoveryService.GetTypes (typeof (AspectAttributeBase), false).Cast<Type> ();
       var assemblies = types.Distinct (x => x.Assembly);
       var declarations = assemblies.Select (x => _attributeDeclarationProvider.GetAdviceBuilders (x));
       return declarations.SelectMany (x => x);

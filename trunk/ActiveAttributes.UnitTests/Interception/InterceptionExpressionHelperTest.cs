@@ -16,10 +16,9 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Core.Assembly;
-using ActiveAttributes.Core.Assembly.Storages;
-using ActiveAttributes.Core.Interception;
-using ActiveAttributes.Core.Interception.Invocations;
+using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Interception;
+using ActiveAttributes.Interception.Invocations;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -51,9 +50,9 @@ namespace ActiveAttributes.UnitTests.Interception
     [SetUp]
     public void SetUp ()
     {
-      _declaringType = ObjectMother2.GetMutableType();
-      _parameterExpression1 = ObjectMother2.GetParameterExpression (typeof (string), "param1");
-      _parameterExpression2 = ObjectMother2.GetParameterExpression (typeof (int), "param2");
+      _declaringType = ObjectMother.GetMutableType();
+      _parameterExpression1 = ObjectMother.GetParameterExpression (typeof (string), "param1");
+      _parameterExpression2 = ObjectMother.GetParameterExpression (typeof (int), "param2");
       _thisExpression = new ThisExpression (_declaringType);
 
       _callExpressionHelperMock = MockRepository.GenerateStrictMock<ICallExpressionHelper>();
@@ -62,8 +61,8 @@ namespace ActiveAttributes.UnitTests.Interception
       _delegateFieldMock = MockRepository.GenerateStrictMock<IStorage>();
       _aspectFieldMock1 = MockRepository.GenerateStrictMock<IStorage>();
       _aspectFieldMock2 = MockRepository.GenerateStrictMock<IStorage>();
-      _adviceMethod1 = ObjectMother2.GetMethodInfo();
-      _adviceMethod2 = ObjectMother2.GetMethodInfo();
+      _adviceMethod1 = ObjectMother.GetMethodInfo();
+      _adviceMethod2 = ObjectMother.GetMethodInfo();
       var advices = new[] { Tuple.Create (_adviceMethod1, _aspectFieldMock1), Tuple.Create (_adviceMethod2, _aspectFieldMock2) };
 
       _expressionHelper = new InterceptionExpressionHelper (
@@ -79,8 +78,8 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateMethodInvocationExpressions ()
     {
-      var fakeMemberExpression = ObjectMother2.GetMemberExpression (typeof (MethodInfo));
-      var fakeDelegateExpression = ObjectMother2.GetMemberExpression (typeof (Func<string, int, int>));
+      var fakeMemberExpression = ObjectMother.GetMemberExpression (typeof (MethodInfo));
+      var fakeDelegateExpression = ObjectMother.GetMemberExpression (typeof (Func<string, int, int>));
 
       _memberFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeMemberExpression);
       _delegateFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeDelegateExpression);
@@ -107,9 +106,9 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceInvocationExpressions ()
     {
-      var methodInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var fakeMemberExpression = ObjectMother2.GetMemberExpression (_adviceMethod1.DeclaringType);
-      var fakeExpression = ObjectMother2.GetMethodCallExpression();
+      var methodInvocation = ObjectMother.GetParameterExpression (typeof (IInvocation));
+      var fakeMemberExpression = ObjectMother.GetMemberExpression (_adviceMethod1.DeclaringType);
+      var fakeExpression = ObjectMother.GetMethodCallExpression();
 
       _aspectFieldMock1.Expect (x => x.GetStorageExpression (_thisExpression)).Return (fakeMemberExpression);
       object[] arguments = null;
@@ -159,10 +158,10 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateOutermostAspectCallExpression ()
     {
-      var methodInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var outermostInvocation = ObjectMother2.GetParameterExpression (typeof (IInvocation));
-      var fakeMemberExpression = ObjectMother2.GetMemberExpression (_adviceMethod2.DeclaringType);
-      var fakeCall = ObjectMother2.GetMethodCallExpression();
+      var methodInvocation = ObjectMother.GetParameterExpression (typeof (IInvocation));
+      var outermostInvocation = ObjectMother.GetParameterExpression (typeof (IInvocation));
+      var fakeMemberExpression = ObjectMother.GetMemberExpression (_adviceMethod2.DeclaringType);
+      var fakeCall = ObjectMother.GetMethodCallExpression();
 
       _aspectFieldMock2
         .Expect (x => x.GetStorageExpression (_thisExpression))
@@ -184,7 +183,7 @@ namespace ActiveAttributes.UnitTests.Interception
       var baseType = typeof (FuncInvocationBase<>);
       var invocationContextType = typeof (FuncInvocation<int>);
       Assert.That (baseType.MakeGenericType(invocationContextType.GetGenericArguments()).IsAssignableFrom (invocationContextType), Is.True);
-      var fakeContext = ObjectMother2.GetVariableExpression (invocationContextType);
+      var fakeContext = ObjectMother.GetVariableExpression (invocationContextType);
 
       var result = _expressionHelper.CreateReturnValueExpression (fakeContext);
 
@@ -199,7 +198,7 @@ namespace ActiveAttributes.UnitTests.Interception
     public void CreateReturnValueExpression_Action ()
     {
       var invocationContextType = typeof (ActionInvocation);
-      var fakeContext = ObjectMother2.GetVariableExpression (invocationContextType);
+      var fakeContext = ObjectMother.GetVariableExpression (invocationContextType);
 
       var result = _expressionHelper.CreateReturnValueExpression (fakeContext);
 

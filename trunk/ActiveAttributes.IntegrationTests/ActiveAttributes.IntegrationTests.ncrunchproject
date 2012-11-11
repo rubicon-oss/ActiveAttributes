@@ -17,9 +17,4 @@
   <UseBuildPlatform></UseBuildPlatform>
   <ProxyProcessPath></ProxyProcessPath>
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
-  <IgnoredTests>
-    <RegexTestSelector>
-      <RegularExpression>ActiveAttributes\.IntegrationTests\.InterfaceAspectsTest\..*</RegularExpression>
-    </RegexTestSelector>
-  </IgnoredTests>
 </ProjectConfiguration>

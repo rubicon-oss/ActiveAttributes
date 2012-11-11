@@ -8,8 +8,8 @@
     <ProjectGuid>{24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActiveAttributes.Core</RootNamespace>
-    <AssemblyName>ActiveAttributes.Core</AssemblyName>
+    <RootNamespace>ActiveAttributes</RootNamespace>
+    <AssemblyName>ActiveAttributes</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Advices\AdviceExecution.cs" />
+    <Compile Include="Advices\AdviceScope.cs" />
     <Compile Include="Assembly\Storages\GlobalStorage.cs" />
     <Compile Include="Discovery\AdviceBuilder.cs" />
     <Compile Include="Discovery\AdviceBuilderFactory.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Configuration2\IActiveAttributesConfigurator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Discovery\CustomAttributeProviderTransform.cs" />
     <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\IDeclarationProvider.cs">
@@ -123,7 +126,6 @@
     </Compile>
     <Compile Include="Discovery\CustomAttributeDataTransform.cs" />
     <Compile Include="Discovery\AttributeDeclarationProvider.cs" />
-    <Compile Include="Discovery\CustomAttributeProviderTransform.cs" />
     <Compile Include="Discovery\ClassDeclarationProvider.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Ordering\AdviceRoleOrdering.cs" />
@@ -144,10 +146,7 @@
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="AdviceInfo\AdviceAttribute.cs" />
-    <Compile Include="AdviceInfo\AdviceNameAttribute.cs" />
-    <Compile Include="AdviceInfo\AdvicePriorityAttribute.cs" />
-    <Compile Include="AdviceInfo\AdviceRoleAttribute.cs" />
+    <Compile Include="Advices\AdviceInfoAttribute.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
     <Compile Include="Discovery\Construction\CustomAttributeDataConstruction.cs" />
     <Compile Include="Discovery\Construction\IConstruction.cs" />
@@ -156,7 +155,7 @@
     <Compile Include="Aspects\InterceptionAspectAttributeBase.cs" />
     <Compile Include="Aspects\MethodInterceptionAspectAttributeBase.cs" />
     <Compile Include="Aspects\PropertyInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Discovery\Advice.cs" />
+    <Compile Include="Advices\Advice.cs" />
     <Compile Include="Assembly\JoinPoint.cs" />
     <Compile Include="Pointcuts\IPointcut.cs" />
     <Compile Include="Pointcuts\ArgumentTypePointcut.cs" />
@@ -169,7 +168,6 @@
     <Compile Include="Pointcuts\TypeNamePointcut.cs" />
     <Compile Include="Pointcuts\VisibilityPointcut.cs" />
     <Compile Include="Assembly\ObjectFactory.cs" />
-    <Compile Include="AdviceInfo\AdviceScopeAttribute.cs" />
     <Compile Include="Configuration\TypeRuleCollection.cs" />
     <Compile Include="Configuration\TypeRuleElement.cs" />
     <Compile Include="Configuration\AspectsConfigurationSection.cs" />
@@ -185,7 +183,6 @@
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Aspects\AspectAttributeBase.cs" />
-    <Compile Include="AdviceInfo\AdviceExecutionAttribute.cs" />
     <Compile Include="IAspect.cs" />
     <Compile Include="Pointcuts\ControlFlowPointcut.cs" />
     <Compile Include="Pointcuts\MemberNamePointcut.cs" />
