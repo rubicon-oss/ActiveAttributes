@@ -80,6 +80,7 @@
     <Compile Include="Configuration2\IActiveAttributesConfigurator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\IDeclarationProvider.cs">
       <SubType>Code</SubType>

@@ -26,6 +26,7 @@ using Castle.Components.DictionaryAdapter;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.CodeGeneration;
@@ -57,6 +58,15 @@ namespace ActiveAttributes.Core.Assembly
 
     static ObjectFactory()
     {
+      var callingAssembly = System.Reflection.Assembly.GetCallingAssembly();
+      var rootAssembly = new RootAssembly (callingAssembly, true);
+      var loadAllAssemblyLoaderFilter = new LoadAllAssemblyLoaderFilter();
+      var filteringAssemblyLoader = new FilteringAssemblyLoader (loadAllAssemblyLoaderFilter);
+      var fixedRootAssemblyFinder = new FixedRootAssemblyFinder (rootAssembly);
+      var assemblyFinder = new AssemblyFinder (fixedRootAssemblyFinder, filteringAssemblyLoader);
+      var assemblyFinderTypeDiscoveryService = new AssemblyFinderTypeDiscoveryService(assemblyFinder);
+
+
       var interceptionTypeProvider = new InterceptionTypeProvider ();
       var interceptionExpressionHelperFactory = new InterceptionExpressionHelperFactory (interceptionTypeProvider);
       var fieldService = new StorageService ();

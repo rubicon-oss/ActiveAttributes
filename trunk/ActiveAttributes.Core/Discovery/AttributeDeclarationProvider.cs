@@ -28,6 +28,8 @@ namespace ActiveAttributes.Core.Discovery
   {
     // TODO add support for 'mustInherit'
     IEnumerable<IAdviceBuilder> GetAdviceBuilders (MemberInfo member);
+    IEnumerable<IAdviceBuilder> GetAdviceBuilders (System.Reflection.Assembly assembly);
+    IEnumerable<IAdviceBuilder> GetAdviceBuilders (ParameterInfo parameter);
   }
 
   public class AttributeDeclarationProvider : IAttributeDeclarationProvider
@@ -51,9 +53,25 @@ namespace ActiveAttributes.Core.Discovery
       ArgumentUtility.CheckNotNull ("member", member);
 
       var customAttributeDatas = TypePipeCustomAttributeData.GetCustomAttributes (member);
+      foreach (var adviceBuilder in AdviceBuilders(customAttributeDatas))
+        yield return adviceBuilder;
+    }
+
+    public IEnumerable<IAdviceBuilder> GetAdviceBuilders (System.Reflection.Assembly assembly)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IEnumerable<IAdviceBuilder> GetAdviceBuilders (ParameterInfo parameter)
+    {
+      throw new NotImplementedException();
+    }
+
+    private IEnumerable<IAdviceBuilder> AdviceBuilders (IEnumerable<ICustomAttributeData> customAttributeDatas)
+    {
       foreach (var customAttributeData in customAttributeDatas)
       {
-        if (!customAttributeData.IsAspectAttribute ())
+        if (!customAttributeData.IsAspectAttribute())
           continue;
 
         var aspectType = customAttributeData.Constructor.DeclaringType;

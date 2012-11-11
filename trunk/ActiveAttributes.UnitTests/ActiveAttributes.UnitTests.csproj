@@ -96,6 +96,7 @@
     <Compile Include="AdviceInfo\AdvicePriorityAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceRoleAttributeTest.cs" />
     <Compile Include="AdviceInfo\AdviceScopeAttributeTest.cs" />
+    <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs">
       <SubType>Code</SubType>
     </Compile>
