@@ -71,7 +71,8 @@ namespace ActiveAttributes.Assembly
       var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
       var relatedMethodFinder = new RelatedMethodFinder();
       var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider, relatedMethodFinder);
-      var assemblyLevelAdviceDeclarationProviders = new[] { aspectClassDeclarationProvider };
+      var assemblyAttributeDeclarationProvider = new AssemblyAttributeDeclarationProvider (assemblyFinderTypeDiscoveryService, attributeDeclarationProvider);
+      var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[] { aspectClassDeclarationProvider, assemblyAttributeDeclarationProvider };
       var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
       var methodLevelAdviceDeclarationProviders = new[] { methodAttributeDeclarationProvider };
 

@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspectClassTest.cs" />
+    <Compile Include="PropertyTest.cs" />
     <Compile Include="InterfaceAspectsTest.cs" />
     <Compile Include="TypeAssemblerIntegrationTestBase.cs" />
     <Compile Include="ControlFlowTest.cs">

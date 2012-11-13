@@ -44,7 +44,7 @@ namespace ActiveAttributes.UnitTests.Discovery
     }
 
     [Test]
-    public void GetAdvices ()
+    public void GetAdviceBuilders ()
     {
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
 

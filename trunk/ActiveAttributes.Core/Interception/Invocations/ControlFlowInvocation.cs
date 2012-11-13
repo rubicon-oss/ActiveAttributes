@@ -13,21 +13,25 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace ActiveAttributes.Interception.Invocations
 {
-  public class OuterInvocation : IInvocation
+  public class ControlFlowInvocation : IInvocation
   {
     private readonly IInvocationContext _context;
     private readonly Action _innerMethod;
+    private readonly string _controlFlowCondition;
+    private readonly Action _nextInnerMethod;
 
-    public OuterInvocation (IInvocationContext context, Action innerMethod)
+    public ControlFlowInvocation (IInvocationContext context, Action innerMethod, string controlFlowCondition, Action nextInnerMethod)
     {
       _context = context;
       _innerMethod = innerMethod;
+      _controlFlowCondition = controlFlowCondition;
+      _nextInnerMethod = nextInnerMethod;
     }
 
     public MemberInfo MemberInfo
@@ -63,7 +67,20 @@ namespace ActiveAttributes.Interception.Invocations
 
     public void Proceed ()
     {
-      _innerMethod();
+      var stackTrace = new StackTrace();
+      var stackFrames = stackTrace.GetFrames();
+      if (stackFrames != null)
+      {
+        foreach (var frame in stackFrames)
+        {
+          if (frame.GetMethod().Name == _controlFlowCondition)
+          {
+            _innerMethod();
+            return;
+          }
+        }
+      }
+      _nextInnerMethod();
     }
   }
 }

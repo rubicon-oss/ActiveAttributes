@@ -103,6 +103,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\ActionInvocationBase.cs" />
+    <Compile Include="Interception\Invocations\ControlFlowInvocation.cs" />
     <Compile Include="Interception\Invocations\FuncInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>

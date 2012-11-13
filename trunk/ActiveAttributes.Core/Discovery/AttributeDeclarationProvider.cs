@@ -53,7 +53,7 @@ namespace ActiveAttributes.Discovery
       ArgumentUtility.CheckNotNull ("member", member);
 
       var customAttributeDatas = TypePipeCustomAttributeData.GetCustomAttributes (member);
-      foreach (var adviceBuilder in AdviceBuilders(customAttributeDatas))
+      foreach (var adviceBuilder in GetAdviceBuilders(customAttributeDatas))
         yield return adviceBuilder;
     }
 
@@ -67,7 +67,7 @@ namespace ActiveAttributes.Discovery
       throw new NotImplementedException();
     }
 
-    private IEnumerable<IAdviceBuilder> AdviceBuilders (IEnumerable<ICustomAttributeData> customAttributeDatas)
+    private IEnumerable<IAdviceBuilder> GetAdviceBuilders (IEnumerable<ICustomAttributeData> customAttributeDatas)
     {
       foreach (var customAttributeData in customAttributeDatas)
       {
