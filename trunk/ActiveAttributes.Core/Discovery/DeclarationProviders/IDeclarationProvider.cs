@@ -15,9 +15,11 @@
 // under the License.
 
 using System;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Discovery.DeclarationProviders
 {
+  [ConcreteImplementation (typeof (CompositeDeclarationProvider))]
   public interface IDeclarationProvider
       : IAssemblyLevelDeclarationProvider,
         ITypeLevelDeclarationProvider,

@@ -108,6 +108,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
+    <Compile Include="Ordering\StandardRoles.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />

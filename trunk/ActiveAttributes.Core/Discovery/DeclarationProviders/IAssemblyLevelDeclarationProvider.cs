@@ -16,9 +16,12 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Discovery.DeclarationProviders
 {
+  [ConcreteImplementation (typeof (AspectClassDeclarationProvider), Position = 1)]
+  [ConcreteImplementation (typeof (AssemblyAttributeDeclarationProvider), Position = 2)]
   public interface IAssemblyLevelDeclarationProvider
   {
     IEnumerable<IAdviceBuilder> GetDeclarations ();

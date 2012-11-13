@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,17 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Remotion.ServiceLocation;
-
-namespace ActiveAttributes.Discovery.DeclarationProviders
+namespace ActiveAttributes.Ordering
 {
-  [ConcreteImplementation (typeof (MethodAttributeDeclarationProvider), Position = 1)]
-  public interface IMethodLevelDeclarationProvider
+  public static class StandardRoles
   {
-    IEnumerable<IAdviceBuilder> GetDeclarations (MethodInfo method);
+    public const string ExceptionHandling = "ExceptionHandling";
+    public const string Transaction = "Transaction";
+    public const string Caching = "Caching";
+    public const string Validation = "Validation";
+    public const string Security = "Security";
+
   }
 }

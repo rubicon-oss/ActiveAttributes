@@ -19,6 +19,7 @@ using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Discovery;
+using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
@@ -30,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Discovery
   [TestFixture]
   public class AttributeDeclarationProviderTest
   {
-    private AttributeDeclarationProvider _attributeDeclarationProvider;
+    private AttributeDeclarationProvider _provider;
     private ICustomAttributeDataTransform _customAttributeDataTransformMock;
     private IClassDeclarationProvider _classDeclarationProviderMock;
 
@@ -40,7 +41,7 @@ namespace ActiveAttributes.UnitTests.Discovery
       _customAttributeDataTransformMock = MockRepository.GenerateStrictMock<ICustomAttributeDataTransform> ();
       _classDeclarationProviderMock = MockRepository.GenerateStrictMock<IClassDeclarationProvider> ();
 
-      _attributeDeclarationProvider = new AttributeDeclarationProvider (_classDeclarationProviderMock, _customAttributeDataTransformMock);
+      _provider = new AttributeDeclarationProvider (_classDeclarationProviderMock, _customAttributeDataTransformMock);
     }
 
     [Test]
@@ -69,7 +70,7 @@ namespace ActiveAttributes.UnitTests.Discovery
           .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 2), Arg.Is (fakeAdviceBuilders2)))
           .Return (fakeTypeAdviceBuilders2);
 
-      var result = _attributeDeclarationProvider.GetAdviceBuilders (method).ToList();
+      var result = _provider.GetAdviceBuilders (method).ToList();
 
       _customAttributeDataTransformMock.VerifyAllExpectations();
       _classDeclarationProviderMock.VerifyAllExpectations();
@@ -81,15 +82,40 @@ namespace ActiveAttributes.UnitTests.Discovery
     {
       var method = MethodInfo.GetCurrentMethod();
 
-      Assert.That (() => _attributeDeclarationProvider.GetAdviceBuilders (method).ToArray(), Throws.Nothing);
+      Assert.That (() => _provider.GetAdviceBuilders (method).ToArray(), Throws.Nothing);
     }
+
+    //[Test]
+    //public void ThrowsForOverSpecification ()
+    //{
+    //  CheckThrows ("method", typeof (MemberNamePointcut), typeof (DomainType).GetMethods().Single (x => x.Name == "MemberNamePointcut"));
+    //  CheckThrows ("method", typeof (ReturnTypePointcut), typeof (DomainType).GetMethods().Single (x => x.Name == "ReturnTypePointcut"));
+    //}
+
+    //private void CheckThrows (string memberType, Type type, MemberInfo member)
+    //{
+    //  var message = string.Format ("Pointcut of type {0} cannot be applied to a {1}", type.Name, memberType);
+    //  Assert.That (() => _provider.GetAdviceBuilders (member).ToArray(), Throws.Exception.With.Message.EqualTo (message));
+    //}
 
     class DomainType
     {
       [DomainAspect1 (AdvicePriority = 1)]
       [DomainAspect2 (AdvicePriority = 2, AdviceExecution = AdviceExecution.Around)]
-      public void Method () { }
+      public void Method () {}
+
+      [DomainAspect1 (MemberNameFilter = "MethodWithMemberNamePointcut")]
+      public void MemberNamePointcut () {}
+
+      [DomainAspect1 (MemberReturnTypeFilter = typeof (void))]
+      public void ReturnTypePointcut () {}
     }
+
+    [DomainAspect1 (ApplyToType = typeof (DomainTypeWithApplyToType))]
+    class DomainTypeWithApplyToType {}
+
+    [DomainAspect1 (ApplyToNamespace = "ActiveAttributes.*")]
+    class DomainTypeWithApplyToNamespace {}
 
     class DomainAspect1Attribute : AspectAttributeBase { }
 
