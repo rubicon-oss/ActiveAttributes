@@ -19,16 +19,18 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Assembly.Storages;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Interception
 {
+  [ConcreteImplementation (typeof (InterceptionExpressionHelperFactory))]
   public interface IInterceptionExpressionHelperFactory
   {
     IInterceptionExpressionHelper Create (
         MethodInfo method,
-        BodyContextBase bodyContextBase,
+        MethodBaseBodyContextBase context,
         IEnumerable<Tuple<MethodInfo, IStorage>> advices,
         IStorage memberInfoField,
         IStorage delegateField);
@@ -47,13 +49,13 @@ namespace ActiveAttributes.Interception
 
     public IInterceptionExpressionHelper Create (
         MethodInfo method,
-        BodyContextBase bodyContextBase,
+        MethodBaseBodyContextBase context,
         IEnumerable<Tuple<MethodInfo, IStorage>> advices,
         IStorage memberInfoField,
         IStorage delegateField)
     {
       ArgumentUtility.CheckNotNull ("method", method);
-      ArgumentUtility.CheckNotNull ("bodyContextBase", bodyContextBase);
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("advices", advices);
       ArgumentUtility.CheckNotNull ("memberInfoField", memberInfoField);
       ArgumentUtility.CheckNotNull ("delegateField", delegateField);
@@ -63,8 +65,8 @@ namespace ActiveAttributes.Interception
 
       return new InterceptionExpressionHelper (
           invocationExpressionHelper,
-          bodyContextBase.This,
-          bodyContextBase.Parameters,
+          context.This,
+          context.Parameters,
           invocationType,
           advices,
           memberInfoField,

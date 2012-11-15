@@ -29,13 +29,12 @@ namespace ActiveAttributes.Discovery.DeclarationProviders
     private readonly IRelatedMethodFinder _relatedMethodFinder;
 
     public MethodAttributeDeclarationProvider (
-        IAttributeDeclarationProvider attributeDeclarationProvider, IRelatedMethodFinder relatedMethodFinder)
+        IAttributeDeclarationProvider attributeDeclarationProvider)
     {
       ArgumentUtility.CheckNotNull ("attributeDeclarationProvider", attributeDeclarationProvider);
-      ArgumentUtility.CheckNotNull ("relatedMethodFinder", relatedMethodFinder);
 
       _attributeDeclarationProvider = attributeDeclarationProvider;
-      _relatedMethodFinder = relatedMethodFinder;
+      _relatedMethodFinder = new RelatedMethodFinder();
     }
 
     public IEnumerable<IAdviceBuilder> GetDeclarations (MethodInfo method)

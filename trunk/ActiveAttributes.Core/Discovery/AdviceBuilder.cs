@@ -60,7 +60,7 @@ namespace ActiveAttributes.Discovery
     {
       if (_construction != null
           && construction.GetType() == typeof (TypeConstruction)
-          && _construction.GetType() == typeof (CustomAttributeDataConstruction))
+          && _construction.GetType() == typeof (AttributeConstruction))
       {
         var message = "Construction can not be overwritten if existing construction is more meaningful.";
         throw new InvalidOperationException (message);

@@ -488,6 +488,16 @@
             its own copy of the data.
             </threadsafety>
         </member>
+        <member name="T:Remotion.Reflection.DelegateFactory">
+            <summary>
+            Extracts signatures from delegate types and uses <see cref="T:System.Linq.Expressions.LambdaExpression"/> to create delegates enabling their efficient invocation.
+            </summary>
+        </member>
+        <member name="T:Remotion.Reflection.IDelegateFactory">
+            <summary>
+            Extracts signatures from delegate types and delegates for their efficient invocation.
+            </summary>
+        </member>
         <member name="T:Remotion.Reflection.MemberSignatures.EventSignature">
             <summary>
             Represents an event signature and allows signatures to be compared to each other.
@@ -623,39 +633,6 @@
             </summary>
             <value>The position of the concrete implementation in the list of all concrete implementations.</value>
         </member>
-        <member name="T:Remotion.ServiceLocation.FrameworkVersion">
-            <summary>
-            Holds the <see cref="T:System.Version"/> object used by <see cref="T:Remotion.ServiceLocation.TypeNameTemplateResolver"/> to retrieve types from
-            the re-motion implementation assemblies.
-            </summary>
-        </member>
-        <member name="M:Remotion.ServiceLocation.FrameworkVersion.Reset">
-            <summary>
-            Resets the version information so that the next retrieval of <see cref="P:Remotion.ServiceLocation.FrameworkVersion.Value"/> will trigger an automatic resolution. After calling this
-            method, <see cref="P:Remotion.ServiceLocation.FrameworkVersion.Value"/> can be used to set a different <see cref="T:System.Version"/> value.
-            </summary>
-        </member>
-        <member name="M:Remotion.ServiceLocation.FrameworkVersion.RetrieveFromType(System.Type)">
-            <summary>
-            Retrieves from version information from the assembly defining the given type. This is a shortcut for the following statemnt:
-            <code>Value = frameworkType.Assembly.GetName ().Version;</code>
-            </summary>
-            <param name="frameworkType">A framework type to retrieve the version from.</param>
-        </member>
-        <member name="P:Remotion.ServiceLocation.FrameworkVersion.Value">
-            <summary>
-            Gets or sets the framework version value.
-            </summary>
-            <value>The framework version value. If none has been set, the getter will attempt to retrieve the version automatically (and throw
-            an exception if it cannot do so). When one version has been set, no other version can be set unless <see cref="M:Remotion.ServiceLocation.FrameworkVersion.Reset"/> is called before.
-            (The same version can be set without an exception being thrown.)</value>
-        </member>
-        <member name="T:Remotion.ServiceLocation.FrameworkVersionNotFoundException">
-            <summary>
-            Thrown by <see cref="T:Remotion.ServiceLocation.FrameworkVersionRetriever"/> when the framework version cannot be determined automatically. Use 
-            <see cref="T:Remotion.ServiceLocation.FrameworkVersion"/> to manually set the version or add a reference to the framework implementation assembly.
-            </summary>
-        </member>
         <member name="T:Remotion.ServiceLocation.LifetimeKind">
             <summary>
             Defines the lifetime of instances of a type managed by a service locator.
@@ -706,7 +683,7 @@
             <summary>
             Provides functionality to resolve type name templates to actual types. Type name templates are assembly-qualified type names that contain
             "&lt;version&gt;" and "&lt;publicKeyToken&gt;" as placeholders for version and public key token. Those placeholders will be replaced with
-            the <see cref="T:Remotion.ServiceLocation.FrameworkVersion"/> and the public key token of the re-motion framework, then <see cref="T:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility"/> is
+            the version and public key token of a given reference <see cref="T:System.Reflection.Assembly"/>, then <see cref="T:Remotion.Reflection.TypeDiscovery.ContextAwareTypeDiscoveryUtility"/> is
             used to resolve the type.
             </summary>
         </member>
@@ -4850,11 +4827,6 @@
             <param name="interfaces">The interfaces to be implemented by the nested type.</param>
             <param name="flags">The <see cref="T:System.Reflection.TypeAttributes"/> to use for the nested type.</param>
             <returns>A new <see cref="T:Remotion.Reflection.CodeGeneration.IClassEmitter"/> for the nested type.</returns>
-        </member>
-        <member name="M:Remotion.Reflection.ConstructorLookupInfo.CreateValueTypeDefaultDelegate(System.Type,System.Type,System.Type)">
-            <summary>
-            Since value types do not have default constructors, an activation with zero parameters must create the object with the initobj IL opcode.
-            </summary>
         </member>
         <member name="T:Remotion.Reflection.DynamicParamList">
             <summary>

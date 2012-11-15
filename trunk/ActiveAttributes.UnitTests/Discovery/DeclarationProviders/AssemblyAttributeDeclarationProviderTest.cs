@@ -21,6 +21,7 @@ using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.DeclarationProviders;
 using ActiveAttributes.UnitTests.Discovery.DeclarationProviders;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 [assembly: AssemblyAttributeDeclarationProviderTest.DomainAspectAttribute]
@@ -33,26 +34,34 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
     [Test]
     public void GetDeclarations ()
     {
-      var typeDiscoveryServiceMock = MockRepository.GenerateStrictMock<ITypeDiscoveryService>();
-      var attributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider>();
-      var provider = new AssemblyAttributeDeclarationProvider (typeDiscoveryServiceMock, attributeDeclarationProviderMock);
-      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder();
-      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
+      var attributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider> ();
+      var aspectTypesProviderMock = MockRepository.GenerateStrictMock<IAspectTypesProvider>();
+      var provider = new AssemblyAttributeDeclarationProvider (aspectTypesProviderMock, attributeDeclarationProviderMock);
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
 
       var type1 = typeof (DomainAspectAttribute);
       var type2 = typeof (AspectAttributeBase);
-      typeDiscoveryServiceMock.Expect (x => x.GetTypes (type2, false)).Return (new[] { type1, type2 });
+      aspectTypesProviderMock.Expect (x => x.GetAspectAttributeTypes()).Return (new[] { type1, type2 });
       attributeDeclarationProviderMock.Expect (x => x.GetAdviceBuilders (type1.Assembly)).Return (new[] { fakeAdviceBuilder1 });
       attributeDeclarationProviderMock.Expect (x => x.GetAdviceBuilders (type2.Assembly)).Return (new[] { fakeAdviceBuilder2 });
 
-      var result = provider.GetDeclarations().ToArray();
+      var result = provider.GetDeclarations ().ToArray ();
 
-      typeDiscoveryServiceMock.VerifyAllExpectations();
-      attributeDeclarationProviderMock.VerifyAllExpectations();
+      aspectTypesProviderMock.VerifyAllExpectations ();
+      attributeDeclarationProviderMock.VerifyAllExpectations ();
       Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }));
     }
 
+    [Test]
+    public void Resolution ()
+    {
+      var instances = SafeServiceLocator.Current.GetAllInstances<IAssemblyLevelDeclarationProvider> ();
+
+      Assert.That (instances, Has.Some.TypeOf<AssemblyAttributeDeclarationProvider> ());
+    }
+
     [AttributeUsage (AttributeTargets.Assembly)]
-    public class DomainAspectAttribute : AspectAttributeBase {}
+    public class DomainAspectAttribute : AspectAttributeBase { }
   }
 }

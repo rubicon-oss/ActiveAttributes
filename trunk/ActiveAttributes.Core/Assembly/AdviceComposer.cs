@@ -19,11 +19,13 @@ using System.Collections.Generic;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Ordering;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace ActiveAttributes.Assembly
 {
+  [ConcreteImplementation (typeof (AdviceComposer))]
   public interface IAdviceComposer
   {
     IEnumerable<Advice> Compose (IEnumerable<IAdviceBuilder> adviceBuilders, JoinPoint joinPoint);

@@ -52,7 +52,7 @@ namespace ActiveAttributes.UnitTests
       var constructions =
           new IConstruction[]
           {
-              new CustomAttributeDataConstruction (GetCustomAttributeData (typeof (DummyAspectAttribute))),
+              new AttributeConstruction (GetCustomAttributeData (typeof (DummyAspectAttribute))),
               new TypeConstruction (typeof (DummyAspectAttribute))
           };
       var aspectConstructionInfo = constructions.SingleOrDefault (x => x.GetType() == constructionType);

@@ -16,43 +16,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Aspects;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class AspectClassDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
-    private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly IAspectTypesProvider _aspectTypesProvider;
     private readonly IClassDeclarationProvider _classDeclarationProvider;
 
-    public AspectClassDeclarationProvider (ITypeDiscoveryService typeDiscoveryService, IClassDeclarationProvider classDeclarationProvider)
+    public AspectClassDeclarationProvider (IAspectTypesProvider aspectTypesProvider, IClassDeclarationProvider classDeclarationProvider)
     {
-      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
+      ArgumentUtility.CheckNotNull ("aspectTypesProvider", aspectTypesProvider);
       ArgumentUtility.CheckNotNull ("classDeclarationProvider", classDeclarationProvider);
 
-      _typeDiscoveryService = typeDiscoveryService;
+      _aspectTypesProvider = aspectTypesProvider;
       _classDeclarationProvider = classDeclarationProvider;
     }
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
-      var aspectTypes = _typeDiscoveryService.GetTypes (typeof (IAspect), false).Cast<Type> ();
-      var classTypes = aspectTypes.Where (x => x.IsClass).Where (x => !typeof (AspectAttributeBase).IsAssignableFrom (x));
-
-      foreach (var classType in classTypes)
-      {
-        if (classType.GetConstructor (Type.EmptyTypes) == null)
-        {
-          var message = string.Format ("Cannot create an object of type '{0}' without parameterless constructor.", classType.Name);
-          throw new InvalidOperationException (message);
-        }
-
-        foreach (var adviceBuilder in _classDeclarationProvider.GetAdviceBuilders (classType))
-          yield return adviceBuilder;
-      }
+      return _aspectTypesProvider.GetAspectClassTypes().SelectMany (x => _classDeclarationProvider.GetAdviceBuilders (x));
     }
   }
 }

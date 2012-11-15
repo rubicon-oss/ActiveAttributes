@@ -14,11 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.ComponentModel.Design;
 using System.Linq;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
@@ -27,16 +27,16 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
   [TestFixture]
   public class AspectClassDeclarationProviderTest
   {
-    private ITypeDiscoveryService _typeDiscoveryServiceMock;
     private IClassDeclarationProvider _classDeclarationProviderMock;
     private AspectClassDeclarationProvider _provider;
+    private IAspectTypesProvider _aspectTypesProviderMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _typeDiscoveryServiceMock = MockRepository.GenerateStrictMock<ITypeDiscoveryService> ();
       _classDeclarationProviderMock = MockRepository.GenerateStrictMock<IClassDeclarationProvider> ();
-      _provider = new AspectClassDeclarationProvider (_typeDiscoveryServiceMock, _classDeclarationProviderMock);
+      _aspectTypesProviderMock = MockRepository.GenerateStrictMock<IAspectTypesProvider>();
+      _provider = new AspectClassDeclarationProvider (_aspectTypesProviderMock, _classDeclarationProviderMock);
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
       var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
       var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder();
 
-      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
+      _aspectTypesProviderMock.Expect (x => x.GetAspectClassTypes()).Return (aspectTypes);
       _classDeclarationProviderMock
           .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1)))
           .Return (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }.AsOneTime ());
@@ -57,37 +57,21 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
 
       var result = _provider.GetDeclarations().ToList();
 
-      _typeDiscoveryServiceMock.VerifyAllExpectations();
+      _aspectTypesProviderMock.VerifyAllExpectations ();
       _classDeclarationProviderMock.VerifyAllExpectations();
       Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
     }
 
     [Test]
-    public void GetDeclarations_IgnoreInterfaces ()
+    public void Resolution ()
     {
-      var aspectTypes = new[] { typeof (IAspect) };
-      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
+      var instances = SafeServiceLocator.Current.GetAllInstances<IAssemblyLevelDeclarationProvider>();
 
-      Assert.That (() => _provider.GetDeclarations().ToList(), Throws.Nothing);
-    }
-
-    [Test]
-    public void GetDeclarations_NoParameterlessConstructor ()
-    {
-      var aspectTypes = new[] { typeof(DomainAspect3) };
-      _typeDiscoveryServiceMock.Expect (x => x.GetTypes (typeof (IAspect), false)).Return (aspectTypes);
-
-      var message = string.Format ("Cannot create an object of type '{0}' without parameterless constructor.", typeof (DomainAspect3).Name);
-      Assert.That (() => _provider.GetDeclarations().ToList(), Throws.InvalidOperationException.With.Message.EqualTo (message));
+      Assert.That (instances, Has.Some.TypeOf<AspectClassDeclarationProvider>());
     }
 
     class DomainAspect1 : IAspect {}
 
     class DomainAspect2 : IAspect {}
-
-    class DomainAspect3 : IAspect
-    {
-      public DomainAspect3 (string arg) {}
-    }
   }
 }

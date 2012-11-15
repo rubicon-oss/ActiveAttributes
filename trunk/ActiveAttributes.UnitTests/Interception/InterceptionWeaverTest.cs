@@ -90,7 +90,7 @@ namespace ActiveAttributes.UnitTests.Interception
           .Expect (
               x => x.Create (
                   Arg.Is (method),
-                  Arg<BodyContextBase>.Matches (y => y.DeclaringType == method.DeclaringType),
+                  Arg<MethodBodyModificationContext>.Matches (y => y.DeclaringType == method.DeclaringType),
                   Arg<IEnumerable<Tuple<MethodInfo, IStorage>>>.Is.Anything,
                   Arg.Is (fakeMemberInfoField),
                   Arg.Is (fakeDelegateField)))

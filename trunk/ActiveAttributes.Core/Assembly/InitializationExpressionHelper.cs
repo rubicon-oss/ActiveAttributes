@@ -88,8 +88,9 @@ namespace ActiveAttributes.Assembly
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
       Assertion.IsTrue (method is MutableMethodInfo);
 
-      var copy = _methodCopyService.GetCopy ((MutableMethodInfo) method);
-      var delegateType = method.GetDelegateType();
+      var mutableMethodInfo = (MutableMethodInfo) method;
+      var copy = _methodCopyService.GetCopy (mutableMethodInfo);
+      var delegateType = method.GetDelegateType ();
 
       return new NewDelegateExpression (delegateType, thisExpression, copy);
     }

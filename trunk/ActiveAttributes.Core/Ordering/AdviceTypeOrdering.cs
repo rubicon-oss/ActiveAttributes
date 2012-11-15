@@ -20,13 +20,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Ordering
 {
-  public interface IAdviceTypeOrdering : IAdviceOrdering
-  {
-    Type BeforeType { get; }
-    Type AfterType { get; }
-  }
-
-  public class AdviceTypeOrdering : AdviceOrderingBase, IAdviceTypeOrdering
+  public class AdviceTypeOrdering : AdviceOrderingBase
   {
     private readonly Type _beforeType;
     private readonly Type _afterType;

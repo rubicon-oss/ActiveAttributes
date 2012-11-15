@@ -30,6 +30,7 @@ namespace ActiveAttributes.IntegrationTests
     {
       var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
       var instance = assembleType.CreateInstance<DomainType> ();
+      SkipDeletion();
 
       Assert.That (() => instance.ThrowingMethod1 (), Throws.Exception);
       Assert.That (() => instance.ThrowingMethod2 (), Throws.Nothing);

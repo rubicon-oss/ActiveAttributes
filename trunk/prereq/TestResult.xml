@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\TypePipe.IntegrationTests.dll" total="5" errors="1" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2012-11-06" time="09:50:03">
+  <environment nunit-version="2.6.2.12296" clr-version="2.0.50727.6387" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\development\Remotion\trunk\prereq\Tools\NUnit-2.6\bin" machine-name="W0396" user="matthias.koch" user-domain="RUBICON" />
+  <culture-info current-culture="de-AT" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\TypePipe.IntegrationTests.dll" executed="True" result="Failure" success="False" time="0.967" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="TypePipe" executed="True" result="Failure" success="False" time="0.946" asserts="0">
+        <results>
+          <test-suite type="SetUpFixture" name="IntegrationTests" executed="True" result="Failure" success="False" time="0.942" asserts="0">
+            <results>
+              <test-suite type="TestFixture" name="ModifyConstructorTest" executed="True" result="Failure" success="False" time="0.921" asserts="0">
+                <results>
+                  <test-case name="TypePipe.IntegrationTests.ModifyConstructorTest.AddedCtor_DelegatesTo_ModifiedExistingCtor" executed="True" result="Success" success="True" time="0.610" asserts="1" />
+                  <test-case name="TypePipe.IntegrationTests.ModifyConstructorTest.ModifiedExistingCtor_DelegatesTo_AddedCtor" executed="True" result="Success" success="True" time="0.082" asserts="2" />
+                  <test-case name="TypePipe.IntegrationTests.ModifyConstructorTest.ModifyAddedConstructor" executed="True" result="Success" success="True" time="0.055" asserts="1" />
+                  <test-case name="TypePipe.IntegrationTests.ModifyConstructorTest.ModifyExistingConstructor" executed="True" result="Success" success="True" time="0.069" asserts="2" />
+                  <test-case name="TypePipe.IntegrationTests.ModifyConstructorTest.ModifyExistingConstructor_" executed="True" result="Error" success="False" time="0.073" asserts="0">
+                    <failure>
+                      <message><![CDATA[TearDown : Remotion.Development.UnitTesting.PEVerifyException : PEVerify returned 1.
+
+Microsoft (R) .NET Framework PE Verifier.  Version  3.5.30729.1
+Copyright (c) Microsoft Corporation.  All rights reserved.
+
+[IL]: Error: [C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\GeneratedAssemblies\ModifyConstructorTest.ModifyExistingConstructor_.dll : TypePipe.IntegrationTests.ModifyConstructorTest\+DomainType_Proxy1::.ctor][mdToken=0x6000002][offset 0x00000002][found <uninitialized> ref ('this' ptr) 'TypePipe.IntegrationTests.ModifyConstructorTest\+DomainType_Proxy1'][expected ref 'TypePipe.IntegrationTests.ModifyConstructorTest+DomainType'] Unexpected type on the stack.
+[IL]: Error: [C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\GeneratedAssemblies\ModifyConstructorTest.ModifyExistingConstructor_.dll : TypePipe.IntegrationTests.ModifyConstructorTest\+DomainType_Proxy1::.ctor][mdToken=0x6000002][offset 0x00000007] Return from .ctor when this is uninitialized.
+2 Error(s) Verifying C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\GeneratedAssemblies\ModifyConstructorTest.ModifyExistingConstructor_.dll
+]]></message>
+                      <stack-trace><![CDATA[--TearDown
+at Remotion.Development.UnitTesting.PEVerifier.VerifyPEFile(String modulePath, PEVerifyVersion version) in c:\development\Remotion\trunk\Remotion\Development\Core\UnitTesting\PEVerifier.cs:line 101
+at Remotion.Development.UnitTesting.PEVerifier.VerifyPEFile(String modulePath) in c:\development\Remotion\trunk\Remotion\Development\Core\UnitTesting\PEVerifier.cs:line 85
+at TypePipe.IntegrationTests.TypeAssemblerIntegrationTestBase.TearDown() in c:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\TypeAssemblerIntegrationTestBase.cs:line 82
+]]></stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

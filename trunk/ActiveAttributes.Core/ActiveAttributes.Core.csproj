@@ -65,24 +65,15 @@
     <Compile Include="Advices\AdviceExecution.cs" />
     <Compile Include="Advices\AdviceScope.cs" />
     <Compile Include="Assembly\Storages\GlobalStorage.cs" />
+    <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Discovery\AdviceBuilder.cs" />
     <Compile Include="Discovery\AdviceBuilderFactory.cs" />
     <Compile Include="Assembly\AdviceComposer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
-    <Compile Include="Configuration2\ActiveAttributesConfiguration.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration2\ActiveAttributesConfigurationProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration2\Configurators\AppConfigConfigurator.cs" />
-    <Compile Include="Configuration2\Configurators\DefaultAspectDescriptorProvidersConfigurator.cs" />
-    <Compile Include="Configuration2\IActiveAttributesConfigurator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Discovery\CustomAttributeProviderTransform.cs" />
+    <Compile Include="Discovery\DeclarationProviders\AspectTypesProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProvider.cs" />
     <Compile Include="Discovery\DeclarationProviders\IDeclarationProvider.cs">
@@ -108,6 +99,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
+    <Compile Include="Ordering\Providers\AppConfigTypeOrderingProvider.cs" />
+    <Compile Include="Ordering\Providers\AppConfigRoleOrderingProvider.cs" />
+    <Compile Include="Ordering\Providers\IAdviceOrderingProvider.cs" />
     <Compile Include="Ordering\StandardRoles.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
@@ -150,7 +144,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Advices\AdviceInfoAttribute.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
-    <Compile Include="Discovery\Construction\CustomAttributeDataConstruction.cs" />
+    <Compile Include="Discovery\Construction\AttributeConstruction.cs" />
     <Compile Include="Discovery\Construction\IConstruction.cs" />
     <Compile Include="Discovery\Construction\TypeConstruction.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttributeBase.cs" />
@@ -170,9 +164,9 @@
     <Compile Include="Pointcuts\TypeNamePointcut.cs" />
     <Compile Include="Pointcuts\VisibilityPointcut.cs" />
     <Compile Include="Assembly\ObjectFactory.cs" />
-    <Compile Include="Configuration\TypeRuleCollection.cs" />
-    <Compile Include="Configuration\TypeRuleElement.cs" />
-    <Compile Include="Configuration\AspectsConfigurationSection.cs" />
+    <Compile Include="Configuration\TypeOrderingCollection.cs" />
+    <Compile Include="Configuration\TypeOrderingElement.cs" />
+    <Compile Include="Configuration\ActiveAttributesConfigurationSection.cs" />
     <Compile Include="Ordering\AdviceOrderingBase.cs" />
     <Compile Include="Assembly\Storages\IStorage.cs" />
     <Compile Include="Assembly\Storages\InstanceStorage.cs" />
@@ -201,7 +195,7 @@
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
-    <None Include="Configuration\schema.xsd">
+    <None Include="Configuration\AppConfigSchema.xsd">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />

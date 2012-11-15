@@ -19,6 +19,7 @@ using System.Linq;
 using ActiveAttributes.Assembly;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -138,6 +139,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       CheckMatchesNot (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (int)), joinPoint);
       CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (DomainTypeBase)), joinPoint);
       CheckMatches (_pointcutEvaluator.MatchesReturnType, new ReturnTypePointcut (typeof (IDomainInterface)), joinPoint);
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IPointcutEvaluator>();
+
+      Assert.That (instance, Is.TypeOf<PointcutEvaluator>());
     }
 
     private void SetupPointcutParser (JoinPoint joinPoint, bool first, bool second)

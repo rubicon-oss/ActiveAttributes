@@ -20,6 +20,7 @@ using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Discovery
@@ -122,6 +123,14 @@ namespace ActiveAttributes.UnitTests.Discovery
       adviceBuilderMock.AssertWasCalled (x => x.SetName ("Name"));
       adviceBuilderMock.AssertWasCalled (x => x.AddPointcut (Arg<ReturnTypePointcut>.Is.Anything));
       adviceBuilderMock.AssertWasNotCalled (x => x.SetPriority (0));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<ICustomAttributeProviderTransform>();
+
+      Assert.That (instance, Is.TypeOf<CustomAttributeProviderTransform>());
     }
 
     class DomainAspect : IAspect

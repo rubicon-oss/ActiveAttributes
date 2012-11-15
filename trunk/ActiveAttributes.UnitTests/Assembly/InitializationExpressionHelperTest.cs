@@ -23,6 +23,7 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 
@@ -176,6 +177,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result.Type, Is.EqualTo (delegateType));
       Assert.That (result.Method, Is.EqualTo (fakeMethod));
       Assert.That (result.Target, Is.SameAs (thisExpression));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IInitializationExpressionHelper> ();
+
+      Assert.That (instance, Is.TypeOf<InitializationExpressionHelper> ());
     }
 
     private void SetupConstructionMock (

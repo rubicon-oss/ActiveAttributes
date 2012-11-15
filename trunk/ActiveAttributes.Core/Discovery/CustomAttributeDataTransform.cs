@@ -20,15 +20,14 @@ using ActiveAttributes.Advices;
 using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Pointcuts;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Discovery
 {
-  /// <summary>
-  /// Transforms <see cref="ICustomAttributeNamedArgument"/>s declared in <see cref="ICustomAttributeData"/>s to an <see cref="Advice"/>.
-  /// </summary>
+  [ConcreteImplementation (typeof (CustomAttributeDataTransform))]
   public interface ICustomAttributeDataTransform
   {
     IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders);
@@ -53,9 +52,9 @@ namespace ActiveAttributes.Discovery
     public IEnumerable<IAdviceBuilder> UpdateAdviceBuilders (ICustomAttributeData customAttributeData, IEnumerable<IAdviceBuilder> adviceBuilders)
     {
       ArgumentUtility.CheckNotNull ("customAttributeData", customAttributeData);
-      var buildersAsCollection = adviceBuilders.ConvertToCollection();
+      var buildersAsCollection = adviceBuilders.ConvertToCollection ();
 
-      var constructionInfo = new CustomAttributeDataConstruction (customAttributeData);
+      var constructionInfo = new AttributeConstruction (customAttributeData);
       UpdateBuilders (buildersAsCollection, (x, v) => x.SetConstruction (v), constructionInfo);
 
       foreach (var argument in customAttributeData.NamedArguments)

@@ -18,6 +18,7 @@ using System.Linq;
 using ActiveAttributes.Discovery;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Discovery
@@ -52,6 +53,14 @@ namespace ActiveAttributes.UnitTests.Discovery
 
       _customAttributeConverterMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeMethodAdviceBuilder));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IClassDeclarationProvider>();
+
+      Assert.That (instance, Is.TypeOf<ClassDeclarationProvider>());
     }
 
     class DomainAspect : IAspect

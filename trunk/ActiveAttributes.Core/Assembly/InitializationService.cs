@@ -23,11 +23,14 @@ using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
+  [ConcreteImplementation (typeof (InitializationService))]
   public interface IInitializationService
   {
     IStorage AddMemberInfo (MutableMethodInfo mutableMethod);
@@ -154,7 +157,7 @@ namespace ActiveAttributes.Assembly
     {
       var initialization = initializationProvider (null);
       var assignExpression = GetAssignExpression (storage, null, initialization);
-      mutableType.AddTypeInitialization (assignExpression);
+      mutableType.AddTypeInitialization (ctx => assignExpression);
     }
 
     private BinaryExpression GetAssignExpression (IStorage storage, Expression thisExpression, Expression initialization)

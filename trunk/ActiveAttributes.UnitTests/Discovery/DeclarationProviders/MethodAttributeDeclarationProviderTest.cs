@@ -19,7 +19,8 @@ using System.Linq;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
+using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
@@ -32,24 +33,38 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
     public void GetDeclarations ()
     {
       var aspectDeclarationHelperMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider> ();
-      var relatedMethodFinderMock = MockRepository.GenerateStrictMock<IRelatedMethodFinder> ();
-      var method = ObjectMother.GetMethodInfo ();
-      var fakeMethod = ObjectMother.GetMethodInfo ();
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
+      var baseMethod = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainTypeBase obj) => obj.Method());
       var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
       var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
       var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder ();
 
-      relatedMethodFinderMock.Expect (x => x.GetBaseMethod (method)).Return (fakeMethod);
-      relatedMethodFinderMock.Expect (x => x.GetBaseMethod (fakeMethod)).Return (null);
       aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (method)).Return (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }.AsOneTime());
-      aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (fakeMethod)).Return (new[] { fakeAdviceBuilder3 }.AsOneTime());
+      aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (baseMethod)).Return (new[] { fakeAdviceBuilder3 }.AsOneTime());
 
-      var provider = new MethodAttributeDeclarationProvider (aspectDeclarationHelperMock, relatedMethodFinderMock);
+      var provider = new MethodAttributeDeclarationProvider (aspectDeclarationHelperMock);
       var result = provider.GetDeclarations (method).ToArray ();
 
-      relatedMethodFinderMock.VerifyAllExpectations ();
       aspectDeclarationHelperMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instances = SafeServiceLocator.Current.GetAllInstances<IMethodLevelDeclarationProvider>();
+
+      Assert.That (instances, Has.Some.TypeOf<MethodAttributeDeclarationProvider>());
+    }
+
+    class DomainTypeBase
+    {
+      public virtual void Method () {}
+    }
+
+    class DomainType : DomainTypeBase
+    {
+      public override void Method () {}
     }
   }
 }

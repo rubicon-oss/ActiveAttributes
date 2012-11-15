@@ -17,9 +17,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using ActiveAttributes.Aspects;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery.Construction
 {
@@ -31,13 +33,12 @@ namespace ActiveAttributes.Discovery.Construction
 
     public TypeConstruction (Type aspectType)
     {
-      if (!typeof (IAspect).IsAssignableFrom (aspectType))
-        throw new Exception ("TODO (low) exception text");
-
+      ArgumentUtility.CheckNotNull ("aspectType", aspectType);
+      Assertion.IsTrue (typeof (IAspect).IsAssignableFrom (aspectType) || typeof (AspectAttributeBase).IsAssignableFrom (aspectType));
+      
       _constructorInfo = aspectType.GetConstructor (Type.EmptyTypes);
-
       if (_constructorInfo == null)
-        throw new Exception ("TODO (low) exception text");
+        throw new ArgumentException (aspectType.Name + " must provide a default constructor.");
 
       _constructorArguments = new object[0].ToList().AsReadOnly();
       _namedArguments = new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);

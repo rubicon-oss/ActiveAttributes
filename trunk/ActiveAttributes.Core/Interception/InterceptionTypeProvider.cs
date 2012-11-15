@@ -20,11 +20,13 @@ using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Interception
 {
+  [ConcreteImplementation (typeof (InterceptionTypeProvider))]
   public interface IInterceptionTypeProvider
   {
     Type GetInvocationType (MethodInfo method);

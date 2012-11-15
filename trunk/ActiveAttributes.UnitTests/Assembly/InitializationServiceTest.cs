@@ -23,6 +23,7 @@ using ActiveAttributes.Assembly.Storages;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
@@ -189,6 +190,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       Assert.That (result, Is.SameAs (_storageMock));
       var mutableType = _mutableType;
       CheckInstanceInitialization(mutableType, fakeMember, fakeMemberInit);
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IInitializationService> ();
+
+      Assert.That (instance, Is.TypeOf<InitializationService> ());
     }
 
     private static void CheckInstanceInitialization (MutableType mutableType, Expression member, Expression initialization)

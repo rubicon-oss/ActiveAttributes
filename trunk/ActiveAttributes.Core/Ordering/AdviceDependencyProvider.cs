@@ -19,12 +19,15 @@ using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Extensions;
+using ActiveAttributes.Ordering.Providers;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Ordering
 {
+  [ConcreteImplementation (typeof (AdviceDependencyProvider))]
   public interface IAdviceDependencyProvider
   {
     IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices);
@@ -35,13 +38,13 @@ namespace ActiveAttributes.Ordering
 
   public class AdviceDependencyProvider : IAdviceDependencyProvider
   {
-    private readonly ICollection<IAdviceOrdering> _orderings;
+    private readonly IEnumerable<IAdviceOrderingProvider> _orderingProviders;
 
-    public AdviceDependencyProvider (IEnumerable<IAdviceOrdering> orderings)
+    public AdviceDependencyProvider (IEnumerable<IAdviceOrderingProvider> orderingProviders)
     {
-      ArgumentUtility.CheckNotNull ("orderings", orderings);
+      ArgumentUtility.CheckNotNull ("orderingProviders", orderingProviders);
 
-      _orderings = orderings.ConvertToCollection();
+      _orderingProviders = orderingProviders;
     }
 
     public IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices)
@@ -49,11 +52,12 @@ namespace ActiveAttributes.Ordering
       ArgumentUtility.CheckNotNull ("advices", advices);
 
       var advicesAsCollection = advices.ConvertToCollection();
+      var orderings = _orderingProviders.SelectMany (x => x.GetOrderings ()).ConvertToCollection ();
 
       var dependencies = from advice1 in advicesAsCollection
                          from advice2 in advicesAsCollection
                          where advice1 != advice2
-                         from ordering in _orderings
+                         from ordering in orderings
                          where ordering.DependVisit (this, advice1, advice2)
                          select Tuple.Create (advice1, advice2);
 

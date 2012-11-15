@@ -16,6 +16,7 @@
 using System;
 using ActiveAttributes.Discovery;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.UnitTests.Assembly
 {
@@ -30,6 +31,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       var result = factory.Create();
 
       Assert.That (result, Is.TypeOf<AdviceBuilder>());
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IAdviceBuilderFactory>();
+
+      Assert.That (instance, Is.TypeOf<AdviceBuilderFactory>());
     }
   }
 }

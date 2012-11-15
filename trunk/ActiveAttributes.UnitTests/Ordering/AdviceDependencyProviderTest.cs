@@ -17,9 +17,12 @@ using System;
 using System.Linq;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Ordering;
+using ActiveAttributes.Ordering.Providers;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
+using Remotion.Development.UnitTesting.Enumerables;
 
 namespace ActiveAttributes.UnitTests.Ordering
 {
@@ -31,7 +34,7 @@ namespace ActiveAttributes.UnitTests.Ordering
     [SetUp]
     public void SetUp ()
     {
-      _provider = new AdviceDependencyProvider (Enumerable.Empty<IAdviceOrdering>());
+      _provider = new AdviceDependencyProvider (Enumerable.Empty<IAdviceOrderingProvider>());
     }
 
     [Test]
@@ -41,11 +44,16 @@ namespace ActiveAttributes.UnitTests.Ordering
       var advice2 = ObjectMother.GetAdvice (name: "2");
       var advice3 = ObjectMother.GetAdvice (name: "3");
 
+      var orderingProviderMock1 = MockRepository.GenerateStrictMock<IAdviceOrderingProvider>();
+      var orderingProviderMock2 = MockRepository.GenerateStrictMock<IAdviceOrderingProvider>();
       var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
       var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
       var orderingMock3 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
 
-      var provider = new AdviceDependencyProvider (new[] { orderingMock1, orderingMock2, orderingMock3 });
+      orderingProviderMock1.Expect (x => x.GetOrderings()).Return (new[] { orderingMock1, orderingMock2 }.AsOneTime());
+      orderingProviderMock2.Expect (x => x.GetOrderings()).Return (new[] { orderingMock3 }.AsOneTime());
+
+      var provider = new AdviceDependencyProvider (new[] { orderingProviderMock1, orderingProviderMock2 });
 
       orderingMock1.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (false);
       orderingMock1.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (true);
@@ -70,6 +78,8 @@ namespace ActiveAttributes.UnitTests.Ordering
 
       var result = provider.GetDependencies (new[] { advice1, advice2, advice3 }).ToArray();
 
+      orderingProviderMock1.VerifyAllExpectations();
+      orderingProviderMock2.VerifyAllExpectations();
       orderingMock1.VerifyAllExpectations();
       orderingMock2.VerifyAllExpectations();
       orderingMock3.VerifyAllExpectations();
@@ -85,10 +95,12 @@ namespace ActiveAttributes.UnitTests.Ordering
       var advice1 = ObjectMother.GetAdvice (name: "1");
       var advice2 = ObjectMother.GetAdvice (name: "2");
 
+      var orderingProviderMock = MockRepository.GenerateStrictMock<IAdviceOrderingProvider> ();
       var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
       var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
+      orderingProviderMock.Expect (x => x.GetOrderings()).Return (new[] { orderingMock1, orderingMock2 });
 
-      var provider = new AdviceDependencyProvider (new[] { orderingMock1, orderingMock2 });
+      var provider = new AdviceDependencyProvider (new[] { orderingProviderMock });
 
       orderingMock1.Expect (x => x.DependVisit (provider, advice1, advice2)).Return (true);
       orderingMock1.Expect (x => x.DependVisit (provider, advice2, advice1)).Return (false);
@@ -117,6 +129,14 @@ namespace ActiveAttributes.UnitTests.Ordering
       CheckDepends (_provider.DependsRole, new AdviceRoleOrdering ("A*", "B", "s"), GetAdvice (role: "Atest"), GetAdvice (role: "B"));
       CheckDepends (_provider.DependsRole, new AdviceRoleOrdering ("A", "B*", "s"), GetAdvice (role: "A"), GetAdvice (role: "Btest"));
       CheckDependsNot (_provider.DependsRole, new AdviceRoleOrdering ("A", "B", "s"), GetAdvice (role: "A"), GetAdvice (role: "C"));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IAdviceDependencyProvider>();
+
+      Assert.That (instance, Is.TypeOf<AdviceDependencyProvider>());
     }
 
     private void CheckDepends<T> (Func<Advice, Advice, T, bool> dependsFunc, T ordering, Advice advice1, Advice advice2)

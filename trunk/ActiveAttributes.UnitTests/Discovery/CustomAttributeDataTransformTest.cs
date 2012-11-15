@@ -20,6 +20,7 @@ using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -56,14 +57,14 @@ namespace ActiveAttributes.UnitTests.Discovery
           };
       var customAttributeData = ObjectMother.GetCustomAttributeData (typeof(AspectAttributeBase), namedArguments);
 
-      adviceBuilderMock1.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock1);
+      adviceBuilderMock1.Expect (x => x.SetConstruction (Arg<AttributeConstruction>.Is.TypeOf)).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetName ("name")).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetScope (AdviceScope.Static)).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.SetPriority (4)).Return (adviceBuilderMock1);
       adviceBuilderMock1.Expect (x => x.AddPointcut (null)).IgnoreArguments ().Return (adviceBuilderMock1).Repeat.Any ();
-      adviceBuilderMock2.Expect (x => x.SetConstruction (Arg<CustomAttributeDataConstruction>.Is.TypeOf)).Return (adviceBuilderMock2);
+      adviceBuilderMock2.Expect (x => x.SetConstruction (Arg<AttributeConstruction>.Is.TypeOf)).Return (adviceBuilderMock2);
       adviceBuilderMock2.Expect (x => x.SetName ("name")).Return (adviceBuilderMock2);
       adviceBuilderMock2.Expect (x => x.SetRole ("role")).Return (adviceBuilderMock2);
       adviceBuilderMock2.Expect (x => x.SetExecution (AdviceExecution.Around)).Return (adviceBuilderMock2);
@@ -91,7 +92,14 @@ namespace ActiveAttributes.UnitTests.Discovery
       Assert.That (pointcuts, Has.Some.TypeOf<ArgumentTypePointcut>().With.Property ("ArgumentType").EqualTo (typeof (string)));
       Assert.That (pointcuts, Has.Some.TypeOf<VisibilityPointcut>().With.Property ("Visibility").EqualTo (Visibility.Family));
       Assert.That (pointcuts, Has.Some.TypeOf<CustomAttributePointcut>().With.Property ("CustomAttributeType").EqualTo (typeof (Attribute)));
+    }
 
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<ICustomAttributeDataTransform>();
+
+      Assert.That (instance, Is.TypeOf<CustomAttributeDataTransform>());
     }
   }
 }

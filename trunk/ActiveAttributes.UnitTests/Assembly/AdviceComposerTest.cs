@@ -20,6 +20,7 @@ using ActiveAttributes.Assembly;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Ordering;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
@@ -60,6 +61,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       pointcutVisitorMock.VerifyAllExpectations ();
       adviceSequencerMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeAdvices));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IAdviceComposer>();
+
+      Assert.That (instance, Is.TypeOf<AdviceComposer>());
     }
   }
 }

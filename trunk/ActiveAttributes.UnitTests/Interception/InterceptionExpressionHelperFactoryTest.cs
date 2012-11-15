@@ -19,11 +19,11 @@ using System.Reflection;
 using ActiveAttributes.Assembly.Storages;
 using ActiveAttributes.Interception;
 using ActiveAttributes.Interception.Invocations;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.Expressions;
 using Rhino.Mocks;
 
@@ -57,6 +57,14 @@ namespace ActiveAttributes.UnitTests.Interception
       Check (result, "_advices", Is.EqualTo (fakeAdvices));
       Check (result, "_memberInfoStorage", Is.EqualTo (fakeMemberInfoStorage));
       Check (result, "_delegateStorage", Is.EqualTo (fakeDelegateStorage));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IInterceptionExpressionHelperFactory>();
+
+      Assert.That (instance, Is.TypeOf<InterceptionExpressionHelperFactory>());
     }
 
     private static void Check (IInterceptionExpressionHelper result, string fieldName, IResolveConstraint constraint)

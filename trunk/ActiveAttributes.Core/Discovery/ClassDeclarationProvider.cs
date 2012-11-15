@@ -18,10 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery
 {
+  [ConcreteImplementation (typeof (ClassDeclarationProvider))]
   public interface IClassDeclarationProvider
   {
     IEnumerable<IAdviceBuilder> GetAdviceBuilders (Type aspectType);

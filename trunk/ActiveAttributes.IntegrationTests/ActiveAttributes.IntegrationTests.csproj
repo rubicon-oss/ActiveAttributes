@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\prereq\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\prereq\NLog.dll</HintPath>
     </Reference>
@@ -65,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspectClassTest.cs" />
+    <Compile Include="CustomPointcutTest.cs" />
     <Compile Include="PropertyTest.cs" />
     <Compile Include="InterfaceAspectsTest.cs" />
     <Compile Include="TypeAssemblerIntegrationTestBase.cs" />

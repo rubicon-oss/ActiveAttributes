@@ -101,7 +101,7 @@ namespace ActiveAttributes.UnitTests.Assembly
     public void SetConstruction ()
     {
       var typeConstruction = ObjectMother.GetConstructionByType (typeof (TypeConstruction));
-      var attrConstruction = ObjectMother.GetConstructionByType (typeof (CustomAttributeDataConstruction));
+      var attrConstruction = ObjectMother.GetConstructionByType (typeof (AttributeConstruction));
 
       var builder1 = ObjectMother.GetAdviceBuilder (typeConstruction);
       var builder2 = ObjectMother.GetAdviceBuilder (attrConstruction);

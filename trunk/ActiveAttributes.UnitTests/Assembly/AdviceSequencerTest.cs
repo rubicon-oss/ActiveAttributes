@@ -20,6 +20,7 @@ using ActiveAttributes.Utilities;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -88,6 +89,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       _dependencyProviderMock.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
 
       Assert.That (() => _adviceSequencer.Sort (advices), Throws.TypeOf<CircularDependencyException>());
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IAdviceSequencer>();
+
+      Assert.That (instance, Is.TypeOf<AdviceSequencer>());
     }
   }
 }

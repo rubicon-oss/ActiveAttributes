@@ -70,6 +70,7 @@
       <HintPath>..\prereq\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -91,7 +92,11 @@
     <Compile Include="Assembly\Storages\InstanceStorageTest.cs" />
     <Compile Include="Assembly\Storages\StaticStorageTest.cs" />
     <Compile Include="Assembly\InitializationServiceTest.cs" />
+    <Compile Include="Configuration\ConfigurationProviderTest.cs" />
+    <Compile Include="Discovery\Construction\AttributeConstructionTest.cs" />
+    <Compile Include="Discovery\Construction\TypeConstructionTest.cs" />
     <Compile Include="Discovery\CustomAttributeProviderTransformTest.cs" />
+    <Compile Include="Discovery\DeclarationProviders\AspectTypesProviderTest.cs" />
     <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs">
       <SubType>Code</SubType>
@@ -110,6 +115,7 @@
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetNewDelegateExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAspectType.cs" />
     <Compile Include="Ordering\AdviceDependencyProviderTest.cs" />
+    <Compile Include="Ordering\Providers\AppConfigTypeOrderingProviderTest.cs" />
     <Compile Include="Pointcuts\MemberNamePointcutTest.cs" />
     <Compile Include="Pointcuts\NamespacePointcutTest.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBaseTest.cs" />
@@ -117,8 +123,6 @@
     <Compile Include="Pointcuts\ReturnTypePointcutTest.cs" />
     <Compile Include="Pointcuts\TypeNamePointcutTest.cs" />
     <Compile Include="Pointcuts\TypePointcutTest.cs" />
-    <Compile Include="Configuration2\ActiveAttributesConfigurationProviderTest.cs" />
-    <Compile Include="Configuration2\ActiveAttributesConfigurationTest.cs" />
     <Compile Include="Assembly\PointcutEvaluatorTest.cs" />
     <Compile Include="Discovery\DeclarationProviders\AspectClassDeclarationProviderTest.cs" />
     <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProviderTest.cs" />
@@ -139,7 +143,7 @@
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetParameterExpression.cs" />
     <Compile Include="ObjectMother\Reflection\ObjectMother.GetPropertyInfo.cs" />
     <Compile Include="ObjectMother\TypePipe\ObjectMother.GetCustomAttributeNamedArgument.cs" />
-    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetBodyContext.cs" />
+    <Compile Include="ObjectMother\TypePipe\ObjectMother.GetContext.cs" />
     <Compile Include="ObjectMother\TypePipe\ObjectMother.GetMutableMethodInfo.cs" />
     <Compile Include="ObjectMother\TypePipe\ObjectMother.GetMutableType.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAdvice.cs" />
@@ -166,6 +170,7 @@
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceLocatorTest.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentTest.cs" />

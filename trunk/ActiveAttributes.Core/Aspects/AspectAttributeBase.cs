@@ -20,7 +20,8 @@ using ActiveAttributes.Pointcuts;
 
 namespace ActiveAttributes.Aspects
 {
-  public abstract class AspectAttributeBase : Attribute, IAspect
+  [AdviceInfo (Scope = AdviceScope.Static)]
+  public abstract class AspectAttributeBase : Attribute
   {
     #region AdviceInfo
 

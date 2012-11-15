@@ -16,9 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Linq;
-using ActiveAttributes.Aspects;
 using ActiveAttributes.Extensions;
 using Remotion.Utilities;
 
@@ -26,21 +24,22 @@ namespace ActiveAttributes.Discovery.DeclarationProviders
 {
   public class AssemblyAttributeDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
-    private readonly ITypeDiscoveryService _typeDiscoveryService;
+    private readonly IAspectTypesProvider _aspectTypesProvider;
     private readonly IAttributeDeclarationProvider _attributeDeclarationProvider;
 
-    public AssemblyAttributeDeclarationProvider (ITypeDiscoveryService typeDiscoveryService, IAttributeDeclarationProvider attributeDeclarationProvider)
+    public AssemblyAttributeDeclarationProvider (IAspectTypesProvider aspectTypesProvider, IAttributeDeclarationProvider attributeDeclarationProvider)
     {
-      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
+      ArgumentUtility.CheckNotNull ("aspectTypesProvider", aspectTypesProvider);
       ArgumentUtility.CheckNotNull ("attributeDeclarationProvider", attributeDeclarationProvider);
 
-      _typeDiscoveryService = typeDiscoveryService;
+      _aspectTypesProvider = aspectTypesProvider;
       _attributeDeclarationProvider = attributeDeclarationProvider;
     }
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
-      var types = _typeDiscoveryService.GetTypes (typeof (AspectAttributeBase), false).Cast<Type> ();
+      // TODO get all assemblies?
+      var types = _aspectTypesProvider.GetAspectAttributeTypes();
       var assemblies = types.Distinct (x => x.Assembly);
       var declarations = assemblies.Select (x => _attributeDeclarationProvider.GetAdviceBuilders (x));
       return declarations.SelectMany (x => x);

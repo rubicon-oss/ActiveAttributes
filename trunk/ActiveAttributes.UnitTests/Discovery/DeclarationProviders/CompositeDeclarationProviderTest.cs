@@ -21,6 +21,7 @@ using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.DeclarationProviders;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
@@ -72,6 +73,14 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
       var actual = assemblyResult.Concat (typeResult).Concat (methodResult);
       var expected = Concat (fakeDeclarations1, fakeDeclarations2, fakeDeclarations3, fakeDeclarations4, fakeDeclarations5, fakeDeclarations6);
       Assert.That (actual, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IDeclarationProvider>();
+
+      Assert.That (instance, Is.TypeOf<CompositeDeclarationProvider>());
     }
 
     private IEnumerable<IAdviceBuilder> Concat (params IEnumerable<IAdviceBuilder>[] declarations)

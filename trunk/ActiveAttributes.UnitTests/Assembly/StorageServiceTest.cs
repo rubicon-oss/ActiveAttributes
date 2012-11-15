@@ -20,6 +20,7 @@ using ActiveAttributes.Assembly;
 using ActiveAttributes.Assembly.Storages;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -80,6 +81,14 @@ namespace ActiveAttributes.UnitTests.Assembly
       var fakeExpression = ObjectMother.GetExpression();
       var storageExpression = result.GetStorageExpression (fakeExpression);
       Assert.That (storageExpression.Type, Is.EqualTo (type));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IStorageService>();
+
+      Assert.That (instance, Is.TypeOf<StorageService>());
     }
   }
 }

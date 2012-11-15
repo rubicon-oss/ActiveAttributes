@@ -21,6 +21,7 @@ using ActiveAttributes.Discovery;
 using ActiveAttributes.Discovery.DeclarationProviders;
 using Remotion;
 using Remotion.TypePipe;
+using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;

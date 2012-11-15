@@ -18,12 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Extensions;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Discovery
 {
+  [ConcreteImplementation (typeof (AttributeDeclarationProvider))]
   public interface IAttributeDeclarationProvider
   {
     // TODO add support for 'mustInherit'
@@ -53,13 +55,12 @@ namespace ActiveAttributes.Discovery
       ArgumentUtility.CheckNotNull ("member", member);
 
       var customAttributeDatas = TypePipeCustomAttributeData.GetCustomAttributes (member);
-      foreach (var adviceBuilder in GetAdviceBuilders(customAttributeDatas))
-        yield return adviceBuilder;
+      return GetAdviceBuilders(customAttributeDatas);
     }
 
     public IEnumerable<IAdviceBuilder> GetAdviceBuilders (System.Reflection.Assembly assembly)
     {
-      throw new NotImplementedException();
+      yield break;
     }
 
     public IEnumerable<IAdviceBuilder> GetAdviceBuilders (ParameterInfo parameter)

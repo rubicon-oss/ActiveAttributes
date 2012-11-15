@@ -15,9 +15,11 @@
 // under the License.
 
 using System;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Discovery
 {
+  [ConcreteImplementation (typeof (AdviceBuilderFactory))]
   public interface IAdviceBuilderFactory
   {
     IAdviceBuilder Create ();

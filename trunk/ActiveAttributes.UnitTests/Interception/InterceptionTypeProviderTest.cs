@@ -20,6 +20,7 @@ using ActiveAttributes.Interception;
 using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.UnitTests.Interception
 {
@@ -93,6 +94,14 @@ namespace ActiveAttributes.UnitTests.Interception
       var actual = _provider.GetInvocationType (method);
 
       Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType, string>)));
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IInterceptionTypeProvider>();
+
+      Assert.That (instance, Is.TypeOf<InterceptionTypeProvider>());
     }
 
     class DomainType

@@ -2611,7 +2611,7 @@
             should add certain attributes without itself exposing those attributes.
             </summary>
         </member>
-        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter2">
+        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter">
             <summary>
             Implements <see cref="T:Remotion.Mixins.Definitions.Building.DependencySorting.IMixinDefinitionSorter"/> by sorting the mixins according to their dependencies and using lexicographic ordering when
             no dependencies are defined. For all mixins that are sorted lexicographically but overlap in overriding the same method, the algorithm 
@@ -2674,7 +2674,7 @@
             Builds <see cref="T:Remotion.Mixins.Definitions.CompleteInterfaceDependencyDefinition"/> objects, for when a target class has a complete interface.
             </summary>
         </member>
-        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.MixinDefinitionSorter">
+        <member name="T:Remotion.Mixins.Definitions.Building.DependencySorting.LegacyMixinDefinitionSorter">
             <summary>
             Sorts the mixin definitions of a <see cref="T:Remotion.Mixins.Definitions.TargetClassDefinition"/> by first grouping them into independent groups via 
             <see cref="T:Remotion.Mixins.Definitions.Building.DependencySorting.DependentMixinGrouper"/> and then sorting the mixins in the groups via <see cref="T:Remotion.Mixins.Utilities.DependencySort.DependentObjectSorter`1"/>. 

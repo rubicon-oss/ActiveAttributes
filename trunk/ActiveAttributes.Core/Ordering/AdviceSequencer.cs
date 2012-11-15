@@ -24,10 +24,6 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Ordering
 {
-  /// <summary>
-  /// Sorts a collection of items (i.e., mostly <see cref="IAspectDescriptor"/>s) according to the ordering rules defined in
-  /// the <see cref="IActiveAttributesConfiguration"/>.
-  /// </summary>
   [ConcreteImplementation (typeof (AdviceSequencer))]
   public interface IAdviceSequencer
   {

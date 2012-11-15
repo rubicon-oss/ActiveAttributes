@@ -22,6 +22,7 @@ using ActiveAttributes.Discovery;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
@@ -85,18 +86,27 @@ namespace ActiveAttributes.UnitTests.Discovery
       Assert.That (() => _provider.GetAdviceBuilders (method).ToArray(), Throws.Nothing);
     }
 
-    //[Test]
-    //public void ThrowsForOverSpecification ()
-    //{
-    //  CheckThrows ("method", typeof (MemberNamePointcut), typeof (DomainType).GetMethods().Single (x => x.Name == "MemberNamePointcut"));
-    //  CheckThrows ("method", typeof (ReturnTypePointcut), typeof (DomainType).GetMethods().Single (x => x.Name == "ReturnTypePointcut"));
-    //}
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IAttributeDeclarationProvider>();
 
-    //private void CheckThrows (string memberType, Type type, MemberInfo member)
-    //{
-    //  var message = string.Format ("Pointcut of type {0} cannot be applied to a {1}", type.Name, memberType);
-    //  Assert.That (() => _provider.GetAdviceBuilders (member).ToArray(), Throws.Exception.With.Message.EqualTo (message));
-    //}
+      Assert.That (instance, Is.TypeOf<AttributeDeclarationProvider>());
+    }
+
+    [Test]
+    [Ignore]
+    public void ThrowsForOverSpecification ()
+    {
+      CheckThrows ("method", typeof (MemberNamePointcut), typeof (DomainType).GetMethods ().Single (x => x.Name == "MemberNamePointcut"));
+      CheckThrows ("method", typeof (ReturnTypePointcut), typeof (DomainType).GetMethods ().Single (x => x.Name == "ReturnTypePointcut"));
+    }
+
+    private void CheckThrows (string memberType, Type type, MemberInfo member)
+    {
+      var message = string.Format ("Pointcut of type {0} cannot be applied to a {1}", type.Name, memberType);
+      Assert.That (() => _provider.GetAdviceBuilders (member).ToArray (), Throws.Exception.With.Message.EqualTo (message));
+    }
 
     class DomainType
     {

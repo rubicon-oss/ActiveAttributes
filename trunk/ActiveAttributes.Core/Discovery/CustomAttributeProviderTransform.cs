@@ -21,14 +21,12 @@ using ActiveAttributes.Advices;
 using ActiveAttributes.Discovery.Construction;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Pointcuts;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery
 {
-  /// <summary>
-  /// Transforms attributes declared on a <see cref="ICustomAttributeProvider"/> to an <see cref="Advice"/>.
-  /// If the provider is a <see cref="Type"/> also sets the <see cref="Advice.Construction"/>.
-  /// </summary>
+  [ConcreteImplementation (typeof (CustomAttributeProviderTransform))]
   public interface ICustomAttributeProviderTransform
   {
     IAdviceBuilder GetAdviceBuilder (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder parentAdviceBuilder = null);
