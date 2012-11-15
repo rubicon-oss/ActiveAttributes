@@ -31,7 +31,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
       var thisExpression = ObjectMother.GetThisExpression (declaringType);
       var storage = new InstanceStorage (field);
 
-      var result = storage.GetStorageExpression (thisExpression);
+      var result = storage.CreateStorageExpression (thisExpression);
 
       Assert.That (result, Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) result;

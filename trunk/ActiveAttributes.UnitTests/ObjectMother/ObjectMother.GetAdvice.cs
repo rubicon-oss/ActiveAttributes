@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
 
 namespace ActiveAttributes.UnitTests

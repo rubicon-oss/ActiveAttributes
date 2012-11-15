@@ -3,9 +3,9 @@ using NUnit.Framework;
 using PostSharp.Aspects;
 using PostSharp.Extensibility;
 
-[assembly: PostSharp.Aspect (AttributeTargetTypes = "PostSharp.DomainType", AttributeTargetElements = MulticastTargets.Method)]
+[assembly: PostSharp_.Aspect (AttributeTargetTypes = "PostSharp.DomainType", AttributeTargetElements = MulticastTargets.Method)]
 
-namespace PostSharp
+namespace PostSharp_
 {
   [TestFixture]
   public class Test

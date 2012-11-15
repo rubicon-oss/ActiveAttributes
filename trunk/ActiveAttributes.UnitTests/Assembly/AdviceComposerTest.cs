@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Discovery;
+using ActiveAttributes.Declaration;
 using ActiveAttributes.Ordering;
 using NUnit.Framework;
 using Remotion.ServiceLocation;

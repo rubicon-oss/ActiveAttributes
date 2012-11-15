@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly.Storages;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
@@ -164,7 +164,7 @@ namespace ActiveAttributes.Assembly
 
     private BinaryExpression GetAssignExpression (IStorage storage, Expression thisExpression, Expression initialization)
     {
-      return Expression.Assign (storage.GetStorageExpression (thisExpression), initialization);
+      return Expression.Assign (storage.CreateStorageExpression (thisExpression), initialization);
     }
   }
 }

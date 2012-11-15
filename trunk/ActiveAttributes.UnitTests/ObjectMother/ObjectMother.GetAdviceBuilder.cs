@@ -16,8 +16,8 @@
 using System;
 using System.Reflection;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Discovery;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration;
+using ActiveAttributes.Declaration.Construction;
 
 namespace ActiveAttributes.UnitTests
 {

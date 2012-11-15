@@ -79,7 +79,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
       Assert.That (result, Is.TypeOf<GlobalStorage> ());
       var fakeExpression = ObjectMother.GetExpression();
-      var storageExpression = result.GetStorageExpression (fakeExpression);
+      var storageExpression = result.CreateStorageExpression (fakeExpression);
       Assert.That (storageExpression.Type, Is.EqualTo (type));
     }
 

@@ -21,9 +21,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly.Storages
 {
-  /// <summary>
-  /// Generates an expression that provides access to a static field.
-  /// </summary>
+  /// <summary>Creates expressions accessing static fields.</summary>
   public class StaticStorage : IStorage
   {
     private readonly FieldInfo _field;
@@ -41,7 +39,7 @@ namespace ActiveAttributes.Assembly.Storages
       get { return _field; }
     }
 
-    public Expression GetStorageExpression (Expression thisExpression)
+    public Expression CreateStorageExpression (Expression thisExpression)
     {
       return Expression.Field (null, _field);
     }

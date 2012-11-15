@@ -50,7 +50,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
       var dictionary = new Dictionary<Guid, object> ();
       var storage = new GlobalStorage (dictionary, typeof (int));
 
-      var result = storage.GetStorageExpression (null);
+      var result = storage.CreateStorageExpression (null);
 
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
     }

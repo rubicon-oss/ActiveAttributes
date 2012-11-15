@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspectClassTest.cs" />
+    <Compile Include="ResearchTest.cs" />
     <Compile Include="CustomPointcutTest.cs" />
     <Compile Include="PropertyTest.cs" />
     <Compile Include="InterfaceAspectsTest.cs" />

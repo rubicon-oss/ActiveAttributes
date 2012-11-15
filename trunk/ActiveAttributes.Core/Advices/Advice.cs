@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
 using Remotion.Utilities;
 

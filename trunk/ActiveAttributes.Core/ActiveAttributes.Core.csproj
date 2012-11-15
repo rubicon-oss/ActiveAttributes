@@ -66,30 +66,30 @@
     <Compile Include="Advices\AdviceScope.cs" />
     <Compile Include="Assembly\Storages\GlobalStorage.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
-    <Compile Include="Discovery\AdviceBuilder.cs" />
-    <Compile Include="Discovery\AdviceBuilderFactory.cs" />
+    <Compile Include="Declaration\AdviceBuilder.cs" />
+    <Compile Include="Declaration\AdviceBuilderFactory.cs" />
     <Compile Include="Assembly\AdviceComposer.cs" />
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
-    <Compile Include="Discovery\CustomAttributeProviderTransform.cs" />
-    <Compile Include="Discovery\DeclarationProviders\AspectTypesProvider.cs" />
-    <Compile Include="Discovery\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
-    <Compile Include="Discovery\DeclarationProviders\CompositeDeclarationProvider.cs" />
-    <Compile Include="Discovery\DeclarationProviders\IDeclarationProvider.cs">
+    <Compile Include="Declaration\CustomAttributeProviderTransform.cs" />
+    <Compile Include="Declaration\DeclarationProviders\AspectTypesProvider.cs" />
+    <Compile Include="Declaration\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\DeclarationProviders\CompositeDeclarationProvider.cs" />
+    <Compile Include="Declaration\DeclarationProviders\IDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\DeclarationProviders\IAssemblyLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\DeclarationProviders\IAssemblyLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\DeclarationProviders\IMethodLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\DeclarationProviders\IMethodLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\DeclarationProviders\ITypeLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\DeclarationProviders\ITypeLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\DeclarationProviders\AspectClassDeclarationProvider.cs" />
-    <Compile Include="Discovery\DeclarationProviders\MethodAttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\DeclarationProviders\AspectClassDeclarationProvider.cs" />
+    <Compile Include="Declaration\DeclarationProviders\MethodAttributeDeclarationProvider.cs" />
     <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -121,9 +121,9 @@
     <Compile Include="Ordering\AdviceDependencyProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Discovery\CustomAttributeDataTransform.cs" />
-    <Compile Include="Discovery\AttributeDeclarationProvider.cs" />
-    <Compile Include="Discovery\ClassDeclarationProvider.cs" />
+    <Compile Include="Declaration\CustomAttributeDataTransform.cs" />
+    <Compile Include="Declaration\AttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\ClassDeclarationProvider.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Ordering\AdviceRoleOrdering.cs" />
     <Compile Include="Ordering\AdviceTypeOrdering.cs" />
@@ -145,9 +145,9 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Advices\AdviceInfoAttribute.cs" />
     <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
-    <Compile Include="Discovery\Construction\AttributeConstruction.cs" />
-    <Compile Include="Discovery\Construction\IConstruction.cs" />
-    <Compile Include="Discovery\Construction\TypeConstruction.cs" />
+    <Compile Include="Declaration\Construction\AttributeConstruction.cs" />
+    <Compile Include="Declaration\Construction\IConstruction.cs" />
+    <Compile Include="Declaration\Construction\TypeConstruction.cs" />
     <Compile Include="Aspects\EventInterceptionAspectAttributeBase.cs" />
     <Compile Include="Aspects\InterceptionAspectAttributeBase.cs" />
     <Compile Include="Aspects\MethodInterceptionAspectAttributeBase.cs" />

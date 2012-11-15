@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly.Storages
 {
+  /// <summary>Creates expressions accessing an item in a global dictionary.</summary>
   public class GlobalStorage : IStorage
   {
     private readonly Expression _storageExpression;
@@ -42,7 +43,7 @@ namespace ActiveAttributes.Assembly.Storages
 
     public FieldInfo Field { get; private set; }
 
-    public Expression GetStorageExpression (Expression thisExpression)
+    public Expression CreateStorageExpression (Expression thisExpression)
     {
       return _storageExpression;
     }

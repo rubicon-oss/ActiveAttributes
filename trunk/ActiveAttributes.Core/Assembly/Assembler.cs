@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Discovery;
-using ActiveAttributes.Discovery.DeclarationProviders;
+using ActiveAttributes.Declaration;
+using ActiveAttributes.Declaration.DeclarationProviders;
 using Remotion;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;

@@ -21,9 +21,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
-  /// <summary>
-  /// Provides information about an join-point within source code.
-  /// </summary>
+  /// <summary>Provides information about an join-point within source code.</summary>
   public class JoinPoint
   {
     private readonly System.Reflection.Assembly _assembly;

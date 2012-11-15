@@ -21,9 +21,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly.Storages
 {
-  /// <summary>
-  /// Generates an expression that provides access to an instance field.
-  /// </summary>
+  /// <summary>Creates expressions accessing instance fields.</summary>
   public class InstanceStorage : IStorage
   {
     private readonly FieldInfo _field;
@@ -41,7 +39,7 @@ namespace ActiveAttributes.Assembly.Storages
       get { return _field; }
     }
 
-    public Expression GetStorageExpression (Expression thisExpression)
+    public Expression CreateStorageExpression (Expression thisExpression)
     {
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
 

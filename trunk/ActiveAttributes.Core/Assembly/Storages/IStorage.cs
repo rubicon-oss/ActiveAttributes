@@ -15,18 +15,13 @@
 // under the License.
 
 using System;
-using System.Reflection;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Assembly.Storages
 {
-  /// <summary>
-  /// Generates an expression that provides access to a member, no matter whether the member is static or non-static.
-  /// </summary>
+  /// <summary>Creates expressions for accessing fields, dictionary entries, etc.</summary>
   public interface IStorage
   {
-    FieldInfo Field { get; }
-
-    Expression GetStorageExpression (Expression thisExpression);
+    Expression CreateStorageExpression (Expression thisExpression);
   }
 }

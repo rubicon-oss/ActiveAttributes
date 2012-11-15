@@ -81,8 +81,8 @@ namespace ActiveAttributes.UnitTests.Interception
       var fakeMemberExpression = ObjectMother.GetMemberExpression (typeof (MethodInfo));
       var fakeDelegateExpression = ObjectMother.GetMemberExpression (typeof (Func<string, int, int>));
 
-      _memberFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeMemberExpression);
-      _delegateFieldMock.Expect (x => x.GetStorageExpression (Arg.Is (_thisExpression))).Return (fakeDelegateExpression);
+      _memberFieldMock.Expect (x => x.CreateStorageExpression (Arg.Is (_thisExpression))).Return (fakeMemberExpression);
+      _delegateFieldMock.Expect (x => x.CreateStorageExpression (Arg.Is (_thisExpression))).Return (fakeDelegateExpression);
 
       var result = _expressionHelper.CreateMethodInvocationExpressions ();
 
@@ -110,7 +110,7 @@ namespace ActiveAttributes.UnitTests.Interception
       var fakeMemberExpression = ObjectMother.GetMemberExpression (_adviceMethod1.DeclaringType);
       var fakeExpression = ObjectMother.GetMethodCallExpression ();
 
-      _aspectFieldMock1.Expect (x => x.GetStorageExpression (_thisExpression)).Return (fakeMemberExpression);
+      _aspectFieldMock1.Expect (x => x.CreateStorageExpression (_thisExpression)).Return (fakeMemberExpression);
       object[] arguments = null;
       _callExpressionHelperMock
           .Expect (x => x.CreateAdviceCallExpression (null, null, null, null))
@@ -164,7 +164,7 @@ namespace ActiveAttributes.UnitTests.Interception
       var fakeCall = ObjectMother.GetMethodCallExpression ();
 
       _aspectFieldMock2
-        .Expect (x => x.GetStorageExpression (_thisExpression))
+        .Expect (x => x.CreateStorageExpression (_thisExpression))
         .Return (fakeMemberExpression);
       _callExpressionHelperMock
           .Expect (x => x.CreateAdviceCallExpression (methodInvocation, fakeMemberExpression, _adviceMethod2, outermostInvocation))

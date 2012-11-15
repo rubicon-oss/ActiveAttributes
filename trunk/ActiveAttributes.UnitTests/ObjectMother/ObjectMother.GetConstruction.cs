@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Aspects;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration.Construction;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;

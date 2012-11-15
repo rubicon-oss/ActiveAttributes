@@ -24,9 +24,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
-  /// <summary>
-  /// Serves as a evaluator of <see cref="Advice"/>s (and therefore <see cref="IPointcut"/>s) against a given <see cref="JoinPoint"/>.
-  /// </summary>
+  /// <summary>Serves as a evaluator of <see cref="Advice"/>s (and therefore <see cref="IPointcut"/>s) against a given <see cref="JoinPoint"/>.</summary>
   [ConcreteImplementation (typeof (PointcutEvaluator))]
   public interface IPointcutEvaluator
   {

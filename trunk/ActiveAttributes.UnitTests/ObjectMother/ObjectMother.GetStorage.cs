@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests
 
       var stub = MockRepository.GenerateStub<IStorage>();
 
-      stub.Stub (x => x.GetStorageExpression (Arg<Expression>.Is.Anything)).Return (expression);
+      stub.Stub (x => x.CreateStorageExpression (Arg<Expression>.Is.Anything)).Return (expression);
 
       return stub;
     }

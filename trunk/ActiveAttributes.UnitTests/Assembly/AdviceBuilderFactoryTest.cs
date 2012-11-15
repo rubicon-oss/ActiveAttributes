@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Discovery;
+using ActiveAttributes.Declaration;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 

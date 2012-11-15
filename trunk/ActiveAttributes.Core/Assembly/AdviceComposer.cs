@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Discovery;
+using ActiveAttributes.Declaration;
 using ActiveAttributes.Ordering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -35,9 +35,6 @@ namespace ActiveAttributes.Assembly
     /// Takes a <see cref="JoinPoint"/> and a collection of <see cref="IAdviceBuilder"/>s, and turns them into a collection of <see cref="Advice"/>s which
     /// are valid for the given join-point and sorted according to all known ordering rules.
     /// </summary>
-    /// <param name="adviceBuilders">All advices builders discovered.</param>
-    /// <param name="joinPoint">The join-point for which the advice collection should be composed.</param>
-    /// <returns>A collection of sorted advices.</returns>
     IEnumerable<Advice> Compose (IEnumerable<IAdviceBuilder> adviceBuilders, JoinPoint joinPoint);
   }
 

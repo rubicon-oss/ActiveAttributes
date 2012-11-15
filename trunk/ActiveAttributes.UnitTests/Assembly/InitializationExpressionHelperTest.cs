@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Discovery.Construction;
+using ActiveAttributes.Declaration.Construction;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;

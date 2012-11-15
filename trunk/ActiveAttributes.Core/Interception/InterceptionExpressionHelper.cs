@@ -86,8 +86,8 @@ namespace ActiveAttributes.Interception
       var parameterExpression = Expression.Variable (_invocationType, "ctx");
 
       var constructor = _invocationType.GetConstructors().Single();
-      var memberInfoExpression = _memberInfoStorage.GetStorageExpression (_thisExpression);
-      var delegateFieldExpression = _delegateStorage.GetStorageExpression (_thisExpression);
+      var memberInfoExpression = _memberInfoStorage.CreateStorageExpression (_thisExpression);
+      var delegateFieldExpression = _delegateStorage.CreateStorageExpression (_thisExpression);
       var argumentExpressions =
           new[] { memberInfoExpression, _thisExpression }
               .Concat (_parameterExpressions.Cast<Expression>())
@@ -114,7 +114,7 @@ namespace ActiveAttributes.Interception
           var previous = i - 1;
           var previousInvocation = invocations[previous];
           var previousAdvice = _advices[previous].Item1;
-          var previousAspect = _advices[previous].Item2.GetStorageExpression (_thisExpression);
+          var previousAspect = _advices[previous].Item2.CreateStorageExpression (_thisExpression);
           var previousCall = _callExpressionHelper.CreateAdviceCallExpression (
               methodInvocation, previousAspect, previousAdvice, previousInvocation);
 
@@ -138,7 +138,7 @@ namespace ActiveAttributes.Interception
     {
       var lastTuple = _advices.Last();
       var outermostAdvice = lastTuple.Item1;
-      var outermostAspect = lastTuple.Item2.GetStorageExpression (_thisExpression);
+      var outermostAspect = lastTuple.Item2.CreateStorageExpression (_thisExpression);
       return _callExpressionHelper.CreateAdviceCallExpression (methodInvocation, outermostAspect, outermostAdvice, outermostInvocation);
     }
 

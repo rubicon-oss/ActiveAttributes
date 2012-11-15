@@ -30,7 +30,7 @@ namespace ActiveAttributes.UnitTests.Assembly.Storages
       var field = ObjectMother.GetFieldInfo (attributes: FieldAttributes.Static);
       var storage = new StaticStorage (field);
 
-      var result = storage.GetStorageExpression (null);
+      var result = storage.CreateStorageExpression (null);
 
       Assert.That (result, Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) result;
