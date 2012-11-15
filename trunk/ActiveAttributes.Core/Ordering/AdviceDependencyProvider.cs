@@ -27,9 +27,14 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Ordering
 {
+  /// <summary>Serves as a provider for dependencies between <see cref="Advice"/>s.</summary>
   [ConcreteImplementation (typeof (AdviceDependencyProvider))]
   public interface IAdviceDependencyProvider
   {
+    /// <summary>
+    /// Creates a collection of dependencies defined through <see cref="Tuple{Advice, Advice}"/> where the first advice must precede before the second.
+    /// Calucation of dependencies will be dispatched first to the <see cref="IAdviceOrdering"/> and then back to the provider.
+    /// </summary>
     IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices);
 
     bool DependsType (Advice advice1, Advice advice2, AdviceTypeOrdering ordering);

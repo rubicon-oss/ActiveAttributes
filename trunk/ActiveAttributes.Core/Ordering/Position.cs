@@ -18,19 +18,13 @@ using System;
 
 namespace ActiveAttributes.Ordering
 {
-  /// <summary>
-  /// Defines a position.
-  /// </summary>
+  /// <summary>Defines positions. </summary>
   public enum Position
   {
-    /// <summary>
-    /// The position is before.
-    /// </summary>
+    /// <summary>Position before.</summary>
     Before,
 
-    /// <summary>
-    /// The position is after.
-    /// </summary>
+    /// <summary>Position after.</summary>
     After
   }
 }

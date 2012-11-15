@@ -71,7 +71,8 @@ namespace ActiveAttributes.UnitTests.Assembly
       var dependencies = new[] { Tuple.Create (_advice3, _advice2) };
       _dependencyProviderMock.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
 
-      Assert.That (() => _adviceSequencer.Sort (advices), Throws.TypeOf<UndefinedOrderException>());
+      Assert.That (
+          () => _adviceSequencer.Sort (advices), Throws.TypeOf<AdviceOrderingException>().With.InnerException.TypeOf<UndefinedOrderException>());
     }
 
     [Test]
@@ -88,7 +89,8 @@ namespace ActiveAttributes.UnitTests.Assembly
           };
       _dependencyProviderMock.Expect (x => x.GetDependencies (null)).IgnoreArguments().Return (dependencies);
 
-      Assert.That (() => _adviceSequencer.Sort (advices), Throws.TypeOf<CircularDependencyException>());
+      Assert.That (
+          () => _adviceSequencer.Sort (advices), Throws.TypeOf<AdviceOrderingException>().With.InnerException.TypeOf<CircularDependencyException>());
     }
 
     [Test]

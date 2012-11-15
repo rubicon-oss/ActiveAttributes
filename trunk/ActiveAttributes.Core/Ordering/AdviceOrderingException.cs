@@ -13,16 +13,15 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
+using System;
+
 namespace ActiveAttributes.Ordering
 {
-  /// <summary>Defines standard roles.</summary>
-  public static class StandardRoles
+  /// <summary>Exception that is thrown for improper advice ordering configurations.</summary>
+  public class AdviceOrderingException : Exception
   {
-    public const string ExceptionHandling = "ExceptionHandling";
-    public const string Transaction = "Transaction";
-    public const string Caching = "Caching";
-    public const string Validation = "Validation";
-    public const string Security = "Security";
-
+    public AdviceOrderingException (Exception innerException)
+        : base ("Improper configuration of advice ordering.", innerException) {}
   }
 }

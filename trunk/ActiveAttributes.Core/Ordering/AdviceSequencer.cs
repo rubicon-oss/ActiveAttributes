@@ -24,6 +24,9 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Ordering
 {
+  /// <summary>
+  /// Serves as a sequencer for a collection of <see cref="Advice"/>s according to <see cref="IAdviceOrdering"/> configurations.
+  /// </summary>
   [ConcreteImplementation (typeof (AdviceSequencer))]
   public interface IAdviceSequencer
   {
@@ -47,7 +50,14 @@ namespace ActiveAttributes.Ordering
       ArgumentUtility.CheckNotNull ("advices", advicesAsList);
 
       var dependencies = _adviceDependencyProvider.GetDependencies (advicesAsList);
-      return advicesAsList.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
+      try
+      {
+        return advicesAsList.TopologicalSort (dependencies, throwIfOrderIsUndefined: true);
+      }
+      catch (Exception exception)
+      {
+        throw new AdviceOrderingException (exception);
+      }
     }
   }
 }

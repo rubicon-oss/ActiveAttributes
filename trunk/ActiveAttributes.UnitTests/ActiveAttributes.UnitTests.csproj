@@ -115,6 +115,7 @@
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetNewDelegateExpression.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetAspectType.cs" />
     <Compile Include="Ordering\AdviceDependencyProviderTest.cs" />
+    <Compile Include="Ordering\AdviceOrderingExceptionTest.cs" />
     <Compile Include="Ordering\Providers\AppConfigTypeOrderingProviderTest.cs" />
     <Compile Include="Pointcuts\MemberNamePointcutTest.cs" />
     <Compile Include="Pointcuts\NamespacePointcutTest.cs" />

@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,16 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-namespace ActiveAttributes.Ordering
-{
-  /// <summary>Defines standard roles.</summary>
-  public static class StandardRoles
-  {
-    public const string ExceptionHandling = "ExceptionHandling";
-    public const string Transaction = "Transaction";
-    public const string Caching = "Caching";
-    public const string Validation = "Validation";
-    public const string Security = "Security";
+using System;
+using ActiveAttributes.Ordering;
+using NUnit.Framework;
 
+namespace ActiveAttributes.UnitTests.Ordering
+{
+  [TestFixture]
+  public class AdviceOrderingExceptionTest
+  {
+    [Test]
+    public void Initialization ()
+    {
+      var innerException = new Exception();
+      var instance = new AdviceOrderingException (innerException);
+
+      Assert.That (instance.Message, Is.EqualTo ("Improper configuration of advice ordering."));
+      Assert.That (instance.InnerException, Is.SameAs (innerException));
+    }
   }
 }

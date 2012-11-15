@@ -99,6 +99,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
+    <Compile Include="Ordering\AdviceOrderingException.cs" />
     <Compile Include="Ordering\Providers\AppConfigTypeOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\AppConfigRoleOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\IAdviceOrderingProvider.cs" />
