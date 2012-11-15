@@ -96,8 +96,8 @@
     <Compile Include="Declaration\Construction\AttributeConstructionTest.cs" />
     <Compile Include="Declaration\Construction\TypeConstructionTest.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransformTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\AspectTypesProviderTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\AssemblyAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\AspectTypesProviderTest.cs" />
+    <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,11 +125,11 @@
     <Compile Include="Pointcuts\TypeNamePointcutTest.cs" />
     <Compile Include="Pointcuts\TypePointcutTest.cs" />
     <Compile Include="Assembly\PointcutEvaluatorTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\AspectClassDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\CompositeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\AspectClassDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\CompositeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\AttributeDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\MethodAttributeDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\DeclarationProviders\PropertyAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\CustomAttributeDataTransformTest.cs" />
     <Compile Include="Declaration\ClassDeclarationProviderTest.cs" />
     <Compile Include="Declaration\StandaloneAspectDeclarationProviderTest.cs" />

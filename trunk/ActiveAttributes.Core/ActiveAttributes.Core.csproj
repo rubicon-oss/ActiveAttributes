@@ -73,23 +73,23 @@
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransform.cs" />
-    <Compile Include="Declaration\DeclarationProviders\AspectTypesProvider.cs" />
-    <Compile Include="Declaration\DeclarationProviders\AssemblyAttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\DeclarationProviders\CompositeDeclarationProvider.cs" />
-    <Compile Include="Declaration\DeclarationProviders\IDeclarationProvider.cs">
+    <Compile Include="Declaration\Providers\AspectTypesProvider.cs" />
+    <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\CompositeDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\IDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\DeclarationProviders\IAssemblyLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\Providers\IAssemblyLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\DeclarationProviders\IMethodLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\Providers\IMethodLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\DeclarationProviders\ITypeLevelDeclarationProvider.cs">
+    <Compile Include="Declaration\Providers\ITypeLevelDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\DeclarationProviders\AspectClassDeclarationProvider.cs" />
-    <Compile Include="Declaration\DeclarationProviders\MethodAttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\AspectClassDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProvider.cs" />
     <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>

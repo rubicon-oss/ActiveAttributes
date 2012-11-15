@@ -38,9 +38,9 @@ namespace ActiveAttributes.Declaration.DeclarationProviders
 
     public AspectTypesProvider ()
     {
-      var callingAssembly = System.Reflection.Assembly.GetCallingAssembly ();
+      var callingAssembly = System.Reflection.Assembly.LoadFrom ("ActiveAttributes.IntegrationTests.dll");
       var rootAssembly = new RootAssembly (callingAssembly, true);
-      var loadAllAssemblyLoaderFilter = new LoadAllAssemblyLoaderFilter ();
+      var loadAllAssemblyLoaderFilter = new LoadAllAssemblyLoaderFilter();
       var filteringAssemblyLoader = new FilteringAssemblyLoader (loadAllAssemblyLoaderFilter);
       var fixedRootAssemblyFinder = new FixedRootAssemblyFinder (rootAssembly);
       var assemblyFinder = new AssemblyFinder (fixedRootAssemblyFinder, filteringAssemblyLoader);

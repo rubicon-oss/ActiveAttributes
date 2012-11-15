@@ -37,7 +37,8 @@ namespace ActiveAttributes.Declaration.DeclarationProviders
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
-      return _aspectTypesProvider.GetAspectClassTypes().SelectMany (x => _classDeclarationProvider.GetAdviceBuilders (x));
+      var adviceBuilders = _aspectTypesProvider.GetAspectClassTypes().SelectMany (x => _classDeclarationProvider.GetAdviceBuilders (x));
+      return adviceBuilders;
     }
   }
 }
