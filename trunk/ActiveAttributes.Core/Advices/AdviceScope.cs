@@ -19,20 +19,15 @@ using System;
 namespace ActiveAttributes.Advices
 {
   /// <summary>
-  /// Defines the scope of an <see cref="AspectAttribute"/>.
+  /// Defines scopes for the execution of advices.
   /// </summary>
   public enum AdviceScope
   {
+    /// <summary>Scope is undefined.</summary>
     Undefined,
-
-    /// <summary>
-    /// The aspect is created once per attribute.
-    /// </summary>
+    /// <summary>The advice is created once per class or attribute.</summary>
     Static,
-
-    /// <summary>
-    /// The aspect is created for each new target object.
-    /// </summary>
+    /// <summary>The advice is created for each target type.</summary>
     Instance
   }
 }

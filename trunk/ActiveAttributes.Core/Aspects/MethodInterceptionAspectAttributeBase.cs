@@ -19,9 +19,14 @@ using ActiveAttributes.Interception.Invocations;
 
 namespace ActiveAttributes.Aspects
 {
+  /// <summary>
+  /// Serves as a base class for method intercepting aspect attributes.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
   public abstract class MethodInterceptionAspectAttributeBase : InterceptionAspectAttributeBase
   {
+    /// <summary>The method that is invoked instead of the method.</summary>
+    /// <param name="invocation">The invocation.</param>
     public abstract void OnIntercept (IInvocation invocation);
   }
 }

@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Reflection;
 using ActiveAttributes.Advices;
@@ -25,9 +24,13 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
+  /// <summary>
+  /// Serves as a evaluator of <see cref="Advice"/>s (and therefore <see cref="IPointcut"/>s) against a given <see cref="JoinPoint"/>.
+  /// </summary>
   [ConcreteImplementation (typeof (PointcutEvaluator))]
   public interface IPointcutEvaluator
   {
+    /// <summary>Evaluates if the advice matches a join-point. The evalutation will be dispatched first to the pointcut and then back to the evaluator.</summary>
     bool Matches (Advice advice, JoinPoint joinPoint);
 
     //bool VisitPointcut (IPointcut pointcut, JoinPoint joinPoint);

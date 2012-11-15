@@ -18,10 +18,15 @@ using System;
 
 namespace ActiveAttributes.Interception.Invocations
 {
+  /// <summary>
+  /// Provides contextual information for a join-point. The arguments and the return value are mutable.
+  /// </summary>
   public interface IInvocationContext : IReadOnlyInvocationContext
   {
+    /// <inheritdoc />
     new IArgumentCollection Arguments { get; }
 
+    /// <summary>Gets or sets the return value.</summary>
     new object ReturnValue { get; set; }
   }
 }

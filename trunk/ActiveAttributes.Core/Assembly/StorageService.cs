@@ -24,13 +24,17 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
+  /// <summary>Serves as a service for introduction of <see cref="IStorage"/>s.</summary>
   [ConcreteImplementation (typeof (StorageService))]
   public interface IStorageService
   {
+    /// <summary>Introduces a <see cref="StaticStorage"/> for a given mutable type with a certain storage type and name.</summary>
     IStorage AddStaticStorage (MutableType mutableType, Type type, string name);
 
+    /// <summary>Introduces a <see cref="InstanceStorage"/> for a given mutable type with a certain storage type and name.</summary>
     IStorage AddInstanceStorage (MutableType mutableType, Type type, string name);
 
+    /// <summary>Introduces a <see cref="GlobalStorage"/> with a certain storage type.</summary>
     IStorage AddGlobalStorage (Type type);
   }
 

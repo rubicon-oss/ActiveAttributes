@@ -18,6 +18,9 @@ using System;
 
 namespace ActiveAttributes.Interception.Invocations
 {
+  /// <summary>
+  /// Serves as a representation of the join-point including contextual information and facitilities to proceed with the execution.
+  /// </summary>
   public interface IInvocation : IInvocationContext
   {
     void Proceed ();

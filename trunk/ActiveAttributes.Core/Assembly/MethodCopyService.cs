@@ -24,23 +24,14 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
-  /// <summary>
-  /// Copies a method.
-  /// </summary>
+  /// <summary>Serves as a service for copying method bodies.</summary>
   [ConcreteImplementation (typeof (MethodCopyService))]
   public interface IMethodCopyService
   {
-    /// <summary>
-    /// Copies the original body of a method to another method.
-    /// </summary>
-    /// <param name="mutableMethod">The original method.</param>
-    /// <returns>A copy of the original method.</returns>
+    /// <summary>Copies the original body of a method to another method.</summary>
     MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod);
   }
 
-  /// <summary>
-  /// Copies a method including signature and body.
-  /// </summary>
   public class MethodCopyService : IMethodCopyService
   {
     public MutableMethodInfo GetCopy (MutableMethodInfo mutableMethod)

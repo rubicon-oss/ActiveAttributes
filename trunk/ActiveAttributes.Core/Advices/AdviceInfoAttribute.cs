@@ -18,14 +18,23 @@ using System;
 
 namespace ActiveAttributes.Advices
 {
+  /// <summary>
+  /// Declares information about advices regarding their name, role, execution, scope, and priority.
+  /// Missing informationen will be derived from parent members (i.e., the declaring type or the base method of an advice).
+  /// </summary>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
   public sealed class AdviceInfoAttribute : Attribute
   {
+    /// <summary>The name of the advice.</summary>
     public string Name { get; set; }
+    /// <summary>The role of the advice.</summary>
     public string Role { get; set; }
 
+    /// <summary>The execution of the advice.</summary>
     public AdviceExecution Execution { get; set; }
+    /// <summary>The scope of the advice.</summary>
     public AdviceScope Scope { get; set; }
+    /// <summary>The priority of the advice.</summary>
     public int Priority { get; set; }
   }
 }

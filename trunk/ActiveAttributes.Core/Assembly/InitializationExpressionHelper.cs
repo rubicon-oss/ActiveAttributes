@@ -30,16 +30,29 @@ using Remotion.Utilities;
 namespace ActiveAttributes.Assembly
 {
   /// <summary>
-  /// Serves as a helper for creation of <see cref="MemberInitExpression"/>s for <see cref="IAspectDescriptor"/>s.
+  /// Serves as a helper for creation of <see cref="Expression"/>s.
   /// </summary>
   [ConcreteImplementation (typeof (InitializationExpressionHelper))]
   public interface IInitializationExpressionHelper
   {
+    /// <summary>
+    /// Creates a <see cref="MemberInitExpression"/> for a given <see cref="IConstruction"/> describing an aspect instantiation.
+    /// </summary>
     MemberInitExpression CreateAspectInitExpression (IConstruction construction);
 
+    /// <summary>
+    /// Creates an <see cref="Expression"/> containing the <see cref="MethodInfo"/> for a given method.
+    /// </summary>
     ConstantExpression CreateMethodInfoInitExpression (MethodInfo method);
+
+    /// <summary>
+    /// Creates an <see cref="Expression"/> containting the <see cref="PropertyInfo"/> for a given property.
+    /// </summary>
     MethodCallExpression CreatePropertyInfoInitExpression (PropertyInfo property);
 
+    /// <summary>
+    /// Creates a <see cref="Expression"/> containting the <see cref="Delegate"/> for a given method.
+    /// </summary>
     NewDelegateExpression CreateDelegateInitExpression (MethodInfo method, Expression thisExpression);
   }
 

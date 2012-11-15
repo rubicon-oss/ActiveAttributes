@@ -19,14 +19,21 @@ using System.Reflection;
 
 namespace ActiveAttributes.Interception.Invocations
 {
+  /// <summary>
+  /// Provides contextual, read-only information for a join-point. 
+  /// </summary>
   public interface IReadOnlyInvocationContext
   {
+    /// <summary>Gets the member related to the join-point.</summary>
     MemberInfo MemberInfo { get; }
 
+    /// <summary>Gets the target instance.</summary>
     object Instance { get; }
 
+    /// <summary>Gets the arguments.</summary>
     IReadOnlyArgumentCollection Arguments { get; }
 
+    /// <summary>Gets the return value, if already calculated.</summary>
     object ReturnValue { get; }
   }
 }

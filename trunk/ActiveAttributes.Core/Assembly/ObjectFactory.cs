@@ -23,16 +23,12 @@ using ActiveAttributes.Discovery.DeclarationProviders;
 using ActiveAttributes.Interception;
 using ActiveAttributes.Ordering;
 using ActiveAttributes.Ordering.Providers;
-using Remotion.Reflection.TypeDiscovery;
-using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.CodeGeneration;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
-using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.Assembly
 {

@@ -20,12 +20,19 @@ using ActiveAttributes.Pointcuts;
 
 namespace ActiveAttributes.Aspects
 {
+  /// <summary>
+  /// Serves as a base class for property intercepting aspect attributes.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
   public abstract class PropertyInterceptionAspectAttributeBase : InterceptionAspectAttributeBase
   {
+    /// <summary>The method that is invoked instead of the property getter.</summary>
+    /// <param name="invocation">The invocation.</param>
     [MemberNamePointcut ("get_*")]
     public abstract void OnInterceptGet (IInvocation invocation);
 
+    /// <summary>The method that is invoked instead of the property setter.</summary>
+    /// <param name="invocation">The invocation.</param>
     [MemberNamePointcut ("set_*")]
     public abstract void OnInterceptSet (IInvocation invocation);
   }

@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -24,19 +23,22 @@ using ActiveAttributes.Extensions;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
-using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Assembly
 {
+  /// <summary>Serves as a service for initializations.</summary>
   [ConcreteImplementation (typeof (InitializationService))]
   public interface IInitializationService
   {
+    /// <summary>Creates and initializes a <see cref="IStorage"/> for the <see cref="MemberInfo"/> of a given mutable method.</summary>
     IStorage AddMemberInfo (MutableMethodInfo mutableMethod);
 
+    /// <summary>Creates and initializes a <see cref="IStorage"/> for the <see cref="Delegate"/> of a given mutable method.</summary>
     IStorage AddDelegate (MutableMethodInfo mutableMethod);
 
+    /// <summary>Creates and initializes a <see cref="IStorage"/> for an <see cref="Advice"/>.</summary>
     IStorage GetOrAddAspect (Advice advice, MutableType mutableType);
   }
 

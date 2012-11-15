@@ -25,9 +25,19 @@ using System.Linq;
 
 namespace ActiveAttributes.Assembly
 {
+  /// <summary>
+  /// Serves as a composer for a collection of advices.
+  /// </summary>
   [ConcreteImplementation (typeof (AdviceComposer))]
   public interface IAdviceComposer
   {
+    /// <summary>
+    /// Takes a <see cref="JoinPoint"/> and a collection of <see cref="IAdviceBuilder"/>s, and turns them into a collection of <see cref="Advice"/>s which
+    /// are valid for the given join-point and sorted according to all known ordering rules.
+    /// </summary>
+    /// <param name="adviceBuilders">All advices builders discovered.</param>
+    /// <param name="joinPoint">The join-point for which the advice collection should be composed.</param>
+    /// <returns>A collection of sorted advices.</returns>
     IEnumerable<Advice> Compose (IEnumerable<IAdviceBuilder> adviceBuilders, JoinPoint joinPoint);
   }
 

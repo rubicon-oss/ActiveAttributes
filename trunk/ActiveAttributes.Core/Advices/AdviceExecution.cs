@@ -18,11 +18,18 @@ using System;
 
 namespace ActiveAttributes.Advices
 {
+  /// <summary>
+  /// Defines execution patterns for advices.
+  /// </summary>
   public enum AdviceExecution
   {
+    /// <summary>Execution is undefined.</summary>
     Undefined,
+    /// <summary>Execution before a join-point.</summary>
     Before,
+    /// <summary>Execution after a join-point.</summary>
     After,
+    /// <summary>Execution around a join-point.</summary>
     Around
   }
 }
