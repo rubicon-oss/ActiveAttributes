@@ -20,7 +20,7 @@ using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.TypePipe.MutableReflection;

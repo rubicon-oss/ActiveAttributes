@@ -21,29 +21,34 @@ using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using ActiveAttributes.Extensions;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
-  public class MethodAttributeDeclarationProvider : IMethodLevelDeclarationProvider
+  public class PropertyAttributeDeclarationProvider2 : IMethodLevelDeclarationProvider
   {
+    private readonly IMemberAttributeDeclarationProvider _memberAttributeDeclarationProvider;
     private readonly IAttributeDeclarationProvider _attributeDeclarationProvider;
-    private readonly IRelatedMethodFinder _relatedMethodFinder;
+    private readonly RelatedPropertyFinder _relatedMethodFinder;
 
-    public MethodAttributeDeclarationProvider (
-        IAttributeDeclarationProvider attributeDeclarationProvider)
+    public PropertyAttributeDeclarationProvider2 (IMemberAttributeDeclarationProvider memberAttributeDeclarationProvider)
     {
-      ArgumentUtility.CheckNotNull ("attributeDeclarationProvider", attributeDeclarationProvider);
+      ArgumentUtility.CheckNotNull ("memberAttributeDeclarationProvider", memberAttributeDeclarationProvider);
 
-      _attributeDeclarationProvider = attributeDeclarationProvider;
-      _relatedMethodFinder = new RelatedMethodFinder();
+      _memberAttributeDeclarationProvider = memberAttributeDeclarationProvider;
+      _relatedMethodFinder = new RelatedPropertyFinder();
     }
 
     public IEnumerable<IAdviceBuilder> GetDeclarations (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
 
-      var methodSequence = method.CreateSequence (x => _relatedMethodFinder.GetBaseMethod (x));
-      return methodSequence.SelectMany (x => _attributeDeclarationProvider.GetAdviceBuilders (x));
+      var property = method.GetRelatedPropertyInfo();
+      if (property == null)
+        return Enumerable.Empty<IAdviceBuilder>();
+
+      var propertySequence = property.CreateSequence (x => _relatedMethodFinder.GetBaseProperty (x));
+      return _memberAttributeDeclarationProvider.GetAdviceBuilders (property, propertySequence.Cast<MemberInfo>());
     }
   }
 }

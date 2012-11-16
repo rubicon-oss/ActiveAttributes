@@ -18,13 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
+namespace ActiveAttributes.UnitTests.Declaration.Providers
 {
   [TestFixture]
   public class CompositeDeclarationProviderTest

@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   public interface ITypeLevelDeclarationProvider
   {

@@ -13,15 +13,35 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.Declaration.Providers
+namespace ActiveAttributes.Utilities
 {
-  [ConcreteImplementation (typeof (CompositeDeclarationProvider))]
-  public interface IDeclarationProvider
-      : IAssemblyLevelDeclarationProvider,
-        ITypeLevelDeclarationProvider,
-        IMethodLevelDeclarationProvider {}
+  [ConcreteImplementation (typeof (RelatedFinderFactory))]
+  public interface IRelatedFinderFactory
+  {
+    IRelatedMethodFinder GetRelatedMethodFinder ();
+    IRelatedEventFinder GetRelatedEventFinder ();
+    IRelatedPropertyFinder GetRelatedPropertyFinder ();
+  }
+
+  public class RelatedFinderFactory : IRelatedFinderFactory
+  {
+    public IRelatedMethodFinder GetRelatedMethodFinder ()
+    {
+      return new RelatedMethodFinder();
+    }
+
+    public IRelatedEventFinder GetRelatedEventFinder ()
+    {
+      return new RelatedEventFinder();
+    }
+
+    public IRelatedPropertyFinder GetRelatedPropertyFinder ()
+    {
+      return new RelatedPropertyFinder();
+    }
+  }
 }

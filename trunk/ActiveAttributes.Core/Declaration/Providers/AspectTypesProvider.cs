@@ -23,7 +23,7 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   [ConcreteImplementation (typeof (AspectTypesProvider))]
   public interface IAspectTypesProvider

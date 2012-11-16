@@ -93,11 +93,15 @@
     <Compile Include="Assembly\Storages\StaticStorageTest.cs" />
     <Compile Include="Assembly\InitializationServiceTest.cs" />
     <Compile Include="Configuration\ConfigurationProviderTest.cs" />
+    <Compile Include="Declaration\AttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Construction\AttributeConstructionTest.cs" />
     <Compile Include="Declaration\Construction\TypeConstructionTest.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransformTest.cs" />
+    <Compile Include="Declaration\MemberAttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Providers\AspectTypesProviderTest.cs" />
     <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProviderTest.cs" />
     <Compile Include="Interception\InterceptionExpressionHelperFactoryTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -127,9 +131,6 @@
     <Compile Include="Assembly\PointcutEvaluatorTest.cs" />
     <Compile Include="Declaration\Providers\AspectClassDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Providers\CompositeDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\AttributeDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProviderTest.cs" />
-    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\CustomAttributeDataTransformTest.cs" />
     <Compile Include="Declaration\ClassDeclarationProviderTest.cs" />
     <Compile Include="Declaration\StandaloneAspectDeclarationProviderTest.cs" />
@@ -174,6 +175,8 @@
     <Compile Include="ServiceLocatorTest.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
+    <Compile Include="Utilities\CustomAttributeDataHelperTest.cs" />
+    <Compile Include="Utilities\RelatedFinderFactoryTest.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentTest.cs" />
     <Compile Include="Utilities\TopologicalSorterTest.cs" />
     <Compile Include="Utilities\UndefinedOrderExceptionTest.cs" />
@@ -182,6 +185,10 @@
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">
       <Project>{24A9CBC1-7AEA-4CD0-9C83-5374CC5B1AD1}</Project>
       <Name>ActiveAttributes.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AssemblyWithAttribute\AssemblyWithAttribute.csproj">
+      <Project>{9708e1d6-28fa-45af-bba8-d69e2ffd42f7}</Project>
+      <Name>AssemblyWithAttribute</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

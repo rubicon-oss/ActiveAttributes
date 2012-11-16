@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Declaration;
@@ -23,7 +24,7 @@ using Remotion.Development.UnitTesting.Reflection;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Discovery
+namespace ActiveAttributes.UnitTests.Declaration
 {
   [TestFixture]
   public class CustomAttributeProviderTransformTest

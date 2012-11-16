@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   [ConcreteImplementation (typeof (AspectClassDeclarationProvider), Position = 1)]
   [ConcreteImplementation (typeof (AssemblyAttributeDeclarationProvider), Position = 2)]

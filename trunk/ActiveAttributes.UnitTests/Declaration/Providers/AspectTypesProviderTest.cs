@@ -13,12 +13,13 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Declaration.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
+namespace ActiveAttributes.UnitTests.Declaration.Providers
 {
   [TestFixture]
   public class AspectTypesProviderTest

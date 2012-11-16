@@ -15,32 +15,28 @@
 // under the License.
 using System;
 using System.Linq;
-using System.Reflection;
-using ActiveAttributes.Advices;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Reflection;
-using Remotion.ServiceLocation;
-using Remotion.TypePipe.MutableReflection;
-using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.ServiceLocation;
+using Rhino.Mocks;
 
-namespace ActiveAttributes.UnitTests.Discovery
+namespace ActiveAttributes.UnitTests.Declaration
 {
   [TestFixture]
   public class AttributeDeclarationProviderTest
   {
     private AttributeDeclarationProvider _provider;
+
     private ICustomAttributeDataTransform _customAttributeDataTransformMock;
     private IClassDeclarationProvider _classDeclarationProviderMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _customAttributeDataTransformMock = MockRepository.GenerateStrictMock<ICustomAttributeDataTransform> ();
       _classDeclarationProviderMock = MockRepository.GenerateStrictMock<IClassDeclarationProvider> ();
+      _customAttributeDataTransformMock = MockRepository.GenerateStrictMock<ICustomAttributeDataTransform> ();
 
       _provider = new AttributeDeclarationProvider (_classDeclarationProviderMock, _customAttributeDataTransformMock);
     }
@@ -48,42 +44,24 @@ namespace ActiveAttributes.UnitTests.Discovery
     [Test]
     public void GetAdviceBuilders ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
-
-      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder();
-      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder();
-      var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder();
-      var fakeTypeAdviceBuilders1 = new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 };
-      var fakeTypeAdviceBuilders2 = new[] { fakeAdviceBuilder3 };
+      var customAttributeData = ObjectMother.GetCustomAttributeData (typeof (AspectAttributeBase));
       var fakeAdviceBuilders1 = new IAdviceBuilder[0];
-      var fakeAdviceBuilders2 = new IAdviceBuilder[0];
+      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
+      var fakeClassAdviceBuilders = new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 };
 
       _classDeclarationProviderMock
-          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect1Attribute)))
-          .Return (fakeAdviceBuilders1.AsOneTime());
+          .Expect (x => x.GetAdviceBuilders (typeof (AspectAttributeBase)))
+          .Return (fakeAdviceBuilders1.AsOneTime ());
       _customAttributeDataTransformMock
-          .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 1), Arg.Is (fakeAdviceBuilders1)))
-          .Return (fakeTypeAdviceBuilders1);
-      _classDeclarationProviderMock
-          .Expect (x => x.GetAdviceBuilders (typeof (DomainAspect2Attribute)))
-          .Return (fakeAdviceBuilders2.AsOneTime());
-      _customAttributeDataTransformMock
-          .Expect (x => x.UpdateAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.NamedArguments.Count == 2), Arg.Is (fakeAdviceBuilders2)))
-          .Return (fakeTypeAdviceBuilders2);
+          .Expect (x => x.UpdateAdviceBuilders (customAttributeData, fakeAdviceBuilders1))
+          .Return (fakeClassAdviceBuilders);
 
-      var result = _provider.GetAdviceBuilders (method).ToList();
+      var result = _provider.GetAdviceBuilders (customAttributeData).ToList();
 
-      _customAttributeDataTransformMock.VerifyAllExpectations();
       _classDeclarationProviderMock.VerifyAllExpectations();
-      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
-    }
-
-    [Test]
-    public void SkipNonAspectAttributes ()
-    {
-      var method = MethodInfo.GetCurrentMethod();
-
-      Assert.That (() => _provider.GetAdviceBuilders (method).ToArray(), Throws.Nothing);
+      _customAttributeDataTransformMock.VerifyAllExpectations();
+      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }));
     }
 
     [Test]
@@ -93,42 +71,5 @@ namespace ActiveAttributes.UnitTests.Discovery
 
       Assert.That (instance, Is.TypeOf<AttributeDeclarationProvider>());
     }
-
-    [Test]
-    [Ignore]
-    public void ThrowsForOverSpecification ()
-    {
-      CheckThrows ("method", typeof (MemberNamePointcut), typeof (DomainType).GetMethods ().Single (x => x.Name == "MemberNamePointcut"));
-      CheckThrows ("method", typeof (ReturnTypePointcut), typeof (DomainType).GetMethods ().Single (x => x.Name == "ReturnTypePointcut"));
-    }
-
-    private void CheckThrows (string memberType, Type type, MemberInfo member)
-    {
-      var message = string.Format ("Pointcut of type {0} cannot be applied to a {1}", type.Name, memberType);
-      Assert.That (() => _provider.GetAdviceBuilders (member).ToArray (), Throws.Exception.With.Message.EqualTo (message));
-    }
-
-    class DomainType
-    {
-      [DomainAspect1 (AdvicePriority = 1)]
-      [DomainAspect2 (AdvicePriority = 2, AdviceExecution = AdviceExecution.Around)]
-      public void Method () {}
-
-      [DomainAspect1 (MemberNameFilter = "MethodWithMemberNamePointcut")]
-      public void MemberNamePointcut () {}
-
-      [DomainAspect1 (MemberReturnTypeFilter = typeof (void))]
-      public void ReturnTypePointcut () {}
-    }
-
-    [DomainAspect1 (ApplyToType = typeof (DomainTypeWithApplyToType))]
-    class DomainTypeWithApplyToType {}
-
-    [DomainAspect1 (ApplyToNamespace = "ActiveAttributes.*")]
-    class DomainTypeWithApplyToNamespace {}
-
-    class DomainAspect1Attribute : AspectAttributeBase { }
-
-    class DomainAspect2Attribute : AspectAttributeBase { }
   }
 }

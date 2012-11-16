@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   public class AspectClassDeclarationProvider : IAssemblyLevelDeclarationProvider
   {

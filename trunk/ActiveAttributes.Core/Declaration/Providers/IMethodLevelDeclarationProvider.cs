@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   [ConcreteImplementation (typeof (MethodAttributeDeclarationProvider), Position = 1)]
   public interface IMethodLevelDeclarationProvider

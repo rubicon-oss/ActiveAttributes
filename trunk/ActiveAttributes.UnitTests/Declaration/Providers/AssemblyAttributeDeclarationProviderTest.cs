@@ -13,44 +13,86 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using System.ComponentModel.Design;
 using System.Linq;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.DeclarationProviders;
-using ActiveAttributes.UnitTests.Discovery.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
+using ActiveAttributes.UnitTests.Declaration.Providers;
+using ActiveAttributes.Utilities;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
+using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 
 [assembly: AssemblyAttributeDeclarationProviderTest.DomainAspectAttribute]
 
-namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
+namespace ActiveAttributes.UnitTests.Declaration.Providers
 {
   [TestFixture]
   public class AssemblyAttributeDeclarationProviderTest
   {
+    private AssemblyAttributeDeclarationProvider _provider;
+
+    private IAttributeDeclarationProvider _attributeDeclarationProviderMock;
+    private IAspectTypesProvider _aspectTypesProviderMock;
+    private ICustomAttributeDataHelper _customAttributeDataHelperMock;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _attributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider>();
+      _aspectTypesProviderMock = MockRepository.GenerateStrictMock<IAspectTypesProvider>();
+      _customAttributeDataHelperMock = MockRepository.GenerateStrictMock<ICustomAttributeDataHelper>();
+
+      _provider = new AssemblyAttributeDeclarationProvider (
+          _aspectTypesProviderMock,
+          _attributeDeclarationProviderMock,
+          _customAttributeDataHelperMock);
+    }
+
     [Test]
     public void GetDeclarations ()
     {
-      var attributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider> ();
-      var aspectTypesProviderMock = MockRepository.GenerateStrictMock<IAspectTypesProvider>();
-      var provider = new AssemblyAttributeDeclarationProvider (aspectTypesProviderMock, attributeDeclarationProviderMock);
-      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
-      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder = ObjectMother.GetAdviceBuilder();
+      var type = typeof (AssemblyWithAttribute.DomainAspectAttribute);
 
-      var type1 = typeof (DomainAspectAttribute);
-      var type2 = typeof (AspectAttributeBase);
-      aspectTypesProviderMock.Expect (x => x.GetAspectAttributeTypes()).Return (new[] { type1, type2 });
-      attributeDeclarationProviderMock.Expect (x => x.GetAdviceBuilders (type1.Assembly)).Return (new[] { fakeAdviceBuilder1 });
-      attributeDeclarationProviderMock.Expect (x => x.GetAdviceBuilders (type2.Assembly)).Return (new[] { fakeAdviceBuilder2 });
+      _aspectTypesProviderMock.Expect (x => x.GetAspectAttributeTypes()).Return (new[] { type });
+      _customAttributeDataHelperMock
+          .Expect (x => x.IsAspectAttribute (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType == type)))
+          .Return (true);
+      _customAttributeDataHelperMock
+          .Expect (x => x.IsAspectAttribute (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType != type)))
+          .Return (false).Repeat.Any();
+      _attributeDeclarationProviderMock
+          .Expect (x => x.GetAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType == type)))
+          .Return (new[] { fakeAdviceBuilder });
 
-      var result = provider.GetDeclarations ().ToArray ();
+      var result = _provider.GetDeclarations().ToArray();
 
-      aspectTypesProviderMock.VerifyAllExpectations ();
-      attributeDeclarationProviderMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }));
+      _aspectTypesProviderMock.VerifyAllExpectations();
+      _attributeDeclarationProviderMock.VerifyAllExpectations();
+      Assert.That (result, Is.EquivalentTo (new[] { fakeAdviceBuilder }));
+    }
+
+    [Test]
+    public void GetDeclarations_DistinctAssemblies ()
+    {
+      var type = typeof (AssemblyWithAttribute.DomainAspectAttribute);
+
+      _aspectTypesProviderMock.Expect (x => x.GetAspectAttributeTypes ()).Return (new[] { type, type });
+      _customAttributeDataHelperMock
+          .Expect (x => x.IsAspectAttribute (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType == type)))
+          .Return (true);
+      _customAttributeDataHelperMock
+          .Expect (x => x.IsAspectAttribute (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType != type)))
+          .Return (false).Repeat.Any ();
+      _attributeDeclarationProviderMock
+          .Expect (x => x.GetAdviceBuilders (Arg<ICustomAttributeData>.Matches (y => y.Constructor.DeclaringType == type)))
+          .Return (new IAdviceBuilder[0]);
+
+      Assert.That (() => _provider.GetDeclarations().ToArray(), Throws.Nothing);
     }
 
     [Test]

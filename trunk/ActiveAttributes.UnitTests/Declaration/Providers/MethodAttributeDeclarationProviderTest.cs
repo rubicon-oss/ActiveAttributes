@@ -15,16 +15,16 @@
 // under the License.
 
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
-using Remotion.Development.UnitTesting.Enumerables;
 
-namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
+namespace ActiveAttributes.UnitTests.Declaration.Providers
 {
   [TestFixture]
   public class MethodAttributeDeclarationProviderTest
@@ -32,21 +32,20 @@ namespace ActiveAttributes.UnitTests.Discovery.DeclarationProviders
     [Test]
     public void GetDeclarations ()
     {
-      var aspectDeclarationHelperMock = MockRepository.GenerateStrictMock<IAttributeDeclarationProvider> ();
+      var memberAttributeDeclarationProviderMock = MockRepository.GenerateStrictMock<IMemberAttributeDeclarationProvider> ();
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method());
       var baseMethod = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainTypeBase obj) => obj.Method());
-      var fakeAdviceBuilder1 = ObjectMother.GetAdviceBuilder ();
-      var fakeAdviceBuilder2 = ObjectMother.GetAdviceBuilder ();
-      var fakeAdviceBuilder3 = ObjectMother.GetAdviceBuilder ();
+      var fakeAdviceBuilder = new IAdviceBuilder[0];
 
-      aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (method)).Return (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2 }.AsOneTime());
-      aspectDeclarationHelperMock.Expect (x => x.GetAdviceBuilders (baseMethod)).Return (new[] { fakeAdviceBuilder3 }.AsOneTime());
+      memberAttributeDeclarationProviderMock
+        .Expect (x => x.GetAdviceBuilders (Arg.Is(method), Arg<IEnumerable<MemberInfo>>.List.Equal(new[] { method, baseMethod })))
+        .Return (fakeAdviceBuilder);
 
-      var provider = new MethodAttributeDeclarationProvider (aspectDeclarationHelperMock);
-      var result = provider.GetDeclarations (method).ToArray ();
+      var provider = new MethodAttributeDeclarationProvider (memberAttributeDeclarationProviderMock);
+      var result = provider.GetDeclarations (method);
 
-      aspectDeclarationHelperMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (new[] { fakeAdviceBuilder1, fakeAdviceBuilder2, fakeAdviceBuilder3 }));
+      memberAttributeDeclarationProviderMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeAdviceBuilder));
     }
 
     [Test]

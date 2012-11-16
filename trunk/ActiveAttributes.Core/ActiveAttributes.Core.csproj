@@ -72,10 +72,14 @@
     <Compile Include="Assembly\Assembler.cs" />
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
+    <Compile Include="Declaration\AttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\MemberAttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransform.cs" />
     <Compile Include="Declaration\Providers\AspectTypesProvider.cs" />
     <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\Providers\CompositeDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProvider2.cs" />
+    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProvider2.cs" />
     <Compile Include="Declaration\Providers\IDeclarationProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -89,7 +93,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Declaration\Providers\AspectClassDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProvider.cs" />
     <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -122,7 +125,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Declaration\CustomAttributeDataTransform.cs" />
-    <Compile Include="Declaration\AttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\ClassDeclarationProvider.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Ordering\AdviceRoleOrdering.cs" />
@@ -185,6 +187,8 @@
     <Compile Include="Pointcuts\MemberNamePointcut.cs" />
     <Compile Include="Pointcuts\TypePointcut.cs" />
     <Compile Include="Utilities\CircularDependencyException.cs" />
+    <Compile Include="Utilities\CustomAttributeDataHelper.cs" />
+    <Compile Include="Utilities\RelatedFinderFactory.cs" />
     <Compile Include="Utilities\StronglyConnectedComponent.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentFinder.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentList.cs" />

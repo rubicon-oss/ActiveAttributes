@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +23,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
 
-namespace ActiveAttributes.UnitTests.Discovery.Construction
+namespace ActiveAttributes.UnitTests.Declaration.Construction
 {
   [TestFixture]
   public class AttributeConstructionTest

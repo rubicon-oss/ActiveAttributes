@@ -18,31 +18,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Extensions;
+using ActiveAttributes.Utilities;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Declaration.DeclarationProviders
+namespace ActiveAttributes.Declaration.Providers
 {
   public class AssemblyAttributeDeclarationProvider : IAssemblyLevelDeclarationProvider
   {
     private readonly IAspectTypesProvider _aspectTypesProvider;
     private readonly IAttributeDeclarationProvider _attributeDeclarationProvider;
+    private readonly ICustomAttributeDataHelper _customAttributeDataHelper;
 
-    public AssemblyAttributeDeclarationProvider (IAspectTypesProvider aspectTypesProvider, IAttributeDeclarationProvider attributeDeclarationProvider)
+    public AssemblyAttributeDeclarationProvider (
+        IAspectTypesProvider aspectTypesProvider,
+        IAttributeDeclarationProvider attributeDeclarationProvider,
+        ICustomAttributeDataHelper customAttributeDataHelper)
     {
       ArgumentUtility.CheckNotNull ("aspectTypesProvider", aspectTypesProvider);
       ArgumentUtility.CheckNotNull ("attributeDeclarationProvider", attributeDeclarationProvider);
+      ArgumentUtility.CheckNotNull ("customAttributeDataHelper", customAttributeDataHelper);
 
       _aspectTypesProvider = aspectTypesProvider;
       _attributeDeclarationProvider = attributeDeclarationProvider;
+      _customAttributeDataHelper = customAttributeDataHelper;
     }
 
     public IEnumerable<IAdviceBuilder> GetDeclarations ()
     {
       // TODO get all assemblies?
-      var types = _aspectTypesProvider.GetAspectAttributeTypes();
-      var assemblies = types.Distinct (x => x.Assembly);
-      var declarations = assemblies.Select (x => _attributeDeclarationProvider.GetAdviceBuilders (x));
-      return declarations.SelectMany (x => x);
+      return from assembly in _aspectTypesProvider.GetAspectAttributeTypes().Distinct (x => x.Assembly)
+             from customAttributeData in TypePipeCustomAttributeData.GetCustomAttributes (assembly)
+             where _customAttributeDataHelper.IsAspectAttribute (customAttributeData)
+             from declaration in _attributeDeclarationProvider.GetAdviceBuilders (customAttributeData)
+             select declaration;
     }
   }
 }

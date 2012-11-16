@@ -19,10 +19,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.DeclarationProviders;
+using ActiveAttributes.Declaration.Providers;
 using ActiveAttributes.Interception;
 using ActiveAttributes.Ordering;
 using ActiveAttributes.Ordering.Providers;
+using ActiveAttributes.Utilities;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
@@ -59,12 +60,16 @@ namespace ActiveAttributes.Assembly
       var aspectTypesProvider = new AspectTypesProvider();
       var aspectClassDeclarationProvider = new AspectClassDeclarationProvider (aspectTypesProvider, classDeclarationProvider);
       var customAttributeDataTransform = new CustomAttributeDataTransform();
+      var customAttributeDataHelper = new CustomAttributeDataHelper();
       var attributeDeclarationProvider = new AttributeDeclarationProvider (classDeclarationProvider, customAttributeDataTransform);
-      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (attributeDeclarationProvider);
-      var assemblyAttributeDeclarationProvider = new AssemblyAttributeDeclarationProvider (aspectTypesProvider, attributeDeclarationProvider);
+      var memberAttributeDeclarationProvider = new MemberAttributeDeclarationProvider (attributeDeclarationProvider, customAttributeDataHelper);
+
+      var methodAttributeDeclarationProvider = new MethodAttributeDeclarationProvider (memberAttributeDeclarationProvider);
+      var propertyAttributeDeclarationProvider = new PropertyAttributeDeclarationProvider2 (memberAttributeDeclarationProvider);
+      var assemblyAttributeDeclarationProvider = new AssemblyAttributeDeclarationProvider (aspectTypesProvider, attributeDeclarationProvider, customAttributeDataHelper);
       var assemblyLevelAdviceDeclarationProviders = new IAssemblyLevelDeclarationProvider[] { aspectClassDeclarationProvider, assemblyAttributeDeclarationProvider };
       var typeLevelAdviceDeclarationProviders = new ITypeLevelDeclarationProvider[0];
-      var methodLevelAdviceDeclarationProviders = new[] { methodAttributeDeclarationProvider };
+      var methodLevelAdviceDeclarationProviders = new IMethodLevelDeclarationProvider[] { methodAttributeDeclarationProvider, propertyAttributeDeclarationProvider };
 
       var compositeDeclarationProvider = new CompositeDeclarationProvider (assemblyLevelAdviceDeclarationProviders, typeLevelAdviceDeclarationProviders, methodLevelAdviceDeclarationProviders);
 

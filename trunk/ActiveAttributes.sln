@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{61BC5505-53C0-4C47-B431-BF7B721EF2EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyWithAttribute", "AssemblyWithAttribute\AssemblyWithAttribute.csproj", "{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +130,16 @@ Global
 		{9436CE77-EA15-4BA9-81FB-0572886A8C23}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9436CE77-EA15-4BA9-81FB-0572886A8C23}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9436CE77-EA15-4BA9-81FB-0572886A8C23}.Release|x86.ActiveCfg = Release|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,5 +147,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B7124166-DD28-4FE5-9C68-9A37DC7A03AB} = {9D89CEF9-CE32-4377-955A-A9370DA232BB}
 		{9436CE77-EA15-4BA9-81FB-0572886A8C23} = {9D89CEF9-CE32-4377-955A-A9370DA232BB}
+		{9708E1D6-28FA-45AF-BBA8-D69E2FFD42F7} = {61BC5505-53C0-4C47-B431-BF7B721EF2EB}
 	EndGlobalSection
 EndGlobal
