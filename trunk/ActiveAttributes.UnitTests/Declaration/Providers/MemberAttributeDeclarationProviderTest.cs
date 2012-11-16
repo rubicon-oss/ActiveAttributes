@@ -13,10 +13,12 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ActiveAttributes.Declaration;
+using ActiveAttributes.Declaration.Providers;
 using ActiveAttributes.Utilities;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
@@ -24,7 +26,7 @@ using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 using Remotion.Development.UnitTesting.Enumerables;
 
-namespace ActiveAttributes.UnitTests.Declaration
+namespace ActiveAttributes.UnitTests.Declaration.Providers
 {
   [TestFixture]
   public class MemberAttributeDeclarationProviderTest

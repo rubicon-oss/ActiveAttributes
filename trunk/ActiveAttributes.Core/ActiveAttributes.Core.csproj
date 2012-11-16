@@ -73,7 +73,7 @@
     <Compile Include="Assembly\InitializationService.cs" />
     <Compile Include="Assembly\IWeaver.cs" />
     <Compile Include="Declaration\AttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\MemberAttributeDeclarationProvider.cs" />
+    <Compile Include="Declaration\Providers\MemberAttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransform.cs" />
     <Compile Include="Declaration\Providers\AspectTypesProvider.cs" />
     <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProvider.cs" />

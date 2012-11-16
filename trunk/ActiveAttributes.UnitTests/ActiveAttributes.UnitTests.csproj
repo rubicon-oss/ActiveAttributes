@@ -97,7 +97,7 @@
     <Compile Include="Declaration\Construction\AttributeConstructionTest.cs" />
     <Compile Include="Declaration\Construction\TypeConstructionTest.cs" />
     <Compile Include="Declaration\CustomAttributeProviderTransformTest.cs" />
-    <Compile Include="Declaration\MemberAttributeDeclarationProviderTest.cs" />
+    <Compile Include="Declaration\Providers\MemberAttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Providers\AspectTypesProviderTest.cs" />
     <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProviderTest.cs" />

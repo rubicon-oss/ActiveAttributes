@@ -13,6 +13,7 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,9 @@ using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Declaration
+namespace ActiveAttributes.Declaration.Providers
 {
-  [ConcreteImplementation (typeof (AttributeDeclarationProvider))]
+  [ConcreteImplementation (typeof (MemberAttributeDeclarationProvider))]
   public interface IMemberAttributeDeclarationProvider
   {
     IEnumerable<IAdviceBuilder> GetAdviceBuilders (MemberInfo baseMember, IEnumerable<MemberInfo> relatedMembers);
