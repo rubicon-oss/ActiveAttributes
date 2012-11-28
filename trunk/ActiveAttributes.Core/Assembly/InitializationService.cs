@@ -47,8 +47,8 @@ namespace ActiveAttributes.Assembly
     private readonly IStorageService _storageService;
     private readonly IInitializationExpressionHelper _initializationExpressionHelper;
 
-    private readonly Dictionary<Tuple<IConstruction, AdviceScope>, IStorage> _fieldWrappers =
-        new Dictionary<Tuple<IConstruction, AdviceScope>, IStorage>();
+    private readonly Dictionary<Tuple<MutableType, IConstruction, AdviceScope>, IStorage> _fieldWrappers =
+        new Dictionary<Tuple<MutableType, IConstruction, AdviceScope>, IStorage>();
 
     public InitializationService (IStorageService storageService, IInitializationExpressionHelper initializationExpressionHelper)
     {
@@ -112,8 +112,9 @@ namespace ActiveAttributes.Assembly
       ArgumentUtility.CheckNotNull ("advice", advice);
       ArgumentUtility.CheckNotNull ("mutableType", mutableType);
 
+      // TODO use mutableType in tuple
       IStorage field;
-      var tuple = Tuple.Create (advice.Construction, advice.Scope);
+      var tuple = Tuple.Create (mutableType, advice.Construction, advice.Scope);
       if (!_fieldWrappers.TryGetValue (tuple, out field))
       {
         field = AddAspect (advice, mutableType);

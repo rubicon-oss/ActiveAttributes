@@ -18,9 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Advices;
+using ActiveAttributes.Interception;
+using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Assembly
 {
+  [ConcreteImplementation (typeof (InterceptionWeaver))]
   public interface IWeaver
   {
     void Weave (MethodInfo method, IEnumerable<Advice> advices);

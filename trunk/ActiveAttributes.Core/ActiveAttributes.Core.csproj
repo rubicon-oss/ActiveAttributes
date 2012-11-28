@@ -64,7 +64,9 @@
   <ItemGroup>
     <Compile Include="Advices\AdviceExecution.cs" />
     <Compile Include="Advices\AdviceScope.cs" />
+    <Compile Include="Assembly\ExpressionWeaver.cs" />
     <Compile Include="Assembly\Storages\GlobalStorage.cs" />
+    <Compile Include="Assembly\Storages\TransientStorage.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Declaration\AdviceBuilder.cs" />
     <Compile Include="Declaration\AdviceBuilderFactory.cs" />
@@ -78,7 +80,7 @@
     <Compile Include="Declaration\Providers\AspectTypesProvider.cs" />
     <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\Providers\CompositeDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProvider2.cs" />
+    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProvider.cs" />
     <Compile Include="Declaration\Providers\MethodAttributeDeclarationProvider2.cs" />
     <Compile Include="Declaration\Providers\IDeclarationProvider.cs">
       <SubType>Code</SubType>
@@ -102,11 +104,21 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
+    <Compile Include="Interception\Invocations\IndexerGetInvocation.cs" />
+    <Compile Include="Interception\Invocations\IPropertyInvocation.cs" />
+    <Compile Include="Interception\Invocations\IndexerSetInvocation.cs" />
+    <Compile Include="Interception\Invocations\PropertyGetInvocation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Interception\Invocations\PropertySetInvocation.cs" />
     <Compile Include="Ordering\AdviceOrderingException.cs" />
     <Compile Include="Ordering\Providers\AppConfigTypeOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\AppConfigRoleOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\IAdviceOrderingProvider.cs" />
     <Compile Include="Ordering\StandardRoles.cs" />
+    <Compile Include="Pointcuts\MethodSignaturePointcut.cs" />
+    <Compile Include="Pointcuts\PropertyGetPointcut.cs" />
+    <Compile Include="Pointcuts\MemberTypePointcut.cs" />
     <Compile Include="Pointcuts\MethodPointcut.cs" />
     <Compile Include="Interception\InterceptionTypeProvider.cs" />
     <Compile Include="Interception\InterceptionExpressionHelper.cs" />
@@ -140,6 +152,7 @@
     <Compile Include="Ordering\Position.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Pointcuts\PropertySetPointcut.cs" />
     <Compile Include="Pointcuts\Visibility.cs">
       <SubType>Code</SubType>
     </Compile>

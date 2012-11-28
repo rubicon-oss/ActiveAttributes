@@ -13,36 +13,50 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-using System;
+
+using System.Collections.Generic;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
-using ActiveAttributes.Interception.Invocations;
 using ActiveAttributes.Pointcuts;
-using NUnit.Framework;
+using Microsoft.Scripting.Ast;
 
-namespace ActiveAttributes.IntegrationTests
+namespace ActiveAttributes.Assembly
 {
-  [TestFixture]
-  public class AspectClassTest
+  public class ExpressionAdvice
   {
-    [Test]
-    public void AspectClass ()
-    {
-      var instance = ObjectFactory.Create<DomainType>();
+    private readonly Expression _method;
+    private readonly IEnumerable<IPointcut> _pointcuts;
 
-      Assert.That (() => instance.ThrowingMethod(), Throws.Nothing);
+    public ExpressionAdvice (Expression method, IEnumerable<IPointcut> pointcuts)
+    {
+      _method = method;
+      _pointcuts = pointcuts;
     }
 
-    public class DomainType
+    public Expression Method
     {
-      public virtual void ThrowingMethod () { throw new Exception (); }
+      get { return _method; }
     }
 
-    [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
-    [TypePointcut (typeof (DomainType))]
-    public class DomainAspect : IAspect
+    public IEnumerable<IPointcut> Pointcuts
     {
-      public void Advice (IInvocation invocation) {}
+      get { return _pointcuts; }
+    }
+  }
+  public class ExpressionWeaver : ExpressionVisitor
+  {
+    private readonly IEnumerable<ExpressionAdvice> _advices;
+
+    public ExpressionWeaver (IEnumerable<ExpressionAdvice> advices)
+    {
+      _advices = advices;
+    }
+
+
+    protected override CatchBlock VisitCatchBlock (CatchBlock node)
+    {
+
+
+      return base.VisitCatchBlock (node);
     }
   }
 }

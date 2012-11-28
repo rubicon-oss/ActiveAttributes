@@ -26,15 +26,14 @@ using Remotion.Development.UnitTesting.Reflection;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ContextTest : TypeAssemblerIntegrationTestBase
+  public class ContextTest
   {
     private DomainType _instance;
 
     [SetUp]
     public void SetUp ()
     {
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      _instance = assembleType.CreateInstance<DomainType> ();
+      _instance = ObjectFactory.Create<DomainType> ();
     }
 
     [Test]

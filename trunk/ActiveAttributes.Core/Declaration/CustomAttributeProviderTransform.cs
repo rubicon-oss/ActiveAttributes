@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
 using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Pointcuts;
@@ -66,8 +67,7 @@ namespace ActiveAttributes.Declaration
         TrySetValue (adviceBuilder.SetPriority, adviceAttribute.Priority);
       }
 
-      foreach (var pointcutAttribute in customAttributeProvider.GetCustomAttributes<PointcutAttributeBase> (true))
-        adviceBuilder.AddPointcut (pointcutAttribute.Pointcut);
+      AddPointcuts (customAttributeProvider, adviceBuilder);
 
       return adviceBuilder;
     }
@@ -76,6 +76,48 @@ namespace ActiveAttributes.Declaration
     {
       if (value != null && !value.Equals (default (T)))
         set (value);
+    }
+
+    private static void AddPointcuts (ICustomAttributeProvider customAttributeProvider, IAdviceBuilder adviceBuilder)
+    {
+      var pointcutAttributes = customAttributeProvider.GetCustomAttributes<PointcutAttributeBase> (true);
+      foreach (var pointcutAttribute in pointcutAttributes)
+      {
+        IPointcut pointcut;
+
+        var methodPointcutAttribute = pointcutAttribute as MethodPointcutAttribute;
+        if (methodPointcutAttribute != null)
+        {
+          var method = ParseMethodPointcut(customAttributeProvider, methodPointcutAttribute);
+          pointcut = new MethodPointcut (method);
+        }
+        else
+          pointcut = pointcutAttribute.Pointcut;
+
+        adviceBuilder.AddPointcut (pointcut);
+      }
+    }
+
+    private static MethodInfo ParseMethodPointcut (ICustomAttributeProvider customAttributeProvider, MethodPointcutAttribute methodPointcutAttribute)
+    {
+      var declaringType = customAttributeProvider as Type ?? ((MethodInfo) customAttributeProvider).DeclaringType;
+      var methodName = methodPointcutAttribute.MethodName;
+      var method = declaringType.GetMethod (methodName, BindingFlags.Public | BindingFlags.Static);
+
+      if (method == null)
+      {
+        var message = string.Format ("Pointcut method '{0}' is missing or not declared as static.", methodName);
+        throw new InvalidOperationException (message);
+      }
+
+      var parameter = method.GetParameters().SingleOrDefault();
+      if (parameter == null || parameter.ParameterType != typeof (JoinPoint) || method.ReturnType != typeof (bool))
+      {
+        var message = string.Format ("Pointcut method '{0}' must have JoinPoint as argument and bool as return type.", methodName);
+        throw new InvalidOperationException (message);
+      }
+
+      return method;
     }
   }
 }

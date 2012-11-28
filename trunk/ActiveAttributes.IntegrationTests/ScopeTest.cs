@@ -24,7 +24,7 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ScopeTest : TypeAssemblerIntegrationTestBase
+  public class ScopeTest
   {
     private DomainType _instance1;
     private DomainType _instance2;
@@ -32,15 +32,13 @@ namespace ActiveAttributes.IntegrationTests
     [SetUp]
     public void SetUp ()
     {
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      _instance1 = assembleType.CreateInstance<DomainType> ();
-      _instance2 = assembleType.CreateInstance<DomainType> ();
+      _instance1 = ObjectFactory.Create<DomainType> ();
+      _instance2 = ObjectFactory.Create<DomainType> ();
     }
 
     [Test]
     public void InstanceAdviced ()
     {
-      SkipDeletion();
       var result1 = _instance1.InstanceAdvicedMethod ();
       var result2 = _instance2.InstanceAdvicedMethod ();
 

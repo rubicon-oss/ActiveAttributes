@@ -44,7 +44,7 @@ namespace ActiveAttributes.Declaration
               //
               { "MemberNameFilter", typeof (MemberNamePointcut) },
               { "MemberReturnTypeFilter", typeof (ReturnTypePointcut) },
-              { "MemberArgumentFilter", typeof (ArgumentTypePointcut) },
+              { "MemberArgumentTypesFilter", typeof (ArgumentTypesPointcut) },
               { "MemberVisibilityFilter", typeof (VisibilityPointcut) },
               { "MemberCustomAttributeFilter", typeof (CustomAttributePointcut) }
           };

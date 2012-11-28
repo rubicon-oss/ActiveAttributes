@@ -13,19 +13,17 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
+using System;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
 using ActiveAttributes.Pointcuts;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
-  [Ignore]
   [TestFixture]
-  public class ContextExposureTest : TypeAssemblerIntegrationTestBase
+  public class ContextExposureTest
   {
     private DomainType _instance;
 
@@ -35,14 +33,13 @@ namespace ActiveAttributes.IntegrationTests
       DomainAspect.Instance = null;
       DomainAspect.Argument = null;
 
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      _instance = assembleType.CreateInstance<DomainType> ();
+      _instance = ObjectFactory.Create<DomainType>();
     }
 
     [Test]
     public void TypePointcut ()
     {
-      _instance.Method1 ();
+      _instance.Method1();
 
       Assert.That (DomainAspect.Instance, Is.SameAs (_instance));
     }
@@ -67,7 +64,11 @@ namespace ActiveAttributes.IntegrationTests
     {
       public virtual void Method1 () {}
       public virtual void Method2 (string abc) {}
-      public virtual string Method3 (int arg) { return arg.ToString(); }
+
+      public virtual string Method3 (int arg)
+      {
+        return arg.ToString();
+      }
     }
 
     [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
@@ -77,22 +78,18 @@ namespace ActiveAttributes.IntegrationTests
       public static DomainType Instance { get; set; }
       public static string Argument { get; set; }
 
-      ////[TypePointcut (typeof (DomainType))]
       [MemberNamePointcut ("Method1")]
       public void Advice1 (DomainType instance)
       {
         Instance = instance;
       }
 
-
-      //[ArgumentTypePointcut (typeof (string))]
       [MemberNamePointcut ("Method2")]
       public void Advice2 (string argument)
       {
         Argument = argument;
       }
 
-      //[ArgumentTypePointcut (typeof (string))]
       [MemberNamePointcut ("Method3")]
       public void Advice3 (IInvocation invocation, ref int argument)
       {

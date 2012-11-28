@@ -21,6 +21,7 @@ using ActiveAttributes.Extensions;
 using ActiveAttributes.UnitTests.Extensions;
 using ActiveAttributes.Utilities;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Rhino.Mocks;
 
@@ -65,6 +66,14 @@ namespace ActiveAttributes.UnitTests.Utilities
 
       Assert.That (_helper.IsAspectAttribute (customAttributeData1), Is.True);
       Assert.That (_helper.IsAspectAttribute (customAttributeData2), Is.False);
+    }
+
+    [Test]
+    public void Resolution ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<ICustomAttributeDataHelper>();
+
+      Assert.That (instance, Is.TypeOf<CustomAttributeDataHelper>());
     }
 
     class DomainAttribute : AspectAttributeBase

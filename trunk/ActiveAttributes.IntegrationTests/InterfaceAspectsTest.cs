@@ -24,14 +24,13 @@ using NUnit.Framework;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class InterfaceAspectsTest : TypeAssemblerIntegrationTestBase
+  public class InterfaceAspectsTest
   {
     [Ignore]
     [Test]
     public void InterfaceAspect ()
     {
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      var instance = assembleType.CreateInstance<DomainType> ();
+      var instance = ObjectFactory.Create<DomainType>();
 
       var result = instance.Method ();
 

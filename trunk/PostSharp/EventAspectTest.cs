@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using NUnit.Framework;
 using PostSharp.Aspects;
+using PostSharp.Aspects.Advices;
 
 namespace PostSharp_
 {
@@ -12,23 +13,54 @@ namespace PostSharp_
     [Test]
     public void name ()
     {
-      new DomainType ();
-      var obj = (DomainType) FormatterServices.GetUninitializedObject (typeof (DomainType));
+      var obj = new DomainType ();
 
-      Assert.That (() => obj.Bla += () => { }, Throws.Exception);
+      //PostSharp.Aspects.OnMethodBoundaryAspect
+
+      obj.Bla += ObjOnBla;
+      obj.Bla += ObjOnBla;
+      obj.Bla += ObjOnBla2;
+      obj.Bla -= ObjOnBla;
+      obj.Bla -= ObjOnBla;
+      obj.Bla -= ObjOnBla2;
+      obj.method();
+      //Assert.That (() => obj.Bla += (sender, args) => {}, Throws.Exception);
     }
-    
+
+    private void ObjOnBla2 (object sender, EventArgs eventArgs)
+    {
+      Console.WriteLine ("kuh");
+    }
+
+    private void ObjOnBla (object sender, EventArgs eventArgs)
+    {
+      Console.WriteLine ("muh");
+    }
+
     public class DomainType
     {
+      private EventHandler _bla;
 
       [EventAspect]
-      public virtual event ThreadStart Bla;
+      public virtual event EventHandler Bla
+      {
+        [MethodIntercept]
+        add
+        {
+          _bla += value;
+        }
+        remove
+        {
+          _bla -= value;
+        }
+      }
 
       public void method()
       {
-        Bla();
+        _bla (null, null);
       }
     }
+
 
     [Serializable]
     public class EventAspect : EventInterceptionAspect, IInstanceScopedAspect
@@ -36,7 +68,8 @@ namespace PostSharp_
 
       public override void OnAddHandler (EventInterceptionArgs args)
       {
-        throw new Exception();
+        PostSharp.Aspects.LocationInterceptionArgs x;
+        args.ProceedAddHandler();
       }
 
       public object CreateInstance (AdviceArgs adviceArgs)
@@ -46,6 +79,15 @@ namespace PostSharp_
 
       public void RuntimeInitializeInstance ()
       {
+      }
+    }
+
+    [Serializable]
+    public class MethodIntercept : MethodInterceptionAspect
+    {
+      public override void OnInvoke (MethodInterceptionArgs args)
+      {
+        base.OnInvoke (args);
       }
     }
   }

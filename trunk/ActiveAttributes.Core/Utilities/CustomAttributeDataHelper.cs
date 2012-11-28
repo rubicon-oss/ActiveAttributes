@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Aspects;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using ActiveAttributes.Extensions;
@@ -24,6 +25,7 @@ using ActiveAttributes.Extensions;
 namespace ActiveAttributes.Utilities
 {
   /// <summary>Serves as a helper for <see cref="ICustomAttributeData"/>s.</summary>
+  [ConcreteImplementation (typeof (CustomAttributeDataHelper))]
   public interface ICustomAttributeDataHelper
   {
     /// <summary>Determines if the attribute is inheriting by checking the its <see cref="AttributeUsageAttribute"/>.</summary>

@@ -13,39 +13,40 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
-using Remotion.Utilities;
+using System.Reflection;
 
-namespace ActiveAttributes.Pointcuts
+namespace ActiveAttributes.Interception.Invocations
 {
-  public interface IVisibilityPointcut : IPointcut
+  public class PropertySetInvocation<TInstance, TValue> : ActionInvocation<TInstance, TValue>, IPropertyInvocation
   {
-    Visibility Visibility { get; }
-  }
+    private readonly PropertyInfo _propertyInfo;
 
-  public class VisibilityPointcut : IVisibilityPointcut
-  {
-    private readonly Visibility _visibility;
-
-    public VisibilityPointcut (Visibility visibility)
+    public PropertySetInvocation (PropertyInfo propertyInfo, TInstance instance, TValue arg1, Action<TValue> action)
+        : base (propertyInfo, instance, arg1, action)
     {
-      _visibility = visibility;
+      _propertyInfo = propertyInfo;
     }
 
-    public Visibility Visibility
+    public object Index
     {
-      get { return _visibility; }
+      get { throw new NotSupportedException(); }
     }
 
-    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
+    public bool IsIndexer
     {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+      get { return false; }
+    }
 
-      return evaluator.Visit (this, joinPoint);
+    public object Value
+    {
+      get { return this[0]; }
+      set { this[0] = value; }
+    }
+
+    public new PropertyInfo MemberInfo
+    {
+      get { return _propertyInfo; }
     }
   }
 }

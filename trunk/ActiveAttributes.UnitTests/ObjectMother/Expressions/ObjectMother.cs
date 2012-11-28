@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,26 +15,19 @@
 // under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Scripting.Ast;
+using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.Pointcuts
+namespace ActiveAttributes.UnitTests
 {
-  public interface IPointcutAttribute
+  public static partial class ObjectMother
   {
-    IPointcut Pointcut { get; }
-  }
-
-  public abstract class PointcutAttributeBase : Attribute, IPointcutAttribute
-  {
-    private readonly IPointcut _pointcut;
-
-    protected PointcutAttributeBase (IPointcut pointcut)
+    public static TryExpression GetTryExpression (Expression tryExpression, params CatchBlock[] catchBlocks)
     {
-      _pointcut = pointcut;
-    }
-
-    public virtual IPointcut Pointcut
-    {
-      get { return _pointcut; }
+      return Expression.TryCatch (tryExpression, catchBlocks);
     }
   }
 }

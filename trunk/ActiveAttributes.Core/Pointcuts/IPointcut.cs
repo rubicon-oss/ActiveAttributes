@@ -15,12 +15,13 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
 
 namespace ActiveAttributes.Pointcuts
 {
   public interface IPointcut
   {
-    bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint);
+    bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint);
   }
 }

@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using ActiveAttributes.Interception.Invocations;
 using ActiveAttributes.Pointcuts;
@@ -28,12 +27,14 @@ namespace ActiveAttributes.Aspects
   {
     /// <summary>The method that is invoked instead of the property getter.</summary>
     /// <param name="invocation">The invocation.</param>
-    [MemberNamePointcut ("get_*")]
+    //[MemberNamePointcut ("get_*")]
+    [PropertyGetPointcut]
     public abstract void OnInterceptGet (IInvocation invocation);
 
     /// <summary>The method that is invoked instead of the property setter.</summary>
     /// <param name="invocation">The invocation.</param>
-    [MemberNamePointcut ("set_*")]
+    //[MemberNamePointcut ("set_*")]
+    [PropertySetPointcut]
     public abstract void OnInterceptSet (IInvocation invocation);
   }
 }

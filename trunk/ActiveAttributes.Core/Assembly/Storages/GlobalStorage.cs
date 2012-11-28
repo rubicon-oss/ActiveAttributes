@@ -41,8 +41,6 @@ namespace ActiveAttributes.Assembly.Storages
       lambda.Compile()();
     }
 
-    public FieldInfo Field { get; private set; }
-
     public Expression CreateStorageExpression (Expression thisExpression)
     {
       return _storageExpression;

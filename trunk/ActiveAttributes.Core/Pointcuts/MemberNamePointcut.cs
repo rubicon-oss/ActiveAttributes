@@ -15,6 +15,7 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
 using Remotion.Utilities;
 
@@ -41,12 +42,12 @@ namespace ActiveAttributes.Pointcuts
       get { return _memberName; }
     }
 
-    public bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint)
+    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("evaluator", evaluator);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return evaluator.MatchesMemberName (this, joinPoint);
+      return evaluator.Visit (this, joinPoint);
     }
   }
 

@@ -22,6 +22,7 @@ using Remotion.ServiceLocation;
 namespace ActiveAttributes.Declaration.Providers
 {
   [ConcreteImplementation (typeof (MethodAttributeDeclarationProvider), Position = 1)]
+  [ConcreteImplementation (typeof (PropertyAttributeDeclarationProvider), Position = 2)]
   public interface IMethodLevelDeclarationProvider
   {
     IEnumerable<IAdviceBuilder> GetDeclarations (MethodInfo method);

@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,38 +14,41 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-using System;
+using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
-using Remotion.Utilities;
 
 namespace ActiveAttributes.Pointcuts
 {
-  public interface IVisibilityPointcut : IPointcut
+  public interface IMemberTypePointcut
   {
-    Visibility Visibility { get; }
+    MemberTypes MemberType { get; }
   }
 
-  public class VisibilityPointcut : IVisibilityPointcut
+  public class MemberTypePointcut : IPointcut, IMemberTypePointcut
   {
-    private readonly Visibility _visibility;
+    private readonly MemberTypes _memberType;
 
-    public VisibilityPointcut (Visibility visibility)
+    public MemberTypePointcut (MemberTypes memberType)
     {
-      _visibility = visibility;
+      _memberType = memberType;
     }
 
-    public Visibility Visibility
+    public MemberTypes MemberType
     {
-      get { return _visibility; }
+      get { return _memberType; }
     }
 
     public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
     {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
-
-      return evaluator.Visit (this, joinPoint);
+      throw new System.NotImplementedException();
     }
   }
+
+  public class MemberTypePointcutAttribute : PointcutAttributeBase
+  {
+    public MemberTypePointcutAttribute (MemberTypes memberType)
+        : base(new MemberTypePointcut(memberType)) {}
+  }
+
 }

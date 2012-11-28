@@ -15,37 +15,25 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
+using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Pointcuts
+namespace ActiveAttributes.Assembly.Storages
 {
-  public interface IVisibilityPointcut : IPointcut
+  public class TransientStorage : IStorage
   {
-    Visibility Visibility { get; }
-  }
+    private readonly NewExpression _newExpression;
 
-  public class VisibilityPointcut : IVisibilityPointcut
-  {
-    private readonly Visibility _visibility;
-
-    public VisibilityPointcut (Visibility visibility)
+    public TransientStorage (NewExpression newExpression)
     {
-      _visibility = visibility;
+      ArgumentUtility.CheckNotNull ("newExpression", newExpression);
+
+      _newExpression = newExpression;
     }
 
-    public Visibility Visibility
+    public Expression CreateStorageExpression (Expression thisExpression)
     {
-      get { return _visibility; }
-    }
-
-    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
-    {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
-
-      return evaluator.Visit (this, joinPoint);
+      return _newExpression;
     }
   }
 }

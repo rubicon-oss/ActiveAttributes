@@ -15,7 +15,9 @@
 // under the License.
 
 using System;
+using System.Reflection;
 using ActiveAttributes.Advices;
+using ActiveAttributes.Assembly;
 using ActiveAttributes.Declaration;
 using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
@@ -46,7 +48,7 @@ namespace ActiveAttributes.UnitTests.Declaration
     [Test]
     public void GetAdviceBuilder ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Method1());
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Advice1());
 
       _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
       _builderMock.Expect (x => x.SetMethod (method)).Return (_builderMock);
@@ -65,10 +67,10 @@ namespace ActiveAttributes.UnitTests.Declaration
     [Test]
     public void GetAdviceBuilder_Pointcuts ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Method2());
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Advice2());
 
-      _adviceBuilderFactoryMock.Expect (x => x.Create()).Return (_builderMock);
-      _builderMock.Expect (x => x.SetMethod (method)).Return (_builderMock);
+      _adviceBuilderFactoryMock.Stub (x => x.Create()).Return (_builderMock);
+      _builderMock.Stub (x => x.SetMethod (method)).Return (_builderMock);
       _builderMock.Expect (x => x.AddPointcut (Arg<TypePointcut>.Is.TypeOf)).Return (_builderMock);
       _builderMock.Expect (x => x.AddPointcut (Arg<MemberNamePointcut>.Is.TypeOf)).Return (_builderMock);
 
@@ -79,6 +81,56 @@ namespace ActiveAttributes.UnitTests.Declaration
       Assert.That (pointcuts, Has.Some.TypeOf<TypePointcut>().With.Property ("Type").EqualTo (typeof (string)));
       Assert.That (pointcuts, Has.Some.TypeOf<MemberNamePointcut>().With.Property ("MemberName").EqualTo ("MemberName"));
       _builderMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GetAdviceBuilder_Pointcuts_MethodPointcut ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.Advice4());
+
+      _adviceBuilderFactoryMock.Stub (x => x.Create()).Return (_builderMock);
+      _builderMock.Stub (x => x.SetMethod (method)).Return (_builderMock);
+      _builderMock.Expect (x => x.AddPointcut (Arg<MethodPointcut>.Is.TypeOf)).Return (_builderMock);
+
+      _transform.GetAdviceBuilder (method);
+
+      var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.AddPointcut (null));
+      var methodPointcut = (MethodPointcut) args[0][0];
+      var pointcutMethod = typeof (DomainAspect).GetMethod ("PointcutMethod");
+      Assert.That (methodPointcut.Method, Is.EqualTo (pointcutMethod));
+      _builderMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void GetAdviceBuilder_Pointcuts_MethodPointcut_ThrowsForNotStatic ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.AdviceWithInstanceMethodPointcut());
+
+      CheckMethodPointcut (method, "Pointcut method 'NotStaticPointcutMethod' is missing or not declared as static.");
+    }
+
+    [Test]
+    public void GetAdviceBuilder_Pointcuts_MethodPointcut_ThrowsForWrongSignature ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.AdviceWithWrongSignature());
+
+      CheckMethodPointcut (method, "Pointcut method 'WrongSignaturePointcutMethod' must have JoinPoint as argument and bool as return type.");
+    }
+
+    [Test]
+    public void GetAdviceBuilder_Pointcuts_MethodPointcut_ThrowsForMissing ()
+    {
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainAspect obj) => obj.AdviceWithMissingMethodPointcut());
+
+      CheckMethodPointcut (method, "Pointcut method 'MissingPointcutMethod' is missing or not declared as static.");
+    }
+
+    private void CheckMethodPointcut (MethodInfo method, string message)
+    {
+      _adviceBuilderFactoryMock.Stub (x => x.Create()).Return (_builderMock);
+      _builderMock.Stub (x => x.SetMethod (method)).Return (_builderMock);
+
+      Assert.That (() => _transform.GetAdviceBuilder (method), Throws.InvalidOperationException.With.Message.EqualTo (message));
     }
 
     [Test]
@@ -114,7 +166,7 @@ namespace ActiveAttributes.UnitTests.Declaration
     [Test]
     public void GetAdviceBuilder_ConsidersDerivedAttributes ()
     {
-      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DerivedDomainAspect obj) => obj.Method3());
+      var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DerivedDomainAspect obj) => obj.Advice3());
       
       var adviceBuilderMock = MockRepository.GenerateMock<IAdviceBuilder>();
       _adviceBuilderFactoryMock.Expect (x => x.Create ()).Return (adviceBuilderMock);
@@ -142,20 +194,38 @@ namespace ActiveAttributes.UnitTests.Declaration
           Execution = AdviceExecution.Around,
           Scope = AdviceScope.Instance,
           Priority = 10)]
-      public void Method1 () {}
+      public void Advice1 () {}
 
       [MemberNamePointcut ("MemberName")]
       [TypePointcut (typeof (string))]
-      public void Method2 () {}
+      public void Advice2 () {}
 
       [AdviceInfo (Name = "Name")]
       [ReturnTypePointcut (typeof (string))]
-      public virtual void Method3 () {}
+      public virtual void Advice3 () {}
+
+      [MethodPointcut ("PointcutMethod")]
+      public void Advice4 () {}
+
+      public static bool PointcutMethod (JoinPoint joinPoint) { return true; }
+
+      [MethodPointcut ("NotStaticPointcutMethod")]
+      public void AdviceWithInstanceMethodPointcut () {}
+
+      public bool NotStaticPointcutMethod () { return true; }
+
+      [MethodPointcut ("WrongSignaturePointcutMethod")]
+      public void AdviceWithWrongSignature () {}
+
+      public static void WrongSignaturePointcutMethod () { }
+
+      [MethodPointcut ("MissingPointcutMethod")]
+      public void AdviceWithMissingMethodPointcut () {}
     }
 
     class DerivedDomainAspect : DomainAspect
     {
-      public override void Method3 () {}
+      public override void Advice3 () {}
     }
   }
 }

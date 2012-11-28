@@ -34,21 +34,11 @@ namespace ActiveAttributes.Assembly.Storages
       _field = field;
     }
 
-    public FieldInfo Field
-    {
-      get { return _field; }
-    }
-
     public Expression CreateStorageExpression (Expression thisExpression)
     {
       ArgumentUtility.CheckNotNull ("thisExpression", thisExpression);
 
       return Expression.Field (thisExpression, _field);
-    }
-
-    public bool IsStatic
-    {
-      get { return false; }
     }
   }
 }

@@ -20,37 +20,37 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Pointcuts
 {
-  public interface IArgumentTypePointcut : IPointcut
+  public interface IArgumentTypesPointcut : IPointcut
   {
-    Type ArgumentType { get; }
+    Type[] ArgumentTypes { get; }
   }
 
-  public class ArgumentTypePointcut : IArgumentTypePointcut
+  public class ArgumentTypesPointcut : IArgumentTypesPointcut
   {
-    private readonly Type _argumentType;
+    private readonly Type[] _argumentTypes;
 
-    public ArgumentTypePointcut (Type argumentType)
+    public ArgumentTypesPointcut (Type[] argumentTypes)
     {
-      _argumentType = argumentType;
+      _argumentTypes = argumentTypes;
     }
 
-    public Type ArgumentType
+    public Type[] ArgumentTypes
     {
-      get { return _argumentType; }
+      get { return _argumentTypes; }
     }
 
-    public bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint)
+    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
     {
       ArgumentUtility.CheckNotNull ("evaluator", evaluator);
       ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
 
-      return evaluator.MatchesArgumentType (this, joinPoint);
+      return evaluator.Visit (this, joinPoint);
     }
   }
 
-  public class ArgumentTypePointcutAttribute : PointcutAttributeBase
+  public class ArgumentTypesPointcutAttribute : PointcutAttributeBase
   {
-    public ArgumentTypePointcutAttribute (Type argumentType)
-        : base (new ArgumentTypePointcut (argumentType)) {}
+    public ArgumentTypesPointcutAttribute (Type[] argumentTypes)
+        : base (new ArgumentTypesPointcut (argumentTypes)) {}
   }
 }

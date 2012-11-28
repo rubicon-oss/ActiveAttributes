@@ -132,7 +132,7 @@ namespace ActiveAttributes.UnitTests.Interception
     class DomainType
     {
       public void Advice1 (IInvocation invocation, string arg) {}
-      public void Advice2 (IInvocation invocation, out string arg) { arg = ""; }
+      public void Advice2 (IInvocation invocation, ref string arg) { arg = ""; }
       public void Advice3 (IInvocation invocation, DomainType arg) {}
     }
 

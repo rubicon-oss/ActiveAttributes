@@ -52,8 +52,8 @@ namespace ActiveAttributes.Interception.Invocations
 
     public object ReturnValue
     {
-      get { throw new NotImplementedException (); }
-      set { throw new NotImplementedException (); }
+      get { throw new NotSupportedException(); }
+      set { throw new NotSupportedException(); }
     }
 
     IReadOnlyArgumentCollection IReadOnlyInvocationContext.Arguments
@@ -63,7 +63,7 @@ namespace ActiveAttributes.Interception.Invocations
 
     object IReadOnlyInvocationContext.ReturnValue
     {
-      get { throw new NotImplementedException (); }
+      get { throw new NotSupportedException(); }
     }
 
     public abstract void Proceed ();

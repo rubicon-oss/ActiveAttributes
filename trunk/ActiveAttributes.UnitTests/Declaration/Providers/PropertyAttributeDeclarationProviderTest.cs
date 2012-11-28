@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Declaration.Providers
           .Expect (x => x.GetAdviceBuilders (Arg.Is (property), Arg<IEnumerable<MemberInfo>>.List.Equal (new[] { property, baseProperty })))
           .Return (fakeAdviceBuilder);
 
-      var provider = new PropertyAttributeDeclarationProvider2 (memberAttributeDeclarationProviderMock);
+      var provider = new PropertyAttributeDeclarationProvider (memberAttributeDeclarationProviderMock);
       var result = provider.GetDeclarations (method);
 
       memberAttributeDeclarationProviderMock.VerifyAllExpectations ();
@@ -54,7 +54,7 @@ namespace ActiveAttributes.UnitTests.Declaration.Providers
     {
       var instances = SafeServiceLocator.Current.GetAllInstances<IMethodLevelDeclarationProvider>();
 
-      Assert.That (instances, Has.Some.TypeOf<MethodAttributeDeclarationProvider>());
+      Assert.That (instances, Has.Some.TypeOf<PropertyAttributeDeclarationProvider>());
     }
 
     class DomainTypeBase

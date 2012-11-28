@@ -15,6 +15,8 @@
 // under the License.
 
 using System;
+using System.Reflection;
+using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
 using Remotion.Utilities;
 
@@ -22,17 +24,41 @@ namespace ActiveAttributes.Pointcuts
 {
   public interface IMethodPointcut : IPointcut
   {
-    string MethodName { get; }
+    MethodInfo Method { get; }
   }
 
   public class MethodPointcut : IMethodPointcut
   {
+    private readonly MethodInfo _method;
+
+    public MethodPointcut (MethodInfo method)
+    {
+      ArgumentUtility.CheckNotNull ("method", method);
+      Assertion.IsTrue (method.IsStatic);
+      _method = method;
+    }
+
+    public MethodInfo Method
+    {
+      get { return _method; }
+    }
+
+    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
+    {
+      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
+      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+
+      return evaluator.Visit (this, joinPoint);
+    }
+  }
+
+  public class MethodPointcutAttribute : PointcutAttributeBase
+  {
     private readonly string _methodName;
 
-    public MethodPointcut (string methodName)
+    public MethodPointcutAttribute (string methodName)
+        : base (null)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-
       _methodName = methodName;
     }
 
@@ -40,19 +66,5 @@ namespace ActiveAttributes.Pointcuts
     {
       get { return _methodName; }
     }
-
-    public bool MatchVisit (IPointcutEvaluator evaluator, JoinPoint joinPoint)
-    {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
-
-      return evaluator.MatchesMethod (this, joinPoint);
-    }
-  }
-
-  public class MethodPointcutAttribute : PointcutAttributeBase
-  {
-    public MethodPointcutAttribute (string methodName)
-        : base (new MethodPointcut (methodName)) {}
   }
 }

@@ -18,6 +18,64 @@
             <see cref="M:Remotion.TypePipe.Caching.IInitializableObject.Initialize"/> method must be invoked manually.
             </remarks>
         </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IModuleBuilderFactory">
+            <summary>
+            Implementations of this interface create instances of <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/>.
+            </summary>
+        </member>
+        <member name="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IModuleBuilderFactory.CreateModuleBuilder(System.String,System.String)">
+            <summary>
+            Creates a module builder.
+            </summary>
+            <param name="assemblyName">The assembly name (without the file ending '.dll').</param>
+            <param name="assemblyDirectory">The directory in which the assembly will be saved when <see cref="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder.SaveToDisk"/> is called
+            on the returned <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/>.</param>
+            <returns>The created module builder.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.LockingCodeGeneratorDecorator">
+            <summary>
+            Provides a synchronization wrapper around an implementation of <see cref="T:Remotion.TypePipe.CodeGeneration.ICodeGenerator"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ICodeGenerator">
+            <summary>
+            Instances of this interface represent the code generator user by the pipeline.
+            </summary>
+        </member>
+        <member name="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk">
+            <summary>
+            Saves all types that have been generated since the last call to this method into a new assembly on disk.
+            The file name of the assembly consists of <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyName"/> plus the file ending <c>.dll</c>.
+            The assembly is written to the directory donated by <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyDirectory"/>.
+            If <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyDirectory"/> is <see langword="null"/> the assembly is saved in the current working directory.
+            </summary>
+            <remarks>
+            If no new types have been generated since the last call to <see cref="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk"/>, this method does nothing
+            and returns <see langword="null"/>.
+            </remarks>
+            <returns>The absolute path to the saved assembly file, or <see langword="null"/> if no assembly was saved.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ModuleBuilderFactory">
+            <summary>
+            This class creates instances of <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/>.
+            </summary>
+            <remarks> The module will be created with <see cref="F:System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave"/> and the <c>emitSymbolInfo</c> flag set to
+            <see langword="true"/>.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ReflectionEmitCodeGenerator">
+            <summary>
+            The Reflection.Emit-based <see cref="T:Remotion.TypePipe.CodeGeneration.ICodeGenerator"/> of the pipeline.
+            </summary>
+            <remarks>
+            This class is not thread-safe. Thread-safety will be enforced by the <see cref="T:Remotion.TypePipe.Caching.TypeCache"/>.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IReflectionEmitCodeGenerator">
+            <summary>
+            Extends the <see cref="T:Remotion.TypePipe.CodeGeneration.ICodeGenerator"/> interface with Reflection.Emit-specifc operations.
+            </summary>
+        </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ITypeModifier">
             <summary>
             Defines an interface for code generation components which perform the modifications recorded by an <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
@@ -73,37 +131,6 @@
             Represents a method on a constructed type.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.DefaultSubclassProxyBuilderFactory">
-            <summary>
-            A class that solely exists for the default service locator configuration, i.e., we need a class that the 
-            <see cref="T:Remotion.ServiceLocation.ConcreteImplementationAttribute"/> on <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilderFactory"/> can point to.
-            This is needed because the <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder"/> constructor contains arguments that cannot be configured using the
-            <see cref="T:Remotion.ServiceLocation.ConcreteImplementationAttribute"/>.
-            </summary>
-        </member>
-        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilderFactory">
-            <summary>
-            Creates <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder"/> instances.
-            </summary>
-        </member>
-        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilderFactory">
-            <summary>
-            Defines an interface for <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilder"/> factories.
-            </summary>
-        </member>
-        <member name="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ReflectionEmitBackendFactory.CreateModuleBuilder(System.String,System.String)">
-            <summary>
-            Creates a standard <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/>, decorated with <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.UniqueNamingModuleBuilderDecorator"/> and backed by a
-            real Reflection.Emit <see cref="T:System.Reflection.Emit.ModuleBuilder"/>.
-            The <see cref="T:System.Reflection.Emit.AssemblyBuilder"/> created in this process is also returned as the second item of the <see cref="T:Remotion.Collections.Tuple`2"/>.
-            </summary>
-            <remarks> The module will be created with <see cref="F:System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave"/> and the <c>emitSymbolInfo</c> flag set to
-            <see langword="true"/>.
-            </remarks>
-            <param name="assemblyName">The assembly name (without '.dll').</param>
-            <param name="assemblyDirectory">The name of the directory where the assembly is potentially saved.</param>
-            <returns>The created module and assembly builder.</returns>
-        </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.DeferredActionManager">
             <summary>
             Manages a list of actions that are to be executed at a later point of time.
@@ -133,6 +160,11 @@
         <member name="T:Remotion.TypePipe.MutableReflection.IMutableTypeUnmodifiedMutableMemberHandler">
             <summary>
             Defines an interface for classes that handle unmodfied mutable members of a <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilderFactory">
+            <summary>
+            Defines an interface for <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilder"/> factories.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IExpressionPreparer">
@@ -576,6 +608,11 @@
             <param name="node">The expression to visit.</param>
             <returns>The modified expression, if it or any subexpression was modified;
             otherwise, returns the original expression.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilderFactory">
+            <summary>
+            Creates <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder"/> instances.
+            </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.UniqueNamingModuleBuilderDecorator">
             <summary>
@@ -4130,34 +4167,31 @@
         <member name="M:Remotion.TypePipe.IObjectFactory.GetAssembledType(System.Type)">
             <summary>
             Gets the assembled type for the requested type.
-            For an instance that is created directly from the returned type, <see cref="M:Remotion.TypePipe.IObjectFactory.PrepareAssembledTypeInstance(System.Object)"/> must be called before usage.
-            This ensures that the instance is usable as intended by the participants.
             </summary>
             <param name="requestedType">The requested type.</param>
             <returns>The generated type for the requested type.</returns>
-            <seealso cref="M:Remotion.TypePipe.IObjectFactory.PrepareAssembledTypeInstance(System.Object)"/>
-        </member>
-        <member name="M:Remotion.TypePipe.IObjectFactory.PrepareAssembledTypeInstance(System.Object)">
-            <summary>
-            Prepares an externally created instance of an assembled type for use, i.e., an instance that was not created through <see cref="T:Remotion.TypePipe.IObjectFactory"/>.
-            </summary>
-            <remarks>
-            This API should only be used in combination with <see cref="M:Remotion.TypePipe.IObjectFactory.GetAssembledType(System.Type)"/>.
-            Prefer using <see cref="M:Remotion.TypePipe.IObjectFactory.CreateObject(System.Type,Remotion.Reflection.ParamList,System.Boolean)"/> or <see cref="M:Remotion.TypePipe.IObjectFactory.GetUninitializedObject(System.Type)"/>, if possible.
-            </remarks>
-            <param name="instance">The assembled type instance which should be prepared.</param>
-            <seealso cref="M:Remotion.TypePipe.IObjectFactory.GetAssembledType(System.Type)"/>
         </member>
         <member name="M:Remotion.TypePipe.IObjectFactory.GetUninitializedObject(System.Type)">
             <summary>
             Creates an instance of the assembled type for the requested type, without invoking any constructor of the assembled type.
-            However, the instance is prepared as intended by the participants, therefore <see cref="M:Remotion.TypePipe.IObjectFactory.PrepareAssembledTypeInstance(System.Object)"/> should not be called.
+            However, the instance is prepared as intended by the participants, therefore <see cref="M:Remotion.TypePipe.IObjectFactory.PrepareExternalUninitializedObject(System.Object)"/> should not be
+            called.
             </summary>
             <remarks>
             This API is a simple wrapper around <see cref="M:System.Runtime.Serialization.FormatterServices.GetUninitializedObject(System.Type)"/>.
             </remarks>
             <param name="requestedType">The requested type.</param>
             <returns>A constructed instance of the requested type for which no constructor has run.</returns>
+        </member>
+        <member name="M:Remotion.TypePipe.IObjectFactory.PrepareExternalUninitializedObject(System.Object)">
+            <summary>
+            Prepares an externally created instance of an assembled type that was not created by invoking a constructor.
+            For example, an instance that was created via <see cref="T:System.Runtime.Serialization.FormatterServices"/>.<see cref="M:System.Runtime.Serialization.FormatterServices.GetUninitializedObject(System.Type)"/>.
+            </summary>
+            <remarks>
+            If possible, use <see cref="T:Remotion.TypePipe.IObjectFactory"/>.<see cref="M:Remotion.TypePipe.IObjectFactory.GetUninitializedObject(System.Type)"/> to create objects without invoking any constructor.
+            </remarks>
+            <param name="instance">The assembled type instance which should be prepared.</param>
         </member>
         <member name="T:Remotion.TypePipe.Caching.ITypeAssembler">
             <summary>
@@ -4525,7 +4559,7 @@
             A utility class that is used to implement the <see cref="T:Remotion.TypePipe.MutableReflection.ITypePipeCustomAttributeProvider"/> interface for mutable reflection objects.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingConstructorInfoDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.ConstructorDescriptor">
             <summary>
             Defines the characteristics of a constructor.
             </summary>
@@ -4533,20 +4567,20 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableConstructorInfo"/> to represent a constructor, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingMethodBaseDescriptor`1">
+        <member name="T:Remotion.TypePipe.MutableReflection.MethodBaseDescriptor`1">
             <summary>
             Defines the characteristics of a <see cref="T:System.Reflection.MethodBase"/>, i.e., a method or constructor.
             </summary>
             <typeparam name="TMethodBase">The concrete type of method (<see cref="T:System.Reflection.MethodInfo"/> or <see cref="T:System.Reflection.ConstructorInfo"/>).</typeparam>
             <remarks>
-            This is used as a base class for <see cref="T:Remotion.TypePipe.MutableReflection.UnderlyingMethodInfoDescriptor"/> and <see cref="T:Remotion.TypePipe.MutableReflection.UnderlyingConstructorInfoDescriptor"/>.
+            This is used as a base class for <see cref="T:Remotion.TypePipe.MutableReflection.MethodDescriptor"/> and <see cref="T:Remotion.TypePipe.MutableReflection.ConstructorDescriptor"/>.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingInfoDescriptorBase`1">
+        <member name="T:Remotion.TypePipe.MutableReflection.DescriptorBase`1">
             <summary>
             Serves as a base for all descriptor classes.
             </summary>
-            <typeparam name="TInfo">The type of the member.</typeparam>
+            <typeparam name="TInfo">The type of the member (or <see cref="T:System.Reflection.ParameterInfo"/> which is not derived from <see cref="T:System.Reflection.MemberInfo"/>).</typeparam>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.MemberNotFoundException">
             <summary>
@@ -4558,7 +4592,7 @@
             Holds the member and value for a named attribute argument declaration.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingFieldInfoDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.FieldDescriptor">
             <summary>
             Defines the characteristics of a field.
             </summary>
@@ -4566,7 +4600,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableFieldInfo"/> to represent the original field, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingMethodInfoDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.MethodDescriptor">
             <summary>
             Defines the characteristics of a method.
             </summary>
@@ -4574,7 +4608,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> to represent a method, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingParameterInfoDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.ParameterDescriptor">
             <summary>
             Defines the characteristics of a parameter.
             </summary>
@@ -4582,7 +4616,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableParameterInfo"/> to represent a parameter, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.UnderlyingTypeDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.TypeDescriptor">
             <summary>
             Defines the characteristics of a type.
             </summary>
@@ -11779,9 +11813,9 @@
         <member name="M:Remotion.TypePipe.MutableReflection.MutableType.AddTypeInitialization(System.Func{Remotion.TypePipe.MutableReflection.BodyBuilding.InitializationBodyContext,Microsoft.Scripting.Ast.Expression})">
             <summary>
             Adds static initialization code to the type.
+            The initialization code is guaranteed to be executed exactly once sometime before the statically-initilized members are accessed.
             </summary>
             <remarks>
-            The added initializations are guaranteed to be executed exactly once sometime before the statically-initilized members are accessed.
             The exact time when the initialization code runs is not defined.
             </remarks>
             <param name="initializationProvider">A provider returning a type initialization.</param>
@@ -11790,9 +11824,13 @@
         <member name="M:Remotion.TypePipe.MutableReflection.MutableType.AddInstanceInitialization(System.Func{Remotion.TypePipe.MutableReflection.BodyBuilding.InitializationBodyContext,Microsoft.Scripting.Ast.Expression})">
             <summary>
             Adds instance initialization code.
+            The initialization code is executed exactly once after the constructor.
             </summary>
             <remarks>
-            The added initializations are only executed when instances of the type are created via <see cref="T:Remotion.TypePipe.IObjectFactory"/>.
+            The added initializations are not executed when instances of the type are created directly through the
+            <see cref="M:System.Runtime.Serialization.FormatterServices.GetUninitializedObject(System.Type)"/> API, which creates an object of a type without invoking any constructor.
+            If possible, use <see cref="M:Remotion.TypePipe.IObjectFactory.GetUninitializedObject(System.Type)"/> on <see cref="T:Remotion.TypePipe.IObjectFactory"/> which is a simple wrapper but also
+            executes the specified instance initializations.
             </remarks>
             <param name="initializationProvider">A provider returning an instance initialization.</param>
             <seealso cref="P:Remotion.TypePipe.MutableReflection.MutableType.InstanceInitializations"/>

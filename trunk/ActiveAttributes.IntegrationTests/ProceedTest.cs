@@ -16,21 +16,18 @@
 using System;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class ProceedTest : TypeAssemblerIntegrationTestBase
+  public class ProceedTest
   {
     [Test]
     public void Proceed ()
     {
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      var instance = assembleType.CreateInstance<DomainType> ();
-      SkipDeletion();
+      var instance = ObjectFactory.Create<DomainType> ();
 
       Assert.That (() => instance.ThrowingMethod1 (), Throws.Exception);
       Assert.That (() => instance.ThrowingMethod2 (), Throws.Nothing);

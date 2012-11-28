@@ -16,7 +16,6 @@
 using System;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Extensions;
 using ActiveAttributes.Interception.Invocations;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -24,26 +23,24 @@ using Remotion.Development.UnitTesting;
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
-  public class PropertyTest : TypeAssemblerIntegrationTestBase
+  public class PropertyTest
   {
-    [Ignore]
     [Test]
     public void Proceed ()
     {
-      var assembleType = AssembleType<DomainType> (ObjectFactory.Assembler.ModifyType);
-      var instance = assembleType.CreateInstance<DomainType> ();
+      var instance = ObjectFactory.Create<DomainType> ();
 
       instance.Property = "";
       Assert.That (PropertyAspectAttribute.LastAction, Is.EqualTo ("Set"));
 
       Dev.Null = instance.Property;
-      Assert.That (PropertyAspectAttribute.LastAction, Is.EqualTo ("Set"));
+      Assert.That (PropertyAspectAttribute.LastAction, Is.EqualTo ("Get"));
     }
 
     public class DomainType
     {
       [PropertyAspect]
-      public string Property { get; set; }
+      public virtual string Property { get; set; }
     }
 
     public class PropertyAspectAttribute : PropertyInterceptionAspectAttributeBase

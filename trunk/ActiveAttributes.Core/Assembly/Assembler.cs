@@ -20,6 +20,7 @@ using System.Linq;
 using ActiveAttributes.Declaration;
 using ActiveAttributes.Declaration.Providers;
 using Remotion;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
 using Remotion.TypePipe.MutableReflection;
@@ -28,7 +29,10 @@ using Remotion.FunctionalProgramming;
 
 namespace ActiveAttributes.Assembly
 {
-  public class Assembler : IParticipant
+  [ConcreteImplementation (typeof (Assembler))]
+  public interface IAssembler : IParticipant {}
+
+  public class Assembler : IAssembler
   {
     private readonly IDeclarationProvider _declarationProvider;
     private readonly IAdviceComposer _adviceComposer;

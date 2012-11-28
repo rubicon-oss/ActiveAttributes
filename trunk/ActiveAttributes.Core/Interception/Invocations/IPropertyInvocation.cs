@@ -13,39 +13,21 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
-using Remotion.Utilities;
+using System.Reflection;
 
-namespace ActiveAttributes.Pointcuts
+namespace ActiveAttributes.Interception.Invocations
 {
-  public interface IVisibilityPointcut : IPointcut
+  public interface IPropertyInvocation : IInvocation
   {
-    Visibility Visibility { get; }
-  }
+    object Index { get; }
 
-  public class VisibilityPointcut : IVisibilityPointcut
-  {
-    private readonly Visibility _visibility;
+    object Value { get; set; }
 
-    public VisibilityPointcut (Visibility visibility)
-    {
-      _visibility = visibility;
-    }
+    bool IsIndexer { get; }
 
-    public Visibility Visibility
-    {
-      get { return _visibility; }
-    }
+    new PropertyInfo MemberInfo { get; }
 
-    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
-    {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
-
-      return evaluator.Visit (this, joinPoint);
-    }
+    new void Proceed ();
   }
 }

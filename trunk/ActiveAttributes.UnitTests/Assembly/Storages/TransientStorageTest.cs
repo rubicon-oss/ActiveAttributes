@@ -13,39 +13,29 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
-using Remotion.Utilities;
+using ActiveAttributes.Assembly.Storages;
+using Microsoft.Scripting.Ast;
+using NUnit.Framework;
 
-namespace ActiveAttributes.Pointcuts
+namespace ActiveAttributes.UnitTests.Assembly.Storages
 {
-  public interface IVisibilityPointcut : IPointcut
+  [TestFixture]
+  public class TransientStorageTest
   {
-    Visibility Visibility { get; }
-  }
-
-  public class VisibilityPointcut : IVisibilityPointcut
-  {
-    private readonly Visibility _visibility;
-
-    public VisibilityPointcut (Visibility visibility)
+    [Test]
+    public void CreateStorageExpression ()
     {
-      _visibility = visibility;
-    }
+      var newExpression = Expression.New (typeof (object));
+      var storage = new TransientStorage (newExpression);
 
-    public Visibility Visibility
-    {
-      get { return _visibility; }
-    }
+      var result = storage.CreateStorageExpression (null);
 
-    public bool Accept (IPointcutEvaluator evaluator, JoinPoint joinPoint)
-    {
-      ArgumentUtility.CheckNotNull ("evaluator", evaluator);
-      ArgumentUtility.CheckNotNull ("joinPoint", joinPoint);
+      var lambda = Expression.Lambda<Func<object>> (result).Compile();
+      var obj1 = lambda();
+      var obj2 = lambda();
 
-      return evaluator.Visit (this, joinPoint);
+      Assert.That (obj1, Is.Not.EqualTo (obj2));
     }
   }
 }

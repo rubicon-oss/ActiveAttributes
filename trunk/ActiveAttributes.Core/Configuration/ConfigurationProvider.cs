@@ -35,9 +35,9 @@ namespace ActiveAttributes.Configuration
 
     public ConfigurationProvider ()
     {
-      _section = (ActiveAttributesConfigurationSection) ConfigurationManager.GetSection ("aspects");
+      _section = (ActiveAttributesConfigurationSection) ConfigurationManager.GetSection ("aspects") ?? new ActiveAttributesConfigurationSection();
     }
-    
+
     public IEnumerable<TypeOrderingElement> TypeOrderings
     {
       get { return _section.TypeOrderings.Cast<TypeOrderingElement>(); }

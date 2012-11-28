@@ -92,6 +92,7 @@
     <Compile Include="Assembly\Storages\InstanceStorageTest.cs" />
     <Compile Include="Assembly\Storages\StaticStorageTest.cs" />
     <Compile Include="Assembly\InitializationServiceTest.cs" />
+    <Compile Include="Assembly\Storages\TransientStorageTest.cs" />
     <Compile Include="Configuration\ConfigurationProviderTest.cs" />
     <Compile Include="Declaration\AttributeDeclarationProviderTest.cs" />
     <Compile Include="Declaration\Construction\AttributeConstructionTest.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Interception\Invocations\ActionInvocationTest.cs" />
     <Compile Include="Interception\Invocations\ControlFlowInvocationTest.cs" />
     <Compile Include="Interception\Invocations\FuncInvocationTest.cs" />
+    <Compile Include="ObjectMother\Expressions\ObjectMother.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetInvocationContext.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetConstantExpression.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.GetNewDelegateExpression.cs" />
@@ -172,7 +174,7 @@
     <Compile Include="Extensions\MethodInfoExtensionsTest.cs" />
     <Compile Include="Extensions\PropertyInfoExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceLocatorTest.cs" />
+    <Compile Include="Research.cs" />
     <Compile Include="SetupFixture.cs" />
     <Compile Include="Utilities\CircularDependencyExceptionTest.cs" />
     <Compile Include="Utilities\CustomAttributeDataHelperTest.cs" />

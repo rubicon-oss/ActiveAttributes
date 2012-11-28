@@ -13,36 +13,42 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
+
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Assembly;
-using ActiveAttributes.Interception.Invocations;
-using ActiveAttributes.Pointcuts;
-using NUnit.Framework;
+using System.Reflection;
 
-namespace ActiveAttributes.IntegrationTests
+namespace ActiveAttributes.Interception.Invocations
 {
-  [TestFixture]
-  public class AspectClassTest
+  public class IndexerSetInvocation<TInstance, TIndex, TValue> : ActionInvocation<TInstance, TIndex, TValue>
   {
-    [Test]
-    public void AspectClass ()
-    {
-      var instance = ObjectFactory.Create<DomainType>();
+    private readonly PropertyInfo _propertyInfo;
 
-      Assert.That (() => instance.ThrowingMethod(), Throws.Nothing);
+    public IndexerSetInvocation (PropertyInfo propertyInfo, TInstance instance, TIndex index, TValue value, Action<TIndex, TValue> action)
+        : base (propertyInfo, instance, index, value, action)
+    {
+      _propertyInfo = propertyInfo;
     }
 
-    public class DomainType
+    public object Index
     {
-      public virtual void ThrowingMethod () { throw new Exception (); }
+      get { return this[0]; }
+      set { this[0] = value; }
     }
 
-    [AdviceInfo (Execution = AdviceExecution.Around, Scope = AdviceScope.Static)]
-    [TypePointcut (typeof (DomainType))]
-    public class DomainAspect : IAspect
+    public object Value
     {
-      public void Advice (IInvocation invocation) {}
+      get { return this[1]; }
+      set { this[1] = value; }
+    }
+
+    public bool IsIndexer
+    {
+      get { return true; }
+    }
+
+    public new PropertyInfo MemberInfo
+    {
+      get { return _propertyInfo; }
     }
   }
 }

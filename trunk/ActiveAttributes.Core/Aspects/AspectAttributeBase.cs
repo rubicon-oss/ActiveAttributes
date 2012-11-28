@@ -59,7 +59,7 @@ namespace ActiveAttributes.Aspects
     /// <summary>Defines a <see cref="ReturnTypePointcut"/>.</summary>
     public Type MemberReturnTypeFilter { get; set; }
 
-    /// <summary>Defines a <see cref="ArgumentTypePointcut"/>.</summary>
+    /// <summary>Defines a <see cref="ArgumentTypesPointcut"/>.</summary>
     public Type[] MemberArgumentsFilter { get; set; }
 
     /// <summary>Defines a <see cref="VisibilityPointcut"/>.</summary>

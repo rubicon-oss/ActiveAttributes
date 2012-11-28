@@ -25,13 +25,13 @@ using ActiveAttributes.Extensions;
 
 namespace ActiveAttributes.Declaration.Providers
 {
-  public class PropertyAttributeDeclarationProvider2 : IMethodLevelDeclarationProvider
+  public class PropertyAttributeDeclarationProvider : IMethodLevelDeclarationProvider
   {
     private readonly IMemberAttributeDeclarationProvider _memberAttributeDeclarationProvider;
     private readonly IAttributeDeclarationProvider _attributeDeclarationProvider;
     private readonly RelatedPropertyFinder _relatedMethodFinder;
 
-    public PropertyAttributeDeclarationProvider2 (IMemberAttributeDeclarationProvider memberAttributeDeclarationProvider)
+    public PropertyAttributeDeclarationProvider (IMemberAttributeDeclarationProvider memberAttributeDeclarationProvider)
     {
       ArgumentUtility.CheckNotNull ("memberAttributeDeclarationProvider", memberAttributeDeclarationProvider);
 
@@ -43,7 +43,8 @@ namespace ActiveAttributes.Declaration.Providers
     {
       ArgumentUtility.CheckNotNull ("method", method);
 
-      var property = method.GetRelatedPropertyInfo();
+      var mutableMethod = method as MutableMethodInfo;
+      var property = (mutableMethod != null ? mutableMethod.UnderlyingSystemMethodInfo : method).GetRelatedPropertyInfo();
       if (property == null)
         return Enumerable.Empty<IAdviceBuilder>();
 
