@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,41 +13,36 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
 
-namespace ActiveAttributes.Weaving.Context
+namespace ActiveAttributes.Annotations.Context
 {
-  public class PropertySetContext<TInstance, TValue> : ActionContext<TInstance, TValue>, IPropertyContext
+  [AttributeUsage (AttributeTargets.Parameter, AllowMultiple = false)]
+  public class ParameterAttribute : Attribute
   {
-    private readonly PropertyInfo _propertyInfo;
+    private readonly int _index;
+    private readonly string _name;
 
-    public PropertySetContext (PropertyInfo propertyInfo, TInstance instance, TValue arg0, Action<TValue> action)
-        : base (propertyInfo, instance, arg0, action)
+    public ParameterAttribute () {}
+
+    public ParameterAttribute (string name)
     {
-      _propertyInfo = propertyInfo;
+      _name = name;
     }
 
-    public object Index
+    public ParameterAttribute (int index)
     {
-      get { throw new NotSupportedException(); }
+      _index = index;
     }
 
-    public bool IsIndexer
+    public string Name
     {
-      get { return false; }
+      get { return _name; }
     }
 
-    public object Value
+    public int Index
     {
-      get { return this[0]; }
-      set { this[0] = value; }
-    }
-
-    public PropertyInfo PropertyInfo
-    {
-      get { return _propertyInfo; }
+      get { return _index; }
     }
   }
 }

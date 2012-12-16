@@ -51,14 +51,14 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
           default: throw new IndexOutOfRangeException ("idx");
         }
@@ -70,21 +70,21 @@ namespace ActiveAttributes.Weaving.Context
       _action ();
     }
   }
-  public class ActionContext<TInstance, TA1, TA2> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2> _action;
+    private readonly Action<TA0, TA1> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
-    public TA2 Arg2;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, Action<TA1, TA2> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, Action<TA0, TA1> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
-      Arg2 = arg2;
     }
 
     public override int Count
@@ -96,19 +96,19 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
-          case 2: return Arg2;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
-          case 2: Arg2 = (TA2) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -116,26 +116,26 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2);
+      _action (Arg0, Arg1);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3> _action;
+    private readonly Action<TA0, TA1, TA2> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
-    public TA3 Arg3;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA1, TA2, TA3> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, Action<TA0, TA1, TA2> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
-      Arg3 = arg3;
     }
 
     public override int Count
@@ -147,21 +147,21 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
-          case 3: return Arg3;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
-          case 3: Arg3 = (TA3) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -169,28 +169,28 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3);
+      _action (Arg0, Arg1, Arg2);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3, TA4> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2, TA3> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3, TA4> _action;
+    private readonly Action<TA0, TA1, TA2, TA3> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
-    public TA4 Arg4;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA1, TA2, TA3, TA4> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA0, TA1, TA2, TA3> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
       Arg3 = arg3;
-      Arg4 = arg4;
     }
 
     public override int Count
@@ -202,23 +202,23 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
           case 3: return Arg3;
-          case 4: return Arg4;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
           case 3: Arg3 = (TA3) value; break;
-          case 4: Arg4 = (TA4) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -226,30 +226,30 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3, Arg4);
+      _action (Arg0, Arg1, Arg2, Arg3);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3, TA4, TA5> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3, TA4, TA5> _action;
+    private readonly Action<TA0, TA1, TA2, TA3, TA4> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
     public TA4 Arg4;
-    public TA5 Arg5;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA1, TA2, TA3, TA4, TA5> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA0, TA1, TA2, TA3, TA4> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
       Arg3 = arg3;
       Arg4 = arg4;
-      Arg5 = arg5;
     }
 
     public override int Count
@@ -261,25 +261,25 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
           case 3: return Arg3;
           case 4: return Arg4;
-          case 5: return Arg5;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
           case 3: Arg3 = (TA3) value; break;
           case 4: Arg4 = (TA4) value; break;
-          case 5: Arg5 = (TA5) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -287,32 +287,32 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3, Arg4, Arg5);
+      _action (Arg0, Arg1, Arg2, Arg3, Arg4);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6> _action;
+    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
     public TA4 Arg4;
     public TA5 Arg5;
-    public TA6 Arg6;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA1, TA2, TA3, TA4, TA5, TA6> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA0, TA1, TA2, TA3, TA4, TA5> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
       Arg3 = arg3;
       Arg4 = arg4;
       Arg5 = arg5;
-      Arg6 = arg6;
     }
 
     public override int Count
@@ -324,27 +324,27 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
           case 3: return Arg3;
           case 4: return Arg4;
           case 5: return Arg5;
-          case 6: return Arg6;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
           case 3: Arg3 = (TA3) value; break;
           case 4: Arg4 = (TA4) value; break;
           case 5: Arg5 = (TA5) value; break;
-          case 6: Arg6 = (TA6) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -352,34 +352,34 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
+      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> _action;
+    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
     public TA4 Arg4;
     public TA5 Arg5;
     public TA6 Arg6;
-    public TA7 Arg7;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
       Arg3 = arg3;
       Arg4 = arg4;
       Arg5 = arg5;
       Arg6 = arg6;
-      Arg7 = arg7;
     }
 
     public override int Count
@@ -391,29 +391,29 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
           case 3: return Arg3;
           case 4: return Arg4;
           case 5: return Arg5;
           case 6: return Arg6;
-          case 7: return Arg7;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
           case 3: Arg3 = (TA3) value; break;
           case 4: Arg4 = (TA4) value; break;
           case 5: Arg5 = (TA5) value; break;
           case 6: Arg6 = (TA6) value; break;
-          case 7: Arg7 = (TA7) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -421,13 +421,14 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
+      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
     }
   }
-  public class ActionContext<TInstance, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> _action;
+    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> _action;
 
+    public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
@@ -435,14 +436,14 @@ namespace ActiveAttributes.Weaving.Context
     public TA5 Arg5;
     public TA6 Arg6;
     public TA7 Arg7;
-    public TA8 Arg8;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, TA8 arg8, Action<TA1, TA2, TA3, TA4, TA5, TA6, TA7, TA8> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
 
       _action = action;
+      Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
       Arg3 = arg3;
@@ -450,7 +451,6 @@ namespace ActiveAttributes.Weaving.Context
       Arg5 = arg5;
       Arg6 = arg6;
       Arg7 = arg7;
-      Arg8 = arg8;
     }
 
     public override int Count
@@ -462,8 +462,9 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: return Arg0;
           case 1: return Arg1;
           case 2: return Arg2;
           case 3: return Arg3;
@@ -471,14 +472,14 @@ namespace ActiveAttributes.Weaving.Context
           case 5: return Arg5;
           case 6: return Arg6;
           case 7: return Arg7;
-          case 8: return Arg8;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
+          case 0: Arg0 = (TA0) value; break;
           case 1: Arg1 = (TA1) value; break;
           case 2: Arg2 = (TA2) value; break;
           case 3: Arg3 = (TA3) value; break;
@@ -486,7 +487,6 @@ namespace ActiveAttributes.Weaving.Context
           case 5: Arg5 = (TA5) value; break;
           case 6: Arg6 = (TA6) value; break;
           case 7: Arg7 = (TA7) value; break;
-          case 8: Arg8 = (TA8) value; break;
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
@@ -494,7 +494,7 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7, Arg8);
+      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
 }

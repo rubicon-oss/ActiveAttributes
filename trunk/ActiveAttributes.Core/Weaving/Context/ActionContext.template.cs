@@ -22,21 +22,21 @@ using Remotion;
 
 namespace ActiveAttributes.Weaving.Context
 {
-  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
+  // @begin-template first=0 template=0 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
   // @replace "TA<n>" ", " "<" ">"
   // @replace "Arg<n>" ", "
-  public class ActionContext<TInstance, TA1> : ActionContextBase<TInstance>
+  public class ActionContext<TInstance, TA0> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA1> _action;
+    private readonly Action<TA0> _action;
 
     // @begin-repeat
     // @replace-one "<n>"
-    public TA1 Arg1;
+    public TA0 Arg0;
     // @end-repeat
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, Action<TA1> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, Action<TA0> action)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("action", action);
@@ -44,7 +44,7 @@ namespace ActiveAttributes.Weaving.Context
       _action = action;
       // @begin-repeat
       // @replace-one "<n>"
-      Arg1 = arg1;
+      Arg0 = arg0;
       // @end-repeat
     }
 
@@ -58,22 +58,22 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: return Arg1;
+          case 0: return Arg0;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: Arg1 = (TA1) value; break;
+          case 0: Arg0 = (TA0) value; break;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
@@ -82,7 +82,7 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      _action (Arg1);
+      _action (Arg0);
     }
   }
   // @end-template

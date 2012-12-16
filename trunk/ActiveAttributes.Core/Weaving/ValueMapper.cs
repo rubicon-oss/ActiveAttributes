@@ -32,7 +32,7 @@ namespace ActiveAttributes.Weaving
   {
     public Expression GetIndexMapping (Expression context, int index)
     {
-      var field = context.Type.GetField ("Arg" + (index + 1));
+      var field = context.Type.GetField ("Arg" + index);
       return Expression.Field (context, field);
     }
 

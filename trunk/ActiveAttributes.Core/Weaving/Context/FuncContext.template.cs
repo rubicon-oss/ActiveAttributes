@@ -22,21 +22,21 @@ using Remotion;
 
 namespace ActiveAttributes.Weaving.Context
 {
-  // @begin-template first=1 template=1 generate=0..8 suppressTemplate=true
+  // @begin-template first=0 template=0 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
   // @replace "TA<n>, "
   // @replace "Arg<n>" ", "
-  public class FuncContext<TInstance, TA1, TReturn> : FuncContextBase<TInstance, TReturn>
+  public class FuncContext<TInstance, TA0, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA1, TReturn> _func;
+    private readonly Func<TA0, TReturn> _func;
 
     // @begin-repeat
     // @replace-one "<n>"
-    public TA1 Arg1;
+    public TA0 Arg0;
     // @end-repeat
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA1 arg1, Func<TA1, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, Func<TA0, TReturn> func)
         : base (memberInfo, instance)
     {
       //ArgumentUtility.CheckNotNull ("func", func);
@@ -44,7 +44,7 @@ namespace ActiveAttributes.Weaving.Context
       _func = func;
       // @begin-repeat
       // @replace-one "<n>"
-      Arg1 = arg1;
+      Arg0 = arg0;
       // @end-repeat
     }
 
@@ -58,22 +58,22 @@ namespace ActiveAttributes.Weaving.Context
     {
       get
       {
-        switch (idx + 1)
+        switch (idx)
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: return Arg1;
+          case 0: return Arg0;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
       set
       {
-        switch (idx + 1)
+        switch (idx)
         {
           // @begin-repeat
           // @replace-one "<n>"
-          case 1: Arg1 = (TA1) value; break;
+          case 0: Arg0 = (TA0) value; break;
           // @end-repeat
           default: throw new IndexOutOfRangeException ("idx");
         }
@@ -82,7 +82,7 @@ namespace ActiveAttributes.Weaving.Context
 
     public override void Proceed ()
     {
-      ReturnValue = _func (Arg1);
+      ReturnValue = _func (Arg0);
     }
   }
   // @end-template

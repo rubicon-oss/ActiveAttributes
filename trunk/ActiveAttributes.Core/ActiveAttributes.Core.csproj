@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\AdviceAttribute.cs" />
+    <Compile Include="Annotations\Context\ParameterAttribute.cs" />
+    <Compile Include="Annotations\Context\ReturnValueAttribute.cs" />
     <Compile Include="Annotations\IAspectInfo.cs" />
     <Compile Include="Annotations\Ordering\AdviceNameOrderingAttribute.cs" />
     <Compile Include="Annotations\Pointcuts\AndAttribute.cs" />
