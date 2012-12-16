@@ -31,15 +31,10 @@ namespace ActiveAttributes.Weaving.Context
 {
   public class ActionContext<TInstance> : ActionContextBase<TInstance>
   {
-    private readonly Action _action;
 
-
-    public ActionContext (MemberInfo memberInfo, TInstance instance, Action action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
     }
 
     public override int Count
@@ -64,25 +59,15 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action ();
-    }
   }
   public class ActionContext<TInstance, TA0, TA1> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, Action<TA0, TA1> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
     }
@@ -113,26 +98,16 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, Action<TA0, TA1, TA2> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -166,27 +141,17 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2, TA3> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2, TA3> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, Action<TA0, TA1, TA2, TA3> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -223,28 +188,18 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2, Arg3);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2, TA3, TA4> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
     public TA4 Arg4;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Action<TA0, TA1, TA2, TA3, TA4> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -284,16 +239,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2, Arg3, Arg4);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -301,12 +249,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA4 Arg4;
     public TA5 Arg5;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Action<TA0, TA1, TA2, TA3, TA4, TA5> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -349,16 +294,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -367,12 +305,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA5 Arg5;
     public TA6 Arg6;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -418,16 +353,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
-    }
   }
   public class ActionContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> _action;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -437,12 +365,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA6 Arg6;
     public TA7 Arg7;
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Action<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -490,11 +415,6 @@ namespace ActiveAttributes.Weaving.Context
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
-    }
-
-    public override void Proceed ()
-    {
-      _action (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
 }

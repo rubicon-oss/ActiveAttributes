@@ -56,8 +56,7 @@ namespace ActiveAttributes.Weaving
 
       var constructor = contextType.GetConstructors().Single();
       var arguments = new[] { memberInfo.CreateStorageExpression (joinPoint.This), joinPoint.This }
-          .Concat (joinPoint.Parameters.Cast<Expression>())
-          .Concat (Expression.Default (constructor.GetParameters().Last().ParameterType));
+          .Concat (joinPoint.Parameters.Cast<Expression>());
       var create = Expression.New (constructor, arguments);
       var assign = Expression.Assign (parameter, create);
 

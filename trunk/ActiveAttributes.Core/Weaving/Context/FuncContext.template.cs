@@ -25,23 +25,16 @@ namespace ActiveAttributes.Weaving.Context
   // @begin-template first=0 template=0 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
-  // @replace "TA<n>, "
-  // @replace "Arg<n>" ", "
   public class FuncContext<TInstance, TA0, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TReturn> _func;
-
     // @begin-repeat
     // @replace-one "<n>"
     public TA0 Arg0;
     // @end-repeat
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, Func<TA0, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       // @begin-repeat
       // @replace-one "<n>"
       Arg0 = arg0;
@@ -78,11 +71,6 @@ namespace ActiveAttributes.Weaving.Context
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
-    }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0);
     }
   }
   // @end-template

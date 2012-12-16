@@ -31,15 +31,10 @@ namespace ActiveAttributes.Weaving.Context
 {
   public class FuncContext<TInstance, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TReturn> _func;
 
-
-    public FuncContext (MemberInfo memberInfo, TInstance instance, Func<TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
     }
 
     public override int Count
@@ -64,25 +59,15 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func ();
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, Func<TA0, TA1, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
     }
@@ -113,26 +98,16 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, Func<TA0, TA1, TA2, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -166,27 +141,17 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TA3, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TA3, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, Func<TA0, TA1, TA2, TA3, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -223,28 +188,18 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2, Arg3);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TA3, TA4, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
     public TA3 Arg3;
     public TA4 Arg4;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, Func<TA0, TA1, TA2, TA3, TA4, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -284,16 +239,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2, Arg3, Arg4);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -301,12 +249,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA4 Arg4;
     public TA5 Arg5;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, Func<TA0, TA1, TA2, TA3, TA4, TA5, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -349,16 +294,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -367,12 +305,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA5 Arg5;
     public TA6 Arg6;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -418,16 +353,9 @@ namespace ActiveAttributes.Weaving.Context
         }
       }
     }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6);
-    }
   }
   public class FuncContext<TInstance, TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> : FuncContextBase<TInstance, TReturn>
   {
-    private readonly Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> _func;
-
     public TA0 Arg0;
     public TA1 Arg1;
     public TA2 Arg2;
@@ -437,12 +365,9 @@ namespace ActiveAttributes.Weaving.Context
     public TA6 Arg6;
     public TA7 Arg7;
 
-    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7, Func<TA0, TA1, TA2, TA3, TA4, TA5, TA6, TA7, TReturn> func)
+    public FuncContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, TA1 arg1, TA2 arg2, TA3 arg3, TA4 arg4, TA5 arg5, TA6 arg6, TA7 arg7)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("func", func);
-
-      _func = func;
       Arg0 = arg0;
       Arg1 = arg1;
       Arg2 = arg2;
@@ -490,11 +415,6 @@ namespace ActiveAttributes.Weaving.Context
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
-    }
-
-    public override void Proceed ()
-    {
-      ReturnValue = _func (Arg0, Arg1, Arg2, Arg3, Arg4, Arg5, Arg6, Arg7);
     }
   }
 }

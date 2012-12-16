@@ -25,23 +25,16 @@ namespace ActiveAttributes.Weaving.Context
   // @begin-template first=0 template=0 generate=0..8 suppressTemplate=true
   // @replace ", TA<n> arg<n>"
   // @replace ", TA<n>"
-  // @replace "TA<n>" ", " "<" ">"
-  // @replace "Arg<n>" ", "
   public class ActionContext<TInstance, TA0> : ActionContextBase<TInstance>
   {
-    private readonly Action<TA0> _action;
-
     // @begin-repeat
     // @replace-one "<n>"
     public TA0 Arg0;
     // @end-repeat
 
-    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0, Action<TA0> action)
+    public ActionContext (MemberInfo memberInfo, TInstance instance, TA0 arg0)
         : base (memberInfo, instance)
     {
-      //ArgumentUtility.CheckNotNull ("action", action);
-
-      _action = action;
       // @begin-repeat
       // @replace-one "<n>"
       Arg0 = arg0;
@@ -78,11 +71,6 @@ namespace ActiveAttributes.Weaving.Context
           default: throw new IndexOutOfRangeException ("idx");
         }
       }
-    }
-
-    public override void Proceed ()
-    {
-      _action (Arg0);
     }
   }
   // @end-template

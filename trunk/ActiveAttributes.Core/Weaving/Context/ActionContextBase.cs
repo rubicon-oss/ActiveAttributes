@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Weaving.Context
 {
-  public abstract class ActionContextBase<T> : ArgumentCollectionBase, IInvocation
+  public abstract class ActionContextBase<T> : ArgumentCollectionBase, IContext
   {
     private readonly MemberInfo _memberInfo;
 
@@ -66,7 +66,5 @@ namespace ActiveAttributes.Weaving.Context
     {
       get { throw new NotSupportedException(); }
     }
-
-    public abstract void Proceed ();
   }
 }

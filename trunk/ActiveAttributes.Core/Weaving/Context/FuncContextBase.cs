@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Weaving.Context
 {
-  public abstract class FuncContextBase<TInstance, TReturn> : ArgumentCollectionBase, IInvocation
+  public abstract class FuncContextBase<TInstance, TReturn> : ArgumentCollectionBase, IContext
   {
     private readonly MemberInfo _memberInfo;
 
@@ -67,7 +67,5 @@ namespace ActiveAttributes.Weaving.Context
     {
       get { return TypedReturnValue; }
     }
-
-    public abstract void Proceed ();
   }
 }

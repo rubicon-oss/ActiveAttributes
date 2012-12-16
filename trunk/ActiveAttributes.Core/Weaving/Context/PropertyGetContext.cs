@@ -23,8 +23,8 @@ namespace ActiveAttributes.Weaving.Context
   {
     private readonly PropertyInfo _propertyInfo;
 
-    public PropertyGetContext (PropertyInfo propertyInfo, TInstance instance, TValue arg1, Func<TValue> func)
-      : base (propertyInfo, instance, func)
+    public PropertyGetContext (PropertyInfo propertyInfo, TInstance instance)
+      : base (propertyInfo, instance)
     {
       _propertyInfo = propertyInfo;
     }

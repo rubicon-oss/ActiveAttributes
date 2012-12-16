@@ -23,8 +23,8 @@ namespace ActiveAttributes.Weaving.Context
   {
     private readonly PropertyInfo _propertyInfo;
 
-    public IndexerSetContext (PropertyInfo propertyInfo, TInstance instance, TIndex index, TValue value, Action<TIndex, TValue> action)
-        : base (propertyInfo, instance, index, value, action)
+    public IndexerSetContext (PropertyInfo propertyInfo, TInstance instance, TIndex index, TValue value)
+        : base (propertyInfo, instance, index, value)
     {
       _propertyInfo = propertyInfo;
     }
