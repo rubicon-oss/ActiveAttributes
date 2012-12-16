@@ -19,7 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Aspects;
+using ActiveAttributes.Aspects2;
 using ActiveAttributes.Extensions;
 using NUnit.Framework;
 using Remotion.Collections;

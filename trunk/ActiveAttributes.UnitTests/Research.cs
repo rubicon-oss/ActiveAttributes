@@ -14,21 +14,49 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Annotations;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Weaving;
+using ActiveAttributes.Weaving.Construction;
+using ActiveAttributes.Weaving.Invocation;
+using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
   [TestFixture]
   public class Research
   {
+    public class DomainAspectAttribute : AspectAttributeBase
+    {
+      public DomainAspectAttribute ()
+          : base (AspectScope.PerDeclaration) {}
+    }
+
     [Test]
+    [DomainAspect()]
     public void name ()
     {
+      var asd = new[] { 1, 2, 3, 4 };
+      Assert.That (asd.SkipWhile (y => y != 3).Skip (1).Count (), Is.EqualTo (1));
+
+      var customAttributeData = TypePipeCustomAttributeData.GetCustomAttributes (MethodInfo.GetCurrentMethod())
+          .Single (x => x.Type == typeof (DomainAspectAttribute));
+      var constr = new AttributeConstruction (customAttributeData);
+      var expr = new AspectExpressionBuilder().CreateAspectInitExpressions (constr);
+
+
+
       var defaultExpression = Expression.Empty();
       var expressionTree = Expression.Block
           (

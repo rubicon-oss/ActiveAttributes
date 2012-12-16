@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Configuration;
+using ActiveAttributes.Infrastructure.Ordering;
 
 namespace ActiveAttributes.Ordering.Providers
 {
@@ -30,12 +31,12 @@ namespace ActiveAttributes.Ordering.Providers
       _provider = provider;
     }
 
-    public IEnumerable<IAdviceOrdering> GetOrderings ()
+    public IEnumerable<IOrdering> GetOrderings ()
     {
       return (from typeOrdering in _provider.TypeOrderings
               let beforeType = Type.GetType (typeOrdering.BeforeType, true)
               let afterType = Type.GetType (typeOrdering.AfterType, true)
-              select new AdviceTypeOrdering (beforeType, afterType, "AppConfig")).Cast<IAdviceOrdering>();
+              select new AspectTypeOrdering (beforeType, afterType, "AppConfig")).Cast<IOrdering>();
     }
   }
 }

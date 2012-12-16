@@ -18,6 +18,18 @@
             <see cref="M:Remotion.TypePipe.Caching.IInitializableObject.Initialize"/> method must be invoked manually.
             </remarks>
         </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IProxySerializationEnabler">
+            <summary>
+            Makes proxies serializable.
+            </summary>
+            <remarks>This interface is an implementation detail of <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder"/>.</remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IInitializationBuilder">
+            <summary>
+            Helps with building initializations for a mutable type.
+            </summary>
+            <remarks>This interface is an implementation detail of <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder"/>.</remarks>
+        </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IModuleBuilderFactory">
             <summary>
             Implementations of this interface create instances of <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.IModuleBuilder"/>.
@@ -39,21 +51,50 @@
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ICodeGenerator">
             <summary>
-            Instances of this interface represent the code generator user by the pipeline.
+            Instances of this interface represent the code generator used by the pipeline.
             </summary>
+        </member>
+        <member name="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.SetAssemblyDirectory(System.String)">
+            <summary>
+            Sets the directory in that assemblies will be saved, when <see cref="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk"/> is called.
+            If <see langword="null"/> is specified, the assemblies are saved to the current working directory.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            If the pipeline already generated a type (because it was requested) into the new assembly, the assembly directory cannot be changed.
+            </exception>
+            <param name="assemblyDirectory">The assembly directory, or <see langword="null"/>.</param>
+        </member>
+        <member name="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.SetAssemblyName(System.String)">
+            <summary>
+            Sets the name for the next assembly.
+            When using this API, the user is responsible for providing unique assembly names.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            If the pipeline already generated a type (because it was requested) into the new assembly, the assembly name cannot be changed.
+            </exception>
+            <remarks>
+            Note that the provided value is overwritten after every call to <see cref="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk"/> to ensure uniqueness.
+            </remarks>
+            <param name="assemblyName">The assembly name (without <c>.dll</c>).</param>
         </member>
         <member name="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk">
             <summary>
             Saves all types that have been generated since the last call to this method into a new assembly on disk.
             The file name of the assembly consists of <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyName"/> plus the file ending <c>.dll</c>.
-            The assembly is written to the directory donated by <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyDirectory"/>.
+            The assembly is written to the directory defined by <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyDirectory"/>.
             If <see cref="P:Remotion.TypePipe.CodeGeneration.ICodeGenerator.AssemblyDirectory"/> is <see langword="null"/> the assembly is saved in the current working directory.
             </summary>
             <remarks>
             If no new types have been generated since the last call to <see cref="M:Remotion.TypePipe.CodeGeneration.ICodeGenerator.FlushCodeToDisk"/>, this method does nothing
             and returns <see langword="null"/>.
+            This method also generates a new unique name for the next assembly.
             </remarks>
             <returns>The absolute path to the saved assembly file, or <see langword="null"/> if no assembly was saved.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.InitializationBuilder">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IInitializationBuilder"/>.
+            </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ModuleBuilderFactory">
             <summary>
@@ -62,6 +103,11 @@
             <remarks> The module will be created with <see cref="F:System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave"/> and the <c>emitSymbolInfo</c> flag set to
             <see langword="true"/>.
             </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ProxySerializationEnabler">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.IProxySerializationEnabler"/>.
+            </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ReflectionEmitCodeGenerator">
             <summary>
@@ -150,16 +196,6 @@
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilder">
             <summary>
             Defines an interface for classes building a subclass proxy.
-            </summary>
-        </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IMutableTypeModificationHandler">
-            <summary>
-            Defines an interface for classes that handle added and modfied elements of a <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
-            </summary>
-        </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IMutableTypeUnmodifiedMutableMemberHandler">
-            <summary>
-            Defines an interface for classes that handle unmodfied mutable members of a <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilderFactory">
@@ -4132,7 +4168,7 @@
         <member name="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder">
             <summary>
             Implements <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.ISubclassProxyBuilder"/> by building a subclass proxy using <see cref="T:Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions.ITypeBuilder"/> and related interfaces.
-            Implements forward declarations of method and constructor bodies by deferring emission of code to the <see cref="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder.Build"/> method.
+            Implements forward declarations of method and constructor bodies by deferring emission of code to the <see cref="M:Remotion.TypePipe.CodeGeneration.ReflectionEmit.SubclassProxyBuilder.Build(Remotion.TypePipe.MutableReflection.MutableType)"/> method.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.Caching.ICacheKeyProvider">
@@ -4213,6 +4249,78 @@
             Also caches delegates that perform constructor calls to enable efficient object creation.
             </summary>
         </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MutableInfoCustomAttributeHelper">
+            <summary>
+            A helper class that is used to implement custom <see cref="T:System.Attribute"/>-related members of <see cref="T:Remotion.TypePipe.MutableReflection.IMutableInfo"/> on mutable reflection
+            objects.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ObjectWithDeserializationConstructorProxy">
+            <summary>
+            Acts as a placeholder in the .NET deserialization process for modified types that declare a deserialization constructor.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ObjectDeserializationProxyBase">
+            <summary>
+            A common base class for objects used as placeholders in the .NET deserialization process.
+            </summary>
+            <remarks>
+            This class uses the metadata in the <see cref="P:Remotion.TypePipe.Serialization.Implementation.ObjectDeserializationProxyBase.SerializationInfo"/> that was added by the <see cref="T:Remotion.TypePipe.Serialization.SerializationParticipant"/> to 
+            regenerate a suitable type for deserialization.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ISerializableFieldFinder">
+            <summary>
+            This interfaces encapsulates getting a serialized field mapping from a greater list of fields.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.SerializableFieldFinder">
+            <summary>
+            This class filters fields, retains the serializable ones and creates a mapping so that the field values can be stored or retrieved from a
+            <see cref="T:System.Runtime.Serialization.SerializationInfo"/> instance.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ReflectionSerializationHelper">
+            <summary>
+            A static helper class for writing the contents of all serializable members of an object into a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> object.
+            </summary>
+            <remarks>
+            This class is used by <see cref="T:Remotion.TypePipe.Serialization.Implementation.ObjectWithoutDeserializationConstructorProxy"/>, and <see cref="T:Remotion.TypePipe.Serialization.SerializationParticipant"/> generates code
+            that calls this class at runtime.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.IObjectFactoryRegistry">
+            <summary>
+            Allows the registration of an <see cref="T:Remotion.TypePipe.IObjectFactory"/> under a given factory identifier. The object factory is used during the .NET 
+            deserialization process of objects which were created from another factory with the same identifier. Therefore the two object
+            factory instances should use the same participants and participant configurations, in order to generate equivalent types for the requested
+            type. This allows the serialization of object instances without saving the generated assemblies to disk.
+            </summary>
+            
+        </member>
+        <member name="M:Remotion.TypePipe.Serialization.IObjectFactoryRegistry.Register(System.String,Remotion.TypePipe.IObjectFactory)">
+            <summary>
+            Registers an <see cref="T:Remotion.TypePipe.IObjectFactory"/> under the specified identifier.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">If a factory is already registered under the specified identifier.</exception>
+            <param name="factoryIdentifier">The factory identifier.</param>
+            <param name="objectFactory">The object factory to register.</param>
+        </member>
+        <member name="M:Remotion.TypePipe.Serialization.IObjectFactoryRegistry.Unregister(System.String)">
+            <summary>
+            Unregisters the <see cref="T:Remotion.TypePipe.IObjectFactory"/> instance that is currently registered under the specified identifier.
+            No exception is thrown if no factory is registered under the given identifier.
+            </summary>
+            <param name="factoryIdentifier">The factory identifier.</param>
+        </member>
+        <member name="M:Remotion.TypePipe.Serialization.IObjectFactoryRegistry.Get(System.String)">
+            <summary>
+            Retrieves the <see cref="T:Remotion.TypePipe.IObjectFactory"/> instance that is registered under the specified identifier.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">If no factory is registered under the specified identifier.</exception>
+            <param name="factoryIdentifier">The factory identifier.</param>
+            <returns>The registered object factory.</returns>
+        </member>
         <member name="T:Remotion.TypePipe.MutableReflection.BodyBuilding.BodyContextUtility">
             <summary>
             Holds utility functions used by <see cref="T:Remotion.TypePipe.MutableReflection.BodyBuilding.BodyContextBase"/> and its descendants.
@@ -4253,7 +4361,27 @@
             Base class for method body context classes.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IMutableMemberFactory">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.CustomAttributeDataRetriever">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.ICustomAttributeDataRetriever"/> for standard .NET reflection objects and mutable reflection objects
+            using <see cref="T:System.Reflection.CustomAttributeData"/> and <see cref="T:Remotion.TypePipe.MutableReflection.ITypePipeCustomAttributeProvider"/> respectivly.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.ICustomAttributeDataRetriever">
+            <summary>
+            Retrieves <see cref="T:Remotion.TypePipe.MutableReflection.ICustomAttributeData"/> objects from implementations of <see cref="T:System.Reflection.ICustomAttributeProvider"/>, that is
+            <see cref="T:System.Reflection.MemberInfo"/>, <see cref="T:System.Reflection.ParameterInfo"/>, <see cref="T:System.Reflection.Assembly"/> and <see cref="T:System.Reflection.Module"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IInterfaceMappingComputer">
+            <summary>
+            Creates <see cref="T:System.Reflection.InterfaceMapping"/>s based on the provided data.
+            </summary>
+            <remarks>
+            This interface is an implementation detail of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IMutableMemberFactory">
             <summary>
             Serves as a factory for mutable members.
             </summary>
@@ -4261,27 +4389,47 @@
             This interface is an implementation detail of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IRelatedEventFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IMutableMemberProvider`2">
+            <summary>
+            An interfaces that provides mutable members for standard reflection objects.
+            </summary>
+            <typeparam name="TMemberInfo">The type of the member info.</typeparam>
+            <typeparam name="TMutableMemberInfo">The type of the mutable member info.</typeparam>
+        </member>
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IMutableMemberProvider`2.GetMutableMember(`0)">
+            <summary>
+            Gets the mutable version for a standard reflection object.
+            Note that no object is created if the mutable version does not exist yet.
+            </summary>
+            <param name="member">The member.</param>
+            <returns>The mutable version of the member, or <see langword="null"/>.</returns>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.InterfaceMappingComputer">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.IInterfaceMappingComputer"/>, computing <see cref="T:System.Reflection.InterfaceMapping"/> instances for a <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IRelatedEventFinder">
             <summary>
             Defines an interface for classes providing methods for investigating event overrides.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IRelatedPropertyFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IRelatedPropertyFinder">
             <summary>
             Defines an interface for classes providing methods for investigating property overrides.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MutableMemberFactory">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MutableMemberFactory">
             <summary>
-            Implements <see cref="T:Remotion.TypePipe.MutableReflection.IMutableMemberFactory"/>.
+            Implements <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.IMutableMemberFactory"/>.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.RelatedEventFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.RelatedEventFinder">
             <summary>
             Provides useful methods for investigating event overrides.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.CustomAttributeDataAdapter">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.CustomAttributeDataAdapter">
             <summary>
             Adapts <see cref="T:System.Reflection.CustomAttributeData"/> to the interface <see cref="T:Remotion.TypePipe.MutableReflection.ICustomAttributeData"/>.
             </summary>
@@ -4328,7 +4476,7 @@
             Extension methods for the <see cref="T:Remotion.TypePipe.MutableReflection.ICustomAttributeData"/> interface.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.CustomAttributeNamedArgumentAdapter">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.CustomAttributeNamedArgumentAdapter">
             <summary>
             Adapts <see cref="T:System.Reflection.CustomAttributeNamedArgument"/> to the interface <see cref="T:Remotion.TypePipe.MutableReflection.ICustomAttributeNamedArgument"/>.
             </summary>
@@ -4338,7 +4486,7 @@
             Represents the TypePipe counterpart of <see cref="T:System.Reflection.CustomAttributeNamedArgument"/>.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.CustomType">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.CustomType">
             <summary>
             A custom type that re-implements parts of the reflection API.
             Other classes may derive from this class to inherit this implementation.
@@ -4349,18 +4497,18 @@
             Provides access to the <see cref="T:Remotion.TypePipe.MutableReflection.ICustomAttributeData"/>s of a member or parameter.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IMemberSelector">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IMemberSelector">
             <summary>
             Defines an interface for objects selecting members based on <see cref="T:System.Reflection.BindingFlags"/> and other criteria.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder">
             <summary>
             Defines an interface for classes providing methods for investigating method overrides.
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
             </summary>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder.GetMostDerivedVirtualMethod(System.String,Remotion.Reflection.MemberSignatures.MethodSignature,System.Type)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder.GetMostDerivedVirtualMethod(System.String,Remotion.Reflection.MemberSignatures.MethodSignature,System.Type)">
             <summary>
             Gets the most derived virtual method with the given <paramref name="name"/> and <paramref name="signature"/>, starting from the
             given <paramref name="typeToStartSearch"/> (then searching up the type hierarchy). This is the method that would be implicitly overridden
@@ -4375,7 +4523,7 @@
             The returned <see cref="T:System.Reflection.MethodInfo"/> has its <see cref="P:System.Reflection.MemberInfo.ReflectedType"/> set to its <see cref="P:System.Reflection.MemberInfo.DeclaringType"/>.
             </remarks>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder.GetMostDerivedOverride(System.Reflection.MethodInfo,System.Type)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder.GetMostDerivedOverride(System.Reflection.MethodInfo,System.Type)">
             <summary>
             Gets the most derived method that implicitly overrides the given <paramref name="baseDefinition"/> starting from the given
             <paramref name="typeToStartSearch"/> (then searching up the type hierarchy).
@@ -4387,7 +4535,7 @@
             The returned <see cref="T:System.Reflection.MethodInfo"/> has its <see cref="P:System.Reflection.MemberInfo.ReflectedType"/> set to its <see cref="P:System.Reflection.MemberInfo.DeclaringType"/>.
             </remarks>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder.GetBaseMethod(System.Reflection.MethodInfo)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder.GetBaseMethod(System.Reflection.MethodInfo)">
             <summary>
             Gets the method directly overridden by the given <paramref name="method"/>. If the method does not override another method (because it is not
             <see cref="F:System.Reflection.MethodAttributes.Virtual"/>, <see cref="F:System.Reflection.MethodAttributes.NewSlot"/>, or simply because there is no overridable method in the
@@ -4399,7 +4547,7 @@
             The returned <see cref="T:System.Reflection.MethodInfo"/> has its <see cref="P:System.Reflection.MemberInfo.ReflectedType"/> set to its <see cref="P:System.Reflection.MemberInfo.DeclaringType"/>.
             </remarks>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder.IsShadowed(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo})">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder.IsShadowed(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo})">
             <summary>
             Determines if <paramref name="baseDefinition"/> is shadowed by one of the methods in <paramref name="shadowingCandidates"/>.
             </summary>
@@ -4407,7 +4555,7 @@
             <param name="shadowingCandidates">The methods to be considered for determining the shadowing status.</param>
             <returns><see langword="true"/> if <paramref name="baseDefinition"/> is shadowed, <see langword="false"/> otherwise.</returns>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.IRelatedMethodFinder.GetOverride(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{Remotion.TypePipe.MutableReflection.MutableMethodInfo})">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.IRelatedMethodFinder.GetOverride(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{Remotion.TypePipe.MutableReflection.MutableMethodInfo})">
             <summary>
             Gets the single <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> in <paramref name="overrideCandidates"/> overriding <paramref name="baseDefinition"/> either
             implicitly or explicitly. If <paramref name="baseDefinition"/> is not overridden by any method in <paramref name="overrideCandidates"/>,
@@ -4417,7 +4565,7 @@
             <param name="overrideCandidates">The methods included in the search for an override.</param>
             <returns>The directly overridden method, or <see langword="null"/> if no such method exists.</returns>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MemberSelector">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MemberSelector">
             <summary>
             Selects members based on <see cref="T:System.Reflection.BindingFlags"/> and other criteria. This is used to implement member access operations in 
             <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
@@ -4461,18 +4609,19 @@
             Defines a common interface for <see cref="T:Remotion.TypePipe.MutableReflection.MutableConstructorInfo"/> and <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/>.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IMutableMember">
+        <member name="T:Remotion.TypePipe.MutableReflection.IMutableInfo">
             <summary>
-            Defines a common interface for mutable members, e.g. <see cref="T:Remotion.TypePipe.MutableReflection.MutableFieldInfo"/>, <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> etc.
+            Defines a common interface for mutable members (e.g. <see cref="T:Remotion.TypePipe.MutableReflection.MutableFieldInfo"/>, <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/>, etc.) and
+            mutable parameters (<see cref="T:Remotion.TypePipe.MutableReflection.MutableParameterInfo"/>).
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.BindingFlagsEvaluator">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.BindingFlagsEvaluator">
             <summary>
             Evaluates <see cref="T:System.Reflection.MethodAttributes"/> and <see cref="T:System.Reflection.FieldAttributes"/> against the specified <see cref="T:System.Reflection.BindingFlags"/>.
-            This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MemberSelector"/> to filter members.
+            This is used by <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.MemberSelector"/> to filter members.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.IBindingFlagsEvaluator">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.IBindingFlagsEvaluator">
             <summary>
             Defines an interface for evaluating <see cref="T:System.Reflection.BindingFlags"/>.
             </summary>
@@ -4488,57 +4637,57 @@
             Provides extensions methods for working with <see cref="T:System.Reflection.MethodAttributes"/>.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MethodOverrideUtility">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MethodOverrideUtility">
             <summary>
             Provides utility functions for working with method overrides.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2">
             <summary>
-            A container storing members and providing convenience properties for <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.ExistingDeclaredMembers"/> <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.ExistingBaseMembers"/>
-            and <see cref="P:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.AddedMembers"/>.
-            <see cref="M:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2.GetMutableMember(`0)"/> can be used to retrieve the mutable version for a member.
+            A container storing members and providing convenience properties for <see cref="P:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2.ExistingDeclaredMembers"/> <see cref="P:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2.ExistingBaseMembers"/>
+            and <see cref="P:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2.AddedMembers"/>.
+            <see cref="M:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2.GetMutableMember(`0)"/> can be used to retrieve the mutable version for a member.
             This class is an implementation detail of <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>.
             </summary>
             <typeparam name="TMemberInfo">The type of the existing member infos.</typeparam>
             <typeparam name="TMutableMemberInfo">The type of the mutable member infos.</typeparam>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MutableTypeMethodCollection">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMethodCollection">
             <summary>
-            A container storing methods for <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>. See also <see cref="T:Remotion.TypePipe.MutableReflection.MutableTypeMemberCollection`2"/>.
+            A container storing methods for <see cref="T:Remotion.TypePipe.MutableReflection.MutableType"/>. See also <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.MutableTypeMemberCollection`2"/>.
             </summary>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.ReflectionEmit.SubclassFilterUtility">
             <summary>
-            Determines if an member is visible from a dervied type.
+            Determines if a member is visible from a dervied type.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.RelatedMethodFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder">
             <summary>
             Provides useful methods for investigating method overrides.
             </summary>
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.RelatedMethodFinder.GetMostDerivedVirtualMethod(System.String,Remotion.Reflection.MemberSignatures.MethodSignature,System.Type)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder.GetMostDerivedVirtualMethod(System.String,Remotion.Reflection.MemberSignatures.MethodSignature,System.Type)">
             <inheritdoc />
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.RelatedMethodFinder.GetMostDerivedOverride(System.Reflection.MethodInfo,System.Type)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder.GetMostDerivedOverride(System.Reflection.MethodInfo,System.Type)">
             <inheritdoc />
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.RelatedMethodFinder.GetBaseMethod(System.Reflection.MethodInfo)">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder.GetBaseMethod(System.Reflection.MethodInfo)">
             <inheritdoc />
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.RelatedMethodFinder.IsShadowed(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo})">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder.IsShadowed(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo})">
             <inheritdoc />
         </member>
-        <member name="M:Remotion.TypePipe.MutableReflection.RelatedMethodFinder.GetOverride(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{Remotion.TypePipe.MutableReflection.MutableMethodInfo})">
+        <member name="M:Remotion.TypePipe.MutableReflection.Implementation.RelatedMethodFinder.GetOverride(System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{Remotion.TypePipe.MutableReflection.MutableMethodInfo})">
             <inheritdoc />
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.RelatedPropertyFinder">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.RelatedPropertyFinder">
             <summary>
             Provides useful methods for investigating property overrides.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.SignatureDebugStringGenerator">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.SignatureDebugStringGenerator">
             <summary>
             Builds signature strings which can be used for debug messages.
             </summary>
@@ -4553,13 +4702,17 @@
             Represents the TypePipe counterpart of <see cref="T:System.Reflection.CustomAttributeData"/>.
             Can be used to retrieve attribute data from <see cref="T:System.Reflection.MemberInfo"/>s and <see cref="T:System.Reflection.ParameterInfo"/>s.
             </summary>
+            <remarks>
+            The implementation is based on an instance of <see cref="T:Remotion.TypePipe.MutableReflection.Implementation.ICustomAttributeDataRetriever"/> which is requested via 
+            the <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/>.
+            </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.TypePipeCustomAttributeImplementationUtility">
+        <member name="T:Remotion.TypePipe.MutableReflection.Implementation.TypePipeCustomAttributeImplementationUtility">
             <summary>
             A utility class that is used to implement the <see cref="T:Remotion.TypePipe.MutableReflection.ITypePipeCustomAttributeProvider"/> interface for mutable reflection objects.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.ConstructorDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.ConstructorDescriptor">
             <summary>
             Defines the characteristics of a constructor.
             </summary>
@@ -4567,16 +4720,16 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableConstructorInfo"/> to represent a constructor, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MethodBaseDescriptor`1">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.MethodBaseDescriptor`1">
             <summary>
             Defines the characteristics of a <see cref="T:System.Reflection.MethodBase"/>, i.e., a method or constructor.
             </summary>
             <typeparam name="TMethodBase">The concrete type of method (<see cref="T:System.Reflection.MethodInfo"/> or <see cref="T:System.Reflection.ConstructorInfo"/>).</typeparam>
             <remarks>
-            This is used as a base class for <see cref="T:Remotion.TypePipe.MutableReflection.MethodDescriptor"/> and <see cref="T:Remotion.TypePipe.MutableReflection.ConstructorDescriptor"/>.
+            This is used as a base class for <see cref="T:Remotion.TypePipe.MutableReflection.Descriptors.MethodDescriptor"/> and <see cref="T:Remotion.TypePipe.MutableReflection.Descriptors.ConstructorDescriptor"/>.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.DescriptorBase`1">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.DescriptorBase`1">
             <summary>
             Serves as a base for all descriptor classes.
             </summary>
@@ -4592,7 +4745,7 @@
             Holds the member and value for a named attribute argument declaration.
             </summary>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.FieldDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.FieldDescriptor">
             <summary>
             Defines the characteristics of a field.
             </summary>
@@ -4600,7 +4753,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableFieldInfo"/> to represent the original field, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.MethodDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.MethodDescriptor">
             <summary>
             Defines the characteristics of a method.
             </summary>
@@ -4608,7 +4761,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> to represent a method, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.ParameterDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.ParameterDescriptor">
             <summary>
             Defines the characteristics of a parameter.
             </summary>
@@ -4616,7 +4769,7 @@
             This is used by <see cref="T:Remotion.TypePipe.MutableReflection.MutableParameterInfo"/> to represent a parameter, before any mutations.
             </remarks>
         </member>
-        <member name="T:Remotion.TypePipe.MutableReflection.TypeDescriptor">
+        <member name="T:Remotion.TypePipe.MutableReflection.Descriptors.TypeDescriptor">
             <summary>
             Defines the characteristics of a type.
             </summary>
@@ -11824,27 +11977,69 @@
         <member name="M:Remotion.TypePipe.MutableReflection.MutableType.AddInstanceInitialization(System.Func{Remotion.TypePipe.MutableReflection.BodyBuilding.InitializationBodyContext,Microsoft.Scripting.Ast.Expression})">
             <summary>
             Adds instance initialization code.
-            The initialization code is executed exactly once after the constructor.
+            The initialization code is executed exactly once after object creation or deserialization.
             </summary>
             <remarks>
+            <note type="warning">
+            The fact that the instance initialization code is executed after deserialization means that side effects may be applied twice, once when
+            the original object is constructed and once when it is (later) deserialized.
+            </note>
+            <para>
             The added initializations are not executed when instances of the type are created directly through the
             <see cref="M:System.Runtime.Serialization.FormatterServices.GetUninitializedObject(System.Type)"/> API, which creates an object of a type without invoking any constructor.
             If possible, use <see cref="M:Remotion.TypePipe.IObjectFactory.GetUninitializedObject(System.Type)"/> on <see cref="T:Remotion.TypePipe.IObjectFactory"/> which is a simple wrapper but also
             executes the specified instance initializations.
+            </para>
             </remarks>
             <param name="initializationProvider">A provider returning an instance initialization.</param>
             <seealso cref="P:Remotion.TypePipe.MutableReflection.MutableType.InstanceInitializations"/>
         </member>
         <member name="M:Remotion.TypePipe.MutableReflection.MutableType.GetOrAddMutableMethod(System.Reflection.MethodInfo)">
             <summary>
-            Returns a <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> that can be used to modify the behavior of the given <paramref name="method"/>. If the method
-            is declared on the modified type, it returns the corresponding <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> from the <see cref="P:Remotion.TypePipe.MutableReflection.MutableType.ExistingMutableMethods"/>
-            collection. If it is declared on a base type, this method returns an override for it, creating one if necessary.
+            Returns a <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> that can be used to modify the behavior of the given <paramref name="method"/>.
             </summary>
+            <remarks>
+            Depending on the <see cref="P:System.Reflection.MemberInfo.DeclaringType"/> of <paramref name="method"/> this method returns the following.
+            <list type="number">
+              <item>
+                Modified type
+                <list type="bullet">
+                  <item>The corresponding <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> from the <see cref="P:Remotion.TypePipe.MutableReflection.MutableType.ExistingMutableMethods"/> collection.</item>
+                </list>
+              </item>
+              <item>
+                Base type
+                <list type="bullet">
+                  <item>An existing mutable override for the base method, or</item>
+                  <item>a newly created override (implicit or explicit if necessary).</item>
+                </list>
+              </item>
+              <item>
+                Interface type
+                <list type="bullet">
+                  <item>An existing mutable implementation, or</item>
+                  <item>a newly created implementation, or</item>
+                  <item>an existing mutable override for a base implementation, or</item>
+                  <item>a newly created override for a base implementation (implicit or explicit if necessary).</item>
+                </list>
+              </item>
+            </list>
+            </remarks>
             <param name="method">The <see cref="T:System.Reflection.MethodInfo"/> to get a <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> for.</param>
             <returns>
-            The <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> corresponding to <paramref name="method"/> or an override of the method.
+            The <see cref="T:Remotion.TypePipe.MutableReflection.MutableMethodInfo"/> corresponding to <paramref name="method"/>, an override for a base method or an implementation for 
+            an interface method.
             </returns>
+        </member>
+        <member name="M:Remotion.TypePipe.MutableReflection.MutableType.GetInterfaceMap(System.Type,System.Boolean)">
+            <summary>
+            Returns an interface mapping for the specified interface type. 
+            If <paramref name="allowPartialInterfaceMapping"/> is set to <c>true</c>, an interface mapping will be returned even if the interface is not
+            fully implemented. This may occur after calls to <see cref="M:Remotion.TypePipe.MutableReflection.MutableType.AddInterface(System.Type)"/>.
+            </summary>
+            <param name="interfaceType">The <see cref="T:System.Type"/> of the interface of which to retrieve a mapping.</param>
+            <param name="allowPartialInterfaceMapping">Whether or not to allow partial interface mappings.</param>
+            <returns></returns>
         </member>
         <member name="T:Remotion.TypePipe.MutableReflection.ParameterDeclaration">
             <summary>
@@ -11905,6 +12100,35 @@
             Retrieves the generated type or its constructors for the requested type from the cache or delegates to the contained
             <see cref="T:Remotion.TypePipe.Caching.ITypeAssembler"/> instance.
             </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ObjectWithoutDeserializationConstructorProxy">
+            <summary>
+            Acts as a placeholder in the .NET deserialization process for modified types that do not declare a deserialization constructor.
+            </summary>
+            <remarks>
+            For such types, the <see cref="T:Remotion.TypePipe.Serialization.SerializationParticipant"/> will add serialization code that calls 
+            <see cref="M:Remotion.TypePipe.Serialization.Implementation.ReflectionSerializationHelper.AddFieldValues(System.Runtime.Serialization.SerializationInfo,System.Object)"/>.
+            </remarks>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.Implementation.ObjectFactoryRegistry">
+            <summary>
+            Implements <see cref="T:Remotion.TypePipe.Serialization.IObjectFactoryRegistry"/> by using a simple <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.TypePipe.Serialization.SerializationParticipant">
+            <summary>
+            Enables the serialization of modified type instances without the need of saving the generated assembly to disk.
+            </summary>
+            <remarks>
+            Serialization is enabled by adding additional metadata to the serialization payload and using a serialization helper for deserialization.
+            The helper uses the metadata to regenerate a compatible type.
+            The metadata includes the following items:
+            <list type="bullet">
+              <item>Type of the serialization helper which should be used for deserialization.</item>
+              <item>The assembly-qualified type name of the underlying type.</item>
+              <item>Object factory identifier that will be used to retrieve the object factory during deserialization.</item>
+            </list>
+            </remarks>
         </member>
     </members>
 </doc>

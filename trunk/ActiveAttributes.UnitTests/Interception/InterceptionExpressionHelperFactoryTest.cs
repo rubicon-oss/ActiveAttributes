@@ -16,9 +16,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Assembly.Storages;
 using ActiveAttributes.Interception;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving;
+using ActiveAttributes.Weaving.Context;
+using ActiveAttributes.Weaving.Storage;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.Collections;
@@ -39,12 +40,12 @@ namespace ActiveAttributes.UnitTests.Interception
       var method = ObjectMother.GetMethodInfo();
       var parameterExpressions = ObjectMother.GetMultiple (() => ObjectMother.GetParameterExpression()).ToList();
       var bodyContextBase = ObjectMother.GetBodyContextBase (declaringType, parameterExpressions);
-      var fakeInvocationType = typeof (FuncInvocation<object, int>);
+      var fakeInvocationType = typeof (FuncContext<object, int>);
       var fakeAdvices = new Tuple<MethodInfo, IStorage>[0];
       var fakeMemberInfoStorage = ObjectMother.GetStorage();
       var fakeDelegateStorage = ObjectMother.GetStorage();
 
-      var interceptionTypeProviderMock = MockRepository.GenerateStrictMock<IInterceptionTypeProvider>();
+      var interceptionTypeProviderMock = MockRepository.GenerateStrictMock<IInvocationTypeProvider>();
       interceptionTypeProviderMock.Expect (x => x.GetInvocationType (method)).Return (fakeInvocationType);
 
       var factory = new InterceptionExpressionHelperFactory (interceptionTypeProviderMock);

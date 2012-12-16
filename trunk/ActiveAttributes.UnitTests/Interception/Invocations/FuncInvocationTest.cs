@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving.Context;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 
@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests.Interception.Invocations
       var instance = new DomainType ();
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method (""));
 
-      var invocation = new FuncInvocation<DomainType, string, int> (method, instance, "arg", instance.Method);
+      var invocation = new FuncContext<DomainType, string, int> (method, instance, "arg", instance.Method);
 
       Assert.That (invocation.Instance, Is.SameAs (instance));
       Assert.That (invocation.MemberInfo, Is.SameAs (method));
@@ -42,7 +42,7 @@ namespace ActiveAttributes.UnitTests.Interception.Invocations
       var instance = new DomainType ();
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Method (""));
 
-      var invocation = new FuncInvocation<DomainType, string, int> (method, instance, "arg", instance.Method);
+      var invocation = new FuncContext<DomainType, string, int> (method, instance, "arg", instance.Method);
 
       invocation.Arg1 = "7";
       invocation.Proceed();

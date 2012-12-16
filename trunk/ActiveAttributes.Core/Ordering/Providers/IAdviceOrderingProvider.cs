@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Infrastructure.Ordering;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Ordering.Providers
@@ -23,6 +24,6 @@ namespace ActiveAttributes.Ordering.Providers
   [ConcreteImplementation (typeof (AppConfigTypeOrderingProvider), Position = 1)]
   public interface IAdviceOrderingProvider
   {
-    IEnumerable<IAdviceOrdering> GetOrderings ();
+    IEnumerable<IOrdering> GetOrderings ();
   }
 }

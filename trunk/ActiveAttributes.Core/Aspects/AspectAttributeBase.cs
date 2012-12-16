@@ -13,64 +13,43 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using ActiveAttributes.Advices;
-using ActiveAttributes.Pointcuts;
+using ActiveAttributes.Annotations;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
+using Remotion.Utilities;
 
 namespace ActiveAttributes.Aspects
 {
-  /// <summary>
-  /// Serves as a base class for aspect attributes.
-  /// </summary>
-  /// <remarks>
-  /// <see cref="AdviceScope"/> is set to <c>AdviceScope.Static</c>
-  /// </remarks>
-  [AdviceInfo (Scope = AdviceScope.Static)]
-  public abstract class AspectAttributeBase : Attribute
+  [AttributeUsage (AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+  public abstract class AspectAttributeBase : Attribute, IAspectInfo
   {
-    #region AdviceInfo
+    private readonly string _role;
 
-    /// <summary>Defines the advice scope.</summary>
-    public AdviceScope AdviceScope { get; set; }
+    private AspectScope _scope;
 
-    /// <summary>Defines the advice execution.</summary>
-    public AdviceExecution AdviceExecution { get; set; }
+    protected AspectAttributeBase (AspectScope scope, string role = StandardRoles.Unspecified)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("role", role);
 
-    /// <summary>Defines the advice priority.</summary>
-    public int AdvicePriority { get; set; }
-
-    #endregion
-
-    #region Pointcuts
-
-    /// <summary>Defines a <see cref="NamespacePointcut"/>.</summary>
-    public string ApplyToNamespace { get; set; }
-
-    /// <summary>Defines a <see cref="TypeNamePointcut"/>.</summary>
-    public string ApplyToTypeName { get; set; }
-
-    /// <summary>Defines a <see cref="TypePointcut"/>.</summary>
-    public Type ApplyToType { get; set; }
-
-    /// <summary>Defines a <see cref="MemberNamePointcut"/>.</summary>
-    public string MemberNameFilter { get; set; }
-
-    /// <summary>Defines a <see cref="ReturnTypePointcut"/>.</summary>
-    public Type MemberReturnTypeFilter { get; set; }
-
-    /// <summary>Defines a <see cref="ArgumentTypesPointcut"/>.</summary>
-    public Type[] MemberArgumentsFilter { get; set; }
-
-    /// <summary>Defines a <see cref="VisibilityPointcut"/>.</summary>
-    public Visibility MemberVisibilityFilter { get; set; }
-
-    /// <summary>Defines a <see cref="CustomAttributePointcut"/>.</summary>
-    public Type MemberCustomAttributeFilter { get; set; }
-
-    /// <summary>Defines a <see cref="ControlFlowPointcut"/>.</summary>
-    public string ControlFlow { get; set; }
-
-    #endregion
+      _scope = scope;
+      _role = role;
     }
+
+    public AspectActivation Activation
+    {
+      get { return AspectActivation.Auto; }
+    }
+
+    public AspectScope Scope
+    {
+      get { return _scope; }
+      set { _scope = value; }
+    }
+
+    public string Role
+    {
+      get { return _role; }
+    }
+  }
 }

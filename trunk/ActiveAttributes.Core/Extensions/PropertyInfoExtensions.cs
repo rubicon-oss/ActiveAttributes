@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Extensions

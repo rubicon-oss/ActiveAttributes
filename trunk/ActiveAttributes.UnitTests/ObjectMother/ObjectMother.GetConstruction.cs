@@ -18,8 +18,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Aspects;
-using ActiveAttributes.Declaration.Construction;
+using ActiveAttributes.Aspects2;
+using ActiveAttributes.Weaving.Construction;
 using Remotion.Collections;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
@@ -29,7 +29,7 @@ namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother
   {
-    public static IConstruction GetConstruction (
+    public static IAspectConstruction GetConstruction (
         ConstructorInfo constructor = null,
         ReadOnlyCollection<object> constructorArguments = null,
         ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> namedArguments = null)
@@ -38,7 +38,7 @@ namespace ActiveAttributes.UnitTests
       constructorArguments = constructorArguments ?? new object[0].ToList().AsReadOnly();
       namedArguments = namedArguments ?? new ReadOnlyCollectionDecorator<ICustomAttributeNamedArgument> (new ICustomAttributeNamedArgument[0]);
 
-      var stub = MockRepository.GenerateStub<IConstruction>();
+      var stub = MockRepository.GenerateStub<IAspectConstruction>();
 
       stub.Stub (x => x.ConstructorInfo).Return (constructor);
       stub.Stub (x => x.ConstructorArguments).Return (constructorArguments);
@@ -47,10 +47,10 @@ namespace ActiveAttributes.UnitTests
       return stub;
     }
 
-    public static IConstruction GetConstructionByType (Type constructionType)
+    public static IAspectConstruction GetConstructionByType (Type constructionType)
     {
       var constructions =
-          new IConstruction[]
+          new IAspectConstruction[]
           {
               new AttributeConstruction (GetCustomAttributeData (typeof (DummyAspectAttribute))),
               new TypeConstruction (typeof (DummyAspectAttribute))

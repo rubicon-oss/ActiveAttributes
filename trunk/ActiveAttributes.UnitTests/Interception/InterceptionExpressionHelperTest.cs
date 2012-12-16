@@ -16,9 +16,10 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Assembly.Storages;
 using ActiveAttributes.Interception;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving.Context;
+using ActiveAttributes.Weaving.Invocation;
+using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -56,7 +57,7 @@ namespace ActiveAttributes.UnitTests.Interception
       _thisExpression = new ThisExpression (_declaringType);
 
       _callExpressionHelperMock = MockRepository.GenerateStrictMock<ICallExpressionHelper> ();
-      _invocationType = typeof (FuncInvocation<object, string, int, int>);
+      _invocationType = typeof (FuncContext<object, string, int, int>);
       _memberFieldMock = MockRepository.GenerateStrictMock<IStorage> ();
       _delegateFieldMock = MockRepository.GenerateStrictMock<IStorage> ();
       _aspectFieldMock1 = MockRepository.GenerateStrictMock<IStorage> ();
@@ -88,13 +89,13 @@ namespace ActiveAttributes.UnitTests.Interception
 
       _memberFieldMock.VerifyAllExpectations ();
       var parameterExpression = result.Item1;
-      Assert.That (parameterExpression.Type, Is.EqualTo (typeof (FuncInvocation<object, string, int, int>)));
+      Assert.That (parameterExpression.Type, Is.EqualTo (typeof (FuncContext<object, string, int, int>)));
       Assert.That (parameterExpression.Name, Is.EqualTo ("ctx"));
       var binaryExpression = result.Item2;
       Assert.That (binaryExpression.Left, Is.SameAs (parameterExpression));
       Assert.That (binaryExpression.Right, Is.TypeOf<NewExpression> ());
       var newExpression = (NewExpression) binaryExpression.Right;
-      Assert.That (newExpression.Constructor, Is.EqualTo (typeof (FuncInvocation<object, string, int, int>).GetConstructors ().Single ()));
+      Assert.That (newExpression.Constructor, Is.EqualTo (typeof (FuncContext<object, string, int, int>).GetConstructors ().Single ()));
       Assert.That (newExpression.Arguments, Has.Count.EqualTo (5));
       Assert.That (newExpression.Arguments[0], Is.SameAs (fakeMemberExpression));
       Assert.That (newExpression.Arguments[1], Is.TypeOf<ThisExpression> ().With.Property ("Type").EqualTo (_declaringType));
@@ -145,7 +146,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (binaryExpression2.Right, Is.TypeOf<NewExpression> ());
 
       var newExpression = (NewExpression) binaryExpression2.Right;
-      var constructor = typeof (OuterInvocation).GetConstructors ().Single ();
+      var constructor = typeof (StaticInvocation).GetConstructors ().Single ();
       Assert.That (newExpression.Constructor, Is.EqualTo (constructor));
       var arguments2 = newExpression.Arguments;
       Assert.That (arguments2[0], Is.SameAs (methodInvocation));
@@ -180,8 +181,8 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateReturnValueExpression_Func ()
     {
-      var baseType = typeof (FuncInvocationBase<,>);
-      var invocationContextType = typeof (FuncInvocation<object, int>);
+      var baseType = typeof (FuncContextBase<,>);
+      var invocationContextType = typeof (FuncContext<object, int>);
       Assert.That (baseType.MakeGenericType (invocationContextType.GetGenericArguments ()).IsAssignableFrom (invocationContextType), Is.True);
       var fakeContext = ObjectMother.GetVariableExpression (invocationContextType);
 
@@ -197,7 +198,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateReturnValueExpression_Action ()
     {
-      var invocationContextType = typeof (ActionInvocation<object>);
+      var invocationContextType = typeof (ActionContext<object>);
       var fakeContext = ObjectMother.GetVariableExpression (invocationContextType);
 
       var result = _expressionHelper.CreateReturnValueExpression (fakeContext);

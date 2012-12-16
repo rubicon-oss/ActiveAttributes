@@ -17,14 +17,14 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.Construction;
+using ActiveAttributes.Weaving.Construction;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother
   {
     public static IAdviceBuilder GetAdviceBuilder (
-        IConstruction construction = null,
+        IAspectConstruction construction = null,
         MethodInfo method = null,
         AdviceExecution execution = AdviceExecution.Before,
         AdviceScope scope = AdviceScope.Instance)

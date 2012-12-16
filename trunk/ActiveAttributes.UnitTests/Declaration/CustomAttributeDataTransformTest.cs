@@ -16,10 +16,10 @@
 
 using System;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Aspects;
+using ActiveAttributes.Aspects2;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
+using ActiveAttributes.Weaving.Construction;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;

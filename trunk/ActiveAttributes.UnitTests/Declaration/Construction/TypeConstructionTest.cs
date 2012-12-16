@@ -15,7 +15,7 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Declaration.Construction;
+using ActiveAttributes.Weaving.Construction;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 

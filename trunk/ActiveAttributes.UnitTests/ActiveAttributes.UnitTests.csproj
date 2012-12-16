@@ -113,7 +113,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interception\Invocations\ActionInvocationTest.cs" />
-    <Compile Include="Interception\Invocations\ControlFlowInvocationTest.cs" />
     <Compile Include="Interception\Invocations\FuncInvocationTest.cs" />
     <Compile Include="ObjectMother\Expressions\ObjectMother.cs" />
     <Compile Include="ObjectMother\ObjectMother.GetInvocationContext.cs" />

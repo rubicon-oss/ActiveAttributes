@@ -18,6 +18,7 @@ using ActiveAttributes.Utilities;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 
 namespace ActiveAttributes.UnitTests.Utilities
 {

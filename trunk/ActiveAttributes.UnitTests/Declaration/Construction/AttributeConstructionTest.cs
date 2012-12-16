@@ -17,8 +17,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Aspects;
-using ActiveAttributes.Declaration.Construction;
+using ActiveAttributes.Aspects2;
+using ActiveAttributes.Weaving.Construction;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;

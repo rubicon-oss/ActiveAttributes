@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Linq;
-using ActiveAttributes.Aspects;
+using ActiveAttributes.Aspects2;
 using ActiveAttributes.Declaration;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;

@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using ActiveAttributes.Aspects;
+using ActiveAttributes.Aspects2;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.UnitTests.Extensions;
 using ActiveAttributes.Utilities;

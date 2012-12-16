@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using Rhino.Mocks;
 

@@ -17,7 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Advices;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Utilities;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -25,7 +26,7 @@ using Remotion.Utilities;
 namespace ActiveAttributes.Ordering
 {
   /// <summary>
-  /// Serves as a sequencer for a collection of <see cref="Advice"/>s according to <see cref="IAdviceOrdering"/> configurations.
+  /// Serves as a sequencer for a collection of <see cref="Advice"/>s according to <see cref="IOrdering"/> configurations.
   /// </summary>
   [ConcreteImplementation (typeof (AdviceSequencer))]
   public interface IAdviceSequencer

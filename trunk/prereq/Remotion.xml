@@ -443,6 +443,46 @@
             The <see cref="T:Remotion.Collections.TimeSpanBasedExpirationPolicy`1"/> handles values which can be expire based on <see cref="T:System.TimeSpan"/> periods.
             </summary>
         </member>
+        <member name="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration">
+            <summary>
+            Configures the service location performed by <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/>.
+            </summary>
+        </member>
+        <member name="M:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.SetCurrent(Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration)">
+            <summary>
+            Sets the <see cref="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.Current"/> <see cref="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration"/> instance.
+            </summary>
+            <param name="configuration">The new configuration to set as the <see cref="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.Current"/> configuration.</param>
+        </member>
+        <member name="M:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.#ctor">
+            <summary>
+            Initializes a new default instance of the <see cref="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration"/> class. To load the configuration from a config file,
+            use <see cref="M:Remotion.Configuration.ConfigurationWrapper.GetSection(System.String)"/> instead.
+            </summary>
+        </member>
+        <member name="M:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.CreateServiceLocatorProvider">
+            <summary>
+            Creates an <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> instance as indicated by <see cref="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.ServiceLocatorProvider"/>. If no 
+            <see cref="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.ServiceLocatorProvider"/> is set, an instance of <see cref="T:Remotion.ServiceLocation.DefaultServiceLocatorProvider"/> is returned.
+            </summary>
+            <returns>An new <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> instance.</returns>
+        </member>
+        <member name="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.Current">
+            <summary>
+            Gets the current <see cref="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration"/> instance. This is used by 
+            <see cref="P:Remotion.ServiceLocation.SafeServiceLocator.Current"/> to retrieve an <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> instance if no specific 
+            <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> was configured via <see cref="M:Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(Microsoft.Practices.ServiceLocation.ServiceLocatorProvider)"/>.
+            </summary>
+            <value>The current <see cref="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration"/>.</value>
+        </member>
+        <member name="P:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration.ServiceLocatorProvider">
+            <summary>
+            Gets a <see cref="T:Remotion.Configuration.TypeElement`1"/> describing the custom <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> to be used. This provider defines
+            the <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> to be used by <see cref="P:Remotion.ServiceLocation.SafeServiceLocator.Current"/> if no custom <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> was
+            configured using <see cref="M:Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(Microsoft.Practices.ServiceLocation.ServiceLocatorProvider)"/>.
+            </summary>
+            <value>A <see cref="T:Remotion.Configuration.TypeElement`1"/> describing the custom <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> type to be used.</value>
+        </member>
         <member name="T:Remotion.Context.ISafeContextStorageProvider">
             <summary>
             Common interface for classes implementing a storage mechanism for <see cref="T:Remotion.Context.SafeContext"/>.
@@ -512,6 +552,12 @@
         <member name="T:Remotion.Reflection.MemberSignatures.FieldSignature">
             <summary>
             Represents a field signature and allows signatures to be compared to each other.
+            </summary>
+        </member>
+        <member name="T:Remotion.Reflection.MemberSignatures.MemberNamedAndSignatureEqualityComparer">
+            <summary>
+            Compares two members for equality by considering their name and signature.
+            This comparer does not support comparing <see langword="null" /> values.
             </summary>
         </member>
         <member name="T:Remotion.Reflection.MemberSignatures.MemberSignatureProvider">
@@ -632,6 +678,17 @@
             implementations.
             </summary>
             <value>The position of the concrete implementation in the list of all concrete implementations.</value>
+        </member>
+        <member name="T:Remotion.ServiceLocation.DefaultServiceLocatorProvider">
+            <summary>
+            Implements <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> by providing instances of <see cref="T:Remotion.ServiceLocation.DefaultServiceLocator"/>.
+            </summary>
+        </member>
+        <member name="T:Remotion.ServiceLocation.IServiceLocatorProvider">
+            <summary>
+            Defines an API for classes providing a <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> implementation. This is used by <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/> in order 
+            to retrieve the default <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> if no custom one was set.
+            </summary>
         </member>
         <member name="T:Remotion.ServiceLocation.LifetimeKind">
             <summary>
@@ -2524,12 +2581,32 @@
             <summary>
             <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/> is intended as a wrapper for <see cref="T:Microsoft.Practices.ServiceLocation.ServiceLocator"/>, specifically the 
             <see cref="P:Microsoft.Practices.ServiceLocation.ServiceLocator.Current"/> property. In contrast to <see cref="T:Microsoft.Practices.ServiceLocation.ServiceLocator"/>, <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/> will never throw
-            a <see cref="T:System.NullReferenceException"/> but instead register an instance of the DefaultServiceLocatorClass if no custom service locator was
+            a <see cref="T:System.NullReferenceException"/> but instead register an default <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> instance if no custom service locator was
             registered.
             </summary>
             <remarks>
+            <para>
             Accessing <see cref="T:Microsoft.Practices.ServiceLocation.ServiceLocator"/> will always lead to a <see cref="T:System.NullReferenceException"/> if no service locator is 
-            configured. Using <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/> instead will catch the exception and register an instance of the DefaultServiceLocator class.
+            configured. Using <see cref="T:Remotion.ServiceLocation.SafeServiceLocator"/> instead will catch the exception and register a default <see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> instance.
+            A provider for the default instance can be defined in the application configuration file (handled by 
+            <see cref="T:Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration"/>). The provider needs to implement <see cref="T:Remotion.ServiceLocation.IServiceLocatorProvider"/> and must have a default 
+            constructor.
+            <code>
+            &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+            &lt;configuration&gt;
+              &lt;configSections&gt;
+                &lt;section name="remotion.serviceLocation" type="Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration,Remotion" /&gt;
+              &lt;/configSections&gt;
+            
+              &lt;remotion.serviceLocation xmlns="http://www.re-motion.org/serviceLocation/configuration"&gt;
+                &lt;serviceLocatorProvider type="MyAssembly::MyServiceLocatorProvider"/&gt;
+              &lt;/remotion.serviceLocation&gt;
+            &lt;/configuration&gt;
+            </code>
+            </para>
+            <para>
+            If no provider is configured, a <see cref="T:Remotion.ServiceLocation.DefaultServiceLocator"/> instance is used as the default instance.
+            </para>
             </remarks>
         </member>
         <member name="P:Remotion.ServiceLocation.SafeServiceLocator.Current">
@@ -7774,6 +7851,13 @@
             </summary>
             <typeparam name="T">The type of the objects to be compared.</typeparam>
         </member>
+        <member name="T:Remotion.Utilities.InvertedComparerDecorator`1">
+            <summary>
+            Implements <see cref="T:System.Collections.Generic.IComparer`1"/> as a decorator that inverts (i.e. flips) the arguments of the <see cref="M:System.Collections.Generic.IComparer`1.Compare(`0,`0)"/>
+            to invert the result.
+            </summary>
+            <typeparam name="T">The type of the objects to be compared.</typeparam>
+        </member>
         <member name="T:Remotion.Utilities.IUtcNowProvider">
             <summary>
             <see cref="T:Remotion.Utilities.IUtcNowProvider"/> defines an abstraction for clients using the current date and time. Use this to decouple code from the system 
@@ -7834,10 +7918,25 @@
             A type is nullable if it is a reference type or a nullable value type. This method returns false only for non-nullable value types.
             </remarks>
         </member>
+        <member name="T:Remotion.Utilities.NullComparer`1">
+            <summary>
+            <see cref="T:Remotion.INullObject"/> implementation for <see cref="T:System.Collections.Generic.IComparer`1"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="T:Remotion.Utilities.NullValueConverter">
             <summary>
             The <see cref="T:Remotion.Utilities.NullValueConverter"/> can convert "null" between nullable types.
             </summary>
+        </member>
+        <member name="T:Remotion.Utilities.PostActionDisposableDecorator">
+            <summary>
+            Decorates an <see cref="T:System.IDisposable"/> and adds a post-<see cref="M:System.IDisposable.Dispose"/> <see cref="T:System.Action"/>. This is especially useful
+            in order to extend a scope object, represented as an <see cref="T:System.IDisposable"/>, with additional cleanup logic.
+            </summary>
+            <remarks>
+            The post action is executed even when the inner <see cref="T:System.IDisposable"/> throws an exception. It does not swallow the original exception, though.
+            </remarks>
         </member>
         <member name="T:Remotion.Utilities.ReferenceEqualityComparer`1">
             <summary>      

@@ -18,15 +18,15 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Advices;
-using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
+using ActiveAttributes.Weaving.Construction;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother
   {
     public static Advice GetAdvice (
-        IConstruction construction = null,
+        IAspectConstruction construction = null,
         MethodInfo method = null,
         string role = null,
         string name = null,

@@ -17,8 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Advices;
 using ActiveAttributes.Extensions;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Ordering.Providers;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -33,12 +34,12 @@ namespace ActiveAttributes.Ordering
   {
     /// <summary>
     /// Creates a collection of dependencies defined through <see cref="Tuple{Advice, Advice}"/> where the first advice must precede before the second.
-    /// Calucation of dependencies will be dispatched first to the <see cref="IAdviceOrdering"/> and then back to the provider.
+    /// Calucation of dependencies will be dispatched first to the <see cref="IOrdering"/> and then back to the provider.
     /// </summary>
     IEnumerable<Tuple<Advice, Advice>> GetDependencies (IEnumerable<Advice> advices);
 
-    bool DependsType (Advice advice1, Advice advice2, AdviceTypeOrdering ordering);
-    bool DependsRole (Advice advice1, Advice advice2, AdviceRoleOrdering ordering);
+    bool DependsType (Advice advice1, Advice advice2, AspectTypeOrdering ordering);
+    bool DependsRole (Advice advice1, Advice advice2, AspectRoleOrdering ordering);
   }
 
   public class AdviceDependencyProvider : IAdviceDependencyProvider
@@ -69,14 +70,14 @@ namespace ActiveAttributes.Ordering
       return new HashSet<Tuple<Advice, Advice>> (dependencies);
     }
 
-    public bool DependsType (Advice advice1, Advice advice2, AdviceTypeOrdering ordering)
+    public bool DependsType (Advice advice1, Advice advice2, AspectTypeOrdering ordering)
     {
-      return ordering.BeforeType.IsAssignableFrom (advice1.DeclaringType) && ordering.AfterType.IsAssignableFrom (advice2.DeclaringType);
+      return ordering.BeforeType.IsAssignableFrom (advice1.Aspect.Type) && ordering.AfterType.IsAssignableFrom (advice2.Aspect.Type);
     }
 
-    public bool DependsRole (Advice advice1, Advice advice2, AdviceRoleOrdering ordering)
+    public bool DependsRole (Advice advice1, Advice advice2, AspectRoleOrdering ordering)
     {
-      return advice1.Role.IsMatchWildcard (ordering.BeforeRole) && advice2.Role.IsMatchWildcard (ordering.AfterRole);
+      return advice1.Aspect.Role.IsMatchWildcard (ordering.BeforeRole) && advice2.Aspect.Role.IsMatchWildcard (ordering.AfterRole);
     }
   }
 }

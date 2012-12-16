@@ -62,161 +62,163 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Advices\AdviceExecution.cs" />
-    <Compile Include="Advices\AdviceScope.cs" />
-    <Compile Include="Assembly\ExpressionWeaver.cs" />
-    <Compile Include="Assembly\Storages\GlobalStorage.cs" />
-    <Compile Include="Assembly\Storages\TransientStorage.cs" />
+    <Compile Include="Annotations\AdviceAttribute.cs" />
+    <Compile Include="Annotations\IAspectInfo.cs" />
+    <Compile Include="Annotations\Ordering\AdviceOrderingAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\AndAttribute.cs" />
+    <Compile Include="Annotations\AspectAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\MethodCallPointcutAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\MethodExecutionPointcutAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\MethodPointcutBase.cs" />
+    <Compile Include="Aspects\AspectAttributeBase.cs" />
+    <Compile Include="Annotations\ImportMemberAttribute.cs" />
+    <Compile Include="Annotations\IntroduceMemberAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\NotAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\OrAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\MemberNamePointcutAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\MethodPointcutAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\PointcutAttributeBase.cs" />
+    <Compile Include="Annotations\Pointcuts\ReturnTypePointcutAttribute.cs" />
+    <Compile Include="Annotations\Pointcuts\TypePointcutAttribute.cs" />
+    <Compile Include="Aspects\MethodInterceptionAttributeBase.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ArgumentIndexPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ArgumentNamePointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ArgumentPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\MethodExecutionPointcut.cs" />
+    <Compile Include="Weaving\AdviceComposer.cs" />
+    <Compile Include="Weaving\Context\ActionContext.generated.cs" />
+    <Compile Include="Weaving\Context\FuncContext.generated.cs" />
+    <Compile Include="Weaving\Expressions\MethodExecutionExpression.cs" />
+    <Compile Include="Weaving\ObjectFactory.cs" />
+    <Compile Include="Weaving\JoinPointExpressionBuilder.cs" />
+    <Compile Include="Weaving\Participant.cs" />
+    <Compile Include="Weaving\ValueMapper.cs" />
+    <Compile Include="Weaving\WeaveBlockBuilder.cs" />
+    <Compile Include="Weaving\AdviceCallExpressionBuilder.cs" />
+    <Compile Include="Weaving\AdviceWeaver.cs" />
+    <Compile Include="Weaving\AspectExpressionBuilder.cs" />
+    <Compile Include="Weaving\AspectStorageCache.cs" />
+    <Compile Include="Weaving\ContextArgumentExpressionBuilder.cs" />
+    <Compile Include="Weaving\ContextArgumentStorageProvider.cs" />
+    <Compile Include="Weaving\Storage\SingletonStorage.cs" />
+    <Compile Include="Weaving\Storage\TransientStorage.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
-    <Compile Include="Declaration\AdviceBuilder.cs" />
-    <Compile Include="Declaration\AdviceBuilderFactory.cs" />
-    <Compile Include="Assembly\AdviceComposer.cs" />
-    <Compile Include="Assembly\Assembler.cs" />
-    <Compile Include="Assembly\InitializationService.cs" />
-    <Compile Include="Assembly\IWeaver.cs" />
-    <Compile Include="Declaration\AttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\MemberAttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\CustomAttributeProviderTransform.cs" />
-    <Compile Include="Declaration\Providers\AspectTypesProvider.cs" />
-    <Compile Include="Declaration\Providers\AssemblyAttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\CompositeDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\PropertyAttributeDeclarationProvider.cs" />
-    <Compile Include="Declaration\Providers\MethodAttributeDeclarationProvider2.cs" />
-    <Compile Include="Declaration\Providers\IDeclarationProvider.cs">
+    <Compile Include="Discovery\AttributeDeclarationProvider.cs" />
+    <Compile Include="Discovery\AssemblyLevelDeclarationProvider.cs" />
+    <Compile Include="Discovery\CompositeDeclarationProvider.cs" />
+    <Compile Include="Discovery\IAssemblyLevelDeclarationProvider.cs" />
+    <Compile Include="Discovery\IDeclarationProvider.cs" />
+    <Compile Include="Discovery\IMethodLevelDeclarationProvider.cs" />
+    <Compile Include="Discovery\ITypeLevelDeclarationProvider.cs" />
+    <Compile Include="Discovery\MemberAttributeDeclarationProvider.cs" />
+    <Compile Include="Discovery\TypeAttributeDeclarationProvider.cs" />
+    <Compile Include="Infrastructure\Advice.cs" />
+    <Compile Include="Infrastructure\AdviceExecution.cs" />
+    <Compile Include="Infrastructure\Aspect.cs" />
+    <Compile Include="Infrastructure\AspectActivation.cs" />
+    <Compile Include="Infrastructure\AspectElementBase.cs" />
+    <Compile Include="Infrastructure\AspectScope.cs" />
+    <Compile Include="Infrastructure\Ordering\AdviceOrdering.cs" />
+    <Compile Include="Infrastructure\Ordering\AspectRoleOrdering.cs" />
+    <Compile Include="Infrastructure\Ordering\AspectTypeOrdering.cs" />
+    <Compile Include="Infrastructure\Ordering\OrderingBase.cs" />
+    <Compile Include="Infrastructure\Pointcuts\MethodPointcut.cs" />
+    <Compile Include="Discovery\AspectBuilder.cs" />
+    <Compile Include="Discovery\AspectElementBuilder.cs" />
+    <Compile Include="Infrastructure\Pointcuts\TruePointcut.cs" />
+    <Compile Include="Weaving\AspectStorageProvider.cs" />
+    <Compile Include="Discovery\PointcutBuilder.cs" />
+    <Compile Include="Infrastructure\ConflictAction.cs" />
+    <Compile Include="Infrastructure\ICrosscutting.cs" />
+    <Compile Include="Infrastructure\JoinPoint.cs" />
+    <Compile Include="Infrastructure\MemberImport.cs" />
+    <Compile Include="Infrastructure\MemberIntroduction.cs" />
+    <Compile Include="Infrastructure\Pointcuts\AllPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\AnyPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\IPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\MemberNamePointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\NotPointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\ReturnTypePointcut.cs" />
+    <Compile Include="Infrastructure\Pointcuts\TypePointcut.cs" />
+    <Compile Include="Weaving\Context\ActionContextBase.cs" />
+    <Compile Include="Weaving\Context\FuncContextBase.cs" />
+    <Compile Include="Weaving\Context\IndexerGetContext.cs" />
+    <Compile Include="Weaving\Context\IPropertyContext.cs" />
+    <Compile Include="Weaving\Context\IndexerSetContext.cs" />
+    <Compile Include="Weaving\Context\PropertyGetContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\Providers\IAssemblyLevelDeclarationProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Declaration\Providers\IMethodLevelDeclarationProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Declaration\Providers\ITypeLevelDeclarationProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Declaration\Providers\AspectClassDeclarationProvider.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocation.generated.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interception\Invocations\ActionInvocationBase.cs" />
-    <Compile Include="Interception\Invocations\ControlFlowInvocation.cs" />
-    <Compile Include="Interception\Invocations\FuncInvocation.generated.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interception\Invocations\FuncInvocationBase.cs" />
-    <Compile Include="Interception\Invocations\IndexerGetInvocation.cs" />
-    <Compile Include="Interception\Invocations\IPropertyInvocation.cs" />
-    <Compile Include="Interception\Invocations\IndexerSetInvocation.cs" />
-    <Compile Include="Interception\Invocations\PropertyGetInvocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interception\Invocations\PropertySetInvocation.cs" />
+    <Compile Include="Weaving\Context\PropertySetContext.cs" />
     <Compile Include="Ordering\AdviceOrderingException.cs" />
     <Compile Include="Ordering\Providers\AppConfigTypeOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\AppConfigRoleOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\IAdviceOrderingProvider.cs" />
-    <Compile Include="Ordering\StandardRoles.cs" />
-    <Compile Include="Pointcuts\MethodSignaturePointcut.cs" />
-    <Compile Include="Pointcuts\PropertyGetPointcut.cs" />
-    <Compile Include="Pointcuts\MemberTypePointcut.cs" />
-    <Compile Include="Pointcuts\MethodPointcut.cs" />
-    <Compile Include="Interception\InterceptionTypeProvider.cs" />
-    <Compile Include="Interception\InterceptionExpressionHelper.cs" />
-    <Compile Include="Interception\InterceptionExpressionHelperFactory.cs" />
-    <Compile Include="Interception\InterceptionWeaver.cs" />
-    <Compile Include="Interception\Invocations\ActionInvocation.template.cs" />
-    <Compile Include="Interception\Invocations\ArgumentCollectionBase.cs" />
-    <Compile Include="Interception\Invocations\FuncInvocation.template.cs" />
-    <Compile Include="Interception\Invocations\IArgumentCollection.cs" />
-    <Compile Include="Interception\Invocations\IInvocation.cs" />
-    <Compile Include="Interception\Invocations\IInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\IReadOnlyArgumentCollection.cs" />
-    <Compile Include="Interception\Invocations\IReadOnlyInvocationContext.cs" />
-    <Compile Include="Interception\Invocations\OuterInvocation.cs" />
+    <Compile Include="Infrastructure\Ordering\StandardRoles.cs" />
+    <Compile Include="Weaving\InvocationTypeProvider.cs" />
+    <Compile Include="Weaving\Context\ActionContext.template.cs" />
+    <Compile Include="Weaving\Context\ArgumentCollectionBase.cs" />
+    <Compile Include="Weaving\Context\FuncContext.template.cs" />
+    <Compile Include="Weaving\Context\IArgumentCollection.cs" />
+    <Compile Include="Weaving\Invocation\IInvocation.cs" />
+    <Compile Include="Weaving\Context\IContext.cs" />
+    <Compile Include="Weaving\Context\IReadOnlyArgumentCollection.cs" />
+    <Compile Include="Weaving\Context\IReadOnlyContext.cs" />
+    <Compile Include="Weaving\Invocation\StaticInvocation.cs" />
     <Compile Include="Ordering\AdviceDependencyProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Declaration\CustomAttributeDataTransform.cs" />
-    <Compile Include="Declaration\ClassDeclarationProvider.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Ordering\AdviceRoleOrdering.cs" />
-    <Compile Include="Ordering\AdviceTypeOrdering.cs" />
+    <Compile Include="Annotations\Ordering\AspectRoleOrderingAttribute.cs" />
+    <Compile Include="Annotations\Ordering\AspectTypeOrderingAttribute.cs" />
     <Compile Include="Ordering\AdviceSequencer.cs" />
-    <Compile Include="Assembly\InitializationExpressionHelper.cs" />
-    <Compile Include="Assembly\StorageService.cs" />
-    <Compile Include="Interception\CallExpressionHelper.cs" />
-    <Compile Include="Ordering\AdviceOrderingAttributeBase.cs" />
-    <Compile Include="Pointcuts\MemberFlags.cs">
+    <Compile Include="Annotations\Ordering\OrderingAttributeBase.cs" />
+    <Compile Include="MemberFlags.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ordering\Position.cs">
+    <Compile Include="Infrastructure\Ordering\Position.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Pointcuts\PropertySetPointcut.cs" />
-    <Compile Include="Pointcuts\Visibility.cs">
+    <Compile Include="Visibility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Advices\AdviceInfoAttribute.cs" />
-    <Compile Include="Pointcuts\PointcutAttributeBase.cs" />
-    <Compile Include="Declaration\Construction\AttributeConstruction.cs" />
-    <Compile Include="Declaration\Construction\IConstruction.cs" />
-    <Compile Include="Declaration\Construction\TypeConstruction.cs" />
-    <Compile Include="Aspects\EventInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Aspects\InterceptionAspectAttributeBase.cs" />
-    <Compile Include="Aspects\MethodInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Aspects\PropertyInterceptionAspectAttributeBase.cs" />
-    <Compile Include="Advices\Advice.cs" />
-    <Compile Include="Assembly\JoinPoint.cs" />
-    <Compile Include="Pointcuts\IPointcut.cs" />
-    <Compile Include="Pointcuts\ArgumentTypePointcut.cs" />
-    <Compile Include="Pointcuts\CustomAttributePointcut.cs" />
-    <Compile Include="Pointcuts\NamespacePointcut.cs" />
-    <Compile Include="Pointcuts\ExpressionPointcut.cs" />
-    <Compile Include="Assembly\PointcutParser.cs" />
-    <Compile Include="Assembly\PointcutEvaluator.cs" />
-    <Compile Include="Pointcuts\ReturnTypePointcut.cs" />
-    <Compile Include="Pointcuts\TypeNamePointcut.cs" />
-    <Compile Include="Pointcuts\VisibilityPointcut.cs" />
-    <Compile Include="Assembly\ObjectFactory.cs" />
+    <Compile Include="Weaving\Construction\AttributeConstruction.cs" />
+    <Compile Include="Weaving\Construction\IAspectConstruction.cs" />
+    <Compile Include="Weaving\Construction\TypeConstruction.cs" />
     <Compile Include="Configuration\TypeOrderingCollection.cs" />
     <Compile Include="Configuration\TypeOrderingElement.cs" />
     <Compile Include="Configuration\ActiveAttributesConfigurationSection.cs" />
-    <Compile Include="Ordering\AdviceOrderingBase.cs" />
-    <Compile Include="Assembly\Storages\IStorage.cs" />
-    <Compile Include="Assembly\Storages\InstanceStorage.cs" />
-    <Compile Include="Assembly\MethodCopyService.cs" />
-    <Compile Include="Assembly\Storages\StaticStorage.cs" />
+    <Compile Include="Infrastructure\Ordering\IOrdering.cs" />
+    <Compile Include="Weaving\Storage\IStorage.cs" />
+    <Compile Include="Weaving\Storage\InstanceStorage.cs" />
+    <Compile Include="Weaving\Storage\StaticStorage.cs" />
     <Compile Include="Extensions\ICustomAttributeDataExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\MethodBaseExtensions.cs" />
     <Compile Include="Extensions\MethodInfoExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Aspects\AspectAttributeBase.cs" />
-    <Compile Include="IAspect.cs" />
-    <Compile Include="Pointcuts\ControlFlowPointcut.cs" />
-    <Compile Include="Pointcuts\MemberNamePointcut.cs" />
-    <Compile Include="Pointcuts\TypePointcut.cs" />
     <Compile Include="Utilities\CircularDependencyException.cs" />
-    <Compile Include="Utilities\CustomAttributeDataHelper.cs" />
-    <Compile Include="Utilities\RelatedFinderFactory.cs" />
     <Compile Include="Utilities\StronglyConnectedComponent.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentFinder.cs" />
     <Compile Include="Utilities\StronglyConnectedComponentList.cs" />
     <Compile Include="Utilities\TopologicalSorter.cs" />
     <Compile Include="Utilities\UndefinedOrderException.cs" />
     <Compile Include="Utilities\Vertex.cs" />
+    <Compile Include="Weaving\PointcutEvaluator.cs" />
+    <Compile Include="Weaving\WeaveTimeAdvice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ActiveAttributes.licenseheader">
       <Link>ActiveAttributes.licenseheader</Link>
     </None>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Configuration\AppConfigSchema.xsd">
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <None Include="Weaving\ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

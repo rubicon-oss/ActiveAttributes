@@ -68,23 +68,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspectClassTest.cs" />
-    <Compile Include="PointcutTest.cs" />
-    <Compile Include="PropertyTest.cs" />
-    <Compile Include="InterfaceAspectsTest.cs" />
-    <Compile Include="ControlFlowTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ContextExposureTest.cs" />
-    <Compile Include="ContextTest.cs" />
+    <Compile Include="ScopeTest.cs" />
     <Compile Include="ProceedTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScopeTest.cs" />
-    <Compile Include="TypeLevelAspectTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="StrongTypeContextTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActiveAttributes.Core\ActiveAttributes.Core.csproj">

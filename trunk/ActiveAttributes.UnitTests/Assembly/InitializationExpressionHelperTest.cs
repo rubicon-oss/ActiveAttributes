@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Declaration.Construction;
+using ActiveAttributes.Weaving.Construction;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -35,12 +35,12 @@ namespace ActiveAttributes.UnitTests.Assembly
     private InitializationExpressionHelper _initializationExpressionHelper;
 
     private IMethodCopyService _methodCopyServiceMock;
-    private IConstruction _constructionMock;
+    private IAspectConstruction _constructionMock;
 
     [SetUp]
     public void SetUp ()
     {
-      _constructionMock = MockRepository.GenerateStrictMock<IConstruction> ();
+      _constructionMock = MockRepository.GenerateStrictMock<IAspectConstruction> ();
       _methodCopyServiceMock = MockRepository.GenerateStrictMock<IMethodCopyService>();
 
       _initializationExpressionHelper = new InitializationExpressionHelper (_methodCopyServiceMock);

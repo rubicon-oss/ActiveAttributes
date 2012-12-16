@@ -17,7 +17,8 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Interception;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving;
+using ActiveAttributes.Weaving.Context;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.ServiceLocation;
@@ -27,12 +28,12 @@ namespace ActiveAttributes.UnitTests.Interception
   [TestFixture]
   public class InterceptionTypeProviderTest
   {
-    private InterceptionTypeProvider _provider;
+    private InvocationTypeProvider _provider;
 
     [SetUp]
     public void SetUp ()
     {
-      _provider = new InterceptionTypeProvider ();
+      _provider = new InvocationTypeProvider ();
     }
 
     [Test]
@@ -42,7 +43,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType>)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionContext<DomainType>)));
     }
 
     [Test]
@@ -52,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType, string>)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionContext<DomainType, string>)));
     }
 
     [Test]
@@ -62,7 +63,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, int>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncContext<DomainType, int>)));
     }
 
 
@@ -73,7 +74,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, int, int>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncContext<DomainType, int, int>)));
     }
 
     [Test]
@@ -83,7 +84,7 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (FuncInvocation<DomainType, string>)));
+      Assert.That (actual, Is.EqualTo (typeof (FuncContext<DomainType, string>)));
     }
 
     [Test]
@@ -93,15 +94,15 @@ namespace ActiveAttributes.UnitTests.Interception
 
       var actual = _provider.GetInvocationType (method);
 
-      Assert.That (actual, Is.EqualTo (typeof (ActionInvocation<DomainType, string>)));
+      Assert.That (actual, Is.EqualTo (typeof (ActionContext<DomainType, string>)));
     }
 
     [Test]
     public void Resolution ()
     {
-      var instance = SafeServiceLocator.Current.GetInstance<IInterceptionTypeProvider>();
+      var instance = SafeServiceLocator.Current.GetInstance<IInvocationTypeProvider>();
 
-      Assert.That (instance, Is.TypeOf<InterceptionTypeProvider>());
+      Assert.That (instance, Is.TypeOf<InvocationTypeProvider>());
     }
 
     class DomainType

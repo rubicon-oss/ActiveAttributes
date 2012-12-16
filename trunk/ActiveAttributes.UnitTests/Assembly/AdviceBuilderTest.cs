@@ -17,8 +17,8 @@ using System;
 using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
+using ActiveAttributes.Weaving.Construction;
 using NUnit.Framework;
 
 namespace ActiveAttributes.UnitTests.Assembly
@@ -163,7 +163,7 @@ namespace ActiveAttributes.UnitTests.Assembly
 
     private void CheckThrowForMissing (
         string missingMember,
-        IConstruction construction = null,
+        IAspectConstruction construction = null,
         MethodInfo method = null,
         AdviceExecution execution = AdviceExecution.Undefined,
         AdviceScope scope = AdviceScope.Undefined)

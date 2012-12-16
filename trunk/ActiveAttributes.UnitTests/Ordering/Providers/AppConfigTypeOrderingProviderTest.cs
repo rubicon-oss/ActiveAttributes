@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Configuration;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Ordering;
 using ActiveAttributes.Ordering.Providers;
 using NUnit.Framework;
@@ -57,8 +58,8 @@ namespace ActiveAttributes.UnitTests.Ordering.Providers
       var result = _provider.GetOrderings().ToArray();
 
       _configurationProviderMock.VerifyAllExpectations();
-      Assert.That (result, Has.Length.EqualTo (2).And.All.TypeOf<AdviceTypeOrdering>());
-      var typeOrderings = result.OfType<AdviceTypeOrdering>().ToArray();
+      Assert.That (result, Has.Length.EqualTo (2).And.All.TypeOf<AspectTypeOrdering>());
+      var typeOrderings = result.OfType<AspectTypeOrdering>().ToArray();
       Assert.That (typeOrderings[0].BeforeType, Is.EqualTo (beforeType1));
       Assert.That (typeOrderings[0].AfterType, Is.EqualTo (afterType1));
       Assert.That (typeOrderings[1].BeforeType, Is.EqualTo (beforeType2));

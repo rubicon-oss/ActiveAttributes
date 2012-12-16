@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Advices;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Ordering;
 using ActiveAttributes.Ordering.Providers;
 using NUnit.Framework;
@@ -46,9 +47,9 @@ namespace ActiveAttributes.UnitTests.Ordering
 
       var orderingProviderMock1 = MockRepository.GenerateStrictMock<IAdviceOrderingProvider>();
       var orderingProviderMock2 = MockRepository.GenerateStrictMock<IAdviceOrderingProvider>();
-      var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
-      var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
-      var orderingMock3 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
+      var orderingMock1 = MockRepository.GenerateStrictMock<IOrdering>();
+      var orderingMock2 = MockRepository.GenerateStrictMock<IOrdering>();
+      var orderingMock3 = MockRepository.GenerateStrictMock<IOrdering>();
 
       orderingProviderMock1.Expect (x => x.GetOrderings()).Return (new[] { orderingMock1, orderingMock2 }.AsOneTime());
       orderingProviderMock2.Expect (x => x.GetOrderings()).Return (new[] { orderingMock3 }.AsOneTime());
@@ -96,8 +97,8 @@ namespace ActiveAttributes.UnitTests.Ordering
       var advice2 = ObjectMother.GetAdvice (name: "2");
 
       var orderingProviderMock = MockRepository.GenerateStrictMock<IAdviceOrderingProvider> ();
-      var orderingMock1 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
-      var orderingMock2 = MockRepository.GenerateStrictMock<IAdviceOrdering>();
+      var orderingMock1 = MockRepository.GenerateStrictMock<IOrdering>();
+      var orderingMock2 = MockRepository.GenerateStrictMock<IOrdering>();
       orderingProviderMock.Expect (x => x.GetOrderings()).Return (new[] { orderingMock1, orderingMock2 });
 
       var provider = new AdviceDependencyProvider (new[] { orderingProviderMock });
@@ -116,19 +117,19 @@ namespace ActiveAttributes.UnitTests.Ordering
     [Test]
     public void VisitType ()
     {
-      CheckDepends (_provider.DependsType, new AdviceTypeOrdering (typeof (A), typeof (int), "s"), GetAdvice (typeof (A)), GetAdvice (typeof (int)));
-      CheckDepends (_provider.DependsType, new AdviceTypeOrdering (typeof (A), typeof (int), "s"), GetAdvice (typeof (B)), GetAdvice (typeof (int)));
-      CheckDepends (_provider.DependsType, new AdviceTypeOrdering (typeof (int), typeof (A), "s"), GetAdvice (typeof (int)), GetAdvice (typeof (B)));
-      CheckDependsNot (_provider.DependsType, new AdviceTypeOrdering (typeof (int), typeof (B), "s"), GetAdvice (typeof (int)), GetAdvice (typeof (A)));
+      CheckDepends (_provider.DependsType, new AspectTypeOrdering (typeof (A), typeof (int), "s"), GetAdvice (typeof (A)), GetAdvice (typeof (int)));
+      CheckDepends (_provider.DependsType, new AspectTypeOrdering (typeof (A), typeof (int), "s"), GetAdvice (typeof (B)), GetAdvice (typeof (int)));
+      CheckDepends (_provider.DependsType, new AspectTypeOrdering (typeof (int), typeof (A), "s"), GetAdvice (typeof (int)), GetAdvice (typeof (B)));
+      CheckDependsNot (_provider.DependsType, new AspectTypeOrdering (typeof (int), typeof (B), "s"), GetAdvice (typeof (int)), GetAdvice (typeof (A)));
     }
 
     [Test]
     public void VisitRole ()
     {
-      CheckDepends (_provider.DependsRole, new AdviceRoleOrdering ("A", "B", "s"), GetAdvice (role: "A"), GetAdvice (role: "B"));
-      CheckDepends (_provider.DependsRole, new AdviceRoleOrdering ("A*", "B", "s"), GetAdvice (role: "Atest"), GetAdvice (role: "B"));
-      CheckDepends (_provider.DependsRole, new AdviceRoleOrdering ("A", "B*", "s"), GetAdvice (role: "A"), GetAdvice (role: "Btest"));
-      CheckDependsNot (_provider.DependsRole, new AdviceRoleOrdering ("A", "B", "s"), GetAdvice (role: "A"), GetAdvice (role: "C"));
+      CheckDepends (_provider.DependsRole, new AspectRoleOrdering ("A", "B", "s"), GetAdvice (role: "A"), GetAdvice (role: "B"));
+      CheckDepends (_provider.DependsRole, new AspectRoleOrdering ("A*", "B", "s"), GetAdvice (role: "Atest"), GetAdvice (role: "B"));
+      CheckDepends (_provider.DependsRole, new AspectRoleOrdering ("A", "B*", "s"), GetAdvice (role: "A"), GetAdvice (role: "Btest"));
+      CheckDependsNot (_provider.DependsRole, new AspectRoleOrdering ("A", "B", "s"), GetAdvice (role: "A"), GetAdvice (role: "C"));
     }
 
     [Test]
@@ -140,13 +141,13 @@ namespace ActiveAttributes.UnitTests.Ordering
     }
 
     private void CheckDepends<T> (Func<Advice, Advice, T, bool> dependsFunc, T ordering, Advice advice1, Advice advice2)
-        where T : IAdviceOrdering
+        where T : IOrdering
     {
       Assert.That (dependsFunc (advice1, advice2, ordering), Is.True);
     }
 
     private void CheckDependsNot<T> (Func<Advice, Advice, T, bool> dependsFunc, T ordering, Advice advice1, Advice advice2)
-        where T : IAdviceOrdering
+        where T : IOrdering
     {
       Assert.That (dependsFunc (advice1, advice2, ordering), Is.False);
     }

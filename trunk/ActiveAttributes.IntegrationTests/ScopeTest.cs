@@ -13,65 +13,69 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
-using ActiveAttributes.Advices;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using ActiveAttributes.Annotations;
+using ActiveAttributes.Annotations.Pointcuts;
 using ActiveAttributes.Aspects;
-using ActiveAttributes.Assembly;
-using ActiveAttributes.Extensions;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Weaving;
+using ActiveAttributes.Weaving.Context;
+using ActiveAttributes.Weaving.Invocation;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using System.Linq;
+using Remotion.Development.UnitTesting.Reflection;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
   public class ScopeTest
   {
-    private DomainType _instance1;
-    private DomainType _instance2;
+    private static Dictionary<object, object> dict = new Dictionary<object, object>();
 
-    [SetUp]
-    public void SetUp ()
-    {
-      _instance1 = ObjectFactory.Create<DomainType> ();
-      _instance2 = ObjectFactory.Create<DomainType> ();
-    }
 
     [Test]
-    public void InstanceAdviced ()
+    public void Execution1 ()
     {
-      var result1 = _instance1.InstanceAdvicedMethod ();
-      var result2 = _instance2.InstanceAdvicedMethod ();
-
-      Assert.That (result1, Is.EqualTo (result2));
-    }
-
-    [Test]
-    public void StaticAdviced ()
-    {
-      var result1 = _instance1.StaticAdvicedMethod ();
-      var result2 = _instance2.StaticAdvicedMethod ();
-
-      Assert.That (result1, Is.EqualTo (1));
-      Assert.That (result2, Is.EqualTo (2));
+      var instance = ObjectFactory.Create<DomainType> ();
+      instance.Method1 (1);
+      var res = instance.Method2();
+      Assert.That (res, Is.EqualTo (1));
     }
 
     public class DomainType
     {
-      [DomainAspect (AdviceScope = AdviceScope.Instance)]
-      public virtual int InstanceAdvicedMethod () { return 0; }
+      [DomainAspect]
+      public virtual void Method1 (int i)
+      {
+      }
 
-      [DomainAspect (AdviceScope = AdviceScope.Static)]
-      public virtual int StaticAdvicedMethod () { return 0; }
+      [DomainAspect]
+      public virtual int Method2 ()
+      {
+        return 0;
+      }
     }
 
-    public class DomainAspectAttribute : MethodInterceptionAspectAttributeBase
+    public class DomainAspect : AspectAttributeBase
     {
-      private int _counter;
+      private int _saved;
 
-      public override void OnIntercept (IInvocation invocation)
+      public DomainAspect ()
+          : base (AspectScope.Singleton) {}
+
+      [Advice (AdviceExecution.Around)]
+      [MethodExecutionPointcut]
+      public void Around (IContext context)
       {
-        _counter++;
-        invocation.ReturnValue = _counter;
+        var method = context.MemberInfo as MethodInfo;
+        if (method.ReturnType == typeof (void))
+          _saved = (int) context.Arguments[0];
+        else
+          context.ReturnValue = _saved;
       }
     }
   }

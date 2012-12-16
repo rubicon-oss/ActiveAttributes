@@ -15,7 +15,8 @@
 // under the License.
 using System;
 using ActiveAttributes.Interception;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving.Context;
+using ActiveAttributes.Weaving.Invocation;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
@@ -37,7 +38,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression ()
     {
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (IInvocationContext));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (IContext));
       var advice = ObjectMother.GetMethodInfo (parameterTypes: new[] { typeof (IInvocation) });
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -52,7 +53,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression_TypedArguments ()
     {
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionInvocation<object, string, int>));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (ActionContext<object, string, int>));
       var advice = typeof (DomainType).GetMethod ("Advice1");
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -63,7 +64,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (arguments, Has.Count.EqualTo (2));
       Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) arguments[1];
-      var field = typeof (ActionInvocation<object, string, int>).GetField ("Arg1");
+      var field = typeof (ActionContext<object, string, int>).GetField ("Arg1");
       Assertion.IsTrue (field.FieldType == typeof (string));
       Assert.That (memberExpression.Member, Is.EqualTo (field));
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
@@ -72,7 +73,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression_TypedReturnValue ()
     {
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<object, string>));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncContext<object, string>));
       var advice = typeof (DomainType).GetMethod ("Advice2");
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -83,7 +84,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (arguments, Has.Count.EqualTo (2));
       Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) arguments[1];
-      var field = typeof (FuncInvocation<object, string>).GetField ("TypedReturnValue");
+      var field = typeof (FuncContext<object, string>).GetField ("TypedReturnValue");
       Assertion.IsTrue (field.FieldType == typeof (string));
       Assert.That (memberExpression.Member, Is.EqualTo (field));
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
@@ -92,7 +93,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression_TypedInstance ()
     {
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<DomainType, string>));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncContext<DomainType, string>));
       var advice = typeof (DomainType).GetMethod ("Advice3");
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -103,7 +104,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (arguments, Has.Count.EqualTo (2));
       Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) arguments[1];
-      var field = typeof (FuncInvocation<DomainType, string>).GetField ("TypedInstance");
+      var field = typeof (FuncContext<DomainType, string>).GetField ("TypedInstance");
       Assertion.IsTrue (field.FieldType == typeof (DomainType));
       Assert.That (memberExpression.Member, Is.EqualTo (field));
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));
@@ -112,7 +113,7 @@ namespace ActiveAttributes.UnitTests.Interception
     [Test]
     public void CreateAdviceCallExpression_AssignableFrom ()
     {
-      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncInvocation<DerivedDomainType, string>));
+      var methodInvocation = ObjectMother.GetVariableExpression (typeof (FuncContext<DerivedDomainType, string>));
       var advice = typeof (DomainType).GetMethod ("Advice3");
       var aspect = ObjectMother.GetVariableExpression (advice.DeclaringType);
       var invocation = ObjectMother.GetVariableExpression (typeof (IInvocation));
@@ -123,7 +124,7 @@ namespace ActiveAttributes.UnitTests.Interception
       Assert.That (arguments, Has.Count.EqualTo (2));
       Assert.That (arguments[1], Is.InstanceOf<MemberExpression>());
       var memberExpression = (MemberExpression) arguments[1];
-      var field = typeof (FuncInvocation<DerivedDomainType, string>).GetField ("TypedInstance");
+      var field = typeof (FuncContext<DerivedDomainType, string>).GetField ("TypedInstance");
       Assertion.IsTrue (field.FieldType == typeof (DerivedDomainType));
       Assert.That (memberExpression.Member, Is.EqualTo (field));
       Assert.That (memberExpression.Expression, Is.SameAs (methodInvocation));

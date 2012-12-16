@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Text;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
-using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;

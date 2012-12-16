@@ -14,16 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Weaving.Context;
 using Rhino.Mocks;
 
 namespace ActiveAttributes.UnitTests
 {
   public static partial class ObjectMother
   {
-    public static IInvocationContext GetInvocationContext ()
+    public static IContext GetInvocationContext ()
     {
-      var stub = MockRepository.GenerateStub<IInvocationContext>();
+      var stub = MockRepository.GenerateStub<IContext>();
 
       return stub;
     }

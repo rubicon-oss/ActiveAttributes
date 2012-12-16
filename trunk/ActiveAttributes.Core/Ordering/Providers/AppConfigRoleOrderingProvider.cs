@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Configuration;
+using ActiveAttributes.Infrastructure.Ordering;
 
 namespace ActiveAttributes.Ordering.Providers
 {
@@ -29,7 +30,7 @@ namespace ActiveAttributes.Ordering.Providers
       _provider = provider;
     }
 
-    public IEnumerable<IAdviceOrdering> GetOrderings ()
+    public IEnumerable<IOrdering> GetOrderings ()
     {
       return null;
     }

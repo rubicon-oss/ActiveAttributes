@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Assembly.Storages;
+using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 

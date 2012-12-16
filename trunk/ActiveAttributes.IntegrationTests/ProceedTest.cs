@@ -14,10 +14,18 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
+using System.Collections.Generic;
+using ActiveAttributes.Annotations;
+using ActiveAttributes.Annotations.Pointcuts;
 using ActiveAttributes.Aspects;
-using ActiveAttributes.Assembly;
-using ActiveAttributes.Interception.Invocations;
+using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Weaving;
+using ActiveAttributes.Weaving.Context;
+using ActiveAttributes.Weaving.Invocation;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
+using System.Linq;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -25,36 +33,98 @@ namespace ActiveAttributes.IntegrationTests
   public class ProceedTest
   {
     [Test]
-    public void Proceed ()
+    public void Execution1 ()
     {
       var instance = ObjectFactory.Create<DomainType> ();
+      instance.Method ();
+      ObjectFactory.Save();
+      var execution = string.Join (" ", instance.Execution.ToArray ());
+      Assert.That (execution, Is.EqualTo ("Before Method AfterReturning After"));
+    }
 
-      Assert.That (() => instance.ThrowingMethod1 (), Throws.Exception);
-      Assert.That (() => instance.ThrowingMethod2 (), Throws.Nothing);
+    [Test]
+    public void Execution2 ()
+    {
+      var instance = ObjectFactory.Create<DomainType> ();
+      instance.ThrowingMethod ();
+
+      var execution = string.Join (" ", instance.Execution.ToArray ());
+      Assert.That (execution, Is.EqualTo ("Before Method AfterThrowing After"));
     }
 
     public class DomainType
     {
-      [ProceedingAspect]
-      public virtual void ThrowingMethod1 () { throw new Exception (); }
+      public List<string> Execution = new List<string>();
 
-      [NotProceedingAspect]
-      public virtual void ThrowingMethod2 () { throw new Exception (); }
-    }
-
-    public class ProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
-    {
-      public override void OnIntercept (IInvocation invocation)
+      [DomainAspect]
+      public virtual void Method ()
       {
-        invocation.Proceed ();
+        Execution.Add ("Method");
+      }
+
+      [DomainAspect]
+      public virtual void ThrowingMethod ()
+      {
+        Execution.Add ("Method");
+        throw new Exception();
       }
     }
 
-    public class NotProceedingAspectAttribute : MethodInterceptionAspectAttributeBase
+    public class DomainAspect : AspectAttributeBase
     {
+      public DomainAspect ()
+          : base (AspectScope.Transient) {}
+
+      [Advice (AdviceExecution.Before)]
+      [MethodExecutionPointcut]
+      public void Before (IContext context)
+      {
+        var instance = (DomainType) context.Instance;
+        instance.Execution.Add ("Before");
+      }
+
+      [Advice (AdviceExecution.After)]
+      [MethodExecutionPointcut]
+      public void After (IContext context)
+      {
+        var instance = (DomainType) context.Instance;
+        instance.Execution.Add ("After");
+      }
+
+      [Advice (AdviceExecution.AfterReturning)]
+      [MethodExecutionPointcut]
+      public void AfterReturning (IContext context)
+      {
+        var instance = (DomainType) context.Instance;
+        instance.Execution.Add ("AfterReturning");
+      }
+
+      [Advice (AdviceExecution.AfterThrowing)]
+      [MethodExecutionPointcut]
+      public void AfterThrowing (IContext context)
+      {
+        var instance = (DomainType) context.Instance;
+        instance.Execution.Add ("AfterThrowing");
+      }
+    }
+
+    public class ProceedingAspectAttribute : MethodInterceptionAttributeBase
+    {
+      public ProceedingAspectAttribute ()
+          : base (AspectScope.Transient) {}
+
       public override void OnIntercept (IInvocation invocation)
       {
+        invocation.Proceed();
       }
+    }
+
+    public class NotProceedingAspectAttribute : MethodInterceptionAttributeBase
+    {
+      public NotProceedingAspectAttribute ()
+          : base (AspectScope.Transient) {}
+
+      public override void OnIntercept (IInvocation invocation) {}
     }
   }
 }

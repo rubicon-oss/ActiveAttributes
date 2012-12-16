@@ -19,8 +19,8 @@ using System.Reflection;
 using ActiveAttributes.Advices;
 using ActiveAttributes.Assembly;
 using ActiveAttributes.Declaration;
-using ActiveAttributes.Declaration.Construction;
 using ActiveAttributes.Pointcuts;
+using ActiveAttributes.Weaving.Construction;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.ServiceLocation;
@@ -145,7 +145,7 @@ namespace ActiveAttributes.UnitTests.Declaration
       _transform.GetAdviceBuilder (type);
 
       var args = _builderMock.GetArgumentsForCallsMadeOn (x => x.SetConstruction (null));
-      Assert.That (((IConstruction) args[0][0]).ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
+      Assert.That (((IAspectConstruction) args[0][0]).ConstructorInfo.DeclaringType, Is.EqualTo (typeof (DomainAspect)));
       _builderMock.VerifyAllExpectations();
     }
 
