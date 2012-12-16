@@ -15,16 +15,17 @@
 // under the License.
 using System;
 using ActiveAttributes.Ordering;
+using ActiveAttributes.Weaving;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Infrastructure.Ordering
 {
-  public class AdviceOrdering : OrderingBase
+  public class AdviceNameOrdering : OrderingBase
   {
     private readonly string _beforeAdvice;
     private readonly string _afterAdvice;
 
-    public AdviceOrdering (string beforeAdvice, string afterAdvice, string source)
+    public AdviceNameOrdering (string beforeAdvice, string afterAdvice, string source)
         : base (ArgumentUtility.CheckNotNullOrEmpty ("source", source))
     {
       ArgumentUtility.CheckNotNullOrEmpty ("beforeAdvice", beforeAdvice);
@@ -44,10 +45,9 @@ namespace ActiveAttributes.Infrastructure.Ordering
       get { return _afterAdvice; }
     }
 
-    public override bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2)
+    public override bool Accept (CrosscuttingDependencyProvider dependencyProvider, ICrosscutting crosscutting1, ICrosscutting crosscutting2)
     {
-      throw new NotImplementedException();
-      //return provider.DependsRole (advice1, advice2, this);
+      return dependencyProvider.VisitAdviceName (this, crosscutting1, crosscutting2);
     }
   }
 }

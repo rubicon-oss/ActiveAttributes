@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="Annotations\AdviceAttribute.cs" />
     <Compile Include="Annotations\IAspectInfo.cs" />
-    <Compile Include="Annotations\Ordering\AdviceOrderingAttribute.cs" />
+    <Compile Include="Annotations\Ordering\AdviceNameOrderingAttribute.cs" />
     <Compile Include="Annotations\Pointcuts\AndAttribute.cs" />
     <Compile Include="Annotations\AspectAttribute.cs" />
     <Compile Include="Annotations\Pointcuts\MethodCallPointcutAttribute.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Annotations\Pointcuts\ReturnTypePointcutAttribute.cs" />
     <Compile Include="Annotations\Pointcuts\TypePointcutAttribute.cs" />
     <Compile Include="Aspects\MethodInterceptionAttributeBase.cs" />
+    <Compile Include="Discovery\OrderingBuilder.cs" />
     <Compile Include="Infrastructure\Pointcuts\ArgumentIndexPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\ArgumentNamePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\ArgumentPointcut.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Weaving\Context\ActionContext.generated.cs" />
     <Compile Include="Weaving\Context\FuncContext.generated.cs" />
     <Compile Include="Weaving\Expressions\MethodExecutionExpression.cs" />
+    <Compile Include="Weaving\CrosscuttingSorter.cs" />
     <Compile Include="Weaving\ObjectFactory.cs" />
     <Compile Include="Weaving\JoinPointExpressionBuilder.cs" />
     <Compile Include="Weaving\Participant.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="Infrastructure\AspectActivation.cs" />
     <Compile Include="Infrastructure\AspectElementBase.cs" />
     <Compile Include="Infrastructure\AspectScope.cs" />
-    <Compile Include="Infrastructure\Ordering\AdviceOrdering.cs" />
+    <Compile Include="Infrastructure\Ordering\AdviceNameOrdering.cs" />
     <Compile Include="Infrastructure\Ordering\AspectRoleOrdering.cs" />
     <Compile Include="Infrastructure\Ordering\AspectTypeOrdering.cs" />
     <Compile Include="Infrastructure\Ordering\OrderingBase.cs" />
@@ -149,7 +151,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Weaving\Context\PropertySetContext.cs" />
-    <Compile Include="Ordering\AdviceOrderingException.cs" />
     <Compile Include="Ordering\Providers\AppConfigTypeOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\AppConfigRoleOrderingProvider.cs" />
     <Compile Include="Ordering\Providers\IAdviceOrderingProvider.cs" />
@@ -164,13 +165,9 @@
     <Compile Include="Weaving\Context\IReadOnlyArgumentCollection.cs" />
     <Compile Include="Weaving\Context\IReadOnlyContext.cs" />
     <Compile Include="Weaving\Invocation\StaticInvocation.cs" />
-    <Compile Include="Ordering\AdviceDependencyProvider.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Annotations\Ordering\AspectRoleOrderingAttribute.cs" />
     <Compile Include="Annotations\Ordering\AspectTypeOrderingAttribute.cs" />
-    <Compile Include="Ordering\AdviceSequencer.cs" />
     <Compile Include="Annotations\Ordering\OrderingAttributeBase.cs" />
     <Compile Include="MemberFlags.cs">
       <SubType>Code</SubType>

@@ -25,8 +25,7 @@ namespace ActiveAttributes.Aspects
   public abstract class AspectAttributeBase : Attribute, IAspectInfo
   {
     private readonly string _role;
-
-    private AspectScope _scope;
+    private readonly AspectScope _scope;
 
     protected AspectAttributeBase (AspectScope scope, string role = StandardRoles.Unspecified)
     {
@@ -44,12 +43,13 @@ namespace ActiveAttributes.Aspects
     public AspectScope Scope
     {
       get { return _scope; }
-      set { _scope = value; }
     }
 
     public string Role
     {
       get { return _role; }
     }
+
+    public int Priority { get; set; }
   }
 }

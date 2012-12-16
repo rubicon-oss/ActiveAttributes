@@ -15,9 +15,23 @@
 // under the License.
 
 using System;
+using ActiveAttributes.Infrastructure.Ordering;
 
 namespace ActiveAttributes.Annotations.Ordering
 {
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-  public abstract class OrderingAttributeBase : Attribute {}
+  public abstract class OrderingAttributeBase : Attribute
+  {
+    private readonly Position _position;
+
+    protected OrderingAttributeBase (Position position)
+    {
+      _position = position;
+    }
+
+    public Position Position
+    {
+      get { return _position; }
+    }
+  }
 }

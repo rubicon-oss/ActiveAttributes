@@ -30,8 +30,8 @@ namespace ActiveAttributes.Discovery
   [ConcreteImplementation (typeof (PointcutBuilder))]
   public interface IPointcutBuilder
   {
-    IPointcut GetPointcut (ICustomAttributeProvider customAttributeProvider);
-    IPointcut GetPointcut (ICustomAttributeData customAttributeData);
+    IPointcut Build (ICustomAttributeProvider customAttributeProvider);
+    IPointcut Build (ICustomAttributeData customAttributeData);
   }
 
   public class PointcutBuilder : IPointcutBuilder
@@ -43,7 +43,7 @@ namespace ActiveAttributes.Discovery
               { "MemberNamePointcut", typeof (MemberNamePointcut) }
           };
 
-    public IPointcut GetPointcut (ICustomAttributeProvider customAttributeProvider)
+    public IPointcut Build (ICustomAttributeProvider customAttributeProvider)
     {
       var pointcuts = customAttributeProvider
           .GetCustomAttributes<PointcutAttributeBase> (true)
@@ -80,7 +80,7 @@ namespace ActiveAttributes.Discovery
       }
     }
 
-    public IPointcut GetPointcut (ICustomAttributeData customAttributeData)
+    public IPointcut Build (ICustomAttributeData customAttributeData)
     {
       var pointcuts = new List<IPointcut>();
       foreach (var argument in customAttributeData.NamedArguments)

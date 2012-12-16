@@ -14,7 +14,6 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using ActiveAttributes.Infrastructure;
 using ActiveAttributes.Weaving.Storage;
@@ -39,9 +38,8 @@ namespace ActiveAttributes.Weaving
   public class AspectStorageProvider : IAspectStorageBuilder, IAspectCacheKeyProvider
   {
     private readonly IAspectExpressionBuilder _aspectExpressionBuilder;
-    private readonly Dictionary<string, object> _storage = new Dictionary<string, object>();
 
-    private int _counter;
+    private static int s_counter;
 
     public AspectStorageProvider (IAspectExpressionBuilder aspectExpressionBuilder)
     {
@@ -50,9 +48,10 @@ namespace ActiveAttributes.Weaving
 
     public virtual IStorage CreateStorage (Aspect aspect, JoinPoint joinPoint)
     {
-      var mutableType = (MutableType) joinPoint.DeclaringType;
+      var mutableType = joinPoint.DeclaringType;
       var initExpression = _aspectExpressionBuilder.CreateAspectInitExpressions (aspect.Construction);
-      var name = "<aa>_Aspect" + _counter++ + "_" + aspect.Type;
+      s_counter++;
+      var name = "<aa>_Aspect" + s_counter + "_" + aspect.Type.Name;
 
       switch (aspect.Scope)
       {

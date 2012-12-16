@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Weaving
 {
-  [ConcreteImplementation (typeof (AspectStorageCache))]
+  [ConcreteImplementation (typeof (AspectStorageCache), Lifetime = LifetimeKind.Singleton)]
   public interface IAspectStorageCache
   {
     IStorage GetOrAddStorage (Aspect aspect, JoinPoint joinPoint);

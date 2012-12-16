@@ -15,6 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Infrastructure.Pointcuts;
 using ActiveAttributes.Weaving.Construction;
 using Remotion.Utilities;
@@ -26,9 +27,8 @@ namespace ActiveAttributes.Infrastructure
     private readonly Type _type;
     private readonly AspectScope _scope;
     private readonly AspectActivation _activation;
-    private readonly string _role;
     private readonly IAspectConstruction _construction;
-    private readonly IPointcut _pointcut;
+    private readonly ICrosscutting _crosscutting;
     private readonly IEnumerable<Advice> _advices;
     private readonly IEnumerable<MemberImport> _memberImports;
     private readonly IEnumerable<MemberIntroduction> _memberIntroductions;
@@ -37,16 +37,15 @@ namespace ActiveAttributes.Infrastructure
         Type type,
         AspectScope scope,
         AspectActivation activation,
-        string role,
         IAspectConstruction construction,
-        IPointcut pointcut,
+        ICrosscutting crosscutting,
         IEnumerable<Advice> advices,
         IEnumerable<MemberImport> memberImports,
         IEnumerable<MemberIntroduction> memberIntroductions)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("construction", construction);
-      // pointcut may be null
+      ArgumentUtility.CheckNotNull ("crosscutting", crosscutting);
       ArgumentUtility.CheckNotNull ("advices", advices);
       ArgumentUtility.CheckNotNull ("memberImports", memberImports);
       ArgumentUtility.CheckNotNull ("memberIntroductions", memberIntroductions);
@@ -54,9 +53,8 @@ namespace ActiveAttributes.Infrastructure
       _type = type;
       _scope = scope;
       _activation = activation;
-      _role = role;
       _construction = construction;
-      _pointcut = pointcut;
+      _crosscutting = crosscutting;
       _advices = advices;
       _memberImports = memberImports;
       _memberIntroductions = memberIntroductions;
@@ -84,7 +82,7 @@ namespace ActiveAttributes.Infrastructure
 
     public IPointcut Pointcut
     {
-      get { return _pointcut; }
+      get { return _crosscutting.Pointcut; }
     }
 
     public IEnumerable<Advice> Advices
@@ -109,7 +107,22 @@ namespace ActiveAttributes.Infrastructure
 
     public string Role
     {
-      get { return _role; }
+      get { return _crosscutting.Role; }
+    }
+
+    public IEnumerable<IOrdering> Orderings
+    {
+      get { return _crosscutting.Orderings; }
+    }
+
+    public int Priority
+    {
+      get { return _crosscutting.Priority; }
+    }
+
+    string ICrosscutting.Name
+    {
+      get { throw new NotImplementedException(); }
     }
   }
 }

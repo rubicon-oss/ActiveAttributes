@@ -16,23 +16,46 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Infrastructure
 {
   public class MemberImport : AspectElementBase
   {
+    private readonly FieldInfo _field;
     private readonly string _name;
     private readonly bool _isRequired;
 
-    public MemberImport (string name, bool isRequired, Aspect aspect)
+    public MemberImport (FieldInfo field, string name, bool isRequired, Aspect aspect)
       : base (aspect)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("aspect", aspect);
 
+      _field = field;
       _name = name;
       _isRequired = isRequired;
+    }
+
+    public FieldInfo Field
+    {
+      get { return _field; }
+    }
+
+    public Type Type
+    {
+      get { return _field.FieldType; }
+    }
+
+    public string Name
+    {
+      get { return _name; }
+    }
+
+    public bool IsRequired
+    {
+      get { return _isRequired; }
     }
   }
 }

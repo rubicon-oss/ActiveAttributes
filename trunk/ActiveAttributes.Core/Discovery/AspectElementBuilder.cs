@@ -21,6 +21,7 @@ using ActiveAttributes.Annotations;
 using ActiveAttributes.Extensions;
 using System.Linq;
 using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -29,26 +30,27 @@ namespace ActiveAttributes.Discovery
   [ConcreteImplementation (typeof(AspectElementBuilder))]
   public interface IAspectElementBuilder
   {
-    void AddAdvices (Aspect aspect, ICollection<Advice> advices);
-    void AddMemberIntroductions (Aspect aspect, ICollection<MemberIntroduction> introductions);
-    void AddMemberImports (Aspect aspect, ICollection<MemberImport> imports);
+    IEnumerable<Advice> AddAdvices (Aspect aspect);
+    IEnumerable<MemberIntroduction> AddMemberIntroductions (Aspect aspect);
+    IEnumerable<MemberImport> AddMemberImports (Aspect aspect);
   }
 
   public class AspectElementBuilder : IAspectElementBuilder
   {
     private readonly IPointcutBuilder _pointcutBuilder;
+    private readonly IOrderingBuilder _orderingBuilder;
 
-    public AspectElementBuilder (IPointcutBuilder pointcutBuilder)
+    public AspectElementBuilder (IPointcutBuilder pointcutBuilder, IOrderingBuilder orderingBuilder)
     {
       ArgumentUtility.CheckNotNull ("pointcutBuilder", pointcutBuilder);
 
       _pointcutBuilder = pointcutBuilder;
+      _orderingBuilder = orderingBuilder;
     }
 
-    public void AddAdvices (Aspect aspect, ICollection<Advice> advices)
+    public IEnumerable<Advice> AddAdvices (Aspect aspect)
     {
       ArgumentUtility.CheckNotNull ("aspect", aspect);
-      ArgumentUtility.CheckNotNull ("advices", advices);
 
       foreach (var method in aspect.Type.GetMethods())
       {
@@ -57,31 +59,32 @@ namespace ActiveAttributes.Discovery
           continue;
 
         var execution = adviceAttribute.Execution;
-        var pointcut = _pointcutBuilder.GetPointcut (method);
 
-        advices.Add (new Advice (method, execution, aspect, pointcut));
+        var orderings = new List<IOrdering>();
+        var pointcut = _pointcutBuilder.Build (method);
+        var crosscutting = new Crosscutting (pointcut, orderings, method.Name);
+        orderings.AddRange (_orderingBuilder.BuildOrderings (crosscutting, method));
+
+        yield return new Advice (method, execution, aspect, crosscutting);
       }
     }
 
-    public void AddMemberIntroductions (Aspect aspect, ICollection<MemberIntroduction> introductions)
+    public IEnumerable<MemberIntroduction> AddMemberIntroductions (Aspect aspect)
     {
       ArgumentUtility.CheckNotNull ("aspect", aspect);
-      ArgumentUtility.CheckNotNull ("introductions", introductions);
 
-      foreach (var method in aspect.Type.GetMethods())
-        TryAddMemberIntroduction(aspect, introductions, method);
-      foreach (var property in aspect.Type.GetProperties())
-        TryAddMemberIntroduction(aspect, introductions, property);
-      foreach (var event_ in aspect.Type.GetEvents())
-        TryAddMemberIntroduction(aspect, introductions, event_);
+      var methods = BuildIntroductions (aspect, aspect.Type.GetMethods());
+      var properties = BuildIntroductions (aspect, aspect.Type.GetProperties ());
+      var events = BuildIntroductions (aspect, aspect.Type.GetEvents ());
 
       // TODO check all members of interfaces
+
+      return methods.Concat (properties).Concat (events);
     }
 
-    public void AddMemberImports (Aspect aspect, ICollection<MemberImport> imports)
+    public IEnumerable<MemberImport> AddMemberImports (Aspect aspect)
     {
       ArgumentUtility.CheckNotNull ("aspect", aspect);
-      ArgumentUtility.CheckNotNull ("imports", imports);
 
       foreach (var field in aspect.Type.GetFields())
       {
@@ -95,17 +98,20 @@ namespace ActiveAttributes.Discovery
         var memberName = importAttribute.MemberName;
         var isRequired = importAttribute.IsRequired;
 
-        imports.Add (new MemberImport (memberName, isRequired, aspect));
+        yield return new MemberImport (field, memberName, isRequired, aspect);
       }
     }
 
-    private void TryAddMemberIntroduction (Aspect aspect, ICollection<MemberIntroduction> introductions, MemberInfo member)
+    private IEnumerable<MemberIntroduction> BuildIntroductions (Aspect aspect, IEnumerable<MemberInfo> members)
     {
-      var introduceAttribute = member.GetCustomAttributes<IntroduceMemberAttribute> (true).SingleOrDefault();
-      if (introduceAttribute != null)
+      foreach (var member in members)
       {
-        var conflictAction = introduceAttribute.ConflictAction;
-        introductions.Add (new MemberIntroduction (member, conflictAction, aspect));
+        var introduceAttribute = member.GetCustomAttributes<IntroduceMemberAttribute> (true).SingleOrDefault ();
+        if (introduceAttribute != null)
+        {
+          var conflictAction = introduceAttribute.ConflictAction;
+          yield return new MemberIntroduction (member, conflictAction, aspect);
+        }
       }
     }
   }

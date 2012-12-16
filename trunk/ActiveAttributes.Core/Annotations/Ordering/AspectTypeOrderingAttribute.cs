@@ -22,25 +22,19 @@ namespace ActiveAttributes.Annotations.Ordering
 {
   public class AspectTypeOrderingAttribute : OrderingAttributeBase
   {
-    private readonly Position _position;
-    private readonly Type[] _aspectTypes;
+    private readonly Type[] _aspects;
 
-    public AspectTypeOrderingAttribute (Position position, params Type[] aspectTypes)
+    public AspectTypeOrderingAttribute (Position position, params Type[] aspects)
+      : base (position)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("aspectTypes", aspectTypes);
+      ArgumentUtility.CheckNotNullOrEmpty ("aspects", aspects);
 
-      _position = position;
-      _aspectTypes = aspectTypes;
+      _aspects = aspects;
     }
 
-    public Position Position
+    public Type[] Aspects
     {
-      get { return _position; }
-    }
-
-    public Type[] AspectTypes
-    {
-      get { return _aspectTypes; }
+      get { return _aspects; }
     }
   }
 }

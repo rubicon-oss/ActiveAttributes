@@ -16,6 +16,7 @@
 
 using System;
 using ActiveAttributes.Ordering;
+using ActiveAttributes.Weaving;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Infrastructure.Ordering
@@ -36,6 +37,6 @@ namespace ActiveAttributes.Infrastructure.Ordering
       get { return _source; }
     }
 
-    public abstract bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
+    public abstract bool Accept (CrosscuttingDependencyProvider dependencyProvider, ICrosscutting crosscutting1, ICrosscutting crosscutting2);
   }
 }

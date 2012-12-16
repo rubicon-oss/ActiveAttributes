@@ -20,22 +20,16 @@ using Remotion.Utilities;
 
 namespace ActiveAttributes.Annotations.Ordering
 {
-  public class AdviceOrderingAttribute : OrderingAttributeBase
+  public class AdviceNameOrderingAttribute : OrderingAttributeBase
   {
-    private readonly Position _position;
     private readonly string[] _advices;
 
-    public AdviceOrderingAttribute (Position position, params string[] advices)
+    public AdviceNameOrderingAttribute (Position position, params string[] advices)
+      : base(position)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("advices", advices);
 
-      _position = position;
       _advices = advices;
-    }
-
-    public Position Position
-    {
-      get { return _position; }
     }
 
     public string[] Advices

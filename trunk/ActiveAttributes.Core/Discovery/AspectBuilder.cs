@@ -21,6 +21,7 @@ using ActiveAttributes.Annotations;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Extensions;
 using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Infrastructure.Pointcuts;
 using ActiveAttributes.Weaving.Construction;
 using Remotion.ServiceLocation;
@@ -40,11 +41,13 @@ namespace ActiveAttributes.Discovery
   {
     private readonly IAspectElementBuilder _aspectElementBuilder;
     private readonly IPointcutBuilder _pointcutBuilder;
+    private readonly IOrderingBuilder _orderingBuilder;
 
-    public AspectBuilder (IAspectElementBuilder aspectElementBuilder, IPointcutBuilder pointcutBuilder)
+    public AspectBuilder (IAspectElementBuilder aspectElementBuilder, IPointcutBuilder pointcutBuilder, IOrderingBuilder orderingBuilder)
     {
       _aspectElementBuilder = aspectElementBuilder;
       _pointcutBuilder = pointcutBuilder;
+      _orderingBuilder = orderingBuilder;
     }
 
     public Aspect Build (Type type)
@@ -53,7 +56,7 @@ namespace ActiveAttributes.Discovery
       Assertion.IsNotNull (aspectAttribute);
 
       var construction = new TypeConstruction (type);
-      var pointcut = _pointcutBuilder.GetPointcut (type);
+      var pointcut = _pointcutBuilder.Build (type);
 
       return Build (type, aspectAttribute, construction, pointcut);
     }
@@ -64,26 +67,31 @@ namespace ActiveAttributes.Discovery
       // throw if no aspectattributebase
 
       var construction = new AttributeConstruction (attributeData);
-      var pointcut = _pointcutBuilder.GetPointcut (attributeData);
+      var pointcut = _pointcutBuilder.Build (attributeData);
+      var priorityArgument = attributeData.NamedArguments.SingleOrDefault (x => x.MemberInfo.Name == "Priority");
+      var priority = priorityArgument == null ? 0 : (int) priorityArgument.Value;
 
-      return Build (attributeData.Type, attribute, construction, pointcut);
+      return Build (attributeData.Type, attribute, construction, pointcut, priority);
     }
 
-    private Aspect Build (Type type, IAspectInfo info, IAspectConstruction construction, IPointcut pointcut)
+    private Aspect Build (Type type, IAspectInfo info, IAspectConstruction construction, IPointcut pointcut, int priority = 0)
     {
       var scope = info.Scope;
       var activation = info.Activation;
       var role = info.Role;
+      var orderings = new List<IOrdering>();
+
+      var crosscutting = new Crosscutting (pointcut, orderings, priority, type, role);
+      orderings.AddRange (_orderingBuilder.BuildOrderings (crosscutting, type));
 
       var advices = new List<Advice>();
       var introductions = new List<MemberIntroduction>();
       var imports = new List<MemberImport>();
 
-      var aspect = new Aspect (type, scope, activation, role, construction, pointcut, advices, imports, introductions);
-
-      _aspectElementBuilder.AddAdvices (aspect, advices);
-      _aspectElementBuilder.AddMemberImports (aspect, imports);
-      _aspectElementBuilder.AddMemberIntroductions (aspect, introductions);
+      var aspect = new Aspect (type, scope, activation, construction, crosscutting, advices, imports, introductions);
+      advices.AddRange (_aspectElementBuilder.AddAdvices (aspect));
+      imports.AddRange (_aspectElementBuilder.AddMemberImports (aspect));
+      introductions.AddRange (_aspectElementBuilder.AddMemberIntroductions (aspect));
 
       return aspect;
     }

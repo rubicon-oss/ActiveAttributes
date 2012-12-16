@@ -40,6 +40,9 @@ namespace ActiveAttributes.Annotations.Pointcuts
         if (ReturnType != null)
           pointcuts.Add (new ReturnTypePointcut (ReturnType));
 
+        if (Name != null)
+          pointcuts.Add (new MemberNamePointcut (Name));
+
         return new AllPointcut (pointcuts.Concat (base.Pointcut));
       }
     }

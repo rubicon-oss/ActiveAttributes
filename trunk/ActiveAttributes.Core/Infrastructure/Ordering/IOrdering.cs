@@ -16,6 +16,7 @@
 
 using System;
 using ActiveAttributes.Ordering;
+using ActiveAttributes.Weaving;
 
 namespace ActiveAttributes.Infrastructure.Ordering
 {
@@ -23,6 +24,6 @@ namespace ActiveAttributes.Infrastructure.Ordering
   {
     string Source { get; }
 
-    bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2);
+    bool Accept (CrosscuttingDependencyProvider dependencyProvider, ICrosscutting crosscutting1, ICrosscutting crosscutting2);
   }
 }

@@ -56,7 +56,7 @@ namespace ActiveAttributes.Infrastructure
       get { return _expression; }
     }
 
-    public ThisExpression ThisExpression
+    public ThisExpression This
     {
       get { return new ThisExpression (_declaringType); }
     }

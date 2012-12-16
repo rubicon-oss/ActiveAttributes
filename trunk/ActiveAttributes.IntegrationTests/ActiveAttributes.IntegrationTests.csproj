@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImportTest.cs" />
     <Compile Include="ScopeTest.cs" />
     <Compile Include="ProceedTest.cs">
       <SubType>Code</SubType>

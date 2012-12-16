@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Infrastructure.Pointcuts;
 using Remotion.Utilities;
 
@@ -26,17 +27,18 @@ namespace ActiveAttributes.Infrastructure
   {
     private readonly MethodInfo _method;
     private readonly AdviceExecution _execution;
-    private readonly IPointcut _pointcut;
+    private readonly ICrosscutting _crosscutting;
 
-    public Advice (MethodInfo method, AdviceExecution execution, Aspect aspect, IPointcut pointcut)
-        : base (aspect)
+    public Advice (MethodInfo method, AdviceExecution execution, Aspect aspect, ICrosscutting crosscutting)
+      : base (aspect)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       ArgumentUtility.CheckNotNull ("aspect", aspect);
+      ArgumentUtility.CheckNotNull ("crosscutting", crosscutting);
 
       _method = method;
       _execution = execution;
-      _pointcut = pointcut;
+      _crosscutting = crosscutting;
     }
 
     public string Name
@@ -56,7 +58,27 @@ namespace ActiveAttributes.Infrastructure
 
     public IPointcut Pointcut
     {
-      get { return _pointcut; }
+      get { return _crosscutting.Pointcut; }
+    }
+
+    public IEnumerable<IOrdering> Orderings
+    {
+      get { return _crosscutting.Orderings; }
+    }
+
+    Type ICrosscutting.Type
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    string ICrosscutting.Role
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    int ICrosscutting.Priority
+    {
+      get { throw new NotImplementedException(); }
     }
   }
 }

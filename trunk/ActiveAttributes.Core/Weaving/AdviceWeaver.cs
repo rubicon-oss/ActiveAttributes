@@ -74,7 +74,7 @@ namespace ActiveAttributes.Weaving
             while (weaveTimeAdvices.Any())
             {
               var nextBlocksAdvices = weaveTimeAdvices.SkipWhile (x => x.Advice.Execution != AdviceExecution.Around).Skip (1);
-              var currentBlockAdvices = weaveTimeAdvices.Except (nextBlocksAdvices);
+              var currentBlockAdvices = weaveTimeAdvices.Except (nextBlocksAdvices).Reverse();
               weaveTimeAdvices = nextBlocksAdvices.ToList();
 
               innerExpression = _weaveBlockBuilder.CreateBlock (innerExpression, context, currentBlockAdvices);

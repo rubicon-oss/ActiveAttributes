@@ -16,6 +16,7 @@
 
 using System;
 using ActiveAttributes.Ordering;
+using ActiveAttributes.Weaving;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Infrastructure.Ordering
@@ -45,9 +46,9 @@ namespace ActiveAttributes.Infrastructure.Ordering
       get { return _afterType; }
     }
 
-    public override bool DependVisit (IAdviceDependencyProvider provider, Advice advice1, Advice advice2)
+    public override bool Accept (CrosscuttingDependencyProvider dependencyProvider, ICrosscutting crosscutting1, ICrosscutting crosscutting2)
     {
-      return provider.DependsType (advice1, advice2, this);
+      return dependencyProvider.VisitAspectType (this, crosscutting1, crosscutting2);
     }
   }
 }
