@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Annotations;
+using ActiveAttributes.Aspects;
 using ActiveAttributes.Extensions;
 using System.Linq;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Model;
+using ActiveAttributes.Model.Ordering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Annotations;
 using ActiveAttributes.Aspects;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;

@@ -15,9 +15,9 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Pointcuts;
 using System.Linq;
+using ActiveAttributes.Model;
+using ActiveAttributes.Model.Pointcuts;
 using ActiveAttributes.Weaving.Expressions;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;

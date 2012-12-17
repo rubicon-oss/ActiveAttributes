@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using ActiveAttributes.Weaving;
 using System.Linq;
 

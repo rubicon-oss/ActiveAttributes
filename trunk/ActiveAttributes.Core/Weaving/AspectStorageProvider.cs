@@ -15,7 +15,8 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Aspects;
+using ActiveAttributes.Model;
 using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;

@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using ActiveAttributes.Aspects;
 using ActiveAttributes.Weaving.Invocation;
 using Remotion.Utilities;
 

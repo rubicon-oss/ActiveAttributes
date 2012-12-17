@@ -15,10 +15,9 @@
 // under the License.
 
 using System;
-using ActiveAttributes.Annotations;
-using ActiveAttributes.Annotations.Pointcuts;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Aspects.Ordering;
+using ActiveAttributes.Aspects.Pointcuts;
+using ActiveAttributes.Model.Ordering;
 using ActiveAttributes.Weaving.Invocation;
 
 namespace ActiveAttributes.Aspects

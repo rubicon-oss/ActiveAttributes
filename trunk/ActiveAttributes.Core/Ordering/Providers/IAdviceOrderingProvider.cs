@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Model.Ordering;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Ordering.Providers

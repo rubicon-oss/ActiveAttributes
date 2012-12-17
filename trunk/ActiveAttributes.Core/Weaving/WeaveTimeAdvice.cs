@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Reflection;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 

@@ -14,11 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-using ActiveAttributes.Annotations;
-using ActiveAttributes.Annotations.Pointcuts;
 using ActiveAttributes.Aspects;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Aspects.Pointcuts;
 using ActiveAttributes.Weaving;
 using NUnit.Framework;
 

@@ -15,7 +15,6 @@
 // under the License.
 using System;
 using ActiveAttributes.Aspects;
-using ActiveAttributes.Infrastructure;
 using ActiveAttributes.Weaving;
 using ActiveAttributes.Weaving.Invocation;
 using NUnit.Framework;

@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Discovery

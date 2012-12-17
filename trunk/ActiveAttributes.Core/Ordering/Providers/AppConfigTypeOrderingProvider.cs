@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Configuration;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Model.Ordering;
 
 namespace ActiveAttributes.Ordering.Providers
 {

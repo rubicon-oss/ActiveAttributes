@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 
 namespace ActiveAttributes.Weaving
 {

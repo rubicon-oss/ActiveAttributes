@@ -14,7 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.Expressions;

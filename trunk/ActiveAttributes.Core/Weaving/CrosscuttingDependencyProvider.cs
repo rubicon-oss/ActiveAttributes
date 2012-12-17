@@ -17,8 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ActiveAttributes.Extensions;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Model;
+using ActiveAttributes.Model.Ordering;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 

@@ -17,12 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveAttributes.Annotations;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Extensions;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
-using ActiveAttributes.Infrastructure.Pointcuts;
+using ActiveAttributes.Model;
+using ActiveAttributes.Model.Ordering;
+using ActiveAttributes.Model.Pointcuts;
 using ActiveAttributes.Weaving.Construction;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;

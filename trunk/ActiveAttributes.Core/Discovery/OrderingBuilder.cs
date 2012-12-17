@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Annotations.Ordering;
+using ActiveAttributes.Aspects.Ordering;
 using ActiveAttributes.Extensions;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Model;
+using ActiveAttributes.Model.Ordering;
 using Remotion.ServiceLocation;
 
 namespace ActiveAttributes.Discovery

@@ -15,7 +15,7 @@
 // under the License.
 using System;
 using System.Collections.Generic;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 
 namespace ActiveAttributes.Discovery
 {

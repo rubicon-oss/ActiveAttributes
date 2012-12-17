@@ -16,6 +16,7 @@
 
 using System;
 using System.Reflection;
+using ActiveAttributes.Aspects;
 
 namespace ActiveAttributes.Weaving.Context
 {

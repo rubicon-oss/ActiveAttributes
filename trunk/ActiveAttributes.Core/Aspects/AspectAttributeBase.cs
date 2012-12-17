@@ -14,9 +14,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using ActiveAttributes.Annotations;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
+using ActiveAttributes.Aspects.Ordering;
+using ActiveAttributes.Model.Ordering;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Aspects

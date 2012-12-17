@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using ActiveAttributes.Discovery;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using ActiveAttributes.Weaving.Expressions;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;

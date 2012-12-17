@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ActiveAttributes.Infrastructure;
+using ActiveAttributes.Model;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery
