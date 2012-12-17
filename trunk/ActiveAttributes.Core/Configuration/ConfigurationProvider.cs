@@ -31,8 +31,6 @@ namespace ActiveAttributes.Configuration
   {
     private readonly ActiveAttributesConfigurationSection _section;
 
-    private bool _locked;
-
     public ConfigurationProvider ()
     {
       _section = (ActiveAttributesConfigurationSection) ConfigurationManager.GetSection ("aspects") ?? new ActiveAttributesConfigurationSection();

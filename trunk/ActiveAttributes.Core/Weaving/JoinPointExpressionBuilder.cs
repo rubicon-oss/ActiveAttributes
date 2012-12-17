@@ -24,6 +24,7 @@ using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.Expressions;
+using Remotion.TypePipe.Expressions.ReflectionAdapters;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Weaving
@@ -66,7 +67,12 @@ namespace ActiveAttributes.Weaving
     public Expression CreateCallExpression (JoinPoint joinPoint, ParameterExpression context)
     {
       var arguments = joinPoint.Method.GetParameters().Select ((x, i) => _valueMapper.GetIndexMapping (context, i));
-      var call = BodyContextUtility.ReplaceParameters (joinPoint.Parameters, joinPoint.Expression, arguments);
+      var call = joinPoint.Method.Body;
+      if (call is OriginalBodyExpression)
+        call = Expression.Call (joinPoint.This, new NonVirtualCallMethodInfoAdapter (joinPoint.Method.UnderlyingSystemMethodInfo), arguments);
+      else
+        call = BodyContextUtility.ReplaceParameters (joinPoint.Method.ParameterExpressions, call, arguments);
+        //call = call.
 
       if (joinPoint.Method.ReturnType != typeof (void))
       {

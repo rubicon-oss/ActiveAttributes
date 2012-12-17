@@ -22,7 +22,6 @@ using ActiveAttributes.Infrastructure;
 using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Weaving;
 using ActiveAttributes.Weaving.Context;
-using ActiveAttributes.Weaving.Invocation;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace ActiveAttributes.IntegrationTests
     public void Execution1 ()
     {
       var instance = ObjectFactory.Create<DomainType> ();
-      instance.Method ();
+      instance.Method (1);
       ObjectFactory.Save();
       var execution = string.Join (" ", instance.Execution.ToArray ());
       Assert.That (execution, Is.EqualTo ("Before Method AfterReturning After"));
@@ -57,7 +56,7 @@ namespace ActiveAttributes.IntegrationTests
       public List<string> Execution = new List<string>();
 
       [DomainAspect]
-      public virtual void Method ()
+      public virtual void Method (int i)
       {
         Execution.Add ("Method");
       }
@@ -106,25 +105,6 @@ namespace ActiveAttributes.IntegrationTests
         var instance = (DomainType) context.Instance;
         instance.Execution.Add ("AfterThrowing");
       }
-    }
-
-    public class ProceedingAspectAttribute : MethodInterceptionAttributeBase
-    {
-      public ProceedingAspectAttribute ()
-          : base (AspectScope.Transient) {}
-
-      public override void OnIntercept (IInvocation invocation)
-      {
-        invocation.Proceed();
-      }
-    }
-
-    public class NotProceedingAspectAttribute : MethodInterceptionAttributeBase
-    {
-      public NotProceedingAspectAttribute ()
-          : base (AspectScope.Transient) {}
-
-      public override void OnIntercept (IInvocation invocation) {}
     }
   }
 }

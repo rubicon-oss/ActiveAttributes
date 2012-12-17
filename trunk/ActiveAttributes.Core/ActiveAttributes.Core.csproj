@@ -82,6 +82,7 @@
     <Compile Include="Annotations\Pointcuts\PointcutAttributeBase.cs" />
     <Compile Include="Annotations\Pointcuts\ReturnTypePointcutAttribute.cs" />
     <Compile Include="Annotations\Pointcuts\TypePointcutAttribute.cs" />
+    <Compile Include="Aspects\EventInterceptionAttributeBase.cs" />
     <Compile Include="Aspects\MethodInterceptionAttributeBase.cs" />
     <Compile Include="Discovery\OrderingBuilder.cs" />
     <Compile Include="Infrastructure\Pointcuts\ArgumentIndexPointcut.cs" />
@@ -91,8 +92,10 @@
     <Compile Include="Weaving\AdviceComposer.cs" />
     <Compile Include="Weaving\Context\ActionContext.generated.cs" />
     <Compile Include="Weaving\Context\FuncContext.generated.cs" />
+    <Compile Include="Weaving\EventMethodPreparer.cs" />
     <Compile Include="Weaving\Expressions\MethodExecutionExpression.cs" />
     <Compile Include="Weaving\CrosscuttingSorter.cs" />
+    <Compile Include="Weaving\IntertypeWeaver.cs" />
     <Compile Include="Weaving\ObjectFactory.cs" />
     <Compile Include="Weaving\JoinPointExpressionBuilder.cs" />
     <Compile Include="Weaving\Participant.cs" />

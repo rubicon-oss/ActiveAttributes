@@ -18,70 +18,35 @@ using System.Linq;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Infrastructure;
 using ActiveAttributes.Weaving.Expressions;
-using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
-using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Castle.Core.Internal;
 
 namespace ActiveAttributes.Weaving
 {
-  [ConcreteImplementation (typeof (IntertypeWeaver))]
-  public interface IIntertypeWeaver
-  {
-    void Import (Aspect aspect, JoinPoint joinPoint);
-  }
-
-  public class IntertypeWeaver : IIntertypeWeaver
-  {
-    private readonly IAspectStorageCache _aspectStorageCache;
-
-    public IntertypeWeaver (IAspectStorageCache aspectStorageCache)
-    {
-      _aspectStorageCache = aspectStorageCache;
-    }
-
-    public void Import (Aspect aspect, JoinPoint joinPoint)
-    {
-      var mutableType = joinPoint.DeclaringType;
-      var storage = _aspectStorageCache.GetOrAddStorage (aspect, joinPoint);
-      foreach (var import in aspect.MemberImports)
-      {
-        var member = mutableType.GetMethod (import.Name);
-        if (member == null)
-        {
-          if (import.IsRequired)
-            throw new Exception (string.Format ("Member '{0}' not found.", import.Name));
-          continue;
-        }
-
-
-        var import1 = import;
-        var field = Expression.Field (storage.CreateStorageExpression (joinPoint.This), import.Field);
-        mutableType.AddInstanceInitialization (
-            ctx =>
-            Expression.Assign (field, new NewDelegateExpression (import1.Type, joinPoint.This, member)));
-      }
-      //aspect.MemberImports.Single(x => x.)
-    }
-  }
-
   public class Participant : IParticipant
   {
     private readonly IDeclarationProvider _declarationProvider;
     private readonly IAdviceComposer _adviceComposer;
     private readonly IAdviceWeaver _adviceWeaver;
     private readonly IIntertypeWeaver _intertypeWeaver;
+    private readonly IEventMethodPreparer _eventMethodPreparer;
 
-    public Participant (IDeclarationProvider declarationProvider, IAdviceComposer adviceComposer, IAdviceWeaver adviceWeaver, IIntertypeWeaver intertypeWeaver)
+    public Participant (
+        IDeclarationProvider declarationProvider,
+        IAdviceComposer adviceComposer,
+        IAdviceWeaver adviceWeaver,
+        IIntertypeWeaver intertypeWeaver,
+        IEventMethodPreparer eventMethodPreparer)
     {
       _declarationProvider = declarationProvider;
       _adviceComposer = adviceComposer;
       _adviceWeaver = adviceWeaver;
       _intertypeWeaver = intertypeWeaver;
+      _eventMethodPreparer = eventMethodPreparer;
     }
 
     public void ModifyType (MutableType mutableType)
@@ -90,8 +55,10 @@ namespace ActiveAttributes.Weaving
 
       typeAspects.ForEach (x => _intertypeWeaver.Import (x, new JoinPoint (mutableType)));
 
+      foreach (var event_ in mutableType.UnderlyingSystemType.GetEvents().Where(x => x.GetAddMethod().IsVirtual))
+        _eventMethodPreparer.Prepare (mutableType, event_);
 
-      foreach (var method in mutableType.AllMutableMethods)
+      foreach (var method in mutableType.AllMutableMethods.ToArray())
       {
         var methodAspects = _declarationProvider.GetDeclarations (method).ConvertToCollection();
         var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection();

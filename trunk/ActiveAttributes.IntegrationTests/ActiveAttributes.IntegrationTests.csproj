@@ -68,6 +68,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Proceed2Test.cs" />
+    <Compile Include="EventTest.cs" />
     <Compile Include="ImportTest.cs" />
     <Compile Include="ScopeTest.cs" />
     <Compile Include="ProceedTest.cs">

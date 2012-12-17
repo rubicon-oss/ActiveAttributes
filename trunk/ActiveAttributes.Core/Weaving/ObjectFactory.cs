@@ -33,7 +33,8 @@ namespace ActiveAttributes.Weaving
       var adviceComposer = new AdviceComposer (new PointcutEvaluator());
       var adviceWeaver = SafeServiceLocator.Current.GetInstance<IAdviceWeaver>();
       var intertypeWeaver = SafeServiceLocator.Current.GetInstance<IIntertypeWeaver>();
-      var assembler = new Participant (declarationProvider, adviceComposer, adviceWeaver, intertypeWeaver);
+      var eventMethodPreparer = SafeServiceLocator.Current.GetInstance<IEventMethodPreparer>();
+      var assembler = new Participant (declarationProvider, adviceComposer, adviceWeaver, intertypeWeaver, eventMethodPreparer);
 
 
       var typeModifier = SafeServiceLocator.Current.GetInstance<ITypeModifier>();

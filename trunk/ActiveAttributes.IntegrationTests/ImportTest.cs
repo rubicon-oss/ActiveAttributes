@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using ActiveAttributes.Annotations;
 using ActiveAttributes.Annotations.Ordering;
 using ActiveAttributes.Annotations.Pointcuts;
@@ -29,12 +30,41 @@ using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using System.Linq;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.IntegrationTests
 {
   [TestFixture]
   public class ImportTest
   {
+    public event EventHandler Event;
+
+    [Test]
+    public void name ()
+    {
+      var field = typeof (ImportTest).GetFields (BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.NonPublic);
+      var fieldInfo = field.FirstOrDefault();
+      Assert.That (fieldInfo.Name, Is.EqualTo ("Event"));
+      var event_ = typeof (ImportTest).GetEvents ().Single ();
+      var type = event_.EventHandlerType;
+      var method = type.GetMethod ("Invoke");
+      var parameters = method.GetParameters().Select (x => x.ParameterType);
+      var returnType = method.ReturnType;
+      //var combine = typeof (Delegate).GetMethod ("Combine", new[] { typeof (Delegate), typeof (Delegate) });
+      //Expression.Lambda<Action> (
+      //    Expression.Block(
+      //    Expression.Call (null,
+      //    combine,
+      //        Expression.Field (Expression.Constant(this), fieldInfo), 
+      //        new NewDelegateExpression(event_.EventHandlerType, Expression.Constant(this), NormalizingMemberInfoFromExpressionUtility.GetMethod((ImportTest obj) => obj.Handler(null, null))))
+      //        )).Compile()();
+    }
+
+    private void Handler (object sender, EventArgs args)
+    {
+      
+    }
+
     [Test]
     public void Execution1 ()
     {

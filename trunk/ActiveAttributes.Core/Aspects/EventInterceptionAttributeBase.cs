@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,7 +13,6 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 using ActiveAttributes.Annotations;
 using ActiveAttributes.Annotations.Pointcuts;
@@ -23,14 +22,22 @@ using ActiveAttributes.Weaving.Invocation;
 
 namespace ActiveAttributes.Aspects
 {
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-  public abstract class MethodInterceptionAttributeBase : AspectAttributeBase
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Event, Inherited = true, AllowMultiple = true)]
+  public abstract class EventInterceptionAttributeBase : AspectAttributeBase
   {
-    protected MethodInterceptionAttributeBase (AspectScope scope, string role = StandardRoles.Unspecified)
-      : base (scope, role) { }
+    protected EventInterceptionAttributeBase (AspectScope scope, string role = StandardRoles.Unspecified)
+        : base (scope, role) { }
 
     [Advice (AdviceExecution.Around)]
-    [MethodExecutionPointcut]
-    public abstract void OnIntercept (IInvocation invocation);
+    [MethodExecutionPointcut (Name = "invoke_*")]
+    public abstract void OnInvoke (IInvocation invocation);
+
+    [Advice (AdviceExecution.Around)]
+    [MethodExecutionPointcut (Name = "add_*")]
+    public abstract void OnAdd (IInvocation invocation);
+
+    [Advice (AdviceExecution.Around)]
+    [MethodExecutionPointcut (Name = "remove_*")]
+    public abstract void OnRemove (IInvocation invocation);
   }
 }

@@ -24,13 +24,16 @@ using Remotion;
 using Remotion.ServiceLocation;
 using Remotion.FunctionalProgramming;
 using Remotion.Collections;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.Weaving
 {
   [ConcreteImplementation (typeof (WeaveBlockBuilder))]
   public interface IWeaveBlockBuilder
   {
-    Expression CreateBlock (Expression innerExpression, ParameterExpression context, IEnumerable<WeaveTimeAdvice> advices);
+    Expression CreateBlock (JoinPoint joinPoint, Expression innerExpression, ParameterExpression context, IEnumerable<WeaveTimeAdvice> advices);
   }
 
   public class WeaveBlockBuilder : IWeaveBlockBuilder
@@ -38,12 +41,14 @@ namespace ActiveAttributes.Weaving
     private readonly ConstructorInfo _staticInvocationConstructor = typeof (StaticInvocation).GetConstructors().Single();
     private readonly IAdviceCallExpressionBuilder _adviceCallExpressionBuilder;
 
+    private int _counter;
+
     public WeaveBlockBuilder (IAdviceCallExpressionBuilder adviceCallExpressionBuilder)
     {
       _adviceCallExpressionBuilder = adviceCallExpressionBuilder;
     }
 
-    public Expression CreateBlock (Expression innerExpression, ParameterExpression context, IEnumerable<WeaveTimeAdvice> advices)
+    public Expression CreateBlock (JoinPoint joinPoint, Expression innerExpression, ParameterExpression context, IEnumerable<WeaveTimeAdvice> advices)
     {
       var advicesAsList = advices.ConvertToCollection();
 
@@ -67,9 +72,21 @@ namespace ActiveAttributes.Weaving
       var around = advicesAsList.SingleOrDefault (x => x.Advice.Execution == AdviceExecution.Around);
       if (around != null)
       {
-        var invocation = Expression.New (_staticInvocationConstructor, context, Expression.Lambda (typeof (Action), block));
+        var newMethodBody = block;
+        var newMethod = joinPoint.DeclaringType.AddMethod (
+            joinPoint.Method.Name + _counter++,
+            MethodAttributes.Private,
+            typeof(void),
+            new[] { new ParameterDeclaration (context.Type, "context") },
+            ctx => newMethodBody.Replace (new Dictionary<Expression, Expression> { { context, ctx.Parameters.Single() } }));
+        var invocation = Expression.Variable (typeof (StaticInvocation), "invocation");
+        var invocationCreate = Expression.New (
+            _staticInvocationConstructor,
+            context,
+            Expression.Lambda (typeof (Action), Expression.Call (joinPoint.This, newMethod, context)));
+        var invocationAssign = Expression.Assign (invocation, invocationCreate);
         var call = _adviceCallExpressionBuilder.CreateExpression (around, context, invocation);
-        block = Expression.Block (invocation, call);
+        block = Expression.Block (new[] { invocation }, invocationAssign, call);
       }
 
       return block;

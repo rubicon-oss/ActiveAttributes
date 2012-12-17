@@ -14,70 +14,35 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using ActiveAttributes.Annotations;
-using ActiveAttributes.Aspects;
-using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Weaving;
 using ActiveAttributes.Weaving.Construction;
 using ActiveAttributes.Weaving.Invocation;
-using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.UnitTests.MutableReflection;
 
 namespace ActiveAttributes.UnitTests
 {
   [TestFixture]
   public class Research
   {
-    public class DomainAspectAttribute : AspectAttributeBase
+    public class MyClass
     {
-      public DomainAspectAttribute ()
-          : base (AspectScope.PerDeclaration) {}
+      public virtual void Muh (string kuh)
+      {
+        
+      }
     }
-
     [Test]
-    [DomainAspect()]
     public void name ()
     {
-      var asd = new[] { 1, 2, 3, 4 };
-      Assert.That (asd.SkipWhile (y => y != 3).Skip (1).Count (), Is.EqualTo (1));
-
-      var customAttributeData = TypePipeCustomAttributeData.GetCustomAttributes (MethodInfo.GetCurrentMethod())
-          .Single (x => x.Type == typeof (DomainAspectAttribute));
-      var constr = new AttributeConstruction (customAttributeData);
-      var expr = new AspectExpressionBuilder().CreateAspectInitExpressions (constr);
-
-
-
-      var defaultExpression = Expression.Empty();
-      var expressionTree = Expression.Block
-          (
-              Expression.Empty(),
-              Expression.TryCatch (
-                  Expression.Empty(),
-                  Expression.Catch (
-                      typeof (Exception),
-                      Expression.TryCatch (
-                          Expression.Empty(),
-                          Expression.Catch (typeof (Exception), defaultExpression)))));
-
-      var around = Expression.Block (
-          Expression.Empty(),
-          Expression.Call (Expression.Variable (typeof (IInvocation)), typeof (IInvocation).GetMethod ("Proceed")),
-          Expression.Empty());
-
-
-      var rewriter = new Rewriter(around);
-
-      var result = rewriter.Visit (expressionTree);
+      var type = MutableTypeObjectMother.CreateForExisting (typeof (MyClass));
+      var method = type.AllMutableMethods.Single();
+      method.SetBody (ctx => ctx.GetBaseCall(method, ctx.Parameters.Cast<Expression>()));
     }
 
     [Test]

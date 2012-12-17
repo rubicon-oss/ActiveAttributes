@@ -16,15 +16,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ActiveAttributes.Infrastructure;
 using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using ActiveAttributes.Extensions;
 
 namespace ActiveAttributes.Weaving
 {
+
   [ConcreteImplementation (typeof (AdviceWeaver))]
   public interface IAdviceWeaver
   {
@@ -77,7 +80,7 @@ namespace ActiveAttributes.Weaving
               var currentBlockAdvices = weaveTimeAdvices.Except (nextBlocksAdvices).Reverse();
               weaveTimeAdvices = nextBlocksAdvices.ToList();
 
-              innerExpression = _weaveBlockBuilder.CreateBlock (innerExpression, context, currentBlockAdvices);
+              innerExpression = _weaveBlockBuilder.CreateBlock (joinPoint, innerExpression, context, currentBlockAdvices);
             }
 
             var returnValue = _joinPointExpressionBuilder.CreateReturnExpression (joinPoint, context);
