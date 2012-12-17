@@ -67,35 +67,51 @@ namespace ActiveAttributes.Weaving.Invocation
       _innerInvocation();
     }
   }
-  public class StaticPropertyInvocation : StaticInvocation
+  public class StaticInvocation<T> : IInvocation where T : IContext
   {
-    private readonly IPropertyContext _context;
+    private readonly T _context;
+    private readonly Action<T> _innerInvocation;
 
-    public StaticPropertyInvocation (IPropertyContext context, Action innerInvocation)
-        : base (context, innerInvocation)
+    public StaticInvocation (T context, Action<T> innerInvocation)
     {
       _context = context;
+      _innerInvocation = innerInvocation;
     }
 
-    public object Index
+    public MemberInfo MemberInfo
     {
-      get { return _context.Index; }
+      get { return _context.MemberInfo; }
     }
 
-    public object Value
+    public object Instance
     {
-      get { return _context.Value; }
-      set { _context.Value = value; }
+      get { return _context.Instance; }
     }
 
-    public bool IsIndexer
+    public IArgumentCollection Arguments
     {
-      get { return _context.IsIndexer; }
+      get { return _context.Arguments; }
     }
 
-    public PropertyInfo PropertyInfo
+    public object ReturnValue
     {
-      get { return _context.PropertyInfo; }
+      get { return _context.ReturnValue; }
+      set { _context.ReturnValue = value; }
+    }
+
+    IReadOnlyArgumentCollection IReadOnlyContext.Arguments
+    {
+      get { return _context.Arguments; }
+    }
+
+    object IReadOnlyContext.ReturnValue
+    {
+      get { return _context.ReturnValue; }
+    }
+
+    public void Proceed ()
+    {
+      _innerInvocation (_context);
     }
   }
 }

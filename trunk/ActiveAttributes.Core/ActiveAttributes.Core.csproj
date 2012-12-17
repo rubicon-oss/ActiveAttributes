@@ -99,6 +99,7 @@
     <Compile Include="Weaving\ObjectFactory.cs" />
     <Compile Include="Weaving\JoinPointExpressionBuilder.cs" />
     <Compile Include="Weaving\Participant.cs" />
+    <Compile Include="Weaving\TrampolineMethodBuilder.cs" />
     <Compile Include="Weaving\ValueMapper.cs" />
     <Compile Include="Weaving\WeaveBlockBuilder.cs" />
     <Compile Include="Weaving\AdviceCallExpressionBuilder.cs" />
@@ -174,13 +175,13 @@
     <Compile Include="Annotations\Ordering\AspectRoleOrderingAttribute.cs" />
     <Compile Include="Annotations\Ordering\AspectTypeOrderingAttribute.cs" />
     <Compile Include="Annotations\Ordering\OrderingAttributeBase.cs" />
-    <Compile Include="MemberFlags.cs">
+    <Compile Include="Infrastructure\Pointcuts\MemberFlags.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\Ordering\Position.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Visibility.cs">
+    <Compile Include="Infrastructure\Pointcuts\Visibility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />

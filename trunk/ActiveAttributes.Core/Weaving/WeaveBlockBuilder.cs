@@ -24,9 +24,7 @@ using Remotion;
 using Remotion.ServiceLocation;
 using Remotion.FunctionalProgramming;
 using Remotion.Collections;
-using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
-using Remotion.TypePipe.Expressions;
 
 namespace ActiveAttributes.Weaving
 {
@@ -40,12 +38,15 @@ namespace ActiveAttributes.Weaving
   {
     private readonly ConstructorInfo _staticInvocationConstructor = typeof (StaticInvocation).GetConstructors().Single();
     private readonly IAdviceCallExpressionBuilder _adviceCallExpressionBuilder;
+    private readonly ITrampolineMethodBuilder _trampolineMethodBuilder;
 
     private int _counter;
 
-    public WeaveBlockBuilder (IAdviceCallExpressionBuilder adviceCallExpressionBuilder)
+    public WeaveBlockBuilder (IAdviceCallExpressionBuilder adviceCallExpressionBuilder,
+      ITrampolineMethodBuilder trampolineMethodBuilder)
     {
       _adviceCallExpressionBuilder = adviceCallExpressionBuilder;
+      _trampolineMethodBuilder = trampolineMethodBuilder;
     }
 
     public Expression CreateBlock (JoinPoint joinPoint, Expression innerExpression, ParameterExpression context, IEnumerable<WeaveTimeAdvice> advices)
@@ -72,18 +73,21 @@ namespace ActiveAttributes.Weaving
       var around = advicesAsList.SingleOrDefault (x => x.Advice.Execution == AdviceExecution.Around);
       if (around != null)
       {
-        var newMethodBody = block;
-        var newMethod = joinPoint.DeclaringType.AddMethod (
-            joinPoint.Method.Name + _counter++,
-            MethodAttributes.Private,
-            typeof(void),
-            new[] { new ParameterDeclaration (context.Type, "context") },
-            ctx => newMethodBody.Replace (new Dictionary<Expression, Expression> { { context, ctx.Parameters.Single() } }));
-        var invocation = Expression.Variable (typeof (StaticInvocation), "invocation");
+        var field = _trampolineMethodBuilder.Create (joinPoint, context, block);
+        //var newMethodBody = block;
+        //var newMethod = joinPoint.DeclaringType.AddMethod (
+        //    joinPoint.Method.Name + _counter++,
+        //    MethodAttributes.Private,
+        //    typeof(void),
+        //    new[] { new ParameterDeclaration (context.Type, "context") },
+        //    ctx => newMethodBody.Replace (new Dictionary<Expression, Expression> { { context, ctx.Parameters.Single() } }));
+        var invocationType = typeof (StaticInvocation<>).MakeGenericType (context.Type);
+        var invocation = Expression.Variable (invocationType, "invocation");
+        var constructor = invocationType.GetConstructors().Single();
         var invocationCreate = Expression.New (
-            _staticInvocationConstructor,
+            constructor,
             context,
-            Expression.Lambda (typeof (Action), Expression.Call (joinPoint.This, newMethod, context)));
+            Expression.Field (joinPoint.This, field));
         var invocationAssign = Expression.Assign (invocation, invocationCreate);
         var call = _adviceCallExpressionBuilder.CreateExpression (around, context, invocation);
         block = Expression.Block (new[] { invocation }, invocationAssign, call);
