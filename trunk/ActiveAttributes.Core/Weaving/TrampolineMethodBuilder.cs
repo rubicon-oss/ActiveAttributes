@@ -46,7 +46,7 @@ namespace ActiveAttributes.Weaving
           MethodAttributes.Private,
           typeof (void),
           new[] { new ParameterDeclaration (context.Type, "context") },
-          ctx => body.Replace (new Dictionary<Expression, Expression> { { context, ctx.Parameters.Single() } }));
+          ctx => body.Replace (new Dictionary<Expression, Expression> { { context, ctx.Parameters.Single () } }));
 
       var field = mutableType.AddField (newMethod.Name, delegateType);
       mutableType.AddInstanceInitialization (

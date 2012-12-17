@@ -89,9 +89,11 @@
     <Compile Include="Infrastructure\Pointcuts\ArgumentNamePointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\ArgumentPointcut.cs" />
     <Compile Include="Infrastructure\Pointcuts\MethodExecutionPointcut.cs" />
+    <Compile Include="Utilities\UniqueNameProvider.cs" />
     <Compile Include="Weaving\AdviceComposer.cs" />
     <Compile Include="Weaving\Context\ActionContext.generated.cs" />
     <Compile Include="Weaving\Context\FuncContext.generated.cs" />
+    <Compile Include="Weaving\CrosscuttingDependencyProvider.cs" />
     <Compile Include="Weaving\EventMethodPreparer.cs" />
     <Compile Include="Weaving\Expressions\MethodExecutionExpression.cs" />
     <Compile Include="Weaving\CrosscuttingSorter.cs" />

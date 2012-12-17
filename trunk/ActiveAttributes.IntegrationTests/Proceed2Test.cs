@@ -14,18 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
-using ActiveAttributes.Annotations;
-using ActiveAttributes.Annotations.Pointcuts;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Weaving;
-using ActiveAttributes.Weaving.Context;
 using ActiveAttributes.Weaving.Invocation;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using System.Linq;
 
 namespace ActiveAttributes.IntegrationTests
 {
@@ -41,6 +34,15 @@ namespace ActiveAttributes.IntegrationTests
       Assert.That (method, Is.EqualTo (4));
     }
 
+    [Test]
+    public void Execution2 ()
+    {
+      var instance = ObjectFactory.Create<DomainType>();
+      ObjectFactory.Save();
+
+      Assert.That (() => instance.Method2(), Throws.Exception);
+    }
+
     public class DomainType
     {
 
@@ -50,11 +52,18 @@ namespace ActiveAttributes.IntegrationTests
         Assert.That (i, Is.EqualTo (2));
         return i + 1;
       }
+
+      [OtherDomainAspect]
+      [OtherDomainAspect]
+      public virtual void Method2 ()
+      {
+        throw new Exception();
+      }
     }
 
-    public class DomainAspect : MethodInterceptionAttributeBase
+    public class DomainAspectAttribute : MethodInterceptionAttributeBase
     {
-      public DomainAspect ()
+      public DomainAspectAttribute ()
           : base (AspectScope.Singleton) {}
 
       public override void OnIntercept (IInvocation invocation)
@@ -62,6 +71,17 @@ namespace ActiveAttributes.IntegrationTests
         invocation.Arguments[0] = (int) invocation.Arguments[0] + 1;
         invocation.Proceed();
         invocation.ReturnValue = (int) invocation.ReturnValue + 1;
+      }
+    }
+
+    public class OtherDomainAspectAttribute : MethodInterceptionAttributeBase
+    {
+      public OtherDomainAspectAttribute ()
+          : base (AspectScope.Transient) {}
+
+      public override void OnIntercept (IInvocation invocation)
+      {
+        invocation.Proceed();
       }
     }
   }

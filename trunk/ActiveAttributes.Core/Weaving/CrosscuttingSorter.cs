@@ -16,48 +16,11 @@
 using System;
 using System.Collections.Generic;
 using ActiveAttributes.Infrastructure;
-using ActiveAttributes.Infrastructure.Ordering;
 using ActiveAttributes.Utilities;
-using Remotion.Collections;
 using Remotion.FunctionalProgramming;
-using System.Linq;
-using ActiveAttributes.Extensions;
 
 namespace ActiveAttributes.Weaving
 {
-  public class CrosscuttingDependencyProvider
-  {
-    public IEnumerable<Tuple<T, T>> GetDependencies<T> (IEnumerable<T> crosscuttings) where T : class, ICrosscutting
-    {
-      var crosscuttingAsList = crosscuttings.ConvertToCollection ();
-      var orderings = crosscuttingAsList.SelectMany (x => x.Orderings).ConvertToCollection ();
-
-      var dependencies = from crosscutting1 in crosscuttingAsList
-                         from crosscutting2 in crosscuttingAsList
-                         where crosscutting1 != crosscutting2
-                         from ordering in orderings
-                         where ordering.Accept (this, crosscutting1, crosscutting2)
-                         select Tuple.Create (crosscutting1, crosscutting2);
-
-      return new HashSet<Tuple<T, T>> (dependencies, EqualityComparer<Tuple<T, T>>.Default);
-    }
-
-    public bool VisitAspectType (AspectTypeOrdering ordering, ICrosscutting crosscutting1, ICrosscutting crosscutting2)
-    {
-      return ordering.BeforeType.IsAssignableFrom (crosscutting1.Type) && ordering.AfterType.IsAssignableFrom (crosscutting2.Type);
-    }
-
-    public bool VisitAspectRole (AspectRoleOrdering ordering, ICrosscutting crosscutting1, ICrosscutting crosscutting2)
-    {
-      return crosscutting1.Role.IsMatchWildcard (ordering.BeforeRole) && crosscutting2.Role.IsMatchWildcard (ordering.AfterRole);
-    }
-
-    public bool VisitAdviceName (AdviceNameOrdering ordering, ICrosscutting crosscutting1, ICrosscutting crosscutting2)
-    {
-      return crosscutting1.Name == ordering.BeforeAdvice && crosscutting2.Name == ordering.AfterAdvice;
-    }
-  }
-
   public interface ICrosscuttingSorter
   {
     IEnumerable<T> Sort<T> (IEnumerable<T> crosscuttings) where T : class, ICrosscutting;

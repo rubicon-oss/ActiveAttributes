@@ -60,7 +60,8 @@ namespace ActiveAttributes.Weaving
 
       foreach (var method in mutableType.AllMutableMethods.ToArray())
       {
-        var methodAspects = _declarationProvider.GetDeclarations (method).ConvertToCollection();
+        // TODO: remove UnderlyingSystemMethodInfo
+        var methodAspects = _declarationProvider.GetDeclarations (method.UnderlyingSystemMethodInfo).ConvertToCollection();
         var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection();
 
         var joinPoint = new JoinPoint (method, new MethodExecutionExpression(method, method.Body));

@@ -88,7 +88,7 @@ namespace ActiveAttributes.Extensions
         return null;
 
       var bindingFlags = BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
-      var typeSequence = methodInfo.DeclaringType.CreateSequence (x => x.BaseType);
+      var typeSequence = methodInfo.DeclaringType.UnderlyingSystemType.CreateSequence (x => x.BaseType);
       var events = typeSequence.SelectMany (x => x.GetEvents (bindingFlags));
 
       return events.FirstOrDefault (x => methodInfo.IsRootEqualTo (x.GetAddMethod (true)) || methodInfo.IsRootEqualTo (x.GetRemoveMethod (true)));

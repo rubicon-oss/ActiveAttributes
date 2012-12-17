@@ -21,7 +21,6 @@ using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.Expressions.ReflectionAdapters;
 using Remotion.TypePipe.MutableReflection;
 using System.Linq;
-using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
 namespace ActiveAttributes.Weaving
 {
@@ -59,40 +58,26 @@ namespace ActiveAttributes.Weaving
           parameters,
           ctx => Expression.Call (broker, eventInvoke, ctx.Parameters.Cast<Expression>()));
 
-      addMethod.SetBody (ctx => CreateAddMethod (original, eventType, ctx, invokeMethod, broker, addMethod));
-      removeMethod.SetBody (ctx => CreateRemoveBlock (broker, ctx, eventType, original));
-    }
 
-    private static BlockExpression CreateAddMethod (
-        MemberExpression original,
-        Type eventType,
-        MethodBodyModificationContext ctx,
-        MutableMethodInfo invokeMethod,
-        MemberExpression broker,
-        MutableMethodInfo addMethod)
-    {
-      var newDelegateExpression = new NewDelegateExpression (eventType, ctx.This, invokeMethod);
-      var baseCall = Expression.Call (ctx.This, new NonVirtualCallMethodInfoAdapter (addMethod.UnderlyingSystemMethodInfo), newDelegateExpression);
-      var condition = Expression.IfThen (
-          Expression.Equal (original, Expression.Constant (null, eventType)),
-          baseCall);
-      var binaryExpression = Expression.Assign (
-          broker,
-          Expression.Convert (Expression.Call (null, s_combineMethod, new Expression[] { broker, ctx.Parameters.Single() }), eventType));
-      return Expression.Block (
-          baseCall,
-          binaryExpression);
-    }
+      var invokeDelegate = new NewDelegateExpression (eventType, new ThisExpression (mutableType.UnderlyingSystemType), invokeMethod);
 
-    private static BlockExpression CreateRemoveBlock (MemberExpression broker, MethodBodyModificationContext ctx, Type eventType, MemberExpression original)
-    {
-      return Expression.Block (
-          Expression.Assign (
-              broker,
-              Expression.Convert(Expression.Call (null, s_removeMethod, new Expression[] { broker, ctx.Parameters.Single() }), eventType)),
-          Expression.IfThen (
-              Expression.Equal (broker, Expression.Constant (null, eventType)),
-              Expression.Assign (original, Expression.Constant (null, eventType))));
+      addMethod.SetBody (
+          ctx => Expression.Block (
+              Expression.IfThen (
+                  Expression.Equal (broker, Expression.Constant (null, eventType)),
+                  Expression.Call (ctx.This, new NonVirtualCallMethodInfoAdapter (addMethod.UnderlyingSystemMethodInfo), invokeDelegate)),
+              Expression.Assign (
+                  broker,
+                  Expression.Convert (Expression.Call (null, s_combineMethod, new Expression[] { broker, ctx.Parameters.Single() }), eventType))));
+
+      removeMethod.SetBody (
+          ctx => Expression.Block (
+              Expression.IfThen (
+                  Expression.Equal (broker, Expression.Constant (null, eventType)),
+                  Expression.Call (ctx.This, new NonVirtualCallMethodInfoAdapter (addMethod.UnderlyingSystemMethodInfo), invokeDelegate)),
+              Expression.Assign (
+                  broker,
+                  Expression.Convert (Expression.Call (null, s_combineMethod, new Expression[] { broker, ctx.Parameters.Single() }), eventType))));
     }
   }
 }
