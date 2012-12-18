@@ -38,15 +38,17 @@ namespace ActiveAttributes.Discovery
 
   public class AspectBuilder : IAspectBuilder
   {
-    private readonly IAspectElementBuilder _aspectElementBuilder;
+    private readonly IAdviceBuilder _adviceBuilder;
     private readonly IPointcutBuilder _pointcutBuilder;
     private readonly IOrderingBuilder _orderingBuilder;
+    private readonly IInterTypeBuilder _interTypeBuilder;
 
-    public AspectBuilder (IAspectElementBuilder aspectElementBuilder, IPointcutBuilder pointcutBuilder, IOrderingBuilder orderingBuilder)
+    public AspectBuilder (IAdviceBuilder adviceBuilder, IPointcutBuilder pointcutBuilder, IOrderingBuilder orderingBuilder, IInterTypeBuilder interTypeBuilder)
     {
-      _aspectElementBuilder = aspectElementBuilder;
+      _adviceBuilder = adviceBuilder;
       _pointcutBuilder = pointcutBuilder;
       _orderingBuilder = orderingBuilder;
+      _interTypeBuilder = interTypeBuilder;
     }
 
     public Aspect Build (Type type)
@@ -88,9 +90,9 @@ namespace ActiveAttributes.Discovery
       var imports = new List<MemberImport>();
 
       var aspect = new Aspect (type, scope, activation, construction, crosscutting, advices, imports, introductions);
-      advices.AddRange (_aspectElementBuilder.AddAdvices (aspect));
-      imports.AddRange (_aspectElementBuilder.AddMemberImports (aspect));
-      introductions.AddRange (_aspectElementBuilder.AddMemberIntroductions (aspect));
+      advices.AddRange (_adviceBuilder.GetAdvices (aspect));
+      imports.AddRange (_interTypeBuilder.AddMemberImports (aspect));
+      introductions.AddRange (_interTypeBuilder.AddMemberIntroductions (aspect));
 
       return aspect;
     }

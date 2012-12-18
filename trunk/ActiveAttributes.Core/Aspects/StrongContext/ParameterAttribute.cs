@@ -15,12 +15,38 @@
 // under the License.
 
 using System;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.Aspects
+namespace ActiveAttributes.Aspects.StrongContext
 {
-  public enum AspectActivation
+  [AttributeUsage (AttributeTargets.Parameter, AllowMultiple = false)]
+  public class ParameterAttribute : StrongContextAttributeBase
   {
-    Auto = 1,
-    Manual
+    private readonly int _index = -1;
+    private readonly string _name;
+
+    public ParameterAttribute () {}
+
+    public ParameterAttribute (string name)
+    {
+      _name = name;
+    }
+
+    public ParameterAttribute (int index)
+    {
+      Assertion.IsTrue (index >= 0);
+
+      _index = index;
+    }
+
+    public string Name
+    {
+      get { return _name; }
+    }
+
+    public int Index
+    {
+      get { return _index; }
+    }
   }
 }

@@ -91,12 +91,14 @@ namespace ActiveAttributes.Weaving
 
     public bool VisitArgumentIndex (ArgumentIndexPointcut pointcut, JoinPoint joinPoint)
     {
-      throw new NotImplementedException ();
+      var parameters = joinPoint.Method.GetParameters();
+      return parameters.Length <= pointcut.Index && parameters[pointcut.Index].ParameterType == pointcut.ArgumentType;
     }
 
     public bool VisitArgumentName (ArgumentNamePointcut pointcut, JoinPoint joinPoint)
     {
-      throw new NotImplementedException ();
+      return joinPoint.Method.GetParameters()
+          .Any (x => x.ParameterType.IsAssignableFrom (pointcut.ArgumentType) && x.Name.IsMatchWildcard (pointcut.Name));
     }
 
     public bool VisitArgument (ArgumentPointcut pointcut, JoinPoint joinPoint)

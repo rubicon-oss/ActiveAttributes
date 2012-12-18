@@ -63,8 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aspects\AdviceAttribute.cs" />
-    <Compile Include="Aspects\Context\ParameterAttribute.cs" />
-    <Compile Include="Aspects\Context\ReturnValueAttribute.cs" />
+    <Compile Include="Aspects\StrongContext\InstanceAttribute.cs" />
+    <Compile Include="Aspects\StrongContext\ParameterAttribute.cs" />
+    <Compile Include="Aspects\StrongContext\ReturnValueAttribute.cs" />
     <Compile Include="Aspects\IAspectInfo.cs" />
     <Compile Include="Aspects\Ordering\AdviceNameOrderingAttribute.cs" />
     <Compile Include="Aspects\Pointcuts\AndAttribute.cs" />
@@ -84,12 +85,16 @@
     <Compile Include="Aspects\Pointcuts\TypePointcutAttribute.cs" />
     <Compile Include="Aspects\EventInterceptionAttributeBase.cs" />
     <Compile Include="Aspects\MethodInterceptionAttributeBase.cs" />
+    <Compile Include="Aspects\StrongContext\StrongContextAttributeBase.cs" />
+    <Compile Include="Discovery\ContextMappingBuilder.cs" />
+    <Compile Include="Discovery\InterTypeBuilder.cs" />
     <Compile Include="Discovery\OrderingBuilder.cs" />
     <Compile Include="Model\Pointcuts\ArgumentIndexPointcut.cs" />
     <Compile Include="Model\Pointcuts\ArgumentNamePointcut.cs" />
     <Compile Include="Model\Pointcuts\ArgumentPointcut.cs" />
     <Compile Include="Model\Pointcuts\MethodExecutionPointcut.cs" />
     <Compile Include="Utilities\UniqueNameProvider.cs" />
+    <Compile Include="Weaving\AdviceArgumentMapper.cs" />
     <Compile Include="Weaving\AdviceComposer.cs" />
     <Compile Include="Weaving\Context\ActionContext.generated.cs" />
     <Compile Include="Weaving\Context\FuncContext.generated.cs" />
@@ -134,7 +139,7 @@
     <Compile Include="Model\Ordering\OrderingBase.cs" />
     <Compile Include="Model\Pointcuts\MethodPointcut.cs" />
     <Compile Include="Discovery\AspectBuilder.cs" />
-    <Compile Include="Discovery\AspectElementBuilder.cs" />
+    <Compile Include="Discovery\AdviceBuilder.cs" />
     <Compile Include="Model\Pointcuts\TruePointcut.cs" />
     <Compile Include="Weaving\AspectStorageProvider.cs" />
     <Compile Include="Discovery\PointcutBuilder.cs" />
@@ -188,9 +193,9 @@
     </Compile>
     <Compile Include="Extensions\ICustomAttributeProvider.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Weaving\Construction\AttributeConstruction.cs" />
-    <Compile Include="Weaving\Construction\IAspectConstruction.cs" />
-    <Compile Include="Weaving\Construction\TypeConstruction.cs" />
+    <Compile Include="Model\Construction\AttributeConstruction.cs" />
+    <Compile Include="Model\Construction\IAspectConstruction.cs" />
+    <Compile Include="Model\Construction\TypeConstruction.cs" />
     <Compile Include="Configuration\TypeOrderingCollection.cs" />
     <Compile Include="Configuration\TypeOrderingElement.cs" />
     <Compile Include="Configuration\ActiveAttributesConfigurationSection.cs" />

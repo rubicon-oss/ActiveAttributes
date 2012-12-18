@@ -20,7 +20,7 @@ namespace ActiveAttributes.Aspects
 {
   public enum AspectScope
   {
-    Singleton,
+    Singleton = 1,
     Transient,
     PerDeclaration,
     PerType,

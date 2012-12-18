@@ -29,9 +29,11 @@ namespace ActiveAttributes.Model
     private readonly MethodInfo _method;
     private readonly AdviceExecution _execution;
     private readonly ICrosscutting _crosscutting;
+    private readonly IEnumerable<Predicate<FieldInfo>> _mappings;
 
-    public Advice (MethodInfo method, AdviceExecution execution, Aspect aspect, ICrosscutting crosscutting)
-      : base (aspect)
+    public Advice (
+        Aspect aspect, MethodInfo method, IEnumerable<Predicate<FieldInfo>> mappings, AdviceExecution execution, ICrosscutting crosscutting)
+        : base (aspect)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       ArgumentUtility.CheckNotNull ("aspect", aspect);
@@ -40,6 +42,7 @@ namespace ActiveAttributes.Model
       _method = method;
       _execution = execution;
       _crosscutting = crosscutting;
+      _mappings = mappings;
     }
 
     public string Name
@@ -50,6 +53,11 @@ namespace ActiveAttributes.Model
     public MethodInfo Method
     {
       get { return _method; }
+    }
+
+    public IEnumerable<Predicate<FieldInfo>> Mappings
+    {
+      get { return _mappings; }
     }
 
     public AdviceExecution Execution

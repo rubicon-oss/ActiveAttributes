@@ -45,17 +45,17 @@ namespace ActiveAttributes.Discovery
 
     public IPointcut Build (ICustomAttributeProvider customAttributeProvider)
     {
-      var pointcuts = customAttributeProvider
-          .GetCustomAttributes<PointcutAttributeBase> (true)
-          .Select (x => Convert (customAttributeProvider, x))
-          .ToList();
+
+      var attributes = customAttributeProvider.GetCustomAttributes (true);
+      var pointcuts = attributes.OfType<PointcutAttributeBase>().Select (x => Convert (customAttributeProvider, x)).ToList();
 
       if (pointcuts.Count == 0)
         return new TruePointcut();
 
-      var hasNot = customAttributeProvider.GetCustomAttributes<NotAttribute> (true).Any();
-      var hasOr = customAttributeProvider.GetCustomAttributes<OrAttribute> (true).Any();
-      var hasAnd = customAttributeProvider.GetCustomAttributes<AndAttribute> (true).Any();
+      var hasNot = attributes.OfType<NotAttribute>().Any();
+      var hasOr = attributes.OfType<OrAttribute>().Any();
+      var hasAnd = attributes.OfType<AndAttribute>().Any();
+
       if (pointcuts.Count == 1)
       {
         var pointcut = pointcuts.Single ();

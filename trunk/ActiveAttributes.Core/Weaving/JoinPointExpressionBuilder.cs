@@ -14,14 +14,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using ActiveAttributes.Model;
 using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 using Remotion.Collections;
-using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.Expressions.ReflectionAdapters;

@@ -17,11 +17,7 @@ using System;
 using System.Collections.Generic;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Aspects.Pointcuts;
-using ActiveAttributes.Weaving;
-using ActiveAttributes.Weaving.Context;
-using Microsoft.Scripting.Ast;
 using NUnit.Framework;
-using System.Linq;
 
 namespace ActiveAttributes.IntegrationTests
 {

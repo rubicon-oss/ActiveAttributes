@@ -81,6 +81,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="Discovery\AdviceBuilderTest.cs" />
+    <Compile Include="Discovery\ContextMappingBuilderTest.cs" />
+    <Compile Include="Discovery\PointcutBuilderTest.cs" />
+    <Compile Include="ObjectMother2\ObjectMother.Expressions.cs" />
+    <Compile Include="ObjectMother2\ObjectMother.Helper.cs" />
+    <Compile Include="ObjectMother2\ObjectMother.Reflection.cs" />
+    <Compile Include="ObjectMother2\ObjectMother.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Research.cs" />
     <Compile Include="SetupFixture.cs" />
@@ -101,7 +109,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Weaving\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

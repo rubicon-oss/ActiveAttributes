@@ -16,23 +16,30 @@
 
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.TypePipe.Expressions;
+using Remotion.TypePipe.Expressions.ReflectionAdapters;
+using Remotion.TypePipe.MutableReflection;
+using System.Linq;
 
 namespace ActiveAttributes.Weaving.Expressions
 {
   public class MethodExecutionExpression : Expression
   {
-    private readonly MethodInfo _methodInfo;
+    private readonly MutableMethodInfo _method;
     private readonly Expression _body;
 
-    public MethodExecutionExpression (MethodInfo methodInfo, Expression body)
+    public MethodExecutionExpression (MutableMethodInfo method)
     {
-      _methodInfo = methodInfo;
-      _body = body;
+      _method = method;
+      _body = Call (
+          new ThisExpression (method.DeclaringType),
+          NonVirtualCallMethodInfoAdapter.Adapt (method.GetBaseDefinition()),
+          method.ParameterExpressions.Cast<Expression>());
     }
 
-    public MethodInfo MethodInfo
+    public MethodInfo Method
     {
-      get { return _methodInfo; }
+      get { return _method; }
     }
 
     public Expression Body
@@ -52,13 +59,23 @@ namespace ActiveAttributes.Weaving.Expressions
 
     public override ExpressionType NodeType
     {
-      get { return ExpressionType.Extension; }
+      get { return ExpressionType.Call; }
+    }
+
+    protected override Expression VisitChildren (ExpressionVisitor visitor)
+    {
+      return base.VisitChildren (visitor);
     }
 
     protected override Expression Accept (ExpressionVisitor visitor)
     {
       // TODO visitor
       return _body;
+    }
+
+    public override System.Type Type
+    {
+      get { return _method.ReturnType; }
     }
   }
 }

@@ -60,15 +60,18 @@ namespace ActiveAttributes.Weaving
 
       foreach (var method in mutableType.AllMutableMethods.ToArray())
       {
-        // TODO: remove UnderlyingSystemMethodInfo
-        var methodAspects = _declarationProvider.GetDeclarations (method.UnderlyingSystemMethodInfo).ConvertToCollection();
-        var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection();
+        var executionExpression = new MethodExecutionExpression (method);
+        method.SetBody (ctx => executionExpression);
+        //continue;
+        //// TODO: remove UnderlyingSystemMethodInfo
+        //var methodAspects = _declarationProvider.GetDeclarations (method.UnderlyingSystemMethodInfo).ConvertToCollection();
+        //var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection();
 
-        var joinPoint = new JoinPoint (method, new MethodExecutionExpression(method, method.Body));
-        var allAdvices = _adviceComposer.Compose (allAspects, joinPoint).ToList();
+        //var joinPoint = new JoinPoint (method, new MethodExecutionExpression (method, method.Body));
+        //var allAdvices = _adviceComposer.Compose (allAspects, joinPoint).ToList();
 
-        if (allAdvices.Any())
-          _adviceWeaver.Weave (joinPoint, allAdvices);
+        //if (allAdvices.Any())
+        //  _adviceWeaver.Weave (joinPoint, allAdvices);
       }
     }
 

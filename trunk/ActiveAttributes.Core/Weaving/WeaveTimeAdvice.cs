@@ -14,9 +14,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 using System;
-using System.Reflection;
 using ActiveAttributes.Model;
-using ActiveAttributes.Weaving.Storage;
 using Microsoft.Scripting.Ast;
 
 namespace ActiveAttributes.Weaving

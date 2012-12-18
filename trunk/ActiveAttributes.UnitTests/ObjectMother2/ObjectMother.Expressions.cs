@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,11 +13,23 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using ActiveAttributes.Weaving;
+using Microsoft.Scripting.Ast;
+using System.Linq;
 
-namespace ActiveAttributes.Aspects.Context
+namespace ActiveAttributes.UnitTests
 {
-  [AttributeUsage (AttributeTargets.Parameter, AllowMultiple = false)]
-  public class ReturnValueAttribute : Attribute {}
+  public static partial class ObjectMother
+  {
+     public static Expression GetContextExpression (MethodInfo method = null)
+     {
+       method = method ?? GetMethodInfo();
+       var type = new InvocationTypeProvider().GetInvocationType (method);
+
+       return Expression.Default (type);
+     }
+  }
 }

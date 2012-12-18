@@ -13,17 +13,32 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ActiveAttributes.UnitTests
 {
-  public static class Class1
+  public static partial class ObjectMother
   {
-     public static void Execute<T> (this IEnumerable<T> enumerable)
-     {
-       enumerable.ToList();
-     } 
+    private static readonly Random s_random = new Random();
+
+    public static T GetRandom<T> (IEnumerable<T> enumerable)
+    {
+      var collection = enumerable.ToList();
+      return collection[s_random.Next (0, collection.Count)];
+    }
+
+    public static IEnumerable<T> GetMultiple<T> (Func<T> factory, int count = -1)
+    {
+      count = count >= 0 ? count : s_random.Next (0, 5);
+      return Enumerable.Range (0, count).Select (x => factory());
+    }
+
+    public static IEnumerable<T> GetMultiple<T> (Func<int, T> factory, int count = -1)
+    {
+      count = count >= 0 ? count : s_random.Next (0, 5);
+      return Enumerable.Range (0, count).Select (factory);
+    }
   }
 }

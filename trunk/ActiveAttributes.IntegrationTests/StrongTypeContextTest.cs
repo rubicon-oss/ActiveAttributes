@@ -16,6 +16,7 @@
 
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Aspects.Pointcuts;
+using ActiveAttributes.Aspects.StrongContext;
 using ActiveAttributes.Weaving;
 using NUnit.Framework;
 
@@ -48,7 +49,7 @@ namespace ActiveAttributes.IntegrationTests
 
       [Advice (AdviceExecution.Before)]
       [MethodExecutionPointcut]
-      public void Advice (ref string arg)
+      public void Advice ([Parameter] ref string arg)
       {
         Assert.That (arg, Is.Not.Null.And.EqualTo ("arg"));
       }

@@ -16,64 +16,31 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ActiveAttributes.Aspects;
 using ActiveAttributes.Extensions;
-using System.Linq;
 using ActiveAttributes.Model;
-using ActiveAttributes.Model.Ordering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace ActiveAttributes.Discovery
 {
-  [ConcreteImplementation (typeof(AspectElementBuilder))]
-  public interface IAspectElementBuilder
+  [ConcreteImplementation (typeof (InterTypeBuilder))]
+  public interface IInterTypeBuilder
   {
-    IEnumerable<Advice> AddAdvices (Aspect aspect);
     IEnumerable<MemberIntroduction> AddMemberIntroductions (Aspect aspect);
     IEnumerable<MemberImport> AddMemberImports (Aspect aspect);
   }
 
-  public class AspectElementBuilder : IAspectElementBuilder
+  public class InterTypeBuilder : IInterTypeBuilder
   {
-    private readonly IPointcutBuilder _pointcutBuilder;
-    private readonly IOrderingBuilder _orderingBuilder;
-
-    public AspectElementBuilder (IPointcutBuilder pointcutBuilder, IOrderingBuilder orderingBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("pointcutBuilder", pointcutBuilder);
-
-      _pointcutBuilder = pointcutBuilder;
-      _orderingBuilder = orderingBuilder;
-    }
-
-    public IEnumerable<Advice> AddAdvices (Aspect aspect)
-    {
-      ArgumentUtility.CheckNotNull ("aspect", aspect);
-
-      foreach (var method in aspect.Type.GetMethods())
-      {
-        var adviceAttribute = method.GetCustomAttributes<AdviceAttribute> (true).SingleOrDefault();
-        if (adviceAttribute == null)
-          continue;
-
-        var execution = adviceAttribute.Execution;
-
-        var orderings = new List<IOrdering>();
-        var pointcut = _pointcutBuilder.Build (method);
-        var crosscutting = new Crosscutting (pointcut, orderings, method.Name);
-        orderings.AddRange (_orderingBuilder.BuildOrderings (crosscutting, method));
-
-        yield return new Advice (method, execution, aspect, crosscutting);
-      }
-    }
 
     public IEnumerable<MemberIntroduction> AddMemberIntroductions (Aspect aspect)
     {
       ArgumentUtility.CheckNotNull ("aspect", aspect);
 
-      var methods = BuildIntroductions (aspect, aspect.Type.GetMethods());
+      var methods = BuildIntroductions (aspect, aspect.Type.GetMethods ());
       var properties = BuildIntroductions (aspect, aspect.Type.GetProperties ());
       var events = BuildIntroductions (aspect, aspect.Type.GetEvents ());
 
@@ -86,7 +53,7 @@ namespace ActiveAttributes.Discovery
     {
       ArgumentUtility.CheckNotNull ("aspect", aspect);
 
-      foreach (var field in aspect.Type.GetFields())
+      foreach (var field in aspect.Type.GetFields ())
       {
         var importAttribute = field.GetCustomAttributes<ImportMemberAttribute> (true).SingleOrDefault ();
         if (importAttribute == null)

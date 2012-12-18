@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,14 +13,10 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
 
-namespace ActiveAttributes.Aspects
+namespace ActiveAttributes.Aspects.StrongContext
 {
-  public enum AspectActivation
-  {
-    Auto = 1,
-    Manual
-  }
+  [AttributeUsage (AttributeTargets.Parameter, AllowMultiple = false)]
+  public class InstanceAttribute : StrongContextAttributeBase {}
 }

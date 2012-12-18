@@ -20,7 +20,7 @@ namespace ActiveAttributes.Aspects
 {
   public enum AdviceExecution
   {
-    Before,
+    Before = 0,
     Around,
     AfterThrowing,
     AfterReturning,
