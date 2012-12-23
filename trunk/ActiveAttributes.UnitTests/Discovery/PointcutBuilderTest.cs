@@ -15,10 +15,13 @@
 // under the License.
 using System;
 using System.Reflection;
+using System.Text;
 using ActiveAttributes.Aspects.Pointcuts;
+using ActiveAttributes.Aspects.StrongContext;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Model;
 using ActiveAttributes.Model.Pointcuts;
+using ActiveAttributes.Weaving.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 using Rhino.Mocks;
@@ -36,6 +39,8 @@ namespace ActiveAttributes.UnitTests.Discovery
     private OrAttribute _orAttribute;
     private NotAttribute _notAttribute;
 
+    private string _dummy;
+
     [SetUp]
     public void SetUp ()
     {
@@ -49,74 +54,133 @@ namespace ActiveAttributes.UnitTests.Discovery
     }
 
     [Test]
+    public void name ()
+    {
+      var expr = new MethodExecutionExpression (null);
+      //var expr1 = new MethodExecutionExpression ()
+    }
+
+    [Test]
     public void GetPointcut_AttributeProvider_Simple ()
     {
-      var pointcut = GetPointcut (_typePointcutAttribute);
-
-      Assert.That (pointcut, Is.TypeOf<TypePointcut>());
+      var pointcut = CheckPointcut<TypePointcut> (_typePointcutAttribute);
+      Assert.That (pointcut.Type, Is.EqualTo (typeof (int)));
     }
 
     [Test]
     public void GetPointcut_AttributeProvider_None ()
     {
-      var pointcut = GetPointcut();
-
-      Assert.That (pointcut, Is.TypeOf<TruePointcut>());
+      CheckPointcut<TruePointcut>();
     }
 
     [Test]
     public void GetPointcut_AttributeProvider_Not ()
     {
-      var pointcut = GetPointcut (_typePointcutAttribute, _notAttribute);
-
-      Assert.That (pointcut, Is.TypeOf<NotPointcut>());
-      var notPointcut = (NotPointcut) pointcut;
-      Assert.That (notPointcut.Pointcut, Is.TypeOf<TypePointcut>());
+      var pointcut = CheckPointcut<NotPointcut> (_typePointcutAttribute, _notAttribute);
+      Assert.That (pointcut.Pointcut, Is.TypeOf<TypePointcut>());
     }
 
     [Test]
     public void GetPointcut_AttributeProvider_All ()
     {
-      var pointcut = GetPointcut (_typePointcutAttribute, _memberNamePointcutAttribute, _andAttribute);
-
-      Assert.That (pointcut, Is.TypeOf<AllPointcut>());
-      var allPointcut = (AllPointcut) pointcut;
-      Assert.That (allPointcut.Pointcuts, Has.Some.TypeOf<TypePointcut> ());
-      Assert.That (allPointcut.Pointcuts, Has.Some.TypeOf<MemberNamePointcut> ());
+      var pointcut = CheckPointcut<AllPointcut> (_typePointcutAttribute, _memberNamePointcutAttribute, _andAttribute);
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<TypePointcut> ());
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<MemberNamePointcut> ());
     }
 
     [Test]
     public void GetPointcut_AttributeProvider_Any ()
     {
-      var pointcut = GetPointcut (_typePointcutAttribute, _memberNamePointcutAttribute, _orAttribute);
-
-      Assert.That (pointcut, Is.TypeOf<AnyPointcut>());
-      var allPointcut = (AnyPointcut) pointcut;
-      Assert.That (allPointcut.Pointcuts, Has.Some.TypeOf<TypePointcut> ());
-      Assert.That (allPointcut.Pointcuts, Has.Some.TypeOf<MemberNamePointcut> ());
+      var pointcut = CheckPointcut<AnyPointcut> (_typePointcutAttribute, _memberNamePointcutAttribute, _orAttribute);
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<TypePointcut> ());
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<MemberNamePointcut> ());
     }
 
     [Test]
     public void GetPointcut_AttributeProvider_MethodPointcut ()
     {
-      var pointcut1 = _builder.Build (typeof (DomainType));
-      var pointcut2 = _builder.Build (NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Advice()));
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Advice());
+      var pointcut1 = CheckPointcut<MethodPointcut> (typeof (DomainType));
+      var pointcut2 = CheckPointcut<MethodPointcut> (advice as ICustomAttributeProvider);
 
-      Assert.That (pointcut1, Is.TypeOf<MethodPointcut>());
-      Assert.That (pointcut2, Is.TypeOf<MethodPointcut>());
-      var methodPointcut1 = ((MethodPointcut) pointcut1);
-      var methodPointcut2 = ((MethodPointcut) pointcut2);
       var method = NormalizingMemberInfoFromExpressionUtility.GetMethod (() => DomainType.Method (null));
-      Assert.That (methodPointcut1.Method, Is.EqualTo (method));
-      Assert.That (methodPointcut2.Method, Is.EqualTo (method));
+      Assert.That (pointcut1.Method, Is.EqualTo (method));
+      Assert.That (pointcut2.Method, Is.EqualTo (method));
     }
 
-    private IPointcut GetPointcut (params object[] attributes)
+    [Test]
+    public void GetPointcut_StrongContext_Instance ()
+    {
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Instance (ref _dummy));
+
+      var pointcut = CheckPointcut<TypePointcut> (advice);
+      Assert.That (pointcut.Type, Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    public void GetPointcut_StrongContext_ReturnValue ()
+    {
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.ReturnValue (ref _dummy));
+
+      var pointcut = CheckPointcut<ReturnTypePointcut> (advice);
+      Assert.That (pointcut.ReturnType, Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    public void GetPointcut_StrongContext_Parameter ()
+    {
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.Parameter (ref _dummy));
+
+      var pointcut = CheckPointcut<ArgumentPointcut> (advice);
+      Assert.That (pointcut.ArgumentType, Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    public void GetPointcut_StrongContext_ParameterIndex ()
+    {
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.ParameterIndex (ref _dummy));
+
+      var pointcut = CheckPointcut<ArgumentIndexPointcut> (advice);
+      Assert.That (pointcut.ArgumentType, Is.EqualTo (typeof (string)));
+      Assert.That (pointcut.Index, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void GetPointcut_AttributeProvider_StrongContext ()
+    {
+      var advice = NormalizingMemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.AttributeAndContext (ref _dummy));
+
+      var pointcut = CheckPointcut<AllPointcut> (advice);
+      Assert.That (pointcut.Pointcuts, Has.Length.EqualTo (2));
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<TypePointcut>());
+      Assert.That (pointcut.Pointcuts, Has.Some.TypeOf<MemberNamePointcut>());
+    }
+
+    private T CheckPointcut<T> (MethodInfo method)
+    {
+      var result = _builder.Build (method);
+
+      Assert.That (result, Is.TypeOf<T>());
+      return (T) result;
+    }
+
+    private T CheckPointcut<T> (ICustomAttributeProvider customAttributeProvider)
+    {
+      var result = _builder.Build (customAttributeProvider);
+
+      Assert.That (result, Is.TypeOf<T>());
+      return (T) result;
+    }
+
+    private T CheckPointcut<T> (params object[] attributes)
     {
       var customAttributeProvider = MockRepository.GenerateStrictMock<ICustomAttributeProvider>();
       customAttributeProvider.Expect (x => x.GetCustomAttributes (true)).Return (attributes);
 
-      return _builder.Build (customAttributeProvider);
+      var result = _builder.Build (customAttributeProvider);
+
+      Assert.That (result, Is.TypeOf<T>());
+      return (T) result;
     }
 
     [MethodPointcut ("Method")]
@@ -132,6 +196,14 @@ namespace ActiveAttributes.UnitTests.Discovery
       {
         return false;
       }
+
+      public void Instance ([Instance] ref string instance) {}
+      public void ReturnValue ([ReturnValue] ref string returnValue) {}
+      public void Parameter ([Parameter] ref string arg) {}
+      public void ParameterIndex ([Parameter (1)] ref string arg1) {}
+
+      [MemberNamePointcut("Member")]
+      public void AttributeAndContext ([Instance] ref string instance) {}
     }
   }
 }

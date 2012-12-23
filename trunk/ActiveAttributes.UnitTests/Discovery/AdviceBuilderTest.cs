@@ -72,7 +72,6 @@ namespace ActiveAttributes.UnitTests.Discovery
       Assert.That (result.Pointcut, Is.TypeOf<AllPointcut>());
       var allPointcut = (AllPointcut) result.Pointcut;
       Assert.That (allPointcut.Pointcuts, Is.EqualTo (new[] { fakePointcut, fakeMappingPointcut }));
-      Assert.That (result.Mappings, Is.SameAs (fakeMappings));
     }
 
     private class DomainAspect

@@ -74,7 +74,7 @@ namespace ActiveAttributes.Discovery
         var crosscutting = new Crosscutting (pointcut, orderings, method.Name);
         orderings.AddRange (_orderingBuilder.BuildOrderings (crosscutting, method));
 
-        yield return new Advice (aspect, method, mappings.Item1, execution, crosscutting);
+        yield return new Advice (aspect, method, execution, crosscutting);
       }
     }
 

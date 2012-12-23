@@ -18,10 +18,13 @@ using System.Linq;
 using ActiveAttributes.Discovery;
 using ActiveAttributes.Model;
 using ActiveAttributes.Weaving.Expressions;
+using Microsoft.Scripting.Ast;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.TypePipe.Caching;
+using Remotion.TypePipe.Expressions;
+using Remotion.TypePipe.Expressions.ReflectionAdapters;
 using Remotion.TypePipe.MutableReflection;
 using Castle.Core.Internal;
 
@@ -58,20 +61,19 @@ namespace ActiveAttributes.Weaving
       foreach (var event_ in mutableType.UnderlyingSystemType.GetEvents().Where(x => x.GetAddMethod().IsVirtual))
         _eventMethodPreparer.Prepare (mutableType, event_);
 
-      foreach (var method in mutableType.AllMutableMethods.ToArray())
+      foreach (var method in mutableType.AllMutableMethods.ToArray ())
       {
-        var executionExpression = new MethodExecutionExpression (method);
-        method.SetBody (ctx => executionExpression);
+        //method.SetBody (ctx => new MethodExecutionExpression (method));
         //continue;
-        //// TODO: remove UnderlyingSystemMethodInfo
-        //var methodAspects = _declarationProvider.GetDeclarations (method.UnderlyingSystemMethodInfo).ConvertToCollection();
-        //var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection();
+        // TODO: remove UnderlyingSystemMethodInfo
+        var methodAspects = _declarationProvider.GetDeclarations (method.UnderlyingSystemMethodInfo).ConvertToCollection ();
+        var allAspects = typeAspects.Concat (methodAspects).ConvertToCollection ();
 
-        //var joinPoint = new JoinPoint (method, new MethodExecutionExpression (method, method.Body));
-        //var allAdvices = _adviceComposer.Compose (allAspects, joinPoint).ToList();
+        var joinPoint = new JoinPoint (method, new MethodExecutionExpression (method));
+        var allAdvices = _adviceComposer.Compose (allAspects, joinPoint).ToList ();
 
-        //if (allAdvices.Any())
-        //  _adviceWeaver.Weave (joinPoint, allAdvices);
+        if (allAdvices.Any ())
+          _adviceWeaver.Weave (joinPoint, allAdvices);
       }
     }
 

@@ -96,12 +96,19 @@
     <Compile Include="Utilities\UniqueNameProvider.cs" />
     <Compile Include="Weaving\AdviceArgumentMapper.cs" />
     <Compile Include="Weaving\AdviceComposer.cs" />
+    <Compile Include="Weaving\AdviceWeaver2.cs" />
     <Compile Include="Weaving\Context\ActionContext.generated.cs" />
     <Compile Include="Weaving\Context\FuncContext.generated.cs" />
     <Compile Include="Weaving\CrosscuttingDependencyProvider.cs" />
     <Compile Include="Weaving\EventMethodPreparer.cs" />
+    <Compile Include="Weaving\Expressions2\IPrimitiveExpression.cs" />
+    <Compile Include="Weaving\Expressions2\IPrimitiveExpressionVisitor.cs" />
+    <Compile Include="Weaving\Expressions2\MethodExecutionExpression.cs" />
+    <Compile Include="Weaving\Expressions2\PrimitiveExpressionBase.cs" />
+    <Compile Include="Weaving\Expressions2\PrimitiveExpressionVisitorBase.cs" />
     <Compile Include="Weaving\Expressions\MethodExecutionExpression.cs" />
     <Compile Include="Weaving\CrosscuttingSorter.cs" />
+    <Compile Include="Weaving\Expressions\WeavingExpressionBase.cs" />
     <Compile Include="Weaving\IntertypeWeaver.cs" />
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="Weaving\JoinPointExpressionBuilder.cs" />
@@ -228,6 +235,7 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <None Include="Model\ClassDiagram1.cd" />
     <None Include="Weaving\ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />

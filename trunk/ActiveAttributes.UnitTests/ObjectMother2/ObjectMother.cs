@@ -38,7 +38,7 @@ namespace ActiveAttributes.UnitTests
       crosscutting = crosscutting ?? GetCrosscutting();
       aspect = aspect ?? GetAspect();
 
-      return new Advice (aspect, method, new Predicate<FieldInfo>[0], execution, crosscutting);
+      return new Advice (aspect, method, execution, crosscutting);
     }
 
     public static ICrosscutting GetCrosscutting (

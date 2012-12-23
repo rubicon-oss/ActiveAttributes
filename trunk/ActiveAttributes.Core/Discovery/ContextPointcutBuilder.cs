@@ -13,37 +13,25 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using ActiveAttributes.Aspects;
-using Remotion.Utilities;
+using ActiveAttributes.Model.Pointcuts;
+using Remotion.ServiceLocation;
 
-namespace ActiveAttributes.Model
+namespace ActiveAttributes.Discovery
 {
-  public class MemberIntroduction : AspectElementBase
+  [ConcreteImplementation (typeof (ContextPointcutBuilder))]
+  public interface IContextPointcutBuilder
   {
-    private readonly MemberInfo _memberInfo;
-    private readonly ConflictAction _conflictAction;
+    IEnumerable<IPointcut> Build (MethodInfo method);
+  }
 
-    public MemberIntroduction (MemberInfo memberInfo, ConflictAction conflictAction, Aspect aspect)
-      : base (aspect)
+  public class ContextPointcutBuilder : IContextPointcutBuilder
+  {
+    public IEnumerable<IPointcut> Build (MethodInfo method)
     {
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("aspect", aspect);
-
-      _memberInfo = memberInfo;
-      _conflictAction = conflictAction;
-    }
-
-    public MemberInfo MemberInfo
-    {
-      get { return _memberInfo; }
-    }
-
-    public ConflictAction ConflictAction
-    {
-      get { return _conflictAction; }
+      throw new NotImplementedException();
     }
   }
 }

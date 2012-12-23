@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -13,31 +13,39 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
-using System.Reflection;
+using System;
+using System.Linq;
 using Microsoft.Scripting.Ast;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.Expressions.ReflectionAdapters;
 using Remotion.TypePipe.MutableReflection;
-using System.Linq;
+using Remotion.Utilities;
 
-namespace ActiveAttributes.Weaving.Expressions
+namespace ActiveAttributes.Weaving.Expressions2
 {
-  public class MethodExecutionExpression : Expression
+  public class MethodExecutionExpression : PrimitiveExpressionBase
   {
+    public static MethodExecutionExpression Adapt (MutableMethodInfo method)
+    {
+      var instance = new ThisExpression (method.DeclaringType);
+      var baseMethod = NonVirtualCallMethodInfoAdapter.Adapt (method.UnderlyingSystemMethodInfo);
+      var parameters = method.ParameterExpressions.Cast<Expression>();
+      var body = Call (instance, baseMethod, parameters);
+
+      return new MethodExecutionExpression (method, body);
+    }
+
     private readonly MutableMethodInfo _method;
     private readonly Expression _body;
 
-    public MethodExecutionExpression (MutableMethodInfo method)
+    private MethodExecutionExpression (MutableMethodInfo method, Expression body)
+        : base (method.ReturnType)
     {
       _method = method;
-      _body = Call (
-          new ThisExpression (method.DeclaringType),
-          NonVirtualCallMethodInfoAdapter.Adapt (method.UnderlyingSystemMethodInfo),
-          method.ParameterExpressions.Cast<Expression>());
+      _body = body;
     }
 
-    public MethodInfo Method
+    public MutableMethodInfo Method
     {
       get { return _method; }
     }
@@ -47,39 +55,22 @@ namespace ActiveAttributes.Weaving.Expressions
       get { return _body; }
     }
 
-    public override bool CanReduce
+    public override Expression Accept (IPrimitiveExpressionVisitor visitor)
     {
-      get { return true; }
-    }
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-    public override Expression Reduce ()
-    {
-      return _body;
-    }
-
-    public override ExpressionType NodeType
-    {
-      get { return ExpressionType.Extension; }
+      return visitor.VisitExecution (this);
     }
 
     protected override Expression VisitChildren (ExpressionVisitor visitor)
     {
-      return base.VisitChildren (visitor);
-    }
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
 
-    protected override Expression Accept (ExpressionVisitor visitor)
-    {
-      return base.Accept (visitor);
-    }
+      var newBody = visitor.Visit (Body);
+      if (newBody != Body)
+        return new MethodExecutionExpression (Method, newBody);
 
-    public override string ToString ()
-    {
-      return "muh";
-    }
-
-    public override System.Type Type
-    {
-      get { return _method.ReturnType; }
+      return this;
     }
   }
 }

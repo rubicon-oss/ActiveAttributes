@@ -24,6 +24,23 @@ namespace ActiveAttributes.IntegrationTests
   public class EventTest
   {
     [Test]
+    public void name ()
+    {
+      var instance = ObjectFactory.Create<DomainType2>();
+      ObjectFactory.Save();
+      var result = instance.Method ("abc");
+      Assert.That (result, Is.EqualTo ("abc"));
+    }
+
+    public class DomainType2
+    {
+      public virtual string Method (string abc)
+      {
+        return abc;
+      }
+    }
+
+    [Test]
     public void Execution1 ()
     {
       var instance = ObjectFactory.Create<DomainType> ();

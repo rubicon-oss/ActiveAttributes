@@ -13,37 +13,24 @@
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
 // License for the specific language governing permissions and limitations
 // under the License.
-
 using System;
-using System.Reflection;
-using ActiveAttributes.Aspects;
+using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
-namespace ActiveAttributes.Model
+namespace ActiveAttributes.Weaving.Expressions2
 {
-  public class MemberIntroduction : AspectElementBase
+  public abstract class PrimitiveExpressionVisitorBase : ExpressionVisitor, IPrimitiveExpressionVisitor
   {
-    private readonly MemberInfo _memberInfo;
-    private readonly ConflictAction _conflictAction;
-
-    public MemberIntroduction (MemberInfo memberInfo, ConflictAction conflictAction, Aspect aspect)
-      : base (aspect)
+    Expression IPrimitiveExpressionVisitor.VisitExecution (MethodExecutionExpression node)
     {
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      ArgumentUtility.CheckNotNull ("aspect", aspect);
-
-      _memberInfo = memberInfo;
-      _conflictAction = conflictAction;
+      return VisitExecution (node);
     }
 
-    public MemberInfo MemberInfo
+    protected virtual Expression VisitExecution (MethodExecutionExpression node)
     {
-      get { return _memberInfo; }
-    }
+      ArgumentUtility.CheckNotNull ("node", node);
 
-    public ConflictAction ConflictAction
-    {
-      get { return _conflictAction; }
+      return VisitExtension (node);
     }
   }
 }
