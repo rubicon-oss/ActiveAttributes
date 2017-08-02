@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
+  <TopNode>[0-1202]C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\Remotion.TypePipe.IntegrationTests.dll</TopNode>
+  <SelectedNode>[0-1202]C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\Remotion.TypePipe.IntegrationTests.dll</SelectedNode>
+  <ExcludeCategories>false</ExcludeCategories>
+  <Nodes>
+    <Node UniqueName="[0-1202]C:\development\Remotion\trunk\Remotion\TypePipe\IntegrationTests\bin\Debug\Remotion.TypePipe.IntegrationTests.dll" Expanded="true" />
+    <Node UniqueName="[0-1203]Remotion" Expanded="true" />
+    <Node UniqueName="[0-1204]Remotion.TypePipe" Expanded="true" />
+    <Node UniqueName="[0-1195]Remotion.TypePipe.IntegrationTests.SetupFixture" Expanded="true" />
+    <Node UniqueName="[0-1206]Remotion.TypePipe.IntegrationTests.MutableReflection" Expanded="true" />
+    <Node UniqueName="[0-1207]Remotion.TypePipe.IntegrationTests.Serialization" Expanded="true" />
+    <Node UniqueName="[0-1034]Remotion.TypePipe.IntegrationTests.Serialization.ComplexSerializationTest" Expanded="true" />
+    <Node UniqueName="[0-1047]Remotion.TypePipe.IntegrationTests.Serialization.SimpleSerializationTest" Expanded="true" />
+    <Node UniqueName="[0-1208]Remotion.TypePipe.IntegrationTests.TypeAssembly" Expanded="true" />
+  </Nodes>
+</VisualState>

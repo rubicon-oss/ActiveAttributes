@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ActiveAttributes.Weaving.AdviceCallExpressionBuilder" Collapsed="true">
+    <Position X="0.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AdviceCallExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.AdviceComposer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AdviceComposer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.AdviceWeaver" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAEgAAAAAAAAAAAAAEAAAAAAAAAAACA=</HashCode>
+      <FileName>Weaving\AdviceWeaver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.AspectExpressionBuilder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCABAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Weaving\AspectExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.AspectStorageCache" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAEAAAABAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AspectStorageCache.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.AspectStorageProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAABAAAAAAAAAgAAAkAA=</HashCode>
+      <FileName>Weaving\AspectStorageProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.ContextArgumentExpressionBuilder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Weaving\ContextArgumentExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.ContextArgumentStorageProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAQAAAAAAAAEAAAAAAAAAAAAAAQEAA=</HashCode>
+      <FileName>Weaving\ContextArgumentStorageProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.InvocationTypeProvider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAIAAAAAAQAAAAAA=</HashCode>
+      <FileName>Weaving\InvocationTypeProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.ObjectFactory">
+    <Position X="1.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\ObjectFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.OriginalMethodExpressionBuilder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAIAAAAAAAAAAAAAAAAAAAABABAACAAAAAAAA=</HashCode>
+      <FileName>Weaving\OriginalMethodExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.Participant" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAEAAEACACAAAAAAAAA=</HashCode>
+      <FileName>Weaving\Participant.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.PointcutEvaluator" Collapsed="true">
+    <Position X="8.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAGAAAAAAQgAAwAAAAAAAAAIAAggAACAAAAAQgAAAA=</HashCode>
+      <FileName>Weaving\PointcutEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.ValueMapper" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\ValueMapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ActiveAttributes.Weaving.WeaveBlockBuilder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAE=</HashCode>
+      <FileName>Weaving\WeaveBlockBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="ActiveAttributes.Weaving.IAdviceCallExpressionBuilder">
+    <Position X="0.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AdviceCallExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAdviceComposer" Collapsed="true">
+    <Position X="3.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AdviceComposer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAdviceWeaver" Collapsed="true">
+    <Position X="5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AdviceWeaver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAspectExpressionBuilder" Collapsed="true">
+    <Position X="8.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AspectExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAspectStorageCache" Collapsed="true">
+    <Position X="5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AspectStorageCache.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAspectStorageBuilder" Collapsed="true">
+    <Position X="3.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\AspectStorageProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IAspectCacheKeyProvider" Collapsed="true">
+    <Position X="6.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Weaving\AspectStorageProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IContextArgumentExpressionBuilder" Collapsed="true">
+    <Position X="6.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Weaving\ContextArgumentExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IContextArgumentStorageProvider" Collapsed="true">
+    <Position X="8.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\ContextArgumentStorageProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IInvocationTypeProvider" Collapsed="true">
+    <Position X="3.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\InvocationTypeProvider.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IOriginalMethodExpressionBuilder" Collapsed="true">
+    <Position X="5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAAAAAA=</HashCode>
+      <FileName>Weaving\OriginalMethodExpressionBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IValueMapper" Collapsed="true">
+    <Position X="6.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\ValueMapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ActiveAttributes.Weaving.IWeaveBlockBuilder" Collapsed="true">
+    <Position X="8.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Weaving\WeaveBlockBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
