@@ -1,0 +1,26 @@
+<SolutionConfiguration>
+  <FileVersion>1</FileVersion>
+  <AutoEnableOnStartup>True</AutoEnableOnStartup>
+  <AllowParallelTestExecution>false</AllowParallelTestExecution>
+  <FrameworkUtilisationTypeForNUnit>UseDynamicAnalysis</FrameworkUtilisationTypeForNUnit>
+  <FrameworkUtilisationTypeForGallio>UseStaticAnalysis</FrameworkUtilisationTypeForGallio>
+  <FrameworkUtilisationTypeForMSpec>UseStaticAnalysis</FrameworkUtilisationTypeForMSpec>
+  <FrameworkUtilisationTypeForMSTest>UseStaticAnalysis</FrameworkUtilisationTypeForMSTest>
+  <EngineModes>Run all tests automatically:BFRydWU=;Run all tests manually:BUZhbHNl;Run impacted tests automatically, others manually (experimental!):CklzSW1wYWN0ZWQ=;Run pinned tests automatically, others manually:CElzUGlubmVk;New engine mode:DlN0cnVjdHVyYWxOb2RlAwAAAAlJc0ZhaWxpbmcTSXNJblByb2plY3RXaXRoTmFtZSFBY3RpdmVBdHRyaWJ1dGVzLkludGVncmF0aW9uVGVzdHMISXNQaW5uZWQBAAAAAQAAAA==</EngineModes>
+  <MetricsExclusionList>
+ActiveAttributes.Common.UnitTests\ActiveAttributes.Common.UnitTests.csproj
+ActiveAttributes.Common\ActiveAttributes.Common.csproj
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Annotations.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\ActionInvocationContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Contexts\FuncInvocationContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Interception\Invocations\ActionInvocation.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Interception\Invocations\FuncInvocation.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\ActionInvocation.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Invocations\FuncInvocation.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Weaving\Context\ActionContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj:Weaving\Context\FuncContext.generated.cs
+ActiveAttributes.Core\ActiveAttributes.Core.csproj\Interception\Contexts
+ActiveAttributes.IntegrationTests\ActiveAttributes.IntegrationTests.csproj
+ActiveAttributes.UseCases\ActiveAttributes.UseCases.csproj
+</MetricsExclusionList>
+</SolutionConfiguration>

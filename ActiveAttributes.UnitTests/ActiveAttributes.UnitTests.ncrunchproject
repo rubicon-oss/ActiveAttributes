@@ -1,0 +1,31 @@
+<ProjectConfiguration>
+  <CopyReferencedAssembliesToWorkspace>false</CopyReferencedAssembliesToWorkspace>
+  <ConsiderInconclusiveTestsAsPassing>false</ConsiderInconclusiveTestsAsPassing>
+  <PreloadReferencedAssemblies>false</PreloadReferencedAssemblies>
+  <AllowDynamicCodeContractChecking>true</AllowDynamicCodeContractChecking>
+  <AllowStaticCodeContractChecking>false</AllowStaticCodeContractChecking>
+  <IgnoreThisComponentCompletely>false</IgnoreThisComponentCompletely>
+  <RunPreBuildEvents>false</RunPreBuildEvents>
+  <RunPostBuildEvents>false</RunPostBuildEvents>
+  <PreviouslyBuiltSuccessfully>true</PreviouslyBuiltSuccessfully>
+  <InstrumentAssembly>true</InstrumentAssembly>
+  <PreventSigningOfAssembly>false</PreventSigningOfAssembly>
+  <AnalyseExecutionTimes>true</AnalyseExecutionTimes>
+  <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
+  <DefaultTestTimeout>60000</DefaultTestTimeout>
+  <UseBuildConfiguration></UseBuildConfiguration>
+  <UseBuildPlatform></UseBuildPlatform>
+  <ProxyProcessPath></ProxyProcessPath>
+  <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
+  <IgnoredTests>
+    <NamedTestSelector>
+      <TestName>ActiveAttributes.UnitTests.Assembly.ConstructorPatcherTest.AssignDelegate</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>ActiveAttributes.UnitTests.Discovery.AttributedAspectDeclarationProviders.MethodAttributedAspectDeclarationProviderTest.GetDeclarations</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>ActiveAttributes.UnitTests.Discovery.AttributedAspectDeclarationProviders.PropertyAttributedAspectDeclarationProviderTest.GetDeclarations</TestName>
+    </NamedTestSelector>
+  </IgnoredTests>
+</ProjectConfiguration>
